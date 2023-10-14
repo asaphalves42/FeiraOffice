@@ -11,6 +11,6 @@ module com.example.lp3_g2_feira_office_2023 {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens com.example.lp3_g2_feira_office_2023 to javafx.fxml;
-    exports com.example.lp3_g2_feira_office_2023;
+    opens lp3.g2_feira_office_2023 to javafx.fxml;
+    exports lp3.g2_feira_office_2023;
 }

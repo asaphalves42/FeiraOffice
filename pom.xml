@@ -129,7 +129,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.example.lp3_g2_feira_office_2023/com.example.lp3_g2_feira_office_2023.HelloApplication
+                                com.example.lp3_g2_feira_office_2023/lp3.g2_feira_office_2023.HelloApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
