@@ -1,4 +1,4 @@
-module com.example.lp3_g2_feira_office_2023 {
+module com.example.lp3_g2_feira_office_ {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -11,6 +11,8 @@ module com.example.lp3_g2_feira_office_2023 {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens lp3.g2_feira_office_2023 to javafx.fxml;
-    exports lp3.g2_feira_office_2023;
+    exports Main;
+    opens Main to javafx.fxml;
+    exports Controller;
+    opens Controller to javafx.fxml;
 }
