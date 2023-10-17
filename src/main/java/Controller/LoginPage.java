@@ -15,6 +15,9 @@ public class LoginPage {
 
     @FXML
     void clickLogin(ActionEvent event) throws IOException {
+
+        //puxar função de identificação
+
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/menuInicial.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
