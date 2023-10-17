@@ -6,6 +6,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -15,42 +17,92 @@
 
 <AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MenuInicial">
    <children>
-      <AnchorPane prefHeight="900.0" prefWidth="288.0" style="-fx-background-color: #d7e6f5;">
+      <AnchorPane prefHeight="900.0" prefWidth="288.0" style="-fx-background-color: #d4d6d5;">
          <children>
-            <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="161.0" prefWidth="262.0" style="-fx-background-color: #1a2530;" text="FORNECEDOR" textFill="DODGERBLUE">
+            <Button layoutX="16.0" layoutY="14.0" mnemonicParsing="false" prefHeight="160.0" prefWidth="260.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="#141414">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <Button layoutX="14.0" layoutY="187.0" mnemonicParsing="false" prefHeight="161.0" prefWidth="262.0" style="-fx-background-color: #1a2530;" text="FATURA" textFill="DODGERBLUE">
+            <Button layoutX="16.0" layoutY="192.0" mnemonicParsing="false" prefHeight="160.0" prefWidth="260.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <Button layoutX="14.0" layoutY="357.0" mnemonicParsing="false" prefHeight="161.0" prefWidth="262.0" style="-fx-background-color: #1a2530;" text="CLIENTES" textFill="DODGERBLUE">
+            <Button layoutX="16.0" layoutY="370.0" mnemonicParsing="false" prefHeight="160.0" prefWidth="260.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <Button layoutX="14.0" layoutY="534.0" mnemonicParsing="false" prefHeight="161.0" prefWidth="262.0" style="-fx-background-color: #1a2530;" text="OPERADOR" textFill="DODGERBLUE">
+            <Button layoutX="16.0" layoutY="549.0" mnemonicParsing="false" prefHeight="160.0" prefWidth="260.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <Button blendMode="SRC_ATOP" layoutX="14.0" layoutY="709.0" mnemonicParsing="false" prefHeight="161.0" prefWidth="262.0" style="-fx-background-color: #1a2530;" text="ESTATÍSTICAS" textFill="DODGERBLUE">
+            <Button blendMode="SRC_ATOP" layoutX="16.0" layoutY="726.0" mnemonicParsing="false" prefHeight="160.0" prefWidth="260.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
+            <ImageView fitHeight="127.0" fitWidth="150.0" layoutX="77.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" style="-fx-image: #d7e6f5;">
+               <image>
+                  <Image url="@caminhao-de-entrega.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="82.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FORNECEDOR" wrappingWidth="127.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="100.0" fitWidth="102.0" layoutX="96.0" layoutY="212.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@fatura.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="110.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FATURA" wrappingWidth="72.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="100.0" fitWidth="117.0" layoutX="96.0" layoutY="380.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@aperto-de-mao.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="104.0" layoutY="508.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CLIENTES" wrappingWidth="100.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="100.0" fitWidth="116.0" layoutX="96.0" layoutY="557.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@operador.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="88.0" layoutY="690.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OPERADOR" wrappingWidth="116.13671875">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="100.0" fitWidth="109.0" layoutX="91.0" layoutY="736.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@estatisticas.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="77.0" layoutY="856.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ESTATÍSTICAS" wrappingWidth="127.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="289.0" layoutY="-2.0" prefHeight="900.0" prefWidth="911.0">
          <children>
             <SplitPane dividerPositions="0.5" layoutX="396.0" layoutY="468.0" orientation="VERTICAL" prefHeight="900.0" prefWidth="911.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="909.0" style="-fx-background-color: #d7e6f5;">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
                      <children>
-                        <GridPane layoutX="66.0" layoutY="107.0" prefHeight="195.0" prefWidth="494.0">
+                        <GridPane layoutX="66.0" layoutY="107.0" prefHeight="195.0" prefWidth="616.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -64,12 +116,30 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label prefHeight="17.0" prefWidth="72.0" text="NOME" />
-                              <Label text="ID" GridPane.rowIndex="1" />
-                              <Label text="Label" GridPane.rowIndex="2" />
-                              <Label text="Label" GridPane.rowIndex="3" />
-                              <Label text="Label" GridPane.rowIndex="4" />
-                              <Label text="Label" GridPane.rowIndex="5" />
+                              <Label prefHeight="17.0" prefWidth="72.0" text="NOME">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font></Label>
+                              <Label prefHeight="17.0" prefWidth="107.0" text="AAAAAA" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font></Label>
+                              <Label prefHeight="17.0" prefWidth="99.0" text="BBBBBBBBB" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font></Label>
+                              <Label text="CCCCCCCCC" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font></Label>
+                              <Label text="DDDDDDDDDD" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font></Label>
+                              <Label text="EEEEEEEEEEEEEEE" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font></Label>
                               <TextField GridPane.columnIndex="1" />
                               <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -79,32 +149,58 @@
                               <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
-                        <Button layoutX="66.0" layoutY="343.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #1a2530;" text="ADICIONAR" textFill="DODGERBLUE">
+                        <Button layoutX="66.0" layoutY="343.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font></Button>
-                        <Button layoutX="420.0" layoutY="343.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #1a2530;" text="EDITAR" textFill="DODGERBLUE">
+                        <Button layoutX="420.0" layoutY="342.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font></Button>
-                        <Button layoutX="243.0" layoutY="343.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #1a2530;" text="ELIMINAR" textFill="DODGERBLUE">
+                        <Button layoutX="243.0" layoutY="343.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font></Button>
-                        <Button layoutX="611.0" layoutY="126.0" mnemonicParsing="false" prefHeight="195.0" prefWidth="247.0" style="-fx-background-color: #1a2530;" text="Button" textFill="DODGERBLUE">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font></Button>
-                        <Text fill="#1a2530" layoutX="307.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font: #1a2530;" text="MENU ADMINISTRADOR" wrappingWidth="345.13671875">
+                        <Text layoutX="307.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font: #1a2530;" text="MENU ADMINISTRADOR" wrappingWidth="345.13671875">
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font>
                         </Text>
+                        <ImageView fitHeight="17.0" fitWidth="21.0" layoutX="169.0" layoutY="375.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@mais.png" />
+                           </image>
+                        </ImageView>
+                        <Text layoutX="78.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ADICIONAR" wrappingWidth="99.99999999999994">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <ImageView fitHeight="19.0" fitWidth="17.0" layoutX="340.0" layoutY="374.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@minus-big-symbol.png" />
+                           </image>
+                        </ImageView>
+                        <Text layoutX="255.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ELIMINAR" wrappingWidth="85.13671875">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="523.0" layoutY="374.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@botao-editar.png" />
+                           </image>
+                        </ImageView>
+                        <Text layoutX="450.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EDITAR" wrappingWidth="59.13671875">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
                      </children>
                   </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="909.0">
                      <children>
-                        <TableView prefHeight="402.0" prefWidth="909.0" style="-fx-background-color: #d7e6f5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView prefHeight="446.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
                             <TableColumn prefWidth="75.0" text="C1" />
                             <TableColumn prefWidth="75.0" text="C2" />
