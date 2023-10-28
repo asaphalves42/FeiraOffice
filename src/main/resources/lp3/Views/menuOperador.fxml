@@ -15,16 +15,16 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MenuOperador">
+<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Operador.MenuOperador">
    <children>
       <AnchorPane layoutX="1.0" layoutY="-2.0" prefHeight="900.0" prefWidth="288.0" style="-fx-background-color: #d4d6d5;">
          <children>
-            <Button layoutX="23.0" layoutY="14.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="#141414">
+            <Button fx:id="btnFornecedor" layoutX="23.0" layoutY="14.0" mnemonicParsing="false" onAction="#clickFornecedor" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="#141414">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <Button layoutX="18.0" layoutY="516.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
+            <Button fx:id="btnFatura" layoutX="18.0" layoutY="516.0" mnemonicParsing="false" onAction="#clickFatura" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
@@ -49,8 +49,8 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <Button layoutX="20.0" layoutY="265.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
-            <Button layoutX="18.0" layoutY="739.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
+            <Button fx:id="btnProduto" layoutX="20.0" layoutY="265.0" mnemonicParsing="false" onAction="#clickProduto" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
+            <Button fx:id="btnAprovar" layoutX="18.0" layoutY="739.0" mnemonicParsing="false" onAction="#clickAprovar" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
             <Text layoutX="99.0" layoutY="369.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS">
                <font>
                   <Font name="System Bold" size="18.0" />
@@ -66,9 +66,9 @@
                   <Image url="@Imagens/caracteristicas.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="65.0" fitWidth="85.0" layoutX="107.0" layoutY="752.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="85.0" layoutX="112.0" layoutY="747.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@Imagens/gestao-de-inventario.png" />
+                  <Image url="@Imagens/aprovar.png" />
                </image>
             </ImageView>
          </children>
@@ -126,15 +126,15 @@
                               <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
-                        <Button layoutX="66.0" layoutY="343.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
+                        <Button fx:id="btnAdicionar" layoutX="66.0" layoutY="343.0" mnemonicParsing="false" onAction="#clickAdicionar" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font></Button>
-                        <Button layoutX="420.0" layoutY="342.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
+                        <Button fx:id="btnEditar" layoutX="420.0" layoutY="342.0" mnemonicParsing="false" onAction="#clickEditar" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font></Button>
-                        <Button layoutX="243.0" layoutY="343.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
+                        <Button fx:id="btnEliminar" layoutX="243.0" layoutY="343.0" mnemonicParsing="false" onAction="#clickEliminar" prefHeight="80.0" prefWidth="140.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font></Button>
@@ -182,7 +182,7 @@
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="909.0">
                      <children>
-                        <TableView prefHeight="446.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="tableViewOperador" prefHeight="446.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
                             <TableColumn prefWidth="75.0" text="C1" />
                             <TableColumn prefWidth="75.0" text="C2" />

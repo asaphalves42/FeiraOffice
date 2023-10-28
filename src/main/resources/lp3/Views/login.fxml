@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.LoginPage">
+<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Login.Login">
     <children>
         <VBox alignment="CENTER" layoutX="401.0" prefHeight="900.0" prefWidth="382.0" spacing="10.0">
             <children>
@@ -23,12 +23,8 @@
                               <Font name="System Bold" size="24.0" />
                           </font>
                       </Text>
-                      <TextField layoutX="14.0" layoutY="234.0" prefHeight="47.0" prefWidth="363.0" promptText="E-mail" style="-fx-background-color: #F5F5F5; -fx-border-color: #0a0a0a; -fx-border-width: 2;" />
-                      <PasswordField layoutX="14.0" layoutY="298.0" prefHeight="46.0" prefWidth="363.0" promptText="Password" style="-fx-background-color: #F5F5F5; -fx-border-color: #0a0a0a; -fx-border-width: 2;" />
-                      <Button fx:id="btnEntrar" layoutX="118.0" layoutY="366.0" onAction="#clickLogin" prefHeight="53.0" prefWidth="155.0" style="-fx-background-color: #d4d6d5; -fx-text-fill: #00000;" text="ENTRAR">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font></Button>
+                      <TextField fx:id="labelEmail" layoutX="14.0" layoutY="234.0" prefHeight="47.0" prefWidth="363.0" promptText="E-mail" style="-fx-background-color: #F5F5F5; -fx-border-color: #0a0a0a; -fx-border-width: 2;" />
+                      <PasswordField fx:id="labelPassword" layoutX="14.0" layoutY="298.0" prefHeight="46.0" prefWidth="363.0" promptText="Password" style="-fx-background-color: #F5F5F5; -fx-border-color: #0a0a0a; -fx-border-width: 2;" />
                   <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="116.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@Imagens/images.png" />
@@ -39,6 +35,11 @@
                         <Image url="@Imagens/back-office.png" />
                      </image>
                   </ImageView>
+                  <Button fx:id="btnLogin" layoutX="116.0" layoutY="358.0" mnemonicParsing="false" onAction="#clickLogin" prefHeight="57.0" prefWidth="150.0" text="ENTRAR">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
                </children>
             </AnchorPane>
             </children>
