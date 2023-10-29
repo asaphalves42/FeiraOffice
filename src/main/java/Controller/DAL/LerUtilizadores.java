@@ -10,6 +10,15 @@ import java.util.ArrayList;
 public class LerUtilizadores {
     ArrayList<Utilizador> utilizadores = new ArrayList<>();
 
+    /**
+     * Lê os utilizadores da base de dados e os armazena em uma lista.
+     *
+     * Esta função se conecta a uma base de dados, lê os utilizadores armazenados nela
+     * e cria objetos de utilizador correspondentes, com base no valor do campo "id_role".
+     * Os objetos de utilizador são adicionados a uma lista chamada "utilizadores".
+     *
+     * @return true se a leitura for bem-sucedida, false se ocorrer um erro.
+     */
     public boolean lerUtilizadoresDaBaseDeDados() {
 
         try {
@@ -54,6 +63,14 @@ public class LerUtilizadores {
             return false; // A leitura falhou, retorna false.
         }
     }
+
+    /**
+     * Essa Função realiza uma query na base de dados baseado nos paramentros e com base no id_role, me retorna um tipo de utilizador.
+     * @param email
+     * @param password
+     * @return TipoUtilizador
+     * @throws SQLException
+     */
 
     public TipoUtilizador verificarLoginUtilizador(String email, String password) throws SQLException {
 
