@@ -17,6 +17,7 @@ import java.sql.SQLException;
 
 public class Login {
 
+
     @FXML
     private Button btnLogin;
 
@@ -49,11 +50,12 @@ public class Login {
             } else {
                 Mensagens.Erro("Erro", "Credenciais inválidas. Ocorreu um erro ao realizar login!");
             }
+
         } else {
             Mensagens.Erro("Erro", "Ocorreu um erro ao realizar login!");
         }
     }
-
+    
     private void abrirMenu(String resource, String title) throws IOException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(resource));
@@ -62,6 +64,7 @@ public class Login {
         stage.setScene(scene);
         stage.show();
     }
+
 
 }
 

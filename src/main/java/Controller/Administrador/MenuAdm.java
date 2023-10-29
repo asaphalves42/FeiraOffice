@@ -50,12 +50,14 @@ public class MenuAdm {
 
     @FXML
     void clickFornecedor(ActionEvent event) throws IOException {
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/menuFuncoesFornecedor.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Menu principal!");
-        stage.setScene(scene);
-        stage.show();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/menuFuncoesFornecedor.fxml"));
+            AnchorPane root = loader.load();
+
+            anchorPaneMenuAdm.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
