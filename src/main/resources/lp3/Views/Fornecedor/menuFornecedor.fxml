@@ -18,7 +18,7 @@
          <children>
             <ImageView fitHeight="211.0" fitWidth="202.0" layoutX="43.0" layoutY="264.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@Imagens/back-office.png" />
+                  <Image url="@../Imagens/back-office.png" />
                </image>
             </ImageView>
             <Text layoutX="8.0" layoutY="537.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FEIRA &amp; OFFICE" wrappingWidth="271.0000000000001">
@@ -101,7 +101,7 @@
                         </Text>
                         <ImageView fitHeight="62.0" fitWidth="72.0" layoutX="395.0" layoutY="169.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@Imagens/upload-de-arquivo.png" />
+                              <Image url="@../Imagens/upload-de-arquivo.png" />
                            </image>
                         </ImageView>
                      </children>

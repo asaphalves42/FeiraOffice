@@ -27,12 +27,12 @@
                       <PasswordField fx:id="labelPassword" layoutX="14.0" layoutY="298.0" prefHeight="46.0" prefWidth="363.0" promptText="Password" style="-fx-background-color: #F5F5F5; -fx-border-color: #0a0a0a; -fx-border-width: 2;" />
                   <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="116.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@Imagens/images.png" />
+                        <Image url="@../Imagens/images.png" />
                      </image>
                   </ImageView>
                   <ImageView fitHeight="408.0" fitWidth="397.0" layoutX="-3.0" layoutY="18.0" opacity="0.2" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@Imagens/back-office.png" />
+                        <Image url="@../Imagens/back-office.png" />
                      </image>
                   </ImageView>
                   <Button fx:id="btnLogin" layoutX="116.0" layoutY="358.0" mnemonicParsing="false" onAction="#clickLogin" prefHeight="57.0" prefWidth="150.0" text="ENTRAR">

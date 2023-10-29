@@ -3,10 +3,8 @@ package Controller.Administrador;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -49,9 +47,9 @@ public class MenuAdm {
     }
 
     @FXML
-    void clickFornecedor(ActionEvent event) throws IOException {
+    void clickFornecedor(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/menuFuncoesFornecedor.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/menuFuncoesFornecedor.fxml"));
             AnchorPane root = loader.load();
 
             anchorPaneMenuAdm.getChildren().setAll(root);
@@ -63,11 +61,27 @@ public class MenuAdm {
 
     @FXML
     void clickOperador(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Operador/menuFuncOperador.fxml"));
+            AnchorPane root = loader.load();
+
+            anchorPaneMenuAdm.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @FXML
     void clickProdutos(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Produtos/menuProdutos.fxml"));
+            AnchorPane root = loader.load();
+
+            anchorPaneMenuAdm.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

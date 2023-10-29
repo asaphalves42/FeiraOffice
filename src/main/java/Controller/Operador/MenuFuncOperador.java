@@ -1,20 +1,16 @@
-package Controller.Fornecedor;
+package Controller.Operador;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class MenuFuncoesFornecedor {
-
-    @FXML
-    private SplitPane anchorPaneFuncoesFornc;
+public class MenuFuncOperador {
 
     @FXML
     private Button btnEditar;
@@ -23,10 +19,10 @@ public class MenuFuncoesFornecedor {
     private Button btnEliminar;
 
     @FXML
-    private Button btnNovoFornecedor;
+    private Button btnNovoOperador;
 
     @FXML
-    private TableView<?> tableView;
+    private TableView<?> tableViewOperador;
 
     @FXML
     void clickEditar(ActionEvent event) {
@@ -41,11 +37,13 @@ public class MenuFuncoesFornecedor {
     @FXML
     void clickNovo(ActionEvent event) throws IOException {
         Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/dialogAdicionarFornecedor.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Operador/dialogAdicionarOperador.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("ADICIONAR FORNECEDOR!");
+        stage.setTitle("ADICIONAR OPERADOR!");
         stage.setScene(scene);
         stage.showAndWait();
+
+
     }
 
 }

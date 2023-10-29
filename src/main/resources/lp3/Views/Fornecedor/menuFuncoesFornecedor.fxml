@@ -35,7 +35,7 @@
                         </Button>
                         <ImageView fitHeight="256.0" fitWidth="275.0" layoutX="316.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@Imagens/back-office.png" />
+                              <Image url="@../Imagens/back-office.png" />
                            </image>
                         </ImageView>
                         <Text layoutX="314.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FEIRA &amp; OFFICE" wrappingWidth="284.26171875">

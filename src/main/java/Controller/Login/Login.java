@@ -40,13 +40,13 @@ public class Login {
             TipoUtilizador tipo = lerUtilizadores.verificarLoginUtilizador(username, password);
             if (tipo == TipoUtilizador.Administrador) {
                 // Código para menu do administrador
-                abrirMenu("/lp3/Views/menuAdm.fxml", "Menu Administrador");
+                abrirMenu("/lp3/Views/Admin/menuAdm.fxml", "MENU ADMINISTRADOR!");
             } else if (tipo == TipoUtilizador.Operador) {
                 // Código para menu do operador
-                abrirMenu("/lp3/Views/menuOperador.fxml", "Menu Operador");
+                abrirMenu("/lp3/Views/Operador/menuOperador.fxml", "MENU OPERADOR!");
             } else if (tipo == TipoUtilizador.Fornecedor) {
                 // Código para menu do fornecedor
-                abrirMenu("/lp3/Views/menuFornecedor.fxml", "Menu Fornecedor");
+                abrirMenu("/lp3/Views/Fornecedor/menuFornecedor.fxml", "MENU FORNECEDOR!");
             } else {
                 Mensagens.Erro("Erro", "Credenciais inválidas. Ocorreu um erro ao realizar login!");
             }
