@@ -1,4 +1,4 @@
-package Controller;
+package Controller.MensagensDeErro;
 
 
 import javafx.fxml.FXML;
