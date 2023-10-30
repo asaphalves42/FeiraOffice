@@ -10,9 +10,20 @@ module com.example.lp3_g2_feira_office_ {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires java.sql;
 
     exports Main;
     opens Main to javafx.fxml;
     exports Controller;
     opens Controller to javafx.fxml;
+    exports Controller.Fornecedor;
+    opens Controller.Fornecedor to javafx.fxml;
+    exports Controller.Login;
+    opens Controller.Login to javafx.fxml;
+    exports Controller.Administrador;
+    opens Controller.Administrador to javafx.fxml;
+    exports Controller.Operador;
+    opens Controller.Operador to javafx.fxml;
+    exports Controller.Produtos;
+    opens Controller.Produtos to javafx.fxml;
 }
