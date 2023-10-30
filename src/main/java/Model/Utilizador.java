@@ -2,6 +2,8 @@ package Model;
 
 public abstract class Utilizador {
 
+
+
     public Utilizador(int id, String email, String password) {
         this.id = id;
         this.email = email;

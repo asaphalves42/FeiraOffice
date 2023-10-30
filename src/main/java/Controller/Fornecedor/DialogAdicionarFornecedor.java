@@ -3,6 +3,7 @@ package Controller.Fornecedor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
 public class DialogAdicionarFornecedor {
@@ -14,6 +15,12 @@ public class DialogAdicionarFornecedor {
     private Button btnCancelar;
 
     @FXML
+    private ComboBox<?> comboBoxPais;
+
+    @FXML
+    private TextField textoEmail;
+
+    @FXML
     private TextField textoMorada;
 
     @FXML
@@ -21,6 +28,9 @@ public class DialogAdicionarFornecedor {
 
     @FXML
     private TextField textoNome;
+
+    @FXML
+    private TextField textoPassword;
 
     @FXML
     private TextField textoTelefone;
@@ -34,5 +44,6 @@ public class DialogAdicionarFornecedor {
     void clickCancelar(ActionEvent event) {
 
     }
+
 
 }
