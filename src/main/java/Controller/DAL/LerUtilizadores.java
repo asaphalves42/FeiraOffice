@@ -20,7 +20,6 @@ public class LerUtilizadores {
      * @return true se a leitura for bem-sucedida, false se ocorrer um erro.
      */
     public boolean lerUtilizadoresDaBaseDeDados() {
-
         try {
             BaseDados basedados = new BaseDados();
             basedados.Ligar();
@@ -63,6 +62,7 @@ public class LerUtilizadores {
             return false; // A leitura falhou, retorna false.
         }
     }
+
 
     /**
      * Essa Função realiza uma query na base de dados baseado nos paramentros e com base no id_role, me retorna um tipo de utilizador.
