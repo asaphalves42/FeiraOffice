@@ -12,16 +12,16 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MenuFornecedor">
+<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Fornecedor.MenuFornecedor">
    <children>
       <AnchorPane layoutY="-2.0" prefHeight="900.0" prefWidth="288.0" style="-fx-background-color: #d4d6d5;">
          <children>
             <ImageView fitHeight="211.0" fitWidth="202.0" layoutX="43.0" layoutY="264.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@Imagens/back-office.png" />
+                  <Image url="@../Imagens/back-office.png" />
                </image>
             </ImageView>
-            <Text layoutX="22.0" layoutY="511.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OFFICE GOODS" wrappingWidth="257.0000000000001">
+            <Text layoutX="8.0" layoutY="537.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FEIRA &amp; OFFICE" wrappingWidth="271.0000000000001">
                <font>
                   <Font name="System Bold Italic" size="36.0" />
                </font>
@@ -89,7 +89,7 @@
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
                      <children>
-                        <Button layoutX="301.0" layoutY="155.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
+                        <Button fx:id="btnUpload" layoutX="301.0" layoutY="155.0" mnemonicParsing="false" onAction="#clickUpload" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font>
@@ -101,7 +101,7 @@
                         </Text>
                         <ImageView fitHeight="62.0" fitWidth="72.0" layoutX="395.0" layoutY="169.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@Imagens/upload-de-arquivo.png" />
+                              <Image url="@../Imagens/upload-de-arquivo.png" />
                            </image>
                         </ImageView>
                      </children>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Operador.MenuOperador">
+   <children>
+      <AnchorPane layoutX="1.0" layoutY="-2.0" prefHeight="900.0" prefWidth="294.0" style="-fx-background-color: #d4d6d5;">
+         <children>
+            <Button fx:id="btnFornecedor" layoutX="23.0" layoutY="14.0" mnemonicParsing="false" onAction="#clickFornecedor" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="#141414">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnFatura" layoutX="18.0" layoutY="516.0" mnemonicParsing="false" onAction="#clickFatura" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Button>
+            <ImageView fitHeight="65.0" fitWidth="72.0" layoutX="114.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" style="-fx-image: #d7e6f5;">
+               <image>
+                  <Image url="@../Imagens/caminhao-de-entrega.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="88.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FORNECEDOR" wrappingWidth="140.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="107.0" layoutY="527.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Imagens/fatura.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="107.0" layoutY="620.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FATURA" wrappingWidth="72.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <Button fx:id="btnProduto" layoutX="20.0" layoutY="265.0" mnemonicParsing="false" onAction="#clickProduto" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
+            <Button fx:id="btnAprovar" layoutX="18.0" layoutY="739.0" mnemonicParsing="false" onAction="#clickAprovar" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
+            <Text layoutX="99.0" layoutY="369.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <Text layoutX="67.0" layoutY="843.0" strokeType="OUTSIDE" strokeWidth="0.0" text="APROVAR STOCK" wrappingWidth="164.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="65.0" fitWidth="72.0" layoutX="116.0" layoutY="275.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Imagens/caracteristicas.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="65.0" fitWidth="85.0" layoutX="112.0" layoutY="747.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Imagens/aprovar.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="anchorPaneOperador" layoutX="289.0" layoutY="-2.0" prefHeight="900.0" prefWidth="911.0" style="-fx-background-color: #d4d6d5;">
+         <children>
+            <ImageView fitHeight="620.0" fitWidth="785.0" layoutX="131.0" layoutY="188.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Imagens/back-office.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="360.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BEM VINDO!">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="265.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FEIRA &amp; OFFICE">
+               <font>
+                  <Font name="System Bold Italic" size="48.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
