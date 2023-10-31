@@ -18,6 +18,9 @@ public class DialogAdicionarOperador {
     private TextField textoEmail;
 
     @FXML
+    private TextField textoNome;
+
+    @FXML
     private PasswordField textoPassword;
 
     @FXML

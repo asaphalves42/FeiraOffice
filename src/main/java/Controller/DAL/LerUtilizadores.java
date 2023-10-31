@@ -20,7 +20,6 @@ public class LerUtilizadores {
      * @return true se a leitura for bem-sucedida, false se ocorrer um erro.
      */
     public boolean lerUtilizadoresDaBaseDeDados() {
-
         try {
             BaseDados basedados = new BaseDados();
             basedados.Ligar();
@@ -64,12 +63,13 @@ public class LerUtilizadores {
         }
     }
 
+
     /**
-     * Essa Função realiza uma query na base de dados baseado nos paramentros e com base no id_role, me retorna um tipo de utilizador.
-     * @param email
-     * @param password
+     * Essa Função realiza uma query na base de dados baseado nos paramentros email e password e com base no id_role, me retorna um tipo de utilizador.
+     * @param  email email
+     * @param password password
      * @return TipoUtilizador
-     * @throws SQLException
+     * @throws SQLException SQLException
      */
 
     public TipoUtilizador verificarLoginUtilizador(String email, String password) throws SQLException {
