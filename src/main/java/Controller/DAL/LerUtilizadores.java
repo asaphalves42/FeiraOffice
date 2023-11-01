@@ -14,7 +14,7 @@ public class LerUtilizadores {
 
     /**
      * Lê os utilizadores da base de dados e os armazena em uma lista.
-     *
+     * <p>
      * Esta função se conecta a uma base de dados, lê os utilizadores armazenados nela
      * e cria objetos de utilizador correspondentes, com base no valor do campo "id_role".
      * Os objetos de utilizador são adicionados a uma lista chamada "utilizadores".
@@ -67,7 +67,7 @@ public class LerUtilizadores {
 
 
     /**
-     * Essa Função realiza uma query na base de dados baseado nos paramentros email e password e com base no id_role, me retorna um tipo de utilizador.
+     * Essa Função realiza uma query na base de dados baseado nos paramentros email e password e com base no id_role, retorna-me um tipo de utilizador.
      * @param  email email
      * @param password password
      * @return TipoUtilizador
@@ -82,7 +82,7 @@ public class LerUtilizadores {
         boolean emailValido = validarEmail.isValidEmailAddress(email);
 
         if (!emailValido) {
-            // Se o email for inválido, retorne o tipo padrão (ou trate de outra forma, conforme necessário).
+            // Se o email for inválido, retorne o tipo padrão.
             return TipoUtilizador.Default;
         }
 
