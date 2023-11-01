@@ -2,6 +2,8 @@ package Controller.DAL;
 
 import Model.*;
 import Utilidades.BaseDados;
+import Utilidades.Encriptacao;
+import Utilidades.ValidarEmail;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -73,10 +75,23 @@ public class LerUtilizadores {
      */
 
     public TipoUtilizador verificarLoginUtilizador(String email, String password) throws SQLException {
+        Encriptacao encript = new Encriptacao();
+        ValidarEmail validarEmail = new ValidarEmail();
+
+        // Valida o email usando a classe de validação
+        boolean emailValido = validarEmail.isValidEmailAddress(email);
+
+        if (!emailValido) {
+            // Se o email for inválido, retorne o tipo padrão (ou trate de outra forma, conforme necessário).
+            return TipoUtilizador.Default;
+        }
+
+        // Criptografa a senha usando MD5
+        String encryptedPassword = encript.MD5(password);
 
         BaseDados basedados = new BaseDados();
         basedados.Ligar();
-        ResultSet resultado = basedados.Selecao("SELECT * FROM Utilizador WHERE username = '" + email + "' AND password = '" + password + "'");
+        ResultSet resultado = basedados.Selecao("SELECT * FROM Utilizador WHERE username = '" + email + "' AND password = '" + encryptedPassword + "'");
 
         if (resultado.next()) {
             int idRole = resultado.getInt("id_role");
