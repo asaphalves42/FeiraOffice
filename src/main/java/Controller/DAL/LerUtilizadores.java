@@ -78,11 +78,11 @@ public class LerUtilizadores {
         Encriptacao encript = new Encriptacao();
         ValidarEmail validarEmail = new ValidarEmail();
 
-        // Valida o email usando a classe de validação
+        // Valida o e-mail usando a classe de validação
         boolean emailValido = validarEmail.isValidEmailAddress(email);
 
         if (!emailValido) {
-            // Se o email for inválido, retorne o tipo padrão.
+            // Se o e-mail for inválido, retorne o tipo padrão.
             return TipoUtilizador.Default;
         }
 
