@@ -32,17 +32,17 @@ public class MenuAdm {
     private Button btnProdutos;
 
     @FXML
-    void clickAprovar(ActionEvent event) {
+    void clickAprovar() {
 
     }
 
     @FXML
-    void clickEstatisticas(ActionEvent event) {
+    void clickEstatisticas() {
 
     }
 
     @FXML
-    void clickFatura(ActionEvent event) {
+    void clickFatura() {
 
     }
 
@@ -60,7 +60,7 @@ public class MenuAdm {
     }
 
     @FXML
-    void clickOperador(ActionEvent event) {
+    void clickOperador() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Operador/menuFuncOperador.fxml"));
             AnchorPane root = loader.load();
@@ -73,7 +73,7 @@ public class MenuAdm {
     }
 
     @FXML
-    void clickProdutos(ActionEvent event) {
+    void clickProdutos() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Produtos/menuProdutos.fxml"));
             AnchorPane root = loader.load();
