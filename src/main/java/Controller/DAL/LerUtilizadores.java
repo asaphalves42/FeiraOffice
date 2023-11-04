@@ -3,8 +3,10 @@ package Controller.DAL;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Encriptacao;
+import Utilidades.Mensagens;
 import Utilidades.ValidarEmail;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ public class LerUtilizadores {
      *
      * @return true se a leitura for bem-sucedida, false se ocorrer um erro.
      */
-    public boolean lerUtilizadoresDaBaseDeDados() {
+    public boolean lerUtilizadoresDaBaseDeDados() throws IOException {
         try {
             BaseDados basedados = new BaseDados();
             basedados.Ligar();
@@ -60,7 +62,7 @@ public class LerUtilizadores {
             basedados.Desligar();
             return true; // A leitura foi bem-sucedida, retorna true.
         } catch (SQLException e) {
-            e.printStackTrace();
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
             return false; // A leitura falhou, retorna false.
         }
     }

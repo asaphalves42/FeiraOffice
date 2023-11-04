@@ -7,22 +7,18 @@ public class Fornecedor {
     private String morada2;
     private String localidade;
     private String codigoPostal;
-    private String nif;
-    private String telefone;
     private Pais idPais;
-    private Fornecedor idFornecedor;
+    private UtilizadorFornecedor idUtilizador;
 
-    public Fornecedor(int id, String nome, String morada1, String morada2, String localidade, String codigoPostal, String nif, String telefone, Pais idPais, Fornecedor idFornecedor) {
+    public Fornecedor(int id, String nome, String morada1, String morada2, String localidade, String codigoPostal, Pais idPais, UtilizadorFornecedor idUtilizador) {
         this.id = id;
         this.nome = nome;
         this.morada1 = morada1;
         this.morada2 = morada2;
         this.localidade = localidade;
         this.codigoPostal = codigoPostal;
-        this.nif = nif;
-        this.telefone = telefone;
         this.idPais = idPais;
-        this.idFornecedor = idFornecedor;
+        this.idUtilizador = idUtilizador;
     }
 
     public int getId() {
@@ -73,35 +69,28 @@ public class Fornecedor {
         this.codigoPostal = codigoPostal;
     }
 
-    public String getNif() {
-        return nif;
-    }
-
-    public void setNif(String nif) {
-        this.nif = nif;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
 
     public Pais getIdPais() {
         return idPais;
+    }
+
+    public String getIdPaisString(){
+        return getIdPais().getNome();
     }
 
     public void setIdPais(Pais idPais) {
         this.idPais = idPais;
     }
 
-    public Fornecedor getIdFornecedor() {
-        return idFornecedor;
+    public UtilizadorFornecedor getIdUtilizador() {
+        return idUtilizador;
     }
 
-    public void setIdFornecedor(Fornecedor idFornecedor) {
-        this.idFornecedor = idFornecedor;
+    public void setIdUtilizador(UtilizadorFornecedor idUtilizador) {
+        this.idUtilizador = idUtilizador;
+    }
+    public String getIdUtilizadorString() {
+        return getIdUtilizador().getTipo().name();
+
     }
 }

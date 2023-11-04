@@ -12,6 +12,7 @@ module com.example.lp3_g2_feira_office_ {
     requires com.almasb.fxgl.all;
     requires java.sql;
 
+    opens Model to javafx.base;
     exports Main;
     opens Main to javafx.fxml;
     exports Controller.Fornecedor;

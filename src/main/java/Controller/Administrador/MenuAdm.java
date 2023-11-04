@@ -47,7 +47,7 @@ public class MenuAdm {
     }
 
     @FXML
-    void clickFornecedor(ActionEvent event) {
+    void clickFornecedor() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/menuFuncoesFornecedor.fxml"));
             AnchorPane root = loader.load();
