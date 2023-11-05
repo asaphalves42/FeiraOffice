@@ -7,6 +7,7 @@ import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
+import Utilidades.ValidarEmail;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -76,6 +77,14 @@ public class DialogAdicionarFornecedor {
                 Mensagens.Erro("Campos obrigatórios!", "Por favor, preencha todos os campos obrigatórios.");
                 return;
             }
+
+            ValidarEmail validarEmail = new ValidarEmail();
+            // Validar o formato do e-mail
+            if (!validarEmail.isValidEmailAddress(email)) {
+                Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido.");
+                return;
+            }
+
             // Criar um objeto Utilizador com email e password
             UtilizadorFornecedor utilizador = new UtilizadorFornecedor();
             utilizador.setEmail(email);
