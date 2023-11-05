@@ -7,6 +7,7 @@ import Utilidades.Mensagens;
 import Utilidades.ValidarEmail;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -108,6 +109,75 @@ public class LerUtilizadores {
         }
 
         return TipoUtilizador.Default;
+    }
+
+
+
+    public boolean adicionarUtilizadorOperadorBaseDados(String username, String password) throws IOException {
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+
+            String query = "INSERT INTO Utilizador (username, password, id_role) VALUES ('" + username + "', '" + password + "', 3)";
+
+            baseDados.Executar(query);
+
+            baseDados.Desligar();
+
+            return true;
+
+        }catch (Exception e) {
+            Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
+        }
+        return false;
+    }
+
+
+    //Esse metodo recebe o username e retorna o id do utilizador operador
+    public UtilizadorOperador obterIdUtilizadorPorEmailOperador(String email) throws IOException {
+        UtilizadorOperador idUtilizador = null;
+
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT id_util FROM Utilizador WHERE username = '" + email + "'");
+
+            if (resultado.next()) {
+                idUtilizador = new UtilizadorOperador(
+                        resultado.getInt("id_util"),
+                        resultado.getString("username"),
+                        resultado.getString("password")
+                );
+            }
+            baseDados.Desligar();
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return idUtilizador;
+    }
+
+    //Esse metodo recebe um id e retorna o id do utilizador fornecedor
+    public UtilizadorFornecedor obterUtilizadorPorIdFornecedor(int idUtilizador) throws IOException {
+        UtilizadorFornecedor util = null;
+
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador WHERE id_util = " + idUtilizador);
+
+            if(resultado.next()) {
+                util = new UtilizadorFornecedor(
+                        resultado.getInt("id_util"),
+                        resultado.getString("username"),
+                        resultado.getString("password")
+                );
+            }
+            baseDados.Desligar();
+
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return util;
     }
 
 }

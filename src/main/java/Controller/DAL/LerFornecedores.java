@@ -3,19 +3,18 @@ package Controller.DAL;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class LerFornecedores {
     public static ObservableList<Fornecedor> fornecedores = FXCollections.observableArrayList();
 
     public boolean lerFornecedoresDaBaseDeDados() throws IOException {
+
         try {
             BaseDados basedados = new BaseDados();
             basedados.Ligar();
@@ -27,8 +26,11 @@ public class LerFornecedores {
                 int idPais = resultado.getInt("Id_Pais");
                 int idUtilizador = resultado.getInt("Id_Utilizador");
 
-                Pais pais = obterPaisPorId(idPais);
-                UtilizadorFornecedor utilizador = obterUtilizadorPorId(idUtilizador);
+                LerPaises lerPaises = new LerPaises();
+                Pais pais = lerPaises.obterPaisPorId(idPais);
+
+                LerUtilizadores lerUtilizores = new LerUtilizadores();
+                UtilizadorFornecedor utilizador = lerUtilizores.obterUtilizadorPorIdFornecedor(idUtilizador);
 
                 Fornecedor aux = new Fornecedor(
                         resultado.getInt("id"),
@@ -51,47 +53,26 @@ public class LerFornecedores {
         }
     }
 
-    private Pais obterPaisPorId(int id) throws IOException {
-        Pais pais = null;
-        try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Pais WHERE id = " + id);
-
-            if (resultado.next()) {
-                pais = new Pais(
-                        resultado.getInt("Id"),
-                        resultado.getString("Nome")
-                );
-            }
-            basedados.Desligar();
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-        }
-        return pais;
-    }
-
-    private UtilizadorFornecedor obterUtilizadorPorId(int idUtilizador) throws IOException {
-        UtilizadorFornecedor util = null;
-
+    public boolean adicionarFornecedorBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
         try {
             BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador WHERE id_util = " + idUtilizador);
 
-            if(resultado.next()) {
-                util = new UtilizadorFornecedor(
-                        resultado.getInt("id_util"),
-                        resultado.getString("username"),
-                        resultado.getString("password")
-                );
-            }
+            String query = "INSERT INTO Fornecedor (Nome, Morada1, Morada2, Localidade, CodigoPostal, Id_Pais, Id_Utilizador) " +
+                    "VALUES ('" + fornecedor.getNome() + "', '" + fornecedor.getMorada1() + "', '" + fornecedor.getMorada2() + "', " +
+                    "'" + fornecedor.getLocalidade() + "', '" + fornecedor.getCodigoPostal() + "', " +
+                    pais.getId() + ", " + utilizador.getId() + ")";
+
+            baseDados.Executar(query);
+
             baseDados.Desligar();
 
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            return true; // Sucesso ao adicionar o fornecedor
+
+        } catch (Exception e) {
+            Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
         }
-        return util;
+        return false;
     }
 
 }

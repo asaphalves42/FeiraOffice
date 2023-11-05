@@ -10,6 +10,7 @@ public class Fornecedor {
     private Pais idPais;
     private UtilizadorFornecedor idUtilizador;
 
+
     public Fornecedor(int id, String nome, String morada1, String morada2, String localidade, String codigoPostal, Pais idPais, UtilizadorFornecedor idUtilizador) {
         this.id = id;
         this.nome = nome;

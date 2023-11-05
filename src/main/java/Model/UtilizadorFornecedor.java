@@ -7,10 +7,9 @@ public class UtilizadorFornecedor extends Utilizador{
         super(id, email, password);
     }
 
+    public UtilizadorFornecedor(){
 
-    public UtilizadorFornecedor(int idRole) {
     }
-
 
     @Override
     public TipoUtilizador getTipo() {
