@@ -2,6 +2,7 @@ package Controller.Fornecedor;
 
 import Controller.DAL.LerFornecedores;
 import Model.Fornecedor;
+import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -23,7 +24,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import static Controller.DAL.LerFornecedores.fornecedores;
+
 
 public class MenuFuncoesFornecedor{
 
@@ -41,21 +42,25 @@ public class MenuFuncoesFornecedor{
 
     @FXML
     private TableView<Fornecedor> tableViewFornecedores;
-
+    ObservableList<Fornecedor> fornecedores = FXCollections.observableArrayList();
 
     public void initialize() throws IOException {
-     tabelaFornecedores();
+        tableViewFornecedores.getColumns().clear();
+        tableViewFornecedores.getItems().clear();
+        tabelaFornecedores();
     }
 
+    /**
+     * Preenche a tabela de fornecedores com dados lidos da base de dados e define as colunas da tabela, caso ainda não tenham sido definidas.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura da base de dados.
+     */
     public void tabelaFornecedores() throws IOException {
 
-
         LerFornecedores lerFornecedores = new LerFornecedores();
-        if (lerFornecedores.lerFornecedoresDaBaseDeDados()) {
+        fornecedores.addAll(lerFornecedores.lerFornecedoresDaBaseDeDados());
 
-            tableViewFornecedores.getItems().clear();// Limpa os itens da tabela
-            tableViewFornecedores.setItems(null);
-
+        if (!fornecedores.isEmpty()) {
             if(tableViewFornecedores.getColumns().isEmpty()) {
                 // Defina as colunas da tabela
                 TableColumn<Fornecedor, Integer> colunaId = new TableColumn<>("ID");
@@ -113,6 +118,10 @@ public class MenuFuncoesFornecedor{
         stage.setTitle("ADICIONAR FORNECEDOR!");
         stage.setScene(scene);
         stage.showAndWait();
+
+        DataSingleton data = DataSingleton.getInstance();
+        fornecedores.add(data.getDataFornecedor());
+
     }
 
 

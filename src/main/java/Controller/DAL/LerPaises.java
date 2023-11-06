@@ -12,6 +12,12 @@ import java.sql.SQLException;
 
 public class LerPaises {
 
+    /**
+     * Obtém uma lista de países a partir da base de dados e retorna uma ObservableList contendo os países.
+     *
+     * @return Uma ObservableList contendo a lista de países lidos da base de dados, ou uma lista vazia se ocorrer um erro na leitura.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public ObservableList<Pais> getListaDePaises() throws IOException {
         ObservableList<Pais> listaDePaises = FXCollections.observableArrayList();
         try {
@@ -35,6 +41,13 @@ public class LerPaises {
         return listaDePaises;
     }
 
+    /**
+     * Obtém um país a partir da base de dados com base no seu ID e retorna o país encontrado.
+     *
+     * @param id O ID do país a ser obtido.
+     * @return O país correspondente ao ID fornecido, ou null se o país não for encontrado na base de dados ou se ocorrer um erro na leitura.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public Pais obterPaisPorId(int id) throws IOException {
         Pais pais = null;
         try {

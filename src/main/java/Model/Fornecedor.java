@@ -1,5 +1,8 @@
 package Model;
 
+import eu.hansolo.toolbox.properties.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Fornecedor {
     private int id;
     private String nome;
@@ -9,7 +12,6 @@ public class Fornecedor {
     private String codigoPostal;
     private Pais idPais;
     private UtilizadorFornecedor idUtilizador;
-
 
     public Fornecedor(int id, String nome, String morada1, String morada2, String localidade, String codigoPostal, Pais idPais, UtilizadorFornecedor idUtilizador) {
         this.id = id;
@@ -21,6 +23,8 @@ public class Fornecedor {
         this.idPais = idPais;
         this.idUtilizador = idUtilizador;
     }
+
+
 
     public int getId() {
         return id;

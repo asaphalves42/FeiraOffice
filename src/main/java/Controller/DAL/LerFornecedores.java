@@ -11,17 +11,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LerFornecedores {
-    public static ObservableList<Fornecedor> fornecedores = FXCollections.observableArrayList();
 
-    public boolean lerFornecedoresDaBaseDeDados() throws IOException {
+    /**
+     * Lê a lista de fornecedores a partir da base de dados e retorna uma lista observável de fornecedores.
+     *
+     * @return Uma ObservableList contendo os fornecedores lidos da base de dados, ou null se ocorrer um erro na leitura.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
+    public  ObservableList<Fornecedor> lerFornecedoresDaBaseDeDados() throws IOException {
+
+        ObservableList<Fornecedor> fornecedores = FXCollections.observableArrayList();
 
         try {
+
             BaseDados basedados = new BaseDados();
             basedados.Ligar();
             ResultSet resultado = basedados.Selecao("SELECT * FROM Fornecedor");
 
 
-            while (resultado.next()) {
+            while (resultado.next()) { //Ler os forncedores da base de dados, um a um e cria um objeto novo
 
                 int idPais = resultado.getInt("Id_Pais");
                 int idUtilizador = resultado.getInt("Id_Utilizador");
@@ -46,33 +54,47 @@ public class LerFornecedores {
 
             }
             basedados.Desligar();
-            return true; // A leitura foi bem-sucedida, retorna true.
+            return fornecedores; // A leitura foi bem-sucedida, retorna true.
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            return false; // A leitura falhou, retorna false.
+            return null; // A leitura falhou, retorna false.
         }
     }
 
-    public boolean adicionarFornecedorBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
+    /**
+     * Adiciona um fornecedor à base de dados, juntamente com informações de país e utilizador, e retorna o fornecedor adicionado.
+     *
+     * @param fornecedor O fornecedor a ser adicionado à base de dados.
+     * @param pais O país associado ao fornecedor.
+     * @param utilizador O utilizador associado ao fornecedor.
+     * @return O fornecedor adicionado à base de dados, ou null se ocorrer um erro durante a operação.
+     * @throws IOException Se ocorrer um erro durante a operação.
+     */
+    public Fornecedor adicionarFornecedorBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
         try {
             BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
 
-            String query = "INSERT INTO Fornecedor (Nome, Morada1, Morada2, Localidade, CodigoPostal, Id_Pais, Id_Utilizador) " +
-                    "VALUES ('" + fornecedor.getNome() + "', '" + fornecedor.getMorada1() + "', '" + fornecedor.getMorada2() + "', " +
-                    "'" + fornecedor.getLocalidade() + "', '" + fornecedor.getCodigoPostal() + "', " +
-                    pais.getId() + ", " + utilizador.getId() + ")";
+            String query = "exec [Inserir_Fornecedor] @username = '" + fornecedor.getIdUtilizador().getEmail() +
+                    "', @password = '" + fornecedor.getIdUtilizador().getPassword() +
+                    "', @id_role = '" + utilizador.getTipo().getValue() +
+                    "', @nome = '" + fornecedor.getNome() +
+                    "', @morada1 = '" + fornecedor.getMorada1() +
+                    "', @morada2 = '" + fornecedor.getMorada2() +
+                    "', @localidade = '" + fornecedor.getLocalidade() +
+                    "', @codigo_postal = '" + fornecedor.getCodigoPostal() +
+                    "', @id_pais = '" + pais.getId() + "'";
 
             baseDados.Executar(query);
 
             baseDados.Desligar();
 
-            return true; // Sucesso ao adicionar o fornecedor
+            return fornecedor; // retorna o fornecedor
 
         } catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
         }
-        return false;
+        return null;
     }
 
 }

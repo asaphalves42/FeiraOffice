@@ -6,6 +6,7 @@ import Utilidades.Mensagens;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -63,6 +64,10 @@ public class Login {
                 // Exibe uma mensagem de erro para credenciais inválidas.
                 Mensagens.Erro("Erro", "Credenciais inválidas. Ocorreu um erro ao realizar login!");
             }
+
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //Fechar a janela de login
+            currentStage.close();
+
         } else {
             // Exibe uma mensagem de erro para erro na recuperação de dados do banco de dados.
             Mensagens.Erro("Erro", "Ocorreu um erro ao realizar login!");

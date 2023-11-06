@@ -4,26 +4,24 @@ import Controller.DAL.LerFornecedores;
 import Controller.DAL.LerPaises;
 import Controller.DAL.LerUtilizadores;
 import Model.*;
-import Utilidades.BaseDados;
-import Utilidades.DataSingleton;
-import Utilidades.Mensagens;
-import Utilidades.ValidarEmail;
+import Utilidades.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
 
 public class DialogAdicionarFornecedor {
 
-    private DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
+    private final DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
 
     @FXML
     private Button btnAdicionar;
@@ -56,10 +54,21 @@ public class DialogAdicionarFornecedor {
     private PasswordField textoPassword;
 
     public void initialize() throws IOException {
-        clickComboPais();
+        LerPaises lerPaises = new LerPaises();
+        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises();
+        comboBoxPais.setItems(listaDePaises);
     }
+
+    /**
+     * Manipula o evento de clique no botão "Adicionar" para adicionar um novo fornecedor à base de dados.
+     * Recebe os 'inputs' do utilizador e cria um fornecedor e um novo utilizador.
+     *
+     *
+     * @param event O evento de clique que acionou a ação.
+     * @throws IOException Se ocorrer um erro de E/S durante o processo de adição.
+     */
     @FXML
-    void clickAdicionar() throws IOException {
+    void clickAdicionar(ActionEvent event) throws IOException {
 
         try {
             String nome = textoNome.getText();
@@ -85,35 +94,34 @@ public class DialogAdicionarFornecedor {
                 return;
             }
 
+            // Encripte a senha usando o método MD5
+            Encriptacao encriptacao = new Encriptacao();
+            String senhaEncriptada = encriptacao.MD5(password);
+
             // Criar um objeto Utilizador com email e password
             UtilizadorFornecedor utilizador = new UtilizadorFornecedor();
             utilizador.setEmail(email);
-            utilizador.setPassword(password);
+            utilizador.setPassword(senhaEncriptada);
 
             //Criar um objeto fornecedor com o atributos
-            Fornecedor fornecedor = new Fornecedor(0, nome, morada1, morada2,localidade,codigoPostal, pais, utilizador);
+            Fornecedor fornecedor = new Fornecedor(0, nome, morada1, morada2, localidade, codigoPostal, pais, utilizador);
 
-            // Chamar a DAL para adicionar o utilizador à tabela "Utilizador"
-            LerUtilizadores adicionarUtilizador = new LerUtilizadores();
-            if (adicionarUtilizador.adicionarUtilizadorOperadorBaseDados(email, password)) {
+            //chamar a DAL para adicionar o fornecedor
+            LerFornecedores adicionarFornecedor = new LerFornecedores();
+            Fornecedor fornecedorInserido = adicionarFornecedor.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
 
-                //chamar a DAL para adicionar o fornecedor
-                LerFornecedores adicionarFornecedor = new LerFornecedores();
-                adicionarFornecedor.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
+            dadosCompartilhados.setDataFornecedor(fornecedor);
 
+            if (fornecedorInserido == null) {
+                Mensagens.Erro("Erro", "Erro ao adicionar fornecedor!");
             }
 
-            // Limpar os campos de entrada após a adição bem-sucedida
-            textoNome.clear();
-            textoEmail.clear();
-            textoPassword.clear();
-            textoMorada1.clear();
-            textoMorada2.clear();
-            textoLocalidade.clear();
-            textoCodigoPostal.clear();
-            comboBoxPais.getSelectionModel().clearSelection();
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
 
             Mensagens.Informacao("Novo fornecedor", "Novo fornecedor inseridos com sucesso!");
+
+
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro na adição de fornecedor!");
         }
@@ -125,11 +133,8 @@ public class DialogAdicionarFornecedor {
     }
 
     @FXML
-    void clickComboPais() throws IOException {
-        LerPaises lerPaises = new LerPaises();
-
-        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises();
-        comboBoxPais.setItems(listaDePaises);
+    void clickComboPais(ActionEvent event) {
+        Pais pais = comboBoxPais.getSelectionModel().getSelectedItem();
 
     }
 
