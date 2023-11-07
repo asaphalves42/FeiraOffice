@@ -32,7 +32,13 @@ public class DialogAdicionarOperador {
     @FXML
     private PasswordField textoPassword;
 
-
+    /**
+     * Manipula o evento de clique no botão "Adicionar". Este método é responsável por validar o formato do email,
+     * criptografar a senha, criar um objeto de utilizador, adicionar o operador à base de dados e fechar a janela atual.
+     *
+     * @param event O evento de clique que acionou a ação.
+     * @throws IOException se ocorrer um erro de entrada/saída durante a execução.
+     */
     @FXML
     void clickAdicionar(ActionEvent event) throws IOException {
         try {
@@ -42,6 +48,15 @@ public class DialogAdicionarOperador {
             Encriptacao encript = new Encriptacao();
             ValidarEmail validarEmail = new ValidarEmail();
             String encryptedPassword = encript.MD5(password);
+
+            // Verificar se algum campo obrigatório está vazio
+            if (email.isEmpty() || password.isEmpty()){
+
+                // Exibir uma mensagem de erro ao utilizador
+                Mensagens.Erro("Campos obrigatórios!", "Por favor, preencha todos os campos obrigatórios.");
+                return;
+            }
+
             // Validar o formato do e-mail
             if (!validarEmail.isValidEmailAddress(email)) {
                 Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido.");
@@ -61,9 +76,8 @@ public class DialogAdicionarOperador {
             }
             dadosCompartilhados.setDataOperador(utilizador);
 
-            // Limpar os campos de entrada após a adição bem-sucedida
-            textoEmail.clear();
-            textoPassword.clear();
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
 
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro na adição de operador!");

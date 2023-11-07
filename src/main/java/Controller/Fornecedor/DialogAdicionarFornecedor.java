@@ -120,7 +120,7 @@ public class DialogAdicionarFornecedor {
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             currentStage.close();
 
-            Mensagens.Informacao("Novo fornecedor", "Novo fornecedor inseridos com sucesso!");
+            Mensagens.Informacao("Novo fornecedor", "Novo fornecedor inserido com sucesso!");
 
 
         } catch (Exception e) {
