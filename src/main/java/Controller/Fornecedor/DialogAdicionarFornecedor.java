@@ -5,6 +5,7 @@ import Controller.DAL.LerPaises;
 import Controller.DAL.LerUtilizadores;
 import Model.*;
 import Utilidades.*;
+import Utilidades.Encriptacao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -129,12 +130,13 @@ public class DialogAdicionarFornecedor {
 
     @FXML
     void clickCancelar(ActionEvent event) {
-
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
     }
 
     @FXML
     void clickComboPais(ActionEvent event) {
-        Pais pais = comboBoxPais.getSelectionModel().getSelectedItem();
+        comboBoxPais.getSelectionModel().getSelectedItem();
 
     }
 

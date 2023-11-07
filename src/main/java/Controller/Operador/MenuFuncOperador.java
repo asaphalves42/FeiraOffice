@@ -1,5 +1,7 @@
 package Controller.Operador;
 
+import Model.UtilizadorOperador;
+import Utilidades.BaseDados;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +11,8 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+
+import static Model.TipoUtilizador.Operador;
 
 public class MenuFuncOperador {
 
@@ -33,7 +37,6 @@ public class MenuFuncOperador {
     void clickEliminar(ActionEvent event) {
 
     }
-
     @FXML
     void clickNovo(ActionEvent event) throws IOException {
         Stage stage = new Stage();
@@ -43,7 +46,7 @@ public class MenuFuncOperador {
         stage.setScene(scene);
         stage.showAndWait();
 
-
     }
+
 
 }

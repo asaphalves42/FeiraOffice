@@ -144,4 +144,47 @@ public class LerUtilizadores {
         return util;
     }
 
+    public boolean adicionarOperadorBaseDados(String username, String password) throws IOException {
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+
+            String query = "INSERT INTO Utilizador (username, password, id_role) VALUES ('" + username + "', '" + password + "', 2)";
+
+            baseDados.Executar(query);
+
+            baseDados.Desligar();
+
+            return true;
+
+        }catch (Exception e) {
+            Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
+        }
+        return false;
+    }
+
+    public UtilizadorOperador obterUtilizadorPorIdOperador(int idUtilizador) throws IOException {
+        UtilizadorOperador util = null;
+
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador WHERE id_util = " + idUtilizador);
+
+            if(resultado.next()) {
+                util = new UtilizadorOperador(
+                        resultado.getInt("id_util"),
+                        resultado.getString("username"),
+                        resultado.getString("password")
+                );
+            }
+            baseDados.Desligar();
+
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return util;
+    }
+
+
 }

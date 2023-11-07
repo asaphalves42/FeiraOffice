@@ -11,7 +11,9 @@ module com.example.lp3_g2_feira_office_ {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires junit;
 
+    exports TestesUnitarios;
     opens Model to javafx.base;
     exports Main;
     opens Main to javafx.fxml;
