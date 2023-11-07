@@ -23,14 +23,14 @@
                               <Font name="System Bold" size="24.0" />
                           </font>
                       </Text>
-                      <TextField fx:id="labelEmail" layoutX="14.0" layoutY="234.0" prefHeight="47.0" prefWidth="363.0" promptText="E-mail" style="-fx-background-color: #F5F5F5; -fx-border-color: #0a0a0a; -fx-border-width: 2;" />
-                      <PasswordField fx:id="labelPassword" layoutX="14.0" layoutY="298.0" prefHeight="46.0" prefWidth="363.0" promptText="Password" style="-fx-background-color: #F5F5F5; -fx-border-color: #0a0a0a; -fx-border-width: 2;" />
+                      <TextField fx:id="labelEmail" layoutX="14.0" layoutY="234.0" onKeyPressed="#clickEnter" prefHeight="47.0" prefWidth="363.0" promptText="E-mail" style="-fx-background-color: #F5F5F5; -fx-border-color: #0a0a0a; -fx-border-width: 2;" />
+                      <PasswordField fx:id="labelPassword" layoutX="14.0" layoutY="298.0" onKeyPressed="#clickEnter" prefHeight="46.0" prefWidth="363.0" promptText="Password" style="-fx-background-color: #F5F5F5; -fx-border-color: #0a0a0a; -fx-border-width: 2;" />
                   <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="116.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Imagens/images.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="408.0" fitWidth="397.0" layoutX="-3.0" layoutY="18.0" opacity="0.2" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="408.0" fitWidth="397.0" layoutX="-3.0" layoutY="18.0" onKeyPressed="#clickEnter" opacity="0.2" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Imagens/back-office.png" />
                      </image>

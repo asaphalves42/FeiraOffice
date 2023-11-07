@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -34,13 +35,13 @@ public class Login {
      * Ele lê o nome de utilizador e senha inseridos, verifica-os num banco de dados e
      * abre o menu correspondente com base no tipo de utilizador ou exibe uma mensagem de erro.
      *
-     * @param event Um ActionEvent representando o evento de clique no botão.
+     *
      *
      * @throws IOException Se ocorrer uma exceção de entrada/saída ao abrir o menu.
      * @throws SQLException Se ocorrer uma exceção SQL durante operações de banco de dados.
      */
     @FXML
-    void clickLogin(ActionEvent event) throws IOException, SQLException {
+    void clickLogin() throws IOException, SQLException {
         // Cria uma instância de LerUtilizadores para lidar com dados de utilizador.
         TipoUtilizador tipo = getUtilizador();
 
@@ -54,10 +55,13 @@ public class Login {
             } else {
                 // Exibe uma mensagem de erro para credenciais inválidas.
                 Mensagens.Erro("Erro", "Credenciais inválidas. Ocorreu um erro ao realizar login!");
+                return;
             }
 
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //Fechar a janela de login
+
+            Stage currentStage = (Stage) btnLogin.getScene().getWindow(); //Fechar
             currentStage.close();
+
         }
 
     /**
@@ -90,6 +94,11 @@ public class Login {
     }
 
 
+    public void clickEnter(KeyEvent keyEvent) throws SQLException, IOException {
+        if(keyEvent.getCode().toString().equals("ENTER")){
+            clickLogin();
+        }
+    }
 }
 
 
