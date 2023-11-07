@@ -62,7 +62,7 @@ public class LerFornecedores {
     }
 
     /**
-     * Adiciona um fornecedor à base de dados, juntamente com informações de país e utilizador, e retorna o fornecedor adicionado.
+     * Adiciona um fornecedor à base de dados, com informações de país e utilizador, e retorna o fornecedor adicionado.
      *
      * @param fornecedor O fornecedor a ser adicionado à base de dados.
      * @param pais O país associado ao fornecedor.
@@ -75,6 +75,10 @@ public class LerFornecedores {
             BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
 
+            /*
+            Procedure com as variáveis que preciso inserir nas tabelas, Fornecedor e Utilizador, quando insere o utilizador, vou buscar o ultimo id que acabei de inserir através
+            do 'MAX', quando obtido o ID, insiro o mesmo na tabela de fornecedor.
+             */
             String query = "exec [Inserir_Fornecedor] @username = '" + fornecedor.getIdUtilizador().getEmail() +
                     "', @password = '" + fornecedor.getIdUtilizador().getPassword() +
                     "', @id_role = '" + utilizador.getTipo().getValue() +
