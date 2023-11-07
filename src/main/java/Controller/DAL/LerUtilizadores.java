@@ -5,6 +5,8 @@ import Utilidades.BaseDados;
 import Utilidades.Encriptacao;
 import Utilidades.Mensagens;
 import Utilidades.ValidarEmail;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -12,9 +14,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class LerUtilizadores {
-    ArrayList<Utilizador> utilizadores = new ArrayList<>();
 
+
+public class LerUtilizadores {
     /**
      * Lê os utilizadores da base de dados e os armazena em uma lista.
      * <p>
@@ -24,7 +26,10 @@ public class LerUtilizadores {
      *
      * @return true se a leitura for bem-sucedida, false se ocorrer um erro.
      */
-    public boolean lerUtilizadoresDaBaseDeDados() throws IOException {
+    public ObservableList<Utilizador> lerUtilizadoresDaBaseDeDados() throws IOException {
+
+        ObservableList<Utilizador> utilizador= FXCollections.observableArrayList();
+
         try {
             BaseDados basedados = new BaseDados();
             basedados.Ligar();
@@ -42,7 +47,7 @@ public class LerUtilizadores {
                             resultado.getString("username"),
                             resultado.getString("password")
                     );
-                    utilizadores.add(aux);
+                    utilizador.add(aux);
 
                 } else if (idRole == 2) {
                     aux = new UtilizadorOperador(
@@ -50,21 +55,21 @@ public class LerUtilizadores {
                             resultado.getString("username"),
                             resultado.getString("password")
                     );
-                    utilizadores.add(aux);
+                    utilizador.add(aux);
                 } else if (idRole == 3) {
                     aux = new UtilizadorFornecedor(
                             resultado.getInt("id_util"),
                             resultado.getString("username"),
                             resultado.getString("password")
                     );
-                    utilizadores.add(aux);
+                    utilizador.add(aux);
                 }
             }
             basedados.Desligar();
-            return true; // A leitura foi bem-sucedida, retorna true.
+            return utilizador; // A leitura retorna o utilizador
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            return false; // A leitura falhou, retorna false.
+            return null; // A leitura falhou, retorna false.
         }
     }
 
@@ -144,6 +149,14 @@ public class LerUtilizadores {
         return util;
     }
 
+    /**
+     * Adiciona um operador à base de dados com o nome de usuário e senha fornecidos.
+     *
+     * @param username O nome de usuário do operador a ser adicionado.
+     * @param password A senha do operador a ser adicionado.
+     * @return true se a adição for bem-sucedida, false em caso de erro.
+     * @throws IOException se ocorrer um erro de entrada/saída durante a execução.
+     */
     public boolean adicionarOperadorBaseDados(String username, String password) throws IOException {
         try {
             BaseDados baseDados = new BaseDados();
@@ -162,29 +175,4 @@ public class LerUtilizadores {
         }
         return false;
     }
-
-    public UtilizadorOperador obterUtilizadorPorIdOperador(int idUtilizador) throws IOException {
-        UtilizadorOperador util = null;
-
-        try {
-            BaseDados baseDados = new BaseDados();
-            baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador WHERE id_util = " + idUtilizador);
-
-            if(resultado.next()) {
-                util = new UtilizadorOperador(
-                        resultado.getInt("id_util"),
-                        resultado.getString("username"),
-                        resultado.getString("password")
-                );
-            }
-            baseDados.Desligar();
-
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-        }
-        return util;
-    }
-
-
 }

@@ -42,18 +42,9 @@ public class Login {
     @FXML
     void clickLogin(ActionEvent event) throws IOException, SQLException {
         // Cria uma instância de LerUtilizadores para lidar com dados de utilizador.
-        LerUtilizadores lerUtilizadores = new LerUtilizadores();
+        TipoUtilizador tipo = getUtilizador();
 
-        // Recupera o nome de usuário e senha inseridos dos elementos da interface gráfica.
-        String username = labelEmail.getText();
-        String password = labelPassword.getText();
-
-        // Verifica se os dados do utilizador são lidos com sucesso do banco de dados.
-        if (lerUtilizadores.lerUtilizadoresDaBaseDeDados()) {
-            // Verifica as credenciais de ‘login’ e determina o tipo de utilizador.
-            TipoUtilizador tipo = lerUtilizadores.verificarLoginUtilizador(username, password);
-
-            // Abre o menu correspondente com base no tipo de utilizador.
+        // Abre o menu correspondente com base no tipo de utilizador.
             if (tipo == TipoUtilizador.Administrador) {
                 abrirMenu("/lp3/Views/Admin/menuAdm.fxml", "MENU ADMINISTRADOR!");
             } else if (tipo == TipoUtilizador.Operador) {
@@ -67,12 +58,28 @@ public class Login {
 
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //Fechar a janela de login
             currentStage.close();
-
-        } else {
-            // Exibe uma mensagem de erro para erro na recuperação de dados do banco de dados.
-            Mensagens.Erro("Erro", "Ocorreu um erro ao realizar login!");
         }
+
+    /**
+     * Função que retorna um tipo de utilizador base.
+     * Esta função verifica as credenciais de ‘login’ (nome de utilizador e senha) e determina o tipo de utilizador.
+     *
+     * @return O tipo de utilizador encontrado.
+     * @throws SQLException se ocorrer um erro de acesso ao banco de dados.
+     */
+    private TipoUtilizador getUtilizador() throws SQLException {
+        // Instância da classe para ler os utilizadores.
+        LerUtilizadores lerUtilizadores = new LerUtilizadores();
+
+        // Recupera o nome de usuário e senha inseridos dos elementos da interface gráfica.
+        String username = labelEmail.getText(); // Nome de utilizador
+        String password = labelPassword.getText(); // Senha
+
+        // Verifica as credenciais de 'login' e determina o tipo de utilizador.
+        return lerUtilizadores.verificarLoginUtilizador(username, password);
     }
+
+
     private void abrirMenu(String resource, String title) throws IOException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(resource));
