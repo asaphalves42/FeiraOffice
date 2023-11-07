@@ -5,8 +5,14 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+/**
+ * Esta classe contém testes unitários para validar endereços de e-mail usando a classe ValidarEmail.
+ */
 public class ValidarEmailTest {
 
+    /**
+     * Testa se os endereços de e-mail fornecidos são válidos.
+     */
     @Test
     public void testEnderecoDeEmailValido() {
         ValidarEmail validador = new ValidarEmail();
@@ -16,6 +22,9 @@ public class ValidarEmailTest {
         assertTrue(validador.isValidEmailAddress("nome123@gmail.com"));
     }
 
+    /**
+     * Testa se os endereços de e-mail fornecidos são inválidos.
+     */
     @Test
     public void testEnderecoDeEmailInvalido() {
         ValidarEmail validador = new ValidarEmail();
@@ -27,7 +36,4 @@ public class ValidarEmailTest {
         assertFalse(validador.isValidEmailAddress("@dominio.com"));
         assertFalse(validador.isValidEmailAddress("utilizador@@."));
     }
-
-
 }
-
