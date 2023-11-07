@@ -57,7 +57,7 @@ public class DialogAdicionarOperador {
             // Chamar a DAL para adicionar o utilizador à tabela "Utilizador"
             LerUtilizadores adicionarOperador = new LerUtilizadores();
             if(adicionarOperador.adicionarOperadorBaseDados(email, encryptedPassword)){
-                Mensagens.Informacao("Novo operador", "Novo operador inseridos com sucesso!");
+                Mensagens.Informacao("Novo operador!", "Novo operador inserido com sucesso!");
             }
             dadosCompartilhados.setDataOperador(utilizador);
 

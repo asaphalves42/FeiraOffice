@@ -18,7 +18,7 @@ public class LerFornecedores {
      * @return Uma ObservableList contendo os fornecedores lidos da base de dados, ou null se ocorrer um erro na leitura.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public  ObservableList<Fornecedor> lerFornecedoresDaBaseDeDados() throws IOException {
+    public ObservableList<Fornecedor> lerFornecedoresDaBaseDeDados() throws IOException {
 
         ObservableList<Fornecedor> fornecedores = FXCollections.observableArrayList();
 
@@ -71,13 +71,14 @@ public class LerFornecedores {
      * @throws IOException Se ocorrer um erro durante a operação.
      */
     public Fornecedor adicionarFornecedorBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
+        
         try {
             BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
 
             /*
-            Procedure com as variáveis que preciso inserir nas tabelas, Fornecedor e Utilizador, quando insere o utilizador, vou buscar o ultimo id que acabei de inserir através
-            do 'MAX', quando obtido o ID, insiro o mesmo na tabela de fornecedor.
+            Procedure com as variáveis que preciso inserir nas tabelas, Fornecedor e Utilizador. Quando insere o utilizador, vou buscar o ultimo id que acabei de inserir através
+            da função 'MAX' do SQL, quando obtido o ID, insiro o mesmo na tabela de fornecedor.
              */
             String query = "exec [Inserir_Fornecedor] @username = '" + fornecedor.getIdUtilizador().getEmail() +
                     "', @password = '" + fornecedor.getIdUtilizador().getPassword() +
