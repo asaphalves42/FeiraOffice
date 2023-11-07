@@ -2,6 +2,7 @@ package Controller.Operador;
 
 import Controller.DAL.LerUtilizadores;
 import Model.UtilizadorOperador;
+import Utilidades.DataSingleton;
 import Utilidades.Encriptacao;
 import Utilidades.Mensagens;
 import Utilidades.ValidarEmail;
@@ -16,6 +17,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class DialogAdicionarOperador {
+
+    private final DataSingleton dadosCompartilhados =DataSingleton.getInstance();
 
     @FXML
     private Button btnAdicionar;
@@ -56,6 +59,7 @@ public class DialogAdicionarOperador {
             if(adicionarOperador.adicionarOperadorBaseDados(email, encryptedPassword)){
                 Mensagens.Informacao("Novo operador", "Novo operador inseridos com sucesso!");
             }
+            dadosCompartilhados.setDataOperador(utilizador);
 
             // Limpar os campos de entrada após a adição bem-sucedida
             textoEmail.clear();
