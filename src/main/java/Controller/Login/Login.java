@@ -54,6 +54,7 @@ public class Login {
             } else {
                 // Exibe uma mensagem de erro para credenciais inválidas.
                 Mensagens.Erro("Erro", "Credenciais inválidas. Ocorreu um erro ao realizar login!");
+                return;
             }
 
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //Fechar a janela de login

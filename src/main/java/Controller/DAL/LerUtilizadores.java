@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 
 public class LerUtilizadores {
+
     /**
      * Lê os utilizadores da base de dados e os armazena em uma lista.
      * <p>
@@ -69,19 +70,18 @@ public class LerUtilizadores {
             return utilizador; // A leitura retorna o utilizador
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            return null; // A leitura falhou, retorna false.
+            return null; // A leitura falhou
         }
     }
 
 
     /**
-     * Essa Função realiza uma query na base de dados baseado nos paramentros email e password e com base no id_role, retorna-me um tipo de utilizador.
+     * Essa Função realiza uma query na base de dados baseado nos paramentros endereço eletrónico e senha e com base no id_role, retorna-me um tipo de utilizador.
      * @param  email email
      * @param password password
      * @return TipoUtilizador
      * @throws SQLException SQLException
      */
-
     public TipoUtilizador verificarLoginUtilizador(String email, String password) throws SQLException {
         Encriptacao encript = new Encriptacao();
         ValidarEmail validarEmail = new ValidarEmail();
@@ -124,35 +124,41 @@ public class LerUtilizadores {
      * @throws IOException Se ocorrer um erro de E/S durante a leitura.
      */
     public UtilizadorFornecedor obterUtilizadorPorIdFornecedor(int idUtilizador) throws IOException {
-        UtilizadorFornecedor util = null;
+        UtilizadorFornecedor util = null; // Inicializa a variável de retorno como nula.
 
         try {
+
             BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
+
+            // Executa uma consulta SQL para selecionar um registro da tabela Utilizador com base no ID fornecido.
             ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador WHERE id_util = " + idUtilizador);
 
-
-
-            if(resultado.next()) {
-                // Cria um objeto UtilizadorFornecedor com os dados do utilizador encontrado.
+            if (resultado.next()) {
+                // Se um registro for encontrado, cria um objeto UtilizadorFornecedor com os dados do registro.
                 util = new UtilizadorFornecedor(
                         resultado.getInt("id_util"),
                         resultado.getString("username"),
                         resultado.getString("password")
                 );
             }
+
+            // Desconecta-se da base de dados.
             baseDados.Desligar();
 
         } catch (SQLException e) {
+            // Em caso de erro SQL, exibe uma mensagem de erro.
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
         }
-        return util;
+
+        return util; // Retorna o utilizador fornecedor encontrado ou null em caso de erro ou se não for encontrado.
     }
 
+
     /**
-     * Adiciona um operador à base de dados com o nome de usuário e senha fornecidos.
+     * Adiciona um operador à base de dados com o nome de utilizador e senha fornecidos.
      *
-     * @param username O nome de usuário do operador a ser adicionado.
+     * @param username O nome de utilizador do operador a ser adicionado.
      * @param password A senha do operador a ser adicionado.
      * @return true se a adição for bem-sucedida, false em caso de erro.
      * @throws IOException se ocorrer um erro de entrada/saída durante a execução.
