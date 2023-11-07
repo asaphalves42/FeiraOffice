@@ -23,6 +23,9 @@ public class ValidarEmailTest {
         assertFalse(validador.isValidEmailAddress("email-invalido"));
         assertFalse(validador.isValidEmailAddress("utilizador@.com"));
         assertFalse(validador.isValidEmailAddress("utilizador@.123"));
+        assertFalse(validador.isValidEmailAddress("utilizador@."));
+        assertFalse(validador.isValidEmailAddress("@dominio.com"));
+        assertFalse(validador.isValidEmailAddress("utilizador@@."));
     }
 
 
