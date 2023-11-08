@@ -71,6 +71,7 @@ public class MenuFuncoesFornecedor{
                 TableColumn<Fornecedor, String> colunaCodPostal = new TableColumn<>("Código postal");
                 TableColumn<Fornecedor, Integer> colunaIdPais = new TableColumn<>("País");
                 TableColumn<Fornecedor, Integer> colunaIdUtilizador = new TableColumn<>(" Tipo de utilizador");
+                TableColumn<Fornecedor, String> colunaIdExterno = new TableColumn<>(" ID Externo");
 
                 // Associe as colunas às propriedades da classe Fornecedor
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -81,6 +82,7 @@ public class MenuFuncoesFornecedor{
                 colunaCodPostal.setCellValueFactory(new PropertyValueFactory<>("codigoPostal"));
                 colunaIdPais.setCellValueFactory(new PropertyValueFactory<>("idPaisString"));
                 colunaIdUtilizador.setCellValueFactory(new PropertyValueFactory<>("idUtilizadorString"));
+                colunaIdExterno.setCellValueFactory(new PropertyValueFactory<>("idExterno"));
 
                 // Adicione as colunas à tabela
                 tableViewFornecedores.getColumns().add(colunaId);
@@ -91,6 +93,7 @@ public class MenuFuncoesFornecedor{
                 tableViewFornecedores.getColumns().add(colunaCodPostal);
                 tableViewFornecedores.getColumns().add(colunaIdPais);
                 tableViewFornecedores.getColumns().add(colunaIdUtilizador);
+                tableViewFornecedores.getColumns().add(colunaIdExterno);
 
                 // Configure a fonte de dados da tabela
                 tableViewFornecedores.setItems(fornecedores);
