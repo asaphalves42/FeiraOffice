@@ -55,13 +55,9 @@ public class MenuOperador {
     }
 
     @FXML
-    void clickLogout() throws IOException {
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Login/login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("FEIRA & OFFICE!");
-        stage.setScene(scene);
-        stage.show();
+    void clickLogout() {
+        System.exit(0);
+        ;
     }
 
     @FXML

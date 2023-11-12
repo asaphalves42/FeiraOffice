@@ -20,14 +20,8 @@ public class MenuFornecedor {
 
     @FXML
     void clickLogout() throws IOException {
-        // quando clicar fechar a janela anterior e abrir o login outra vez
+        System.exit(0);
 
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Login/login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("FEIRA & OFFICE!");
-        stage.setScene(scene);
-        stage.show();
     }
 
     @FXML
