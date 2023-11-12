@@ -4,22 +4,22 @@ public class LinhaEncomenda {
 
     private int id;
     private int sequencia;
-    private Produto idProduto;
+    private Produto produto;
     private double preco;
-    private int quantidade;
-    private Unidade idUnidade;
-    private LinhaTaxa idTaxa;
+    private double quantidade;
+    private Unidade unidade;
+    private LinhaTaxa taxa;
     private InformacaoQuantidade idInfoQuantidade;
     private double total;
 
-    public LinhaEncomenda(int id, int sequencia, Produto idProduto, double preco, int quantidade, Unidade idUnidade, LinhaTaxa idTaxa, InformacaoQuantidade idInfoQuantidade, double total) {
+    public LinhaEncomenda(int id, int sequencia, Produto produto, double preco, double quantidade, Unidade unidade, LinhaTaxa taxa, InformacaoQuantidade idInfoQuantidade, double total) {
         this.id = id;
         this.sequencia = sequencia;
-        this.idProduto = idProduto;
+        this.produto = produto;
         this.preco = preco;
         this.quantidade = quantidade;
-        this.idUnidade = idUnidade;
-        this.idTaxa = idTaxa;
+        this.unidade = unidade;
+        this.taxa = taxa;
         this.idInfoQuantidade = idInfoQuantidade;
         this.total = total;
     }
@@ -40,12 +40,12 @@ public class LinhaEncomenda {
         this.sequencia = sequencia;
     }
 
-    public Produto getIdProduto() {
-        return idProduto;
+    public Produto getProduto() {
+        return produto;
     }
 
-    public void setIdProduto(Produto idProduto) {
-        this.idProduto = idProduto;
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
 
     public double getPreco() {
@@ -56,28 +56,28 @@ public class LinhaEncomenda {
         this.preco = preco;
     }
 
-    public int getQuantidade() {
+    public double getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(int quantidade) {
+    public void setQuantidade(double quantidade) {
         this.quantidade = quantidade;
     }
 
-    public Unidade getIdUnidade() {
-        return idUnidade;
+    public Unidade getUnidade() {
+        return unidade;
     }
 
-    public void setIdUnidade(Unidade idUnidade) {
-        this.idUnidade = idUnidade;
+    public void setUnidade(Unidade unidade) {
+        this.unidade = unidade;
     }
 
-    public LinhaTaxa getIdTaxa() {
-        return idTaxa;
+    public LinhaTaxa getTaxa() {
+        return taxa;
     }
 
-    public void setIdTaxa(LinhaTaxa idTaxa) {
-        this.idTaxa = idTaxa;
+    public void setTaxa(LinhaTaxa taxa) {
+        this.taxa = taxa;
     }
 
     public InformacaoQuantidade getIdInfoQuantidade() {
