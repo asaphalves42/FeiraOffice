@@ -1,5 +1,9 @@
 package Controller.Fornecedor;
 
+import Model.Encomenda;
+import Model.Fornecedor;
+import Model.Moeda;
+import Utilidades.DataSingleton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -7,8 +11,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class MenuFornecedor {
 
@@ -33,6 +46,161 @@ public class MenuFornecedor {
     @FXML
     void clickUpload(ActionEvent event) {
 
+        try {
+
+
+            /*JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+            int result = fileChooser.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+            }*/
+
+
+
+            // creating a constructor of file class and
+            // parsing an XML file
+            File file = new File("C:\\a\\XML-Sample.xml");
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(file);
+            doc.getDocumentElement().normalize();
+
+
+
+
+            //referencia
+            String referencia = doc.getElementsByTagName("OrderConfirmationReference").item(0).getTextContent();
+            System.out.println("Referencia documento - " + referencia);
+
+            //data
+            Node issuedDateNode = doc.getElementsByTagName("OrderConfirmationIssuedDate").item(0);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String Data = ((Element)issuedDateNode).getElementsByTagName("Year").item(0).getTextContent() +"-"+
+                    ((Element)issuedDateNode).getElementsByTagName("Month").item(0).getTextContent() + "-"+
+                    ((Element)issuedDateNode).getElementsByTagName("Day").item(0).getTextContent();
+            LocalDate date = LocalDate.parse(Data, formatter);
+            System.out.println("Data documento - " + Data);
+
+            //fornecedor
+            Node supplierPartyNode = doc.getElementsByTagName("SupplierParty").item(0);
+            String codigoFornecedor = ((Element)supplierPartyNode).getElementsByTagName("PartyIdentifier").item(0).getTextContent();
+            System.out.println("Fornecedor documento - " + codigoFornecedor);
+            Fornecedor objetoFornecedor = null;
+            // com base no codigo do fornecedor, obtemos da base de dados o fornecedor, e passamos para a encomenda o objecto
+            // se não existir, então nao pode importar
+
+            //moeda
+            Node moedaNode = doc.getElementsByTagName("CurrencyValue").item(0);
+            String codigoMoeda = ((Element) moedaNode).getAttribute("CurrencyType");
+            System.out.println("Moeda  - " + codigoMoeda);
+            Moeda objetoMoeda = null;
+            // com base no codigo do moeda, obtemos da base de dados o fornecedor, e passamos para a encomenda o objecto
+            // se não existir, então nao pode importar
+
+
+
+            //linhas
+            System.out.println("A escrever linhas");
+            NodeList lineItemNodes = doc.getElementsByTagName("OrderConfirmationLineItem");
+            for (int i = 0; i < lineItemNodes.getLength(); i++) {
+                Element lineItemNode = (Element) lineItemNodes.item(i);
+
+                int sequencia = Integer.parseInt(lineItemNode.getElementsByTagName("OrderConfirmationLineItemNumber").item(0).getTextContent());
+                System.out.println("sequencia linha - " + sequencia);
+
+                Node productNode = lineItemNode.getElementsByTagName("Product").item(0);
+                String produtoDescricao = ((Element) productNode).getElementsByTagName("ProductDescription").item(0).getTextContent();
+                System.out.println("produto  descricao - " + produtoDescricao);
+
+                String codigoArtigoInterno="";
+                String codigoArtigoFornecedor="";
+                NodeList productIdentifierNodes = ((Element) productNode).getElementsByTagName("ProductIdentifier");
+                for (int j = 0; j < productIdentifierNodes.getLength(); j++)
+                {
+                    Element productIdentifierElement = (Element) productIdentifierNodes.item(j);
+                    // Verificar se o atributo "ProductIdentifierType" é "PartNumber"
+                    String agency = productIdentifierElement.getAttribute("Agency");
+                    if ("Buyer".equals(agency)) {
+                        // Obter o valor do elemento "ProductIdentifier"
+                        codigoArtigoInterno = productIdentifierElement.getTextContent();
+                    }
+                    if ("Supplier".equals(agency)) {
+                        // Obter o valor do elemento "ProductIdentifier"
+                        codigoArtigoFornecedor = productIdentifierElement.getTextContent();
+                    }
+                }
+                System.out.println("Produto codigo interno - " + codigoArtigoInterno);
+                System.out.println("Produto codigo fornecedor - " + codigoArtigoFornecedor);
+
+
+                Node priceNode = lineItemNode.getElementsByTagName("PricePerUnit").item(0);
+                double preco = Double.parseDouble(((Element) priceNode).getElementsByTagName("CurrencyValue").item(0).getTextContent());
+                System.out.println("produto preço - " + preco);
+
+
+                Node quantidadeNode = lineItemNode.getElementsByTagName("Quantity").item(0);
+                Node ValorQuantidadeNode = ((Element) quantidadeNode).getElementsByTagName("Value").item(0);
+
+                Double quantidade = Double.parseDouble(ValorQuantidadeNode.getTextContent());
+                String unidade = ((Element)ValorQuantidadeNode).getAttribute("UOM");
+                System.out.println("produto quantidade - " + quantidade);
+                System.out.println("produto unidade - " + unidade);
+
+                Node valorTotalNode = lineItemNode.getElementsByTagName("LineBaseAmount").item(0);
+                Double Total = Double.parseDouble(((Element)valorTotalNode).getElementsByTagName("CurrencyValue").item(0).getTextContent());
+                System.out.println("Produto valor total - " + Total);
+
+                //taxas
+                Node monetaryAdjustmentNode = ((Element) lineItemNode).getElementsByTagName("MonetaryAdjustment").item(0);
+                NodeList taxAdjusmentNodes = ((Element)monetaryAdjustmentNode).getElementsByTagName("TaxAdjustment");
+                System.out.println("produto taxas .....");
+                for (int j = 0; j < taxAdjusmentNodes.getLength(); j++)
+                {
+                    //preparar as taxas
+                    Element taxAdjusmentElement = (Element) taxAdjusmentNodes.item(j);
+
+                    String tipoTaxa = taxAdjusmentElement.getAttribute("TaxType");
+                    System.out.println("produto taxas tipo - " + tipoTaxa);
+
+                    String PaisTaxa = taxAdjusmentElement.getElementsByTagName("TaxLocation").item(0).getTextContent();
+                    System.out.println("produto taxas pais - " + PaisTaxa);
+
+                    Double percentagemTaxa =  Double.parseDouble(taxAdjusmentElement.getElementsByTagName("TaxPercent").item(0).getTextContent());
+                    System.out.println("produto taxas percentagem - " + percentagemTaxa);
+
+                    Node taxAmountNode = taxAdjusmentElement.getElementsByTagName("TaxAmount").item(0);
+                    Double valorTaxa = Double.parseDouble(((Element)taxAmountNode).getElementsByTagName("CurrencyValue")
+                            .item(0).getTextContent());
+                    System.out.println("produto taxas valor - " + valorTaxa);
+
+                    //obter taxa pais com base no codigo "tipo taxa"
+                    //criar classe LinhaTaxa para depois associar ao objecto LinhaEncomenda
+                }
+
+
+                System.out.println("_______________");
+
+            }
+            // criar encomenda
+            double valorImposto = 0; //somar das linhas;
+            double valorLinhas = 0; //somar das linhas
+            Encomenda fatura = new Encomenda(0, referencia, date, objetoFornecedor, objetoMoeda, valorImposto, valorLinhas);
+
+
+
+        }
+
+        // This exception block catches all the exception
+        // raised.
+        // For example if we try to access a element by a
+        // TagName that is not there in the XML etc.
+        catch (Exception e) {
+            System.out.println(e);
+        }
+
     }
+
 
 }

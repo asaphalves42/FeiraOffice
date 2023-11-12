@@ -1,24 +1,24 @@
 package Model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Encomenda {
     private int id;
     private String referencia;
     private LocalDate data;
-    private Fornecedor idFornecedor;
-    private LinhaEncomenda idLinha;
-    private Moeda idMoeda;
+    private Fornecedor fornecedor;
+    private ArrayList<LinhaEncomenda> linhas;
+    private Moeda moeda;
     private double valorImposto;
     private double valorTotal;
 
-    public Encomenda(int id, String referencia, LocalDate data, Fornecedor idFornecedor, LinhaEncomenda idLinha, Moeda idMoeda, double valorImposto, double valorTotal) {
+    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Moeda moeda, double valorImposto, double valorTotal) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
-        this.idFornecedor = idFornecedor;
-        this.idLinha = idLinha;
-        this.idMoeda = idMoeda;
+        this.fornecedor = fornecedor;
+        this.moeda = moeda;
         this.valorImposto = valorImposto;
         this.valorTotal = valorTotal;
     }
@@ -47,28 +47,28 @@ public class Encomenda {
         this.data = data;
     }
 
-    public Fornecedor getIdFornecedor() {
-        return idFornecedor;
+    public Fornecedor getFornecedor() {
+        return fornecedor;
     }
 
-    public void setIdFornecedor(Fornecedor idFornecedor) {
-        this.idFornecedor = idFornecedor;
+    public void setFornecedor(Fornecedor Fornecedor) {
+        this.fornecedor = fornecedor;
     }
 
-    public LinhaEncomenda getIdLinha() {
-        return idLinha;
+    public ArrayList<LinhaEncomenda> getLinhas() {
+        return linhas;
     }
 
-    public void setIdLinha(LinhaEncomenda idLinha) {
-        this.idLinha = idLinha;
+    public void setLinha(LinhaEncomenda linha) {
+        this.linhas.add(linha);
     }
 
-    public Moeda getIdMoeda() {
-        return idMoeda;
+    public Moeda getMoeda() {
+        return moeda;
     }
 
-    public void setIdMoeda(Moeda idMoeda) {
-        this.idMoeda = idMoeda;
+    public void setMoeda(Moeda moeda) {
+        this.moeda = moeda;
     }
 
     public double getValorImposto() {

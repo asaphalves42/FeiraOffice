@@ -1,7 +1,7 @@
 package Controller.Fornecedor;
 
 import Controller.DAL.LerFornecedores;
-import Model.Fornecedor;
+import Model.*;
 import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,15 +18,23 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-
-
-public class MenuFuncoesFornecedor{
+public class MenuFuncoesFornecedor {
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -61,7 +69,7 @@ public class MenuFuncoesFornecedor{
         fornecedores.addAll(lerFornecedores.lerFornecedoresDaBaseDeDados());
 
         if (!fornecedores.isEmpty()) {
-            if(tableViewFornecedores.getColumns().isEmpty()) {
+            if (tableViewFornecedores.getColumns().isEmpty()) {
                 // Defina as colunas da tabela
                 TableColumn<Fornecedor, Integer> colunaId = new TableColumn<>("ID");
                 TableColumn<Fornecedor, String> colunaNome = new TableColumn<>("Nome");
@@ -126,6 +134,4 @@ public class MenuFuncoesFornecedor{
         fornecedores.add(data.getDataFornecedor());
 
     }
-
-
 }
