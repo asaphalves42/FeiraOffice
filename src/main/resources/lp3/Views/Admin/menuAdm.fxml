@@ -95,11 +95,16 @@
                </image>
             </ImageView>
             <Button fx:id="btnLogout" layoutX="19.0" layoutY="848.0" mnemonicParsing="false" onAction="#clickLogout" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
-            <Text layoutX="108.0" layoutY="874.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LOGOUT">
+            <Text layoutX="112.0" layoutY="875.0" onMouseClicked="#clickLogout" strokeType="OUTSIDE" strokeWidth="0.0" text="SAIR">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
+            <ImageView fitHeight="24.0" fitWidth="30.0" layoutX="198.0" layoutY="856.0" onMouseClicked="#clickLogout" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Imagens/marca-x.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="289.0" layoutY="-2.0" prefHeight="900.0" prefWidth="911.0">
