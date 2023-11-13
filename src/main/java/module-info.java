@@ -12,6 +12,7 @@ module com.example.lp3_g2_feira_office_ {
     requires com.almasb.fxgl.all;
     requires java.sql;
     requires junit;
+    requires java.desktop;
 
     exports TestesUnitarios;
     opens Model to javafx.base;

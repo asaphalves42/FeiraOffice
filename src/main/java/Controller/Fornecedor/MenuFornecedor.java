@@ -1,14 +1,20 @@
 package Controller.Fornecedor;
 
+import Controller.DAL.LerFornecedores;
 import Model.Encomenda;
 import Model.Fornecedor;
 import Model.Moeda;
+import Model.Pais;
 import Utilidades.DataSingleton;
+import Utilidades.FileUtils;
+import Utilidades.Mensagens;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
@@ -24,12 +30,56 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class MenuFornecedor {
+    @FXML
+    private Label labelCodigoPostal;
+
+    @FXML
+    private Label labelID;
+
+    @FXML
+    private Label labelLocalidade;
+
+    @FXML
+    private Label labelMorada1;
+
+    @FXML
+    private Label labelMorada2;
+
+    @FXML
+    private Label labelNome;
+
+    @FXML
+    private Label labelPais;
 
     @FXML
     private Button btnLogout;
 
     @FXML
     private Button btnUpload;
+
+    public void initialize() throws IOException {
+        carregarFornecedor();
+    }
+
+    public void carregarFornecedor() throws IOException {
+        LerFornecedores lerFornecedores = new LerFornecedores();
+        ObservableList<Fornecedor> fornecedores = lerFornecedores.lerFornecedoresDaBaseDeDados();
+
+        if (!fornecedores.isEmpty()) {
+            Fornecedor fornecedor = fornecedores.get(0);
+            labelID.setText(String.valueOf(fornecedor.getIdExterno()));
+            labelNome.setText(fornecedor.getNome());
+            labelMorada1.setText(fornecedor.getMorada1());
+            labelMorada2.setText(fornecedor.getMorada2());
+            labelLocalidade.setText(fornecedor.getLocalidade());
+            labelCodigoPostal.setText(fornecedor.getCodigoPostal());
+            labelPais.setText(fornecedor.getIdPais().getNome());
+
+        } else {
+            Mensagens.Informacao("Lista Vazia!", "Não existem fornecedores registados no sistema!");
+        }
+    }
+
 
     @FXML
     void clickLogout() throws IOException {
@@ -43,31 +93,20 @@ public class MenuFornecedor {
         stage.show();
     }
 
+
     @FXML
-    void clickUpload(ActionEvent event) {
+    void clickUpload() {
 
         try {
-
-
-            /*JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-            int result = fileChooser.showOpenDialog(this);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-            }*/
-
-
+            File selectedFile = FileUtils.chooseXMLFile();
 
             // creating a constructor of file class and
             // parsing an XML file
-            File file = new File("C:\\a\\XML-Sample.xml");
+            //File file = new File("C:\\a\\XML-Sample.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(file);
+            Document doc = db.parse(selectedFile);
             doc.getDocumentElement().normalize();
-
-
 
 
             //referencia
@@ -143,13 +182,13 @@ public class MenuFornecedor {
                 Node quantidadeNode = lineItemNode.getElementsByTagName("Quantity").item(0);
                 Node ValorQuantidadeNode = ((Element) quantidadeNode).getElementsByTagName("Value").item(0);
 
-                Double quantidade = Double.parseDouble(ValorQuantidadeNode.getTextContent());
+                double quantidade = Double.parseDouble(ValorQuantidadeNode.getTextContent());
                 String unidade = ((Element)ValorQuantidadeNode).getAttribute("UOM");
                 System.out.println("produto quantidade - " + quantidade);
                 System.out.println("produto unidade - " + unidade);
 
                 Node valorTotalNode = lineItemNode.getElementsByTagName("LineBaseAmount").item(0);
-                Double Total = Double.parseDouble(((Element)valorTotalNode).getElementsByTagName("CurrencyValue").item(0).getTextContent());
+                double Total = Double.parseDouble(((Element)valorTotalNode).getElementsByTagName("CurrencyValue").item(0).getTextContent());
                 System.out.println("Produto valor total - " + Total);
 
                 //taxas
@@ -167,11 +206,11 @@ public class MenuFornecedor {
                     String PaisTaxa = taxAdjusmentElement.getElementsByTagName("TaxLocation").item(0).getTextContent();
                     System.out.println("produto taxas pais - " + PaisTaxa);
 
-                    Double percentagemTaxa =  Double.parseDouble(taxAdjusmentElement.getElementsByTagName("TaxPercent").item(0).getTextContent());
+                    double percentagemTaxa =  Double.parseDouble(taxAdjusmentElement.getElementsByTagName("TaxPercent").item(0).getTextContent());
                     System.out.println("produto taxas percentagem - " + percentagemTaxa);
 
                     Node taxAmountNode = taxAdjusmentElement.getElementsByTagName("TaxAmount").item(0);
-                    Double valorTaxa = Double.parseDouble(((Element)taxAmountNode).getElementsByTagName("CurrencyValue")
+                    double valorTaxa = Double.parseDouble(((Element)taxAmountNode).getElementsByTagName("CurrencyValue")
                             .item(0).getTextContent());
                     System.out.println("produto taxas valor - " + valorTaxa);
 
