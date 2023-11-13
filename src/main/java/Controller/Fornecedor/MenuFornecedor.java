@@ -7,6 +7,7 @@ import Model.Moeda;
 import Model.Pais;
 import Utilidades.DataSingleton;
 import Utilidades.FileUtils;
+import Utilidades.LogUser;
 import Utilidades.Mensagens;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
