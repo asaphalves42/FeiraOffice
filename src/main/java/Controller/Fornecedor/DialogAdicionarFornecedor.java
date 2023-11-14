@@ -84,7 +84,7 @@ public class DialogAdicionarFornecedor {
             Pais pais = comboBoxPais.getSelectionModel().getSelectedItem();
 
             // Verificar se algum campo obrigatório está vazio
-            if (nome.isEmpty() || email.isEmpty() || password.isEmpty() || morada1.isEmpty() || localidade.isEmpty() || codigoPostal.isEmpty() || pais == null) {
+            if (nome.isEmpty() || email.isEmpty() || idExterno.isEmpty() ||password.isEmpty() || morada1.isEmpty() || localidade.isEmpty() || codigoPostal.isEmpty() || pais == null) {
                 // Exibir uma mensagem de erro ao utilizador
                 Mensagens.Erro("Campos obrigatórios!", "Por favor, preencha todos os campos obrigatórios.");
                 return;
