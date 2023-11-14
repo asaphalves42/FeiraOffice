@@ -201,4 +201,25 @@ public class LerUtilizadores {
         }
         return false;
     }
+
+    public boolean removerUtilizador(UtilizadorFornecedor fornecedor) throws IOException {
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+
+            String query = "DELETE FROM Utilizador WHERE id_util = " + fornecedor.getId();
+
+            baseDados.Executar(query);
+
+            baseDados.Desligar();
+
+            return true;
+
+        }catch (Exception e) {
+            Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
+        }
+        return false;
+    }
+
+
 }

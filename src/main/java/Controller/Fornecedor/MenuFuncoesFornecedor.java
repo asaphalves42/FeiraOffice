@@ -1,6 +1,7 @@
 package Controller.Fornecedor;
 
 import Controller.DAL.LerFornecedores;
+import Controller.DAL.LerUtilizadores;
 import Model.*;
 import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
@@ -12,10 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
@@ -115,11 +113,50 @@ public class MenuFuncoesFornecedor {
     void clickEditar() {
 
     }
-
     @FXML
-    void clickEliminar() {
 
+    void clickEliminar() {
+        Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
+
+        if (fornecedorSelecionado != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmação");
+            alert.setHeaderText("Eliminar fornecedor");
+            alert.setContentText("Tem certeza que deseja eliminar o fornecedor selecionado?");
+
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    try {
+                        LerFornecedores lerFornecedores = new LerFornecedores();
+                        boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(fornecedorSelecionado.getId());
+
+                        if (sucesso) {
+                            // Remover o fornecedor da lista
+                            fornecedores.remove(fornecedorSelecionado);
+
+                            // Remover o utilizador associado ao fornecedor
+                            LerUtilizadores lerUtilizadores = new LerUtilizadores();
+                            boolean remover = lerUtilizadores.removerUtilizador(fornecedorSelecionado.getIdUtilizador());
+
+                            if (remover) {
+                                // Remover o utilizador da lista
+                                fornecedores.remove(fornecedorSelecionado.getIdUtilizador());
+                            } else {
+                                // Se a remoção do utilizador falhar, adicione o fornecedor de volta à lista
+                                fornecedores.add(fornecedorSelecionado);
+                            }
+                        }
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        }
     }
+
 
     @FXML
     void clickNovo() throws IOException {

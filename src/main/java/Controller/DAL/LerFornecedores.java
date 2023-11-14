@@ -72,7 +72,7 @@ public class LerFornecedores {
      * @throws IOException Se ocorrer um erro durante a operação.
      */
     public Fornecedor adicionarFornecedorBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
-        
+
         try {
             BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
@@ -103,6 +103,31 @@ public class LerFornecedores {
         }
         return null;
     }
+    public boolean removerFornecedorDaBaseDeDados(int fornecedorId) throws SQLException {
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
 
+            String query = ("DELETE FROM Fornecedor WHERE id = " + fornecedorId);
+
+
+            boolean linhasAfetadas = baseDados.Executar(query);
+
+            baseDados.Desligar();
+
+            if (linhasAfetadas) {
+                return true; // Retorna true se alguma linha foi afetada (remoção bem-sucedida)
+            }
+
+        } catch (Exception e) {
+            try {
+                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            return false; // Retorna false se alguma linha não foi afetada (remoção falhou)
+        }
+        return false;
+    }
 }
 
