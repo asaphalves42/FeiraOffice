@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static Model.TipoUtilizador.Operador;
 
 
 public class LerUtilizadores {
@@ -110,13 +111,14 @@ public class LerUtilizadores {
                         resultado.getInt("id_util"),
                         resultado.getString("username"),
                         resultado.getString("password")
+
                 );
             } else if (idRole == 2){
                 utilizador = new UtilizadorOperador(
                         resultado.getInt("id_util"),
                         resultado.getString("username"),
                         resultado.getString("password")
-                );
+                );return utilizador;
             } else if (idRole == 3) {
                 utilizador = new UtilizadorFornecedor(
                         resultado.getInt("id_util"),
@@ -214,6 +216,31 @@ public class LerUtilizadores {
         }
         return false;
     }
+    public boolean removerOperadorDaBaseDeDados(int utilizadorID) throws SQLException {
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+
+            String query = "DELETE FROM Utilizador WHERE id_role =2 " ;
+            boolean linhasAfetadas = baseDados.Executar(query);
+
+            baseDados.Desligar();
+
+            if (linhasAfetadas) {
+                return true; // Retorna true se alguma linha foi afetada (remoção bem-sucedida)
+            }
+
+        } catch (Exception e) {
+            try {
+                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            return false; // Retorna false se alguma linha não foi afetada (remoção falhou)
+        }
+        return false;
+    }
+    }
 
 
-}
+
