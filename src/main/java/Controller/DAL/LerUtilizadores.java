@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 public class LerUtilizadores {
 
-    ;
 
     /**
      * Lê os utilizadores da base de dados e os armazena em uma lista.
@@ -196,6 +195,13 @@ public class LerUtilizadores {
         return false;
     }
 
+    /**
+     * Função que recebe um fornecedor, e deleta o mesmo a partir do ID fornecido.
+     *
+     * @param fornecedor fornecedor obtido a partir do utilizador
+     * @return true se a query for bem sucedida
+     * @throws IOException se acontecer uma exceção de IO
+     */
     public boolean removerUtilizador(UtilizadorFornecedor fornecedor) throws IOException {
         try {
             BaseDados baseDados = new BaseDados();

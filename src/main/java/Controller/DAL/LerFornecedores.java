@@ -103,6 +103,14 @@ public class LerFornecedores {
         }
         return null;
     }
+
+    /**
+     * Remove um fornecedor da base de dados com base no ID fornecido.
+     *
+     * @param fornecedorId O ID do fornecedor a ser removido.
+     * @return true se a remoção for bem-sucedida, false caso contrário.
+     * @throws SQLException Se ocorrer um erro ao interagir com a base de dados.
+     */
     public boolean removerFornecedorDaBaseDeDados(int fornecedorId) throws SQLException {
         try {
             BaseDados baseDados = new BaseDados();
