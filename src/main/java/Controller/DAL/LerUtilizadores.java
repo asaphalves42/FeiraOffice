@@ -72,6 +72,41 @@ public class LerUtilizadores {
         }
     }
 
+    public ObservableList<Utilizador> lerOperadoresDaBaseDados() throws IOException {
+
+        ObservableList<Utilizador> utilizadores = FXCollections.observableArrayList();
+
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador WHERE id_role = 2");
+
+            while (resultado.next()) {
+                Utilizador aux;
+
+                // Obtém o ID do role do resultado
+                int idRole = resultado.getInt("id_role");
+
+                // Verifica se o ID do role é 2 (indicando um operador)
+                if (idRole == 2) {
+                    aux = new UtilizadorOperador(
+                            resultado.getInt("id_util"),
+                            resultado.getString("username"),
+                            resultado.getString("password")
+                    );
+                    utilizadores.add(aux);
+                }
+            }
+
+            baseDados.Desligar();
+            return utilizadores; // A leitura retorna a lista de utilizadores
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            return null; // A leitura falhou
+        }
+    }
+
+
 
     /**
      * Essa Função realiza uma query na base de dados baseado nos paramentros endereço eletrónico e senha e com base no id_role, retorna-me um tipo de utilizador.

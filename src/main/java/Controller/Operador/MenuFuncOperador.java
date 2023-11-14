@@ -46,7 +46,7 @@ public class MenuFuncOperador{
     public void tabelaUtilizadoresOperador() throws IOException {
 
         LerUtilizadores lerUtilizadoresOperador = new LerUtilizadores();
-        utilizador.addAll(lerUtilizadoresOperador.lerUtilizadoresDaBaseDeDados());
+        utilizador.addAll(lerUtilizadoresOperador.lerOperadoresDaBaseDados());
 
 
 
