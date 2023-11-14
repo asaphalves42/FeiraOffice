@@ -16,7 +16,6 @@ import static Model.TipoUtilizador.Operador;
 
 public class LerUtilizadores {
 
-    ;
 
     /**
      * Lê os utilizadores da base de dados e os armazena em uma lista.
@@ -73,6 +72,41 @@ public class LerUtilizadores {
             return null; // A leitura falhou
         }
     }
+
+    public ObservableList<Utilizador> lerOperadoresDaBaseDados() throws IOException {
+
+        ObservableList<Utilizador> utilizadores = FXCollections.observableArrayList();
+
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador WHERE id_role = 2");
+
+            while (resultado.next()) {
+                Utilizador aux;
+
+                // Obtém o ID do role do resultado
+                int idRole = resultado.getInt("id_role");
+
+                // Verifica se o ID do role é 2 (indicando um operador)
+                if (idRole == 2) {
+                    aux = new UtilizadorOperador(
+                            resultado.getInt("id_util"),
+                            resultado.getString("username"),
+                            resultado.getString("password")
+                    );
+                    utilizadores.add(aux);
+                }
+            }
+
+            baseDados.Desligar();
+            return utilizadores; // A leitura retorna a lista de utilizadores
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            return null; // A leitura falhou
+        }
+    }
+
 
 
     /**
@@ -198,6 +232,13 @@ public class LerUtilizadores {
         return false;
     }
 
+    /**
+     * Função que recebe um fornecedor, e deleta o mesmo a partir do ID fornecido.
+     *
+     * @param fornecedor fornecedor obtido a partir do utilizador
+     * @return true se a query for bem sucedida
+     * @throws IOException se acontecer uma exceção de IO
+     */
     public boolean removerUtilizador(UtilizadorFornecedor fornecedor) throws IOException {
         try {
             BaseDados baseDados = new BaseDados();

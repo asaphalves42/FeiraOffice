@@ -99,6 +99,12 @@ public class MenuAdm {
 
     }
 
+    /**
+     * Inicializa a instância da classe com as informações do utilizador.
+     * Este construtor recebe um objeto Utilizador para configurar a instância.
+     *
+     * @param utilizador O objeto Utilizador contendo as informações necessárias.
+     */
     public void iniciaData(Utilizador utilizador) {
         this.utilizador = utilizador;
         System.out.println(utilizador.getEmail());

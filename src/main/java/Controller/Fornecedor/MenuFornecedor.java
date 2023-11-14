@@ -58,29 +58,41 @@ public class MenuFornecedor {
     @FXML
     private Button btnUpload;
 
+    /**
+     * Inicializa a instância da classe com as informações do utilizador e carrega os dados do fornecedor correspondente.
+     * Este método recebe um objeto Utilizador para configurar a instância e, em seguida, carrega os dados do fornecedor associado.
+     *
+     * @param utilizador O objeto Utilizador contendo as informações necessárias.
+     * @throws IOException Se ocorrer um erro durante a leitura dos fornecedores da base de dados.
+     */
     public void iniciaData(Utilizador utilizador) throws IOException {
         this.utilizador = utilizador;
         this.carregarFornecedor();
     }
 
 
-
+    /**
+     * Carrega os dados do fornecedor associado ao utilizador atual e exibe as informações em labels.
+     * Este método lê os fornecedores da base de dados, encontra o fornecedor associado ao utilizador atual e exibe suas informações.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura dos fornecedores da base de dados.
+     */
     public void carregarFornecedor() throws IOException {
         LerFornecedores fornecedor = new LerFornecedores();
-        Fornecedor logado = null;
-        for (Fornecedor f : fornecedor.lerFornecedoresDaBaseDeDados()){
-            if(this.utilizador.getId() == f.getIdUtilizador().getId()){
-                logado = f;
+        Fornecedor fornecedorLogado = null;
+        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
+            if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
+                fornecedorLogado = fornec;
             }
         }
-        assert logado != null;
-        labelID.setText(String.valueOf(logado.getIdExterno()));
-                labelNome.setText(logado.getNome());
-                labelMorada1.setText(logado.getMorada1());
-                labelMorada2.setText(logado.getMorada2());
-                labelLocalidade.setText(logado.getLocalidade());
-                labelCodigoPostal.setText(logado.getCodigoPostal());
-                labelPais.setText(logado.getIdPais().getNome());
+        assert fornecedorLogado != null;
+        labelID.setText(String.valueOf(fornecedorLogado.getIdExterno()));
+                labelNome.setText(fornecedorLogado.getNome());
+                labelMorada1.setText(fornecedorLogado.getMorada1());
+                labelMorada2.setText(fornecedorLogado.getMorada2());
+                labelLocalidade.setText(fornecedorLogado.getLocalidade());
+                labelCodigoPostal.setText(fornecedorLogado.getCodigoPostal());
+                labelPais.setText(fornecedorLogado.getIdPais().getNome());
 
     }
 
