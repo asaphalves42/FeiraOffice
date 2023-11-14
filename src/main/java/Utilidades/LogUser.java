@@ -4,6 +4,7 @@ import Model.Utilizador;
 
 public class LogUser {
 
+
     public LogUser() {
         this.utilizador = null;
     }

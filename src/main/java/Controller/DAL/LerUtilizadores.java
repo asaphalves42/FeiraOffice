@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class LerUtilizadores {
 
-    LogUser loginUser = new LogUser();
+    ;
 
     /**
      * Lê os utilizadores da base de dados e os armazena em uma lista.
@@ -81,7 +81,7 @@ public class LerUtilizadores {
      * @return TipoUtilizador
      * @throws SQLException SQLException
      */
-    public TipoUtilizador verificarLoginUtilizador(String email, String password) throws SQLException {
+    public Utilizador verificarLoginUtilizador(String email, String password) throws SQLException {
         Encriptacao encript = new Encriptacao();
         ValidarEmail validarEmail = new ValidarEmail();
 
@@ -90,7 +90,7 @@ public class LerUtilizadores {
 
         if (!emailValido) {
             // Se o e-mail for inválido, retorne o tipo padrão.
-            return TipoUtilizador.Default;
+            return null;
         }
 
         // Criptografa a senha usando MD5
@@ -100,40 +100,34 @@ public class LerUtilizadores {
         basedados.Ligar();
         ResultSet resultado = basedados.Selecao("SELECT * FROM Utilizador WHERE username = '" + email + "' AND password = '" + encryptedPassword + "'");
 
+        Utilizador utilizador = null;
+
         if (resultado.next()) {
-
-
-
             int idRole = resultado.getInt("id_role");
 
-            if (idRole == 1) {
-                UtilizadorAdm utilizadorLogado = new UtilizadorAdm(
+            if(idRole == 1){
+                utilizador = new UtilizadorAdm(
                         resultado.getInt("id_util"),
                         resultado.getString("username"),
                         resultado.getString("password")
                 );
-                loginUser.setUtilizador(utilizadorLogado);
-                return TipoUtilizador.Administrador;
-            } else if (idRole == 2) {
-                UtilizadorOperador utilizadorLogado = new UtilizadorOperador(
+            } else if (idRole == 2){
+                utilizador = new UtilizadorOperador(
                         resultado.getInt("id_util"),
                         resultado.getString("username"),
                         resultado.getString("password")
                 );
-                loginUser.setUtilizador(utilizadorLogado);
-                return TipoUtilizador.Operador;
             } else if (idRole == 3) {
-                UtilizadorFornecedor utilizadorLogado = new UtilizadorFornecedor(
+                utilizador = new UtilizadorFornecedor(
                         resultado.getInt("id_util"),
                         resultado.getString("username"),
                         resultado.getString("password")
                 );
-                loginUser.setUtilizador(utilizadorLogado);
-                return TipoUtilizador.Fornecedor;
             }
-        }
 
-        return TipoUtilizador.Default;
+        }
+            return utilizador;
+
     }
 
     /**
