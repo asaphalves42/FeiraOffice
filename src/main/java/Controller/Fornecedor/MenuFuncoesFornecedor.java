@@ -1,7 +1,7 @@
 package Controller.Fornecedor;
 
 import Controller.DAL.LerFornecedores;
-import Model.Fornecedor;
+import Model.*;
 import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,15 +18,23 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-
-
-public class MenuFuncoesFornecedor{
+public class MenuFuncoesFornecedor {
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -61,7 +69,7 @@ public class MenuFuncoesFornecedor{
         fornecedores.addAll(lerFornecedores.lerFornecedoresDaBaseDeDados());
 
         if (!fornecedores.isEmpty()) {
-            if(tableViewFornecedores.getColumns().isEmpty()) {
+            if (tableViewFornecedores.getColumns().isEmpty()) {
                 // Defina as colunas da tabela
                 TableColumn<Fornecedor, Integer> colunaId = new TableColumn<>("ID");
                 TableColumn<Fornecedor, String> colunaNome = new TableColumn<>("Nome");
@@ -71,6 +79,7 @@ public class MenuFuncoesFornecedor{
                 TableColumn<Fornecedor, String> colunaCodPostal = new TableColumn<>("Código postal");
                 TableColumn<Fornecedor, Integer> colunaIdPais = new TableColumn<>("País");
                 TableColumn<Fornecedor, Integer> colunaIdUtilizador = new TableColumn<>(" Tipo de utilizador");
+                TableColumn<Fornecedor, String> colunaIdExterno = new TableColumn<>(" ID Externo");
 
                 // Associe as colunas às propriedades da classe Fornecedor
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -81,6 +90,7 @@ public class MenuFuncoesFornecedor{
                 colunaCodPostal.setCellValueFactory(new PropertyValueFactory<>("codigoPostal"));
                 colunaIdPais.setCellValueFactory(new PropertyValueFactory<>("idPaisString"));
                 colunaIdUtilizador.setCellValueFactory(new PropertyValueFactory<>("idUtilizadorString"));
+                colunaIdExterno.setCellValueFactory(new PropertyValueFactory<>("idExterno"));
 
                 // Adicione as colunas à tabela
                 tableViewFornecedores.getColumns().add(colunaId);
@@ -91,6 +101,7 @@ public class MenuFuncoesFornecedor{
                 tableViewFornecedores.getColumns().add(colunaCodPostal);
                 tableViewFornecedores.getColumns().add(colunaIdPais);
                 tableViewFornecedores.getColumns().add(colunaIdUtilizador);
+                tableViewFornecedores.getColumns().add(colunaIdExterno);
 
                 // Configure a fonte de dados da tabela
                 tableViewFornecedores.setItems(fornecedores);
@@ -123,6 +134,4 @@ public class MenuFuncoesFornecedor{
         fornecedores.add(data.getDataFornecedor());
 
     }
-
-
 }

@@ -1,10 +1,7 @@
 package Controller.DAL;
 
 import Model.*;
-import Utilidades.BaseDados;
-import Utilidades.Encriptacao;
-import Utilidades.Mensagens;
-import Utilidades.ValidarEmail;
+import Utilidades.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -17,6 +14,8 @@ import java.util.ArrayList;
 
 
 public class LerUtilizadores {
+
+    LogUser loginUser = new LogUser();
 
     /**
      * Lê os utilizadores da base de dados e os armazena em uma lista.
@@ -102,13 +101,34 @@ public class LerUtilizadores {
         ResultSet resultado = basedados.Selecao("SELECT * FROM Utilizador WHERE username = '" + email + "' AND password = '" + encryptedPassword + "'");
 
         if (resultado.next()) {
+
+
+
             int idRole = resultado.getInt("id_role");
 
             if (idRole == 1) {
+                UtilizadorAdm utilizadorLogado = new UtilizadorAdm(
+                        resultado.getInt("id_util"),
+                        resultado.getString("username"),
+                        resultado.getString("password")
+                );
+                loginUser.setUtilizador(utilizadorLogado);
                 return TipoUtilizador.Administrador;
             } else if (idRole == 2) {
+                UtilizadorOperador utilizadorLogado = new UtilizadorOperador(
+                        resultado.getInt("id_util"),
+                        resultado.getString("username"),
+                        resultado.getString("password")
+                );
+                loginUser.setUtilizador(utilizadorLogado);
                 return TipoUtilizador.Operador;
             } else if (idRole == 3) {
+                UtilizadorFornecedor utilizadorLogado = new UtilizadorFornecedor(
+                        resultado.getInt("id_util"),
+                        resultado.getString("username"),
+                        resultado.getString("password")
+                );
+                loginUser.setUtilizador(utilizadorLogado);
                 return TipoUtilizador.Fornecedor;
             }
         }

@@ -9,6 +9,10 @@ public class Pais {
         this.nome = nome;
     }
 
+    public Pais() {
+
+    }
+
     public int getId() {
         return id;
     }

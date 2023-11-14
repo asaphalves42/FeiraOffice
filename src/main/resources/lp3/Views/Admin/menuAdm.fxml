@@ -17,17 +17,17 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <Button fx:id="btnFatura" layoutX="23.0" layoutY="605.0" mnemonicParsing="false" onAction="#clickFatura" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
+            <Button fx:id="btnFatura" layoutX="19.0" layoutY="561.0" mnemonicParsing="false" onAction="#clickFatura" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <Button fx:id="btnOperador" layoutX="22.0" layoutY="314.0" mnemonicParsing="false" onAction="#clickOperador" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
+            <Button fx:id="btnOperador" layoutX="19.0" layoutY="293.0" mnemonicParsing="false" onAction="#clickOperador" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <Button fx:id="btnEstatisticas" blendMode="SRC_ATOP" layoutX="23.0" layoutY="461.0" mnemonicParsing="false" onAction="#clickEstatisticas" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
+            <Button fx:id="btnEstatisticas" blendMode="SRC_ATOP" layoutX="22.0" layoutY="426.0" mnemonicParsing="false" onAction="#clickEstatisticas" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
@@ -42,56 +42,67 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="113.0" layoutY="612.0" onMouseClicked="#clickFatura" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="116.0" layoutY="577.0" onMouseClicked="#clickFatura" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/fatura.png" />
                </image>
             </ImageView>
-            <Text layoutX="112.0" layoutY="709.0" onMouseClicked="#clickFatura" strokeType="OUTSIDE" strokeWidth="0.0" text="FATURA" wrappingWidth="72.0">
+            <Text layoutX="113.0" layoutY="664.0" onMouseClicked="#clickFatura" strokeType="OUTSIDE" strokeWidth="0.0" text="FATURA" wrappingWidth="72.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="116.0" layoutY="324.0" onMouseClicked="#clickOperador" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="116.0" layoutY="303.0" onMouseClicked="#clickOperador" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/operador.png" />
                </image>
             </ImageView>
-            <Text layoutX="100.0" layoutY="418.0" onMouseClicked="#clickOperador" strokeType="OUTSIDE" strokeWidth="0.0" text="OPERADOR" wrappingWidth="104.0">
+            <Text layoutX="97.0" layoutY="387.0" onMouseClicked="#clickOperador" strokeType="OUTSIDE" strokeWidth="0.0" text="OPERADOR" wrappingWidth="104.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="116.0" layoutY="473.0" onMouseClicked="#clickEstatisticas" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="112.0" layoutY="432.0" onMouseClicked="#clickEstatisticas" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/estatisticas.png" />
                </image>
             </ImageView>
-            <Text layoutX="89.0" layoutY="565.0" onMouseClicked="#clickEstatisticas" strokeType="OUTSIDE" strokeWidth="0.0" text="ESTATÍSTICAS" wrappingWidth="127.0">
+            <Text layoutX="83.0" layoutY="523.0" onMouseClicked="#clickEstatisticas" strokeType="OUTSIDE" strokeWidth="0.0" text="ESTATÍSTICAS" wrappingWidth="127.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <Button fx:id="btnProdutos" layoutX="23.0" layoutY="167.0" mnemonicParsing="false" onAction="#clickProdutos" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
-            <Button fx:id="btnAprovar" layoutX="23.0" layoutY="751.0" mnemonicParsing="false" onAction="#clickAprovar" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
-            <Text layoutX="104.0" layoutY="271.0" onMouseClicked="#clickProdutos" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS">
+            <Button fx:id="btnProdutos" layoutX="20.0" layoutY="152.0" mnemonicParsing="false" onAction="#clickProdutos" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
+            <Button fx:id="btnAprovar" layoutX="19.0" layoutY="689.0" mnemonicParsing="false" onAction="#clickAprovar" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
+            <Text layoutX="100.0" layoutY="248.0" onMouseClicked="#clickProdutos" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <Text layoutX="70.0" layoutY="849.0" onMouseClicked="#clickAprovar" strokeType="OUTSIDE" strokeWidth="0.0" text="APROVAR STOCK" wrappingWidth="164.0">
+            <Text layoutX="67.0" layoutY="787.0" onMouseClicked="#clickAprovar" strokeType="OUTSIDE" strokeWidth="0.0" text="APROVAR STOCK" wrappingWidth="164.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <ImageView fitHeight="65.0" fitWidth="72.0" layoutX="119.0" layoutY="178.0" onMouseClicked="#clickProdutos" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="72.0" layoutX="114.0" layoutY="163.0" onMouseClicked="#clickProdutos" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/caixa.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="65.0" fitWidth="59.0" layoutX="119.0" layoutY="761.0" onMouseClicked="#clickAprovar" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="59.0" layoutX="119.0" layoutY="702.0" onMouseClicked="#clickAprovar" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/aprovar.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="btnLogout" layoutX="19.0" layoutY="848.0" mnemonicParsing="false" onAction="#clickLogout" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
+            <Text layoutX="112.0" layoutY="875.0" onMouseClicked="#clickLogout" strokeType="OUTSIDE" strokeWidth="0.0" text="SAIR">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="24.0" fitWidth="30.0" layoutX="198.0" layoutY="856.0" onMouseClicked="#clickLogout" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Imagens/marca-x.png" />
                </image>
             </ImageView>
          </children>

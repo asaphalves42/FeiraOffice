@@ -2,6 +2,7 @@ package Controller.Login;
 
 import Controller.DAL.LerUtilizadores;
 import Model.TipoUtilizador;
+import Utilidades.LogUser;
 import Utilidades.Mensagens;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,7 +30,6 @@ public class Login {
     @FXML
     private PasswordField labelPassword;
 
-
     /**
      * Manipula o ‘login’ do utilizador quando o botão "Login" é clicado numa aplicação JavaFX.
      * Ele lê o nome de utilizador e senha inseridos, verifica-os num banco de dados e
@@ -44,6 +44,7 @@ public class Login {
     void clickLogin() throws IOException, SQLException {
         // Cria uma instância de LerUtilizadores para lidar com dados de utilizador.
         TipoUtilizador tipo = getUtilizador();
+
 
         // Abre o menu correspondente com base no tipo de utilizador.
             if (tipo == TipoUtilizador.Administrador) {

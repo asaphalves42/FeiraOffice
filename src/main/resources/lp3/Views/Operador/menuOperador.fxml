@@ -16,7 +16,7 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <Button fx:id="btnFatura" layoutX="18.0" layoutY="516.0" mnemonicParsing="false" onAction="#clickFatura" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
+            <Button fx:id="btnFatura" layoutX="22.0" layoutY="436.0" mnemonicParsing="false" onAction="#clickFatura" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" textFill="DODGERBLUE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
@@ -31,36 +31,47 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="107.0" layoutY="527.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="114.0" layoutY="450.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/fatura.png" />
                </image>
             </ImageView>
-            <Text layoutX="107.0" layoutY="620.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FATURA" wrappingWidth="72.0">
+            <Text layoutX="111.0" layoutY="545.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FATURA" wrappingWidth="72.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <Button fx:id="btnProduto" layoutX="20.0" layoutY="265.0" mnemonicParsing="false" onAction="#clickProduto" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
-            <Button fx:id="btnAprovar" layoutX="18.0" layoutY="739.0" mnemonicParsing="false" onAction="#clickAprovar" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
-            <Text layoutX="99.0" layoutY="369.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS">
+            <Button fx:id="btnProduto" layoutX="19.0" layoutY="220.0" mnemonicParsing="false" onAction="#clickProduto" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
+            <Button fx:id="btnAprovar" layoutX="24.0" layoutY="646.0" mnemonicParsing="false" onAction="#clickAprovar" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
+            <Text layoutX="98.0" layoutY="319.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <Text layoutX="67.0" layoutY="843.0" strokeType="OUTSIDE" strokeWidth="0.0" text="APROVAR STOCK" wrappingWidth="164.0">
+            <Text layoutX="76.0" layoutY="750.0" strokeType="OUTSIDE" strokeWidth="0.0" text="APROVAR STOCK" wrappingWidth="164.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <ImageView fitHeight="65.0" fitWidth="72.0" layoutX="116.0" layoutY="275.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="72.0" layoutX="114.0" layoutY="234.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/caracteristicas.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="65.0" fitWidth="85.0" layoutX="112.0" layoutY="747.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="85.0" layoutX="117.0" layoutY="661.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/aprovar.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="btnLogout" layoutX="18.0" layoutY="845.0" mnemonicParsing="false" onAction="#clickLogout" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
+            <Text layoutX="114.0" layoutY="871.0" onMouseClicked="#clickLogout" strokeType="OUTSIDE" strokeWidth="0.0" text="SAIR" wrappingWidth="59.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="27.0" fitWidth="31.0" layoutX="197.0" layoutY="851.0" onMouseClicked="#clickLogout" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Imagens/marca-x.png" />
                </image>
             </ImageView>
          </children>

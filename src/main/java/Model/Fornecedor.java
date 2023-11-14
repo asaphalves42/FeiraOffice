@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class Fornecedor {
     private int id;
+    private String idExterno;
     private String nome;
     private String morada1;
     private String morada2;
@@ -13,9 +14,14 @@ public class Fornecedor {
     private Pais idPais;
     private UtilizadorFornecedor idUtilizador;
 
-    public Fornecedor(int id, String nome, String morada1, String morada2, String localidade, String codigoPostal, Pais idPais, UtilizadorFornecedor idUtilizador) {
+    public Fornecedor() {
+
+    }
+
+    public Fornecedor(int id, String nome, String idExterno, String morada1, String morada2, String localidade, String codigoPostal, Pais idPais, UtilizadorFornecedor idUtilizador) {
         this.id = id;
         this.nome = nome;
+        this.idExterno = idExterno;
         this.morada1 = morada1;
         this.morada2 = morada2;
         this.localidade = localidade;
@@ -24,7 +30,13 @@ public class Fornecedor {
         this.idUtilizador = idUtilizador;
     }
 
+    public String getIdExterno() {
+        return idExterno;
+    }
 
+    public void setIdExterno(String idExterno) {
+        this.idExterno = idExterno;
+    }
 
     public int getId() {
         return id;

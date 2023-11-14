@@ -35,7 +35,8 @@ public class DialogAdicionarFornecedor {
 
     @FXML
     private TextField textoCodigoPostal;
-
+    @FXML
+    private TextField textoIdExterno;
     @FXML
     private TextField textoEmail;
 
@@ -73,6 +74,7 @@ public class DialogAdicionarFornecedor {
 
         try {
             String nome = textoNome.getText();
+            String idExterno = textoIdExterno.getText();
             String email = textoEmail.getText(); //validar email para o formato correto
             String password = textoPassword.getText();
             String morada1 = textoMorada1.getText();
@@ -82,7 +84,7 @@ public class DialogAdicionarFornecedor {
             Pais pais = comboBoxPais.getSelectionModel().getSelectedItem();
 
             // Verificar se algum campo obrigatório está vazio
-            if (nome.isEmpty() || email.isEmpty() || password.isEmpty() || morada1.isEmpty() || morada2.isEmpty() || localidade.isEmpty() || codigoPostal.isEmpty() || pais == null) {
+            if (nome.isEmpty() || email.isEmpty() || password.isEmpty() || morada1.isEmpty() || localidade.isEmpty() || codigoPostal.isEmpty() || pais == null) {
                 // Exibir uma mensagem de erro ao utilizador
                 Mensagens.Erro("Campos obrigatórios!", "Por favor, preencha todos os campos obrigatórios.");
                 return;
@@ -105,7 +107,15 @@ public class DialogAdicionarFornecedor {
             utilizador.setPassword(senhaEncriptada);
 
             //Criar um objeto fornecedor com o atributos
-            Fornecedor fornecedor = new Fornecedor(0, nome, morada1, morada2, localidade, codigoPostal, pais, utilizador);
+            Fornecedor fornecedor = new Fornecedor(0,
+                    nome,
+                    idExterno,
+                    morada1,
+                    morada2,
+                    localidade,
+                    codigoPostal,
+                    pais,
+                    utilizador);
 
             //chamar a DAL para adicionar o fornecedor
             LerFornecedores adicionarFornecedor = new LerFornecedores();

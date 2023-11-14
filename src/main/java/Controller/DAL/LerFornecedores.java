@@ -43,6 +43,7 @@ public class LerFornecedores {
                 Fornecedor aux = new Fornecedor(
                         resultado.getInt("id"),
                         resultado.getString("Nome"),
+                        resultado.getString("Id_Externo"),
                         resultado.getString("Morada1"),
                         resultado.getString("Morada2"),
                         resultado.getString("Localidade"),
@@ -84,6 +85,7 @@ public class LerFornecedores {
                     "', @password = '" + fornecedor.getIdUtilizador().getPassword() +
                     "', @id_role = '" + utilizador.getTipo().getValue() +
                     "', @nome = '" + fornecedor.getNome() +
+                    "', @id_externo = '" + fornecedor.getIdExterno() +
                     "', @morada1 = '" + fornecedor.getMorada1() +
                     "', @morada2 = '" + fornecedor.getMorada2() +
                     "', @localidade = '" + fornecedor.getLocalidade() +
