@@ -1,5 +1,6 @@
 package Controller.Administrador;
 
+import Model.Utilizador;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,8 @@ import org.w3c.dom.events.MouseEvent;
 import java.io.IOException;
 
 public class MenuAdm {
+
+    private Utilizador utilizador;
 
     @FXML
     private AnchorPane anchorPaneMenuAdm;
@@ -94,8 +97,13 @@ public class MenuAdm {
     void clickLogout() {
         System.exit(0);
 
+    }
 
+    public void iniciaData(Utilizador utilizador) {
+        this.utilizador = utilizador;
+        System.out.println(utilizador.getEmail());
 
+        System.out.println(utilizador.getTipo());
     }
 }
 

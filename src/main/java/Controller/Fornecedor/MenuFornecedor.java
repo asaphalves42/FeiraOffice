@@ -1,10 +1,7 @@
 package Controller.Fornecedor;
 
 import Controller.DAL.LerFornecedores;
-import Model.Encomenda;
-import Model.Fornecedor;
-import Model.Moeda;
-import Model.Pais;
+import Model.*;
 import Utilidades.DataSingleton;
 import Utilidades.FileUtils;
 import Utilidades.LogUser;
@@ -31,6 +28,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class MenuFornecedor {
+
+    private Utilizador utilizador;
+
     @FXML
     private Label labelCodigoPostal;
 
@@ -58,32 +58,35 @@ public class MenuFornecedor {
     @FXML
     private Button btnUpload;
 
-    public void initialize() throws IOException {
-        carregarFornecedor();
+    public void iniciaData(Utilizador utilizador) throws IOException {
+        this.utilizador = utilizador;
+        this.carregarFornecedor();
     }
 
+
+
     public void carregarFornecedor() throws IOException {
-        LerFornecedores lerFornecedores = new LerFornecedores();
-        ObservableList<Fornecedor> fornecedores = lerFornecedores.lerFornecedoresDaBaseDeDados();
-
-        if (!fornecedores.isEmpty()) {
-            Fornecedor fornecedor = fornecedores.get(0);
-            labelID.setText(String.valueOf(fornecedor.getIdExterno()));
-            labelNome.setText(fornecedor.getNome());
-            labelMorada1.setText(fornecedor.getMorada1());
-            labelMorada2.setText(fornecedor.getMorada2());
-            labelLocalidade.setText(fornecedor.getLocalidade());
-            labelCodigoPostal.setText(fornecedor.getCodigoPostal());
-            labelPais.setText(fornecedor.getIdPais().getNome());
-
-        } else {
-            Mensagens.Informacao("Lista Vazia!", "Não existem fornecedores registados no sistema!");
+        LerFornecedores fornecedor = new LerFornecedores();
+        Fornecedor logado = null;
+        for (Fornecedor f : fornecedor.lerFornecedoresDaBaseDeDados()){
+            if(this.utilizador.getId() == f.getIdUtilizador().getId()){
+                logado = f;
+            }
         }
+        assert logado != null;
+        labelID.setText(String.valueOf(logado.getIdExterno()));
+                labelNome.setText(logado.getNome());
+                labelMorada1.setText(logado.getMorada1());
+                labelMorada2.setText(logado.getMorada2());
+                labelLocalidade.setText(logado.getLocalidade());
+                labelCodigoPostal.setText(logado.getCodigoPostal());
+                labelPais.setText(logado.getIdPais().getNome());
+
     }
 
 
     @FXML
-    void clickLogout() throws IOException {
+    void clickLogout() {
         System.exit(0);
 
     }

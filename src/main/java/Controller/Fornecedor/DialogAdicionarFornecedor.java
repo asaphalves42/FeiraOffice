@@ -102,9 +102,9 @@ public class DialogAdicionarFornecedor {
             String senhaEncriptada = encriptacao.MD5(password);
 
             // Criar um objeto Utilizador com email e password
-            UtilizadorFornecedor utilizador = new UtilizadorFornecedor();
-            utilizador.setEmail(email);
-            utilizador.setPassword(senhaEncriptada);
+            UtilizadorFornecedor utilizador = new UtilizadorFornecedor(0, email, senhaEncriptada);
+            /*utilizador.setEmail(email);
+            utilizador.setPassword(senhaEncriptada);*/
 
             //Criar um objeto fornecedor com o atributos
             Fornecedor fornecedor = new Fornecedor(0,

@@ -55,7 +55,7 @@ public class LerFornecedores {
 
             }
             basedados.Desligar();
-            return fornecedores; // A leitura foi bem-sucedida, retorna true.
+            return fornecedores; // A leitura foi bem-sucedida
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
             return null; // A leitura falhou, retorna false.

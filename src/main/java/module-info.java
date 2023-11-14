@@ -14,8 +14,17 @@ module com.example.lp3_g2_feira_office_ {
     requires junit;
     requires java.desktop;
 
-    exports TestesUnitarios;
+
+    exports Model;
     opens Model to javafx.base;
+
+    exports Utilidades;
+
+    opens Utilidades to javafx.base;
+
+    // Outros exports e opens...
+    exports TestesUnitarios;
+    opens TestesUnitarios to javafx.fxml;
     exports Main;
     opens Main to javafx.fxml;
     exports Controller.Fornecedor;
