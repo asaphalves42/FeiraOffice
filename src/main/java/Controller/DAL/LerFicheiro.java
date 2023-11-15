@@ -3,7 +3,6 @@ package Controller.DAL;
 import Model.Encomenda;
 import Model.Fornecedor;
 import Model.Moeda;
-import Utilidades.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -17,13 +16,8 @@ import java.time.format.DateTimeFormatter;
 
 public class LerFicheiro {
 
-    public void lerFicheiroXML(){
+    public void lerFicheiroXML(File selectedFile) {
         try {
-            File selectedFile = FileUtils.chooseXMLFile();
-
-            // creating a constructor of file class and
-            // parsing an XML file
-            //File file = new File("C:\\a\\XML-Sample.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(selectedFile);
