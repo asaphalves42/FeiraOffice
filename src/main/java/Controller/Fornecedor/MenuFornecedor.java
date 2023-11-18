@@ -3,6 +3,8 @@ package Controller.Fornecedor;
 import Controller.DAL.LerFicheiro;
 import Controller.DAL.LerFornecedores;
 import Model.*;
+import Utilidades.Mensagens;
+import com.example.lp3_g2_feira_office_2023.OrderConfirmation;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,6 +19,8 @@ public class MenuFornecedor {
 
     private Utilizador utilizador;
     private File arquivoSelecionado;
+
+
 
     @FXML
     private Button btnEscolherFicheiro;
@@ -69,14 +73,13 @@ public class MenuFornecedor {
     }
 
 
-
-
     /**
      * Carrega os dados do fornecedor associado ao utilizador atual e exibe as informações em labels.
      * Este método lê os fornecedores da base de dados, encontra o fornecedor associado ao utilizador atual e exibe suas informações.
      *
      * @throws IOException Se ocorrer um erro durante a leitura dos fornecedores da base de dados.
      */
+
     public void carregarFornecedor() throws IOException {
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
@@ -87,13 +90,13 @@ public class MenuFornecedor {
         }
         assert fornecedorLogado != null;
         labelID.setText(String.valueOf(fornecedorLogado.getIdExterno()));
-                labelNome.setText(fornecedorLogado.getNome());
-                labelMorada1.setText(fornecedorLogado.getMorada1());
-                labelMorada2.setText(fornecedorLogado.getMorada2());
-                labelLocalidade.setText(fornecedorLogado.getLocalidade());
-                labelCodigoPostal.setText(fornecedorLogado.getCodigoPostal());
-                labelPais.setText(fornecedorLogado.getIdPais().getNome());
-                labelNomeMenu.setText(fornecedorLogado.getNome());
+        labelNome.setText(fornecedorLogado.getNome());
+        labelMorada1.setText(fornecedorLogado.getMorada1());
+        labelMorada2.setText(fornecedorLogado.getMorada2());
+        labelLocalidade.setText(fornecedorLogado.getLocalidade());
+        labelCodigoPostal.setText(fornecedorLogado.getCodigoPostal());
+        labelPais.setText(fornecedorLogado.getIdPais().getNome());
+        labelNomeMenu.setText(fornecedorLogado.getNome());
 
     }
 
@@ -117,40 +120,44 @@ public class MenuFornecedor {
     }
 
     @FXML
-    void clickUpload() throws IOException, JAXBException, jakarta.xml.bind.JAXBException {
-
-        LerFicheiro ler = new LerFicheiro();
-        ler.orderConfirmation();
-
-            /*
-              if (arquivoSelecionado != null) {
-            LerFicheiro lerFicheiro = new LerFicheiro();
-            Encomenda encomenda = lerFicheiro.lerFicheiroXML(arquivoSelecionado);
-
-            // Adicione a lógica adicional aqui após a leitura do arquivo
-
-            if (encomenda != null) {
-
-                // Gravar a encomenda na base de dados
-
-                EncomendaDAL gravarEncomenda = new EncomendaDAL();
-                if(gravarEncomenda.gravarEncomendaNaBaseDados(encomenda)){
-                    Mensagens.Informacao("Sucesso!", "Encomenda enviada com sucesso, aguarda aprovação!");
-                } else {
-                    Mensagens.Erro("Erro","Erro ao enviar encomenda!");
-                }
-
-                System.out.println("Referencia da encomenda: " + encomenda.getReferencia());
-            } else {
-                Mensagens.Informacao("Arquivo", "Erro ao processar o arquivo!");
+    void clickUpload() throws IOException {
+        LerFornecedores fornecedor = new LerFornecedores();
+        Fornecedor fornecedorLogado = null;
+        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
+            if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
+                fornecedorLogado = fornec;
             }
+        }
+
+        //Validação do id do fornecedor
+        if (arquivoSelecionado != null) {
+            LerFicheiro lerFicheiro = new LerFicheiro();
+            OrderConfirmation orderConfirmation = lerFicheiro.orderConfirmation(arquivoSelecionado);
+
+            // Obter o ID do fornecedor logado
+            assert fornecedorLogado != null;
+            String idFornecedor = fornecedorLogado.getIdExterno();
+
+            // Obter o ID do fornecedor do arquivo
+            String idFornecedorFicheiro = orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier();
+
+            // Validar se o ID é o mesmo do fornecedor
+            if (!idFornecedor.equals(idFornecedorFicheiro)) {
+                Mensagens.Erro("Erro!", "ID do fornecedor não coincide com o do ficheiro!. Não foi possível fazer upload da encomenda");
+            }
+
+
+            //Validar se o id é o mesmo do fornecedor
+            //validar se o id da encomenda ja existe...
+
+
+
         } else {
-            Mensagens.Informacao("Arquivo", "Nenhum arquivo selecionado!");
+            Mensagens.Erro("Erro!", "Erro ao ler o ficheiro!");
         }
+
     }
-             */
-        }
-    }
+}
 
 
 

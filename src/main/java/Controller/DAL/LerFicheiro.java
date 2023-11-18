@@ -22,7 +22,6 @@ import java.util.List;
 
 public class LerFicheiro {
 
-    File arquivoXml = new File("C:\\a\\XML-Sample.xml");
     private final JAXBContext jaxbContext;
 
     public LerFicheiro() {
@@ -37,7 +36,7 @@ public class LerFicheiro {
     }
 
     // Função para processar um arquivo XML e extrair informações de uma confirmação de pedido (OrderConfirmation)
-    public OrderConfirmation orderConfirmation() throws IOException {
+    public OrderConfirmation orderConfirmation(File arquivoXml) throws IOException {
         OrderConfirmation orderConfirmation = null;
         try {
 
