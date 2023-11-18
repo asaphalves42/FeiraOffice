@@ -117,7 +117,7 @@ public class MenuFornecedor {
     }
 
     @FXML
-    void clickUpload() throws IOException, JAXBException {
+    void clickUpload() throws IOException, JAXBException, jakarta.xml.bind.JAXBException {
 
         LerFicheiro ler = new LerFicheiro();
         ler.orderConfirmation();
