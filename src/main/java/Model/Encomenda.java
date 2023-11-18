@@ -1,26 +1,44 @@
 package Model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Encomenda {
     private int id;
+
     private String referencia;
+
     private LocalDate data;
+
     private Fornecedor fornecedor;
     private ArrayList<LinhaEncomenda> linhas;
-    private Moeda moeda;
+
+    private Pais pais;
+
+    
     private double valorImposto;
     private double valorTotal;
 
-    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Moeda moeda, double valorImposto, double valorTotal) {
+    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, double valorImposto, double valorTotal) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
         this.fornecedor = fornecedor;
-        this.moeda = moeda;
+        this.pais = pais;
         this.valorImposto = valorImposto;
         this.valorTotal = valorTotal;
+    }
+
+    public Pais getPais() {
+        return pais;
+    }
+
+    public void setPais(Pais pais) {
+        this.pais = pais;
     }
 
     public int getId() {
@@ -63,13 +81,10 @@ public class Encomenda {
         this.linhas.add(linha);
     }
 
-    public Moeda getMoeda() {
-        return moeda;
+    public void setLinhas(ArrayList<LinhaEncomenda> linhas) {
+        this.linhas = linhas;
     }
 
-    public void setMoeda(Moeda moeda) {
-        this.moeda = moeda;
-    }
 
     public double getValorImposto() {
         return valorImposto;

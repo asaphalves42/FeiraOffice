@@ -41,7 +41,14 @@ public class MenuAdm {
 
     @FXML
     void clickAprovar() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Encomenda/menuAprovarStock.fxml"));
+            AnchorPane root = loader.load();
 
+            anchorPaneMenuAdm.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

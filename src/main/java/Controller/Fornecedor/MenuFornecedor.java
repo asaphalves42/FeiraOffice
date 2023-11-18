@@ -3,13 +3,13 @@ package Controller.Fornecedor;
 import Controller.DAL.LerFicheiro;
 import Controller.DAL.LerFornecedores;
 import Model.*;
-import Utilidades.Mensagens;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 
@@ -117,18 +117,40 @@ public class MenuFornecedor {
     }
 
     @FXML
-    void clickUpload() throws IOException {
-        if (arquivoSelecionado != null) {
+    void clickUpload() throws IOException, JAXBException {
+
+        LerFicheiro ler = new LerFicheiro();
+        ler.orderConfirmation();
+
+            /*
+              if (arquivoSelecionado != null) {
             LerFicheiro lerFicheiro = new LerFicheiro();
-            lerFicheiro.lerFicheiroXML(arquivoSelecionado);
+            Encomenda encomenda = lerFicheiro.lerFicheiroXML(arquivoSelecionado);
 
-            // adicionar lógica adicional aqui após a leitura do arquivo
+            // Adicione a lógica adicional aqui após a leitura do arquivo
 
+            if (encomenda != null) {
 
+                // Gravar a encomenda na base de dados
+
+                EncomendaDAL gravarEncomenda = new EncomendaDAL();
+                if(gravarEncomenda.gravarEncomendaNaBaseDados(encomenda)){
+                    Mensagens.Informacao("Sucesso!", "Encomenda enviada com sucesso, aguarda aprovação!");
+                } else {
+                    Mensagens.Erro("Erro","Erro ao enviar encomenda!");
+                }
+
+                System.out.println("Referencia da encomenda: " + encomenda.getReferencia());
+            } else {
+                Mensagens.Informacao("Arquivo", "Erro ao processar o arquivo!");
+            }
         } else {
-            Mensagens.Informacao("Arquivo","Nenhum arquivo selecionado!");
+            Mensagens.Informacao("Arquivo", "Nenhum arquivo selecionado!");
+        }
+    }
+             */
         }
     }
 
 
-}
+

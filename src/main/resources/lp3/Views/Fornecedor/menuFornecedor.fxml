@@ -37,14 +37,14 @@
                   <Image url="@../Imagens/marca-x.png" />
                </image>
             </ImageView>
-            <Text layoutX="110.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bem vindo,">
+            <Text layoutX="113.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BEM VINDO,">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Text>
-            <Label fx:id="labelNomeMenu" layoutX="144.0" layoutY="74.0" text="Label">
+            <Label fx:id="labelNomeMenu" layoutX="55.0" layoutY="123.0" text="Label">
                <font>
-                  <Font name="System Bold" size="24.0" />
+                  <Font name="System Bold" size="36.0" />
                </font>
             </Label>
          </children>
@@ -72,61 +72,61 @@
                            <children>
                               <Label prefHeight="17.0" prefWidth="72.0" text="ID:">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="18.0" />
                                  </font></Label>
                               <Label prefHeight="17.0" prefWidth="107.0" text="NOME:" GridPane.rowIndex="1">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="18.0" />
                                  </font></Label>
-                              <Label prefHeight="17.0" prefWidth="99.0" text="LOCALIDADE:" GridPane.rowIndex="4">
+                              <Label prefHeight="27.0" prefWidth="136.0" text="LOCALIDADE:" GridPane.rowIndex="4">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="18.0" />
                                  </font></Label>
                               <Label text="CÓDIGO POSTAL:" GridPane.rowIndex="5">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="18.0" />
                                  </font></Label>
                               <Label text="PAÍS:" GridPane.rowIndex="6">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="18.0" />
                                  </font></Label>
                               <Label fx:id="labelID" text="Label" GridPane.columnIndex="1">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="18.0" />
                                  </font></Label>
                               <Label fx:id="labelNome" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="18.0" />
                                  </font></Label>
                               <Label fx:id="labelLocalidade" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="18.0" />
                                  </font></Label>
                               <Label fx:id="labelCodigoPostal" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="18.0" />
                                  </font></Label>
                               <Label fx:id="labelPais" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="18.0" />
                                  </font></Label>
                               <Label prefHeight="17.0" prefWidth="107.0" text="MORADA 1:" GridPane.rowIndex="2">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="18.0" />
                                  </font>
                               </Label>
                               <Label prefHeight="17.0" prefWidth="107.0" text="MORADA 2:" GridPane.rowIndex="3">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="18.0" />
                                  </font>
                               </Label>
                               <Label fx:id="labelMorada1" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="18.0" />
                                  </font></Label>
                               <Label fx:id="labelMorada2" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="18.0" />
                                  </font></Label>
                            </children>
                         </GridPane>

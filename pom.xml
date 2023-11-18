@@ -14,6 +14,7 @@
         <junit.version>5.9.1</junit.version>
     </properties>
 
+
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -112,10 +113,100 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+        <groupId>eu.hansolo.fx</groupId>
+        <artifactId>countries</artifactId>
+        <version>17.0.37</version>
+    </dependency>
+        <!-- https://mvnrepository.com/artifact/eu.hansolo/toolboxfx -->
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>toolboxfx</artifactId>
+            <version>17.0.47</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/eu.hansolo/toolbox -->
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>toolbox</artifactId>
+            <version>17.0.57</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>21-ea+31</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>medusa</artifactId>
+            <version>16.0.1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>4.0.1</version>
+        </dependency>
+
+        <!-- JAXB API only -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
     </dependencies>
 
+
+
+
+
     <build>
+
+
+
         <plugins>
+
+
+            <!-- Plugin required to build java classes from XSD using XJC -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- The name of your generated source package -->
+                    <!-- <arguments>-src/main/resources/schema/schemaLP3.xsd</arguments> -->
+                    <packageName>com.example.lp3_g2_feira_office_2023</packageName>
+                    <schemaDirectory>src/main/resources/schema</schemaDirectory>
+                    <schemaFiles>schemaLP3.xsd</schemaFiles>
+
+
+                </configuration>
+
+
+            </plugin>
+
+
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

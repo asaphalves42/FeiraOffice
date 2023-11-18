@@ -13,6 +13,11 @@ module com.example.lp3_g2_feira_office_ {
     requires java.sql;
     requires junit;
     requires java.desktop;
+    requires eu.hansolo.fx.countries;
+    requires eu.hansolo.fx.heatmap;
+    requires eu.hansolo.toolboxfx;
+    requires eu.hansolo.toolbox;
+    requires java.xml.bind;
 
 
     exports Model;
@@ -39,4 +44,6 @@ module com.example.lp3_g2_feira_office_ {
     opens Controller.Produtos to javafx.fxml;
     exports Controller.MensagensDeErro;
     opens Controller.MensagensDeErro to javafx.fxml;
+    exports Controller.Encomenda;
+    opens Controller.Encomenda to javafx.fxml;
 }
