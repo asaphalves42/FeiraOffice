@@ -5,6 +5,7 @@ import Utilidades.Mensagens;
 import com.example.lp3_g2_feira_office_2023.OrderConfirmation;
 
 
+import com.example.lp3_g2_feira_office_2023.UOM;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -57,6 +58,8 @@ public class LerFicheiro {
             BigInteger year = date.getYear();
             BigInteger month = date.getMonth();
             BigInteger day = date.getDay();
+
+            System.out.println("Dia: " + day + "Mês: " + month + "Ano: " + year );
 
             // Acesso às informações do fornecedor (SupplierParty)
             OrderConfirmation.OrderConfirmationHeader.SupplierParty supplierParty = orderConfirmation.getOrderConfirmationHeader().getSupplierParty();
@@ -151,10 +154,15 @@ public class LerFicheiro {
                         OrderConfirmation.OrderConfirmationLineItem.PriceDetails priceDetailsObj =
                                 (OrderConfirmation.OrderConfirmationLineItem.PriceDetails) product;
 
-                        // Impressão do preço por unidade e tipo de preço
-                        System.out.println("Preço por unidade: " + priceDetailsObj.getPricePerUnit().getCurrencyValue().getValue());
+                        BigDecimal precoUnitario = priceDetailsObj.getPricePerUnit().getCurrencyValue().getValue();
 
-                        System.out.println("Tipo: " + priceDetailsObj.getPricePerUnit().getValue().getUOM() + ", Quantidade: " + priceDetailsObj.getPricePerUnit().getValue().getValue());
+                        // Impressão do preço por unidade e tipo de preço
+                        System.out.println("Preço por unidade: " + precoUnitario);
+
+                        BigInteger quantidade =  priceDetailsObj.getPricePerUnit().getValue().getValue();
+                        UOM tipo =  priceDetailsObj.getPricePerUnit().getValue().getUOM();
+
+                        System.out.println("Tipo: " + tipo + ", Quantidade: " + quantidade);
 
                     }
 
@@ -164,18 +172,28 @@ public class LerFicheiro {
                         OrderConfirmation.OrderConfirmationLineItem.MonetaryAdjustment monetaryAdjustmentObj =
                                 (OrderConfirmation.OrderConfirmationLineItem.MonetaryAdjustment) product;
 
-                        // Impressão do número da linha de ajuste monetário
-                        System.out.println("Ajuste de taxas, linha: " + ((OrderConfirmation.OrderConfirmationLineItem.MonetaryAdjustment) product).getMonetaryAdjustmentLine());
 
-                        System.out.println("Valor total: " + monetaryAdjustmentObj.getMonetaryAdjustmentStartAmount().getCurrencyValue().getValue() + ", Em: " + monetaryAdjustmentObj.getMonetaryAdjustmentStartAmount().getCurrencyValue().getCurrencyType());
+                        BigInteger linha = ((OrderConfirmation.OrderConfirmationLineItem.MonetaryAdjustment) product).getMonetaryAdjustmentLine();
+
+                        // Impressão do número da linha de ajuste monetário
+                        System.out.println("Ajuste de taxas, linha: " + linha);
+
+                        BigDecimal valorTotal = monetaryAdjustmentObj.getMonetaryAdjustmentStartAmount().getCurrencyValue().getValue();
+                        String tipoDeMoeda = monetaryAdjustmentObj.getMonetaryAdjustmentStartAmount().getCurrencyValue().getCurrencyType();
+
+                        System.out.println("Valor total: " +  valorTotal+ ", Em: " + tipoDeMoeda);
 
                         BigDecimal taxaDeJuros = monetaryAdjustmentObj.getTaxAdjustment().getTaxPercent();
 
                         System.out.println("Taxa de juros: " + taxaDeJuros + "%");
 
-                        System.out.println("Total de juros: " + monetaryAdjustmentObj.getTaxAdjustment().getTaxAmount().getCurrencyValue().getValue()
-                                + ", Em: " + monetaryAdjustmentObj.getTaxAdjustment().getTaxAmount().getCurrencyValue().getCurrencyType());
-                        System.out.println("País: " + monetaryAdjustmentObj.getTaxAdjustment().getTaxLocation());
+                        BigDecimal totalJuros = monetaryAdjustmentObj.getTaxAdjustment().getTaxAmount().getCurrencyValue().getValue();
+                        String tipoMoeda =  monetaryAdjustmentObj.getTaxAdjustment().getTaxAmount().getCurrencyValue().getCurrencyType();
+                        String paisTaxa = monetaryAdjustmentObj.getTaxAdjustment().getTaxLocation();
+
+                        System.out.println("Total de juros: " + totalJuros
+                                + ", Em: " + tipoMoeda);
+                        System.out.println("País: " + paisTaxa );
 
                     }
 
@@ -185,7 +203,10 @@ public class LerFicheiro {
                         OrderConfirmation.OrderConfirmationLineItem.Quantity quantity =
                                 (OrderConfirmation.OrderConfirmationLineItem.Quantity) product;
 
-                        System.out.println("Quantidade: " + quantity.getValue().getValue() + ", Tipo: " + quantity.getValue().getUOM().value());
+                        BigDecimal quantidade = quantity.getValue().getValue();
+                        String tipoQuantidade = quantity.getValue().getUOM().value();
+
+                        System.out.println("Quantidade: " + quantidade + ", Tipo: " + tipoQuantidade);
 
                     }
 
@@ -195,11 +216,14 @@ public class LerFicheiro {
                         OrderConfirmation.OrderConfirmationLineItem.InformationalQuantity informationalQuantity =
                                 (OrderConfirmation.OrderConfirmationLineItem.InformationalQuantity) product;
 
+                        BigDecimal quantidadeKilo = informationalQuantity.getValue().getValue();
+                        BigDecimal tipoSheet = informationalQuantity.getValue().getValue();
+
                         // Impressão da quantidade informativa (NetWeight ou Sheet)
                         if (informationalQuantity.getQuantityType().equals("NetWeight")) {
-                            System.out.println("Kilogram: " + informationalQuantity.getValue().getValue());
+                            System.out.println("Kilogram: " + quantidadeKilo);
                         } else {
-                            System.out.println("Sheet: " + informationalQuantity.getValue().getValue());
+                            System.out.println("Sheet: " + tipoSheet);
                         }
 
                     }
@@ -210,11 +234,15 @@ public class LerFicheiro {
                         OrderConfirmation.OrderConfirmationLineItem.LineBaseAmount lineBaseAmount =
                                 (OrderConfirmation.OrderConfirmationLineItem.LineBaseAmount) product;
 
-                        System.out.println("Total do produto (LineBaseAmount): " + lineBaseAmount.getCurrencyValue().getValue() + "€");
+                        BigDecimal totalProduto = lineBaseAmount.getCurrencyValue().getValue();
+
+                        System.out.println("Total do produto (LineBaseAmount): " + totalProduto + "€");
 
                     }
 
                 }
+                //Verificar se isso esta correto orderConfirmation = new OrderConfirmation();
+
                 System.out.println("-------------------------------------------------------");
             }
 
