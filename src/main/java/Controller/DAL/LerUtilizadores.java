@@ -147,6 +147,31 @@ public class LerUtilizadores {
         return util; // Retorna o utilizador fornecedor encontrado ou null em caso de erro ou se não for encontrado.
     }
 
+    public boolean removerOperadorDaBaseDeDados(int utilizadorID) throws SQLException {
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+
+            String query = "DELETE FROM Utilizador WHERE id_role =2 ";
+            boolean linhasAfetadas = baseDados.Executar(query);
+
+            baseDados.Desligar();
+
+            if (linhasAfetadas) {
+                return true; // Retorna true se alguma linha foi afetada (remoção bem-sucedida)
+            }
+
+        } catch (Exception e) {
+            try {
+                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            return false; // Retorna false se alguma linha não foi afetada (remoção falhou)
+        }
+        return false;
+    }
+
 
     /**
      * Adiciona um operador à base de dados com o nome de utilizador e senha fornecidos.
@@ -211,25 +236,7 @@ public class LerUtilizadores {
         this.utilizadorSimulado = utilizador;
     }
 
-            String query = "DELETE FROM Utilizador WHERE id_role =2 " ;
-            boolean linhasAfetadas = baseDados.Executar(query);
 
-            baseDados.Desligar();
-
-            if (linhasAfetadas) {
-                return true; // Retorna true se alguma linha foi afetada (remoção bem-sucedida)
-            }
-
-        } catch (Exception e) {
-            try {
-                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            return false; // Retorna false se alguma linha não foi afetada (remoção falhou)
-        }
-        return false;
-    }
     }
 
 

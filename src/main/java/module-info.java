@@ -19,6 +19,7 @@ module com.example.lp3_g2_feira_office_ {
     requires eu.hansolo.toolbox;
     requires java.xml.bind;
     requires jakarta.xml.bind;
+    requires org.mockito;
 
     opens com.example.lp3_g2_feira_office_2023 to jakarta.xml.bind;
 
