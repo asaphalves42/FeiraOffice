@@ -200,16 +200,11 @@ public class LerUtilizadores {
         }
         return false;
     }
-    private ObservableList<Utilizador> utilizadoresSimulados;
-    private Utilizador utilizadorSimulado;
-
-    public void setUtilizadoresSimulados(ObservableList<Utilizador> utilizadores) {
-        this.utilizadoresSimulados = utilizadores;
-    }
-
-    public void setUtilizadorSimulado(Utilizador utilizador) {
-        this.utilizadorSimulado = utilizador;
-    }
+<<<<<<< HEAD
+    public boolean removerOperadorDaBaseDeDados(int utilizadorID) throws SQLException {
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
 
             String query = "DELETE FROM Utilizador WHERE id_role =2 " ;
             boolean linhasAfetadas = baseDados.Executar(query);
@@ -232,5 +227,17 @@ public class LerUtilizadores {
     }
     }
 
+=======
+    private ObservableList<Utilizador> utilizadoresSimulados;
+    private Utilizador utilizadorSimulado;
+
+    public void setUtilizadoresSimulados(ObservableList<Utilizador> utilizadores) {
+        this.utilizadoresSimulados = utilizadores;
+    }
+
+    public void setUtilizadorSimulado(Utilizador utilizador) {
+        this.utilizadorSimulado = utilizador;
+    }
+>>>>>>> 940dc0c7af07375aa79f14eb5bb46271460927e0
 
 
