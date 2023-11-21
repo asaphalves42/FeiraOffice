@@ -1,6 +1,9 @@
 package Controller.DAL;
 
 
+import Model.Pais;
+import Model.Produto;
+import Model.Unidade;
 import Utilidades.Mensagens;
 import com.example.lp3_g2_feira_office_2023.OrderConfirmation;
 
@@ -98,6 +101,14 @@ public class LerFicheiro {
             // Iteração pelos itens da confirmação de pedido
             for (OrderConfirmation.OrderConfirmationLineItem lineItem : lineItems) {
 
+                int sequencia;
+                Produto produto = new Produto();
+                double precoLinha = 0, quantidadeLinha = 0;
+                Unidade unidade = null;
+                Pais paisLinha = null;
+                double totalTaxa = 0, totalIncidencia = 0, totalLinha =0;
+
+
                 // Acesso aos detalhes do produto na linha do pedido
                 List<Object> productDetails = lineItem.getOrderConfirmationLineItemNumberOrProductOrPriceDetails();
                 System.out.println("Item número: " + lineItem.getOrderConfirmationLineItemNumberOrProductOrPriceDetails().get(0));
@@ -132,8 +143,10 @@ public class LerFicheiro {
                                 // Impressão dos dados do identificador de produto
                                 if (identifier.getAgency().equals("Buyer")) {
                                     System.out.println("Buyer: " + value);
+                                    produto.setId(Integer.parseInt(value));
                                 } else {
                                     System.out.println("Supplier: " + value);
+                                    produto.setIdExterno(value);
                                 }
 
                             } else if (identifierOrDescription instanceof String) {
