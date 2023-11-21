@@ -1,54 +1,33 @@
 package Controller.Fornecedor;
 
-import Controller.DAL.LerPaises;
+import Controller.DAL.LerFornecedores;
 import Model.Fornecedor;
 import Model.Pais;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import Model.UtilizadorFornecedor;
+import Utilidades.BaseDados;
+import Utilidades.Mensagens;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.sql.SQLException;
 
-public class DialogEditarFornecedor implements Initializable {
+public class DialogEditarFornecedor {
 
-    @FXML
-    private Button btnCancelar;
 
-    @FXML
-    private Button btnConfirmar;
 
     @FXML
     private ComboBox<?> comboBoxPais;
 
-    @FXML
-    private Label labelCodigoPostal;
 
-    @FXML
-    private Label labelEmail;
 
-    @FXML
-    private Label labelId;
-
-    @FXML
-    private Label labelLocalidade;
-
-    @FXML
-    private Label labelMorada1;
-
-    @FXML
-    private Label labelMorada2;
-
-    @FXML
-    private Label labelNome;
-
-    @FXML
-    private Label labelPassword;
 
     @FXML
     private TextField textoCodigoPostal;
@@ -73,49 +52,101 @@ public class DialogEditarFornecedor implements Initializable {
 
     @FXML
     private PasswordField textoPassword;
+    public void setFornecedorSelecionado(Fornecedor fornecedor) {
+        textoNome.setText(fornecedor.getNome());
+        textoIdExterno.setText(fornecedor.getIdExterno());
 
-    private TableView<Fornecedor> tableViewFornecedores;
+        UtilizadorFornecedor utilizador = fornecedor.getIdUtilizador();
+        if (utilizador != null) {
+            textoEmail.setText(utilizador.getEmail());
+        }
 
-    private Fornecedor fornecedorSelecionado;
+        // Se desejar exibir a senha, você pode removê-lo ou definir um texto diferente
+        textoPassword.setText("");
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        LerPaises lerPaises = new LerPaises();
+        textoMorada1.setText(fornecedor.getMorada1());
+        textoMorada2.setText(fornecedor.getMorada2());
+        textoLocalidade.setText(fornecedor.getLocalidade());
+        textoCodigoPostal.setText(fornecedor.getCodigoPostal());
+
+
+    }
+    @FXML
+    void clickCancelar(ActionEvent event) {
+
+    }
+
+    @FXML
+    void clickComboPais(ActionEvent event) {
+
+    }
+
+    Fornecedor fornecedor = new Fornecedor();
+
+    @FXML
+    void clickConfirnar(ActionEvent event) throws IOException {
+        // Obter os novos valores dos campos
+        String novoNome = textoNome.getText();
+        String novoIdExterno = textoIdExterno.getText();
+        String novoEmail = textoEmail.getText();
+        String novaMorada1 = textoMorada1.getText();
+        String novaMorada2 = textoMorada2.getText();
+        String novaLocalidade = textoLocalidade.getText();
+        String novoCodigoPostal = textoCodigoPostal.getText();
+        Pais novoPais = (Pais) comboBoxPais.getValue();
+
+
+
+
+        fornecedor.setNome(novoNome);
+        fornecedor.setIdExterno(novoIdExterno);
+
+        if (fornecedor.getIdUtilizador() != null) {
+            fornecedor.getIdUtilizador().setEmail(novoEmail);
+        }
+
+        fornecedor.setMorada1(novaMorada1);
+        fornecedor.setMorada2(novaMorada2);
+        fornecedor.setLocalidade(novaLocalidade);
+        fornecedor.setCodigoPostal(novoCodigoPostal);
+        fornecedor.setIdPais(novoPais);
+
+        atualizarFornecedorNaBaseDeDados(fornecedor);
+
+
+        fecharJanela(event);
+
+
+        Mensagens.Informacao("Edição Concluída", "O fornecedor foi editado com sucesso!");
+    }
+
+
+    private void atualizarFornecedorNaBaseDeDados(Fornecedor fornecedor) throws IOException {
         try {
-            ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+
+            String query = "UPDATE Fornecedor SET " +
+                    "Nome = '" + fornecedor.getNome() + "', " +
+                    "Id_Externo = '" + fornecedor.getIdExterno() + "', " +
+                    "Morada1 = '" + fornecedor.getMorada1() + "', " +
+                    "Morada2 = '" + fornecedor.getMorada2() + "', " +
+                    "Localidade = '" + fornecedor.getLocalidade() + "', " +
+                    "CodigoPostal = '" + fornecedor.getCodigoPostal() + "', " +
+                    //"Id_Pais = '" + novoPais.getId() + "' " +
+                    "WHERE id = " + fornecedor.getId();
+
+            baseDados.Executar(query);
+            baseDados.Desligar();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagens.Erro("Erro na base de dados!", "Erro na atualização na base de dados!");
         }
     }
 
-    @FXML
-    void clickEditar(ActionEvent event) {
-        Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
-        textoNome.setEditable(true);
-        textoIdExterno.setEditable(true);
-        textoMorada1.setEditable(true);
-        textoMorada2.setEditable(true);
-        textoLocalidade.setEditable(true);
-        textoCodigoPostal.setEditable(true);
-    }
+    private void fecharJanela(ActionEvent event) {
 
-    @FXML
-    void clickSalvar(ActionEvent event) {
-        fornecedorSelecionado.setNome(textoNome.getText());
-        fornecedorSelecionado.setIdExterno(textoIdExterno.getText());
-        fornecedorSelecionado.setMorada1(textoMorada1.getText());
-        fornecedorSelecionado.setMorada2(textoMorada2.getText());
-        fornecedorSelecionado.setLocalidade(textoLocalidade.getText());
-        fornecedorSelecionado.setCodigoPostal(textoCodigoPostal.getText());
-
-        Stage stage = (Stage) btnCancelar.getScene().getWindow();
-        stage.close();
-    }
-
-    @FXML
-    void clickCancelar(ActionEvent event) {
-        // Close the edit window without saving changes
-        Stage stage = (Stage) btnCancelar.getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.close();
     }
 }
