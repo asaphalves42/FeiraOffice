@@ -1,6 +1,7 @@
 package TestesUnitarios.Fornecedores;
 
 import Controller.DAL.LerFornecedores;
+import Controller.DAL.LerUtilizadores;
 import Model.Fornecedor;
 import Model.Pais;
 import Model.UtilizadorFornecedor;
@@ -84,6 +85,8 @@ public class LerFornecedoresTest {
         Pais pais = new Pais(1, "Brasil");
         UtilizadorFornecedor utilizador = new UtilizadorFornecedor(1, "fornecedor222@teste.pt", "123");
         Fornecedor fornecedor = new Fornecedor(1, "NomeFornecedor", "Externo123", "Rua Principal", "Rua Secundária", "Feira", "3885-261", pais, utilizador);
+        LerUtilizadores lerUtilizadores = new LerUtilizadores();
+
 
         // Tentativa de adicionar um fornecedor ao banco de dados
         Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
@@ -93,8 +96,9 @@ public class LerFornecedoresTest {
 
         // Agora, tentamos excluir o fornecedor
         boolean exclusaoBemSucedida = lerFornecedores.removerFornecedorDaBaseDeDados(fornecedorInserido.getId());
-
+       boolean exclusaoutilizadorfornecedor= lerUtilizadores.removerUtilizador(utilizador);
         // Verifica se a exclusão foi bem-sucedida
         assertTrue(exclusaoBemSucedida);
+        assertTrue(exclusaoutilizadorfornecedor);
     }
 }
