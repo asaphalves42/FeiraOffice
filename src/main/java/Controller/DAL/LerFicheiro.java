@@ -1,9 +1,7 @@
 package Controller.DAL;
 
 
-import Model.Pais;
-import Model.Produto;
-import Model.Unidade;
+import Model.*;
 import Utilidades.Mensagens;
 import com.example.lp3_g2_feira_office_2023.OrderConfirmation;
 
@@ -20,6 +18,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,6 +43,7 @@ public class LerFicheiro {
     // Função para processar um arquivo XML e extrair informações de uma confirmação de pedido (OrderConfirmation)
     public OrderConfirmation orderConfirmation(File arquivoXml) throws IOException {
         OrderConfirmation orderConfirmation = null;
+        Encomenda encomenda = null;
         try {
 
             // Criar um Unmarshaller
@@ -98,6 +100,7 @@ public class LerFicheiro {
 
             List<OrderConfirmation.OrderConfirmationLineItem> lineItems = orderConfirmation.getOrderConfirmationLineItem();
 
+
             // Iteração pelos itens da confirmação de pedido
             for (OrderConfirmation.OrderConfirmationLineItem lineItem : lineItems) {
 
@@ -113,8 +116,11 @@ public class LerFicheiro {
                 List<Object> productDetails = lineItem.getOrderConfirmationLineItemNumberOrProductOrPriceDetails();
                 System.out.println("Item número: " + lineItem.getOrderConfirmationLineItemNumberOrProductOrPriceDetails().get(0));
 
+                ArrayList<LinhaEncomenda> Linhas = new ArrayList<>();
+
                 // Iteração pelos detalhes do produto
                 for (Object product : productDetails) {
+
 
                     // Verificação do tipo de produto (Product)
                     if (product instanceof OrderConfirmation.OrderConfirmationLineItem.Product) {
@@ -156,6 +162,7 @@ public class LerFicheiro {
 
                                 // Impressão da descrição do produto
                                 System.out.println("Descrição: " + description);
+                                produto.setDescricao(description);
                             }
                         }
 
@@ -176,6 +183,7 @@ public class LerFicheiro {
                         UOM tipo =  priceDetailsObj.getPricePerUnit().getValue().getUOM();
 
                         System.out.println("Tipo: " + tipo + ", Quantidade: " + quantidade);
+                        precoLinha = Double.parseDouble(precoUnitario.toString()) / Double.parseDouble(quantidade.toString());
 
                     }
 
@@ -195,14 +203,20 @@ public class LerFicheiro {
                         String tipoDeMoeda = monetaryAdjustmentObj.getMonetaryAdjustmentStartAmount().getCurrencyValue().getCurrencyType();
 
                         System.out.println("Valor total: " +  valorTotal+ ", Em: " + tipoDeMoeda);
+                        totalIncidencia = Double.parseDouble(valorTotal.toString());
 
                         BigDecimal taxaDeJuros = monetaryAdjustmentObj.getTaxAdjustment().getTaxPercent();
 
                         System.out.println("Taxa de juros: " + taxaDeJuros + "%");
 
                         BigDecimal totalJuros = monetaryAdjustmentObj.getTaxAdjustment().getTaxAmount().getCurrencyValue().getValue();
+                        totalTaxa = Double.parseDouble(totalJuros.toString());
+
                         String tipoMoeda =  monetaryAdjustmentObj.getTaxAdjustment().getTaxAmount().getCurrencyValue().getCurrencyType();
                         String paisTaxa = monetaryAdjustmentObj.getTaxAdjustment().getTaxLocation();
+
+                        LerPaises lerPaises = new LerPaises();
+                        paisLinha = lerPaises.obterPaisPorISO(paisTaxa);
 
                         System.out.println("Total de juros: " + totalJuros
                                 + ", Em: " + tipoMoeda);
@@ -220,6 +234,7 @@ public class LerFicheiro {
                         String tipoQuantidade = quantity.getValue().getUOM().value();
 
                         System.out.println("Quantidade: " + quantidade + ", Tipo: " + tipoQuantidade);
+                        quantidadeLinha = Double.parseDouble(quantidade.toString());
 
                     }
 
@@ -231,6 +246,9 @@ public class LerFicheiro {
 
                         BigDecimal quantidadeKilo = informationalQuantity.getValue().getValue();
                         BigDecimal tipoSheet = informationalQuantity.getValue().getValue();
+
+                        LerUnidade lerUnidade = new LerUnidade();
+                        unidade = lerUnidade.obterUnidadePorDescricaoBaseDados(informationalQuantity.getQuantityType());
 
                         // Impressão da quantidade informativa (NetWeight ou Sheet)
                         if (informationalQuantity.getQuantityType().equals("NetWeight")) {
@@ -254,7 +272,51 @@ public class LerFicheiro {
                     }
 
                 }
-                //Verificar se isso esta correto orderConfirmation = new OrderConfirmation();
+
+
+                LerPaises pais = new LerPaises();
+                Fornecedor fornecedor = new Fornecedor();
+
+                // Verifica se o fornecedor não é nulo e se o IdExterno é igual
+                if (fornecedor.getIdExterno().equals(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier())) {
+
+                    //referencia
+                    String referencia = orderConfirmation.getOrderConfirmationHeader().getOrderConfirmationReference();
+
+                    //Data
+                    String dataString = orderConfirmation.getOrderConfirmationHeader().getOrderConfirmationIssuedDate().getDate().toString();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate data = LocalDate.parse(dataString, formatter);
+
+                    //País
+                    Pais lerPais = pais.obterPaisPorISO(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getNameAddress().getCountry().getISOCountryCode().value());
+
+                    // Define os valores do fornecedor antes de usá-lo
+                    fornecedor.setIdExterno(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier());
+
+                    // Converte o primeiro elemento para inteiro e atribui a sequencia
+                    sequencia = Integer.parseInt(productDetails.get(0).toString());
+
+
+                    encomenda = new Encomenda(0,
+                            referencia,
+                            data,
+                            fornecedor,
+                            lerPais,
+                            Linhas,
+                            0
+                    );
+
+                    Linhas.add(new LinhaEncomenda(0, encomenda, sequencia, produto, precoLinha, quantidadeLinha, unidade, paisLinha, totalTaxa, totalIncidencia));
+
+                }
+
+                LerEncomenda lerEncomenda = new LerEncomenda();
+                int sucesso =  lerEncomenda.adicionarEncomendaBaseDeDados(encomenda);
+
+                if(sucesso == 0) {
+                    Mensagens.Erro("Erro!", "Não foi possível adicionar a encomenda!");
+                }
 
                 System.out.println("-------------------------------------------------------");
             }

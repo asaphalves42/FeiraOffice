@@ -19,18 +19,29 @@ public class Encomenda {
 
     private Pais pais;
 
-    
     private double valorImposto;
     private double valorTotal;
 
-    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, double valorImposto, double valorTotal) {
+    private int estado;
+
+    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, ArrayList<LinhaEncomenda> linhas, int estado) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
         this.fornecedor = fornecedor;
         this.pais = pais;
+        this.linhas = linhas;
+        this.estado = estado;
         this.valorImposto = valorImposto;
         this.valorTotal = valorTotal;
+    }
+
+    public int getEstado() {
+        return estado;
+    }
+
+    public void setEstado(int estado) {
+        this.estado = estado;
     }
 
     public Pais getPais() {
@@ -85,20 +96,27 @@ public class Encomenda {
         this.linhas = linhas;
     }
 
-
-    public double getValorImposto() {
-        return valorImposto;
+    public double getTotal() {
+        double valor = 0;
+        for (LinhaEncomenda linha : this.linhas) {
+            valor += linha.getTotal();
+        }
+        return valor;
     }
 
-    public void setValorImposto(double valorImposto) {
-        this.valorImposto = valorImposto;
+    public double getTotalTaxa() {
+        double valor = 0;
+        for (LinhaEncomenda linha : this.linhas) {
+            valor += linha.getTotalTaxa();
+        }
+        return valor;
     }
 
-    public double getValorTotal() {
-        return valorTotal;
-    }
-
-    public void setValorTotal(double valorTotal) {
-        this.valorTotal = valorTotal;
+    public double getTotalIncidencia() {
+        double valor = 0;
+        for (LinhaEncomenda linha : this.linhas) {
+            valor += linha.getTotalIncidencia();
+        }
+        return valor;
     }
 }

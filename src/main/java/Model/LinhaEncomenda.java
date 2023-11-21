@@ -3,25 +3,36 @@ package Model;
 public class LinhaEncomenda {
 
     private int id;
+    private Encomenda idEncomenda;
     private int sequencia;
     private Produto produto;
     private double preco;
     private double quantidade;
     private Unidade unidade;
-    private LinhaTaxa taxa;
-    private InformacaoQuantidade idInfoQuantidade;
-    private double total;
+    private Pais taxa;
+    private double totalTaxa;
+    private double totalIncidencia;
 
-    public LinhaEncomenda(int id, int sequencia, Produto produto, double preco, double quantidade, Unidade unidade, LinhaTaxa taxa, InformacaoQuantidade idInfoQuantidade, double total) {
+    public LinhaEncomenda(int id, Encomenda idEncomenda, int sequencia, Produto produto, double preco, double quantidade, Unidade unidade, Pais taxa,
+                          double totalTaxa, double totalIncidencia) {
         this.id = id;
+        this.idEncomenda = idEncomenda;
         this.sequencia = sequencia;
         this.produto = produto;
         this.preco = preco;
         this.quantidade = quantidade;
         this.unidade = unidade;
         this.taxa = taxa;
-        this.idInfoQuantidade = idInfoQuantidade;
-        this.total = total;
+        this.totalTaxa = totalTaxa;
+        this.totalIncidencia = totalIncidencia;
+    }
+
+    public Encomenda getIdEncomenda() {
+        return idEncomenda;
+    }
+
+    public void setIdEncomenda(Encomenda idEncomenda) {
+        this.idEncomenda = idEncomenda;
     }
 
     public int getId() {
@@ -72,27 +83,25 @@ public class LinhaEncomenda {
         this.unidade = unidade;
     }
 
-    public LinhaTaxa getTaxa() {
+    public Pais getTaxa() {
         return taxa;
     }
 
-    public void setTaxa(LinhaTaxa taxa) {
+    public void setTaxa(Pais taxa) {
         this.taxa = taxa;
     }
 
-    public InformacaoQuantidade getIdInfoQuantidade() {
-        return idInfoQuantidade;
-    }
-
-    public void setIdInfoQuantidade(InformacaoQuantidade idInfoQuantidade) {
-        this.idInfoQuantidade = idInfoQuantidade;
-    }
 
     public double getTotal() {
-        return total;
+        return totalIncidencia+totalTaxa;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public double getTotalIncidencia() {
+        return totalIncidencia;
     }
+
+    public double getTotalTaxa() {
+        return totalTaxa;
+    }
+
 }
