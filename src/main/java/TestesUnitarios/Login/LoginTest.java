@@ -59,6 +59,21 @@ public class LoginTest {
         assertEquals(UtilizadorAdm.class, utilizador.getClass());
     }
 
+    @Test
+    public void testVerificarOperador() throws SQLException {
+        // Adicionar lógica de simulação de dados diretamente no LerUtilizadores
+        lerUtilizadores.setUtilizadoresSimulados(FXCollections.observableArrayList(
+                new UtilizadorAdm(1, "admin@admin.pt", "123"),
+                new UtilizadorFornecedor(3, "papeldoporto@fornecedor.pt", "123"),
+                new UtilizadorOperador(2, "operador@operador.pt", "123")
+        ));
+
+        // Executar o método a ser testado
+        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador("operador@operador.pt", "123");
+
+        // Verificar se o método retornou o utilizador esperado
+        assertEquals(UtilizadorOperador.class, utilizador.getClass());
+    }
 
 
 }
