@@ -214,6 +214,16 @@ public class LerUtilizadores {
         }
         return false;
     }
+    private ObservableList<Utilizador> utilizadoresSimulados;
+    private Utilizador utilizadorSimulado;
+
+    public void setUtilizadoresSimulados(ObservableList<Utilizador> utilizadores) {
+        this.utilizadoresSimulados = utilizadores;
+    }
+
+    public void setUtilizadorSimulado(Utilizador utilizador) {
+        this.utilizadorSimulado = utilizador;
+    }
 
 
 }

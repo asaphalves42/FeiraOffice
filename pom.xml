@@ -30,10 +30,19 @@
             <artifactId>javafx-web</artifactId>
             <version>19</version>
         </dependency>
+
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
             <version>19</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>3.3</version> <!-- Use a versão mais recente disponível -->
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.controlsfx</groupId>
