@@ -130,9 +130,18 @@ public class MenuFuncoesFornecedor {
             tableViewFornecedores.refresh();
         }
     }
+<<<<<<< HEAD
+=======
 
     @FXML
+>>>>>>> 940dc0c7af07375aa79f14eb5bb46271460927e0
 
+    /**
+     * Manipula o evento de clique no botão de eliminar fornecedor.
+     * Remove o fornecedor selecionado da base de dados e da lista local,
+     * além de remover o utilizador associado ao fornecedor, se a remoção for confirmada.
+     */
+    @FXML
     void clickEliminar() {
         Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
 

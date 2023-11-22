@@ -6,4 +6,6 @@ public class UtilizadorAdm extends Utilizador {
         super(id, email, password, TipoUtilizador.Administrador);
     }
 
+
+
 }
