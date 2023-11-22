@@ -15,6 +15,61 @@ import static Model.TipoUtilizador.Operador;
 
 
 public class LerUtilizadores {
+    /**
+     * Lê os utilizadores da base de dados e os armazena em uma lista.
+     * <p>
+     * Esta função se conecta a uma base de dados, lê os utilizadores armazenados nela
+     * e cria objetos de utilizador correspondentes, com base no valor do campo "id_role".
+     * Os objetos de utilizador são adicionados a uma lista chamada "utilizadores".
+     *
+     * @return true se a leitura for bem-sucedida, false se ocorrer um erro.
+     */
+    public ObservableList<Utilizador> lerUtilizadoresDaBaseDeDados() throws IOException {
+
+        ObservableList<Utilizador> utilizador= FXCollections.observableArrayList();
+
+        try {
+            BaseDados basedados = new BaseDados();
+            basedados.Ligar();
+            ResultSet resultado = basedados.Selecao("SELECT * FROM Utilizador");
+
+            while (resultado.next()) {
+                Utilizador aux;
+
+                // enquanto existirem registros, vou ler 1 a 1
+                int idRole = resultado.getInt("id_role");
+
+                if (idRole == 1) {
+                    aux = new UtilizadorAdm(
+                            resultado.getInt("id_util"),
+                            resultado.getString("username"),
+                            resultado.getString("password")
+                    );
+                    utilizador.add(aux);
+
+                } else if (idRole == 2) {
+                    aux = new UtilizadorOperador(
+                            resultado.getInt("id_util"),
+                            resultado.getString("username"),
+                            resultado.getString("password")
+                    );
+                    utilizador.add(aux);
+                } else if (idRole == 3) {
+                    aux = new UtilizadorFornecedor(
+                            resultado.getInt("id_util"),
+                            resultado.getString("username"),
+                            resultado.getString("password")
+                    );
+                    utilizador.add(aux);
+                }
+            }
+            basedados.Desligar();
+            return utilizador; // A leitura retorna o utilizador
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            return null; // A leitura falhou
+        }
+    }
 
     public ObservableList<Utilizador> lerOperadoresDaBaseDados() throws IOException {
 
@@ -48,6 +103,19 @@ public class LerUtilizadores {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
             return null; // A leitura falhou
         }
+    }
+
+    /**
+     * Função que verifica se username ja existe na base de dados
+     * @param userName 'username' ou endereço eletrónico recebido do utilizador
+     * @return false se existir um igual
+     * @throws IOException caso ocorra uma execção
+     */
+    public boolean verificarUserName(String userName) throws IOException {
+        for (Utilizador util : lerUtilizadoresDaBaseDeDados()) {
+            return !util.getEmail().equals(userName);
+        }
+        return false;
     }
 
 

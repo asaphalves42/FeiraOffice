@@ -28,6 +28,12 @@ import java.util.List;
 public class LerFicheiro {
 
     private final JAXBContext jaxbContext;
+    private Utilizador utilizador;
+
+    public void iniciaData(Utilizador utilizador) throws IOException {
+        this.utilizador = utilizador;
+
+    }
 
     public LerFicheiro() {
 
@@ -40,9 +46,11 @@ public class LerFicheiro {
         }
     }
 
+
     // Função para processar um arquivo XML e extrair informações de uma confirmação de pedido (OrderConfirmation)
-    public OrderConfirmation orderConfirmation(File arquivoXml) throws IOException {
+    public OrderConfirmation orderConfirmation(File arquivoXml, Utilizador utilizador) throws IOException {
         OrderConfirmation orderConfirmation = null;
+        iniciaData(utilizador);
         Encomenda encomenda = null;
         try {
 
@@ -275,10 +283,17 @@ public class LerFicheiro {
 
 
                 LerPaises pais = new LerPaises();
-                Fornecedor fornecedor = new Fornecedor();
+                LerFornecedores fornecedor = new LerFornecedores();
+                Fornecedor fornecedorLogado = null;
+                for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
+                    if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
+                        fornecedorLogado = fornec;
+                    }
+                }
+                assert fornecedorLogado != null;
 
                 // Verifica se o fornecedor não é nulo e se o IdExterno é igual
-                if (fornecedor.getIdExterno().equals(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier())) {
+                if (fornecedorLogado.getIdExterno().equals(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier())) {
 
                     //referencia
                     String referencia = orderConfirmation.getOrderConfirmationHeader().getOrderConfirmationReference();
@@ -292,7 +307,7 @@ public class LerFicheiro {
                     Pais lerPais = pais.obterPaisPorISO(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getNameAddress().getCountry().getISOCountryCode().value());
 
                     // Define os valores do fornecedor antes de usá-lo
-                    fornecedor.setIdExterno(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier());
+                    fornecedorLogado.setIdExterno(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier());
 
                     // Converte o primeiro elemento para inteiro e atribui a sequencia
                     sequencia = Integer.parseInt(productDetails.get(0).toString());
@@ -301,7 +316,7 @@ public class LerFicheiro {
                     encomenda = new Encomenda(0,
                             referencia,
                             data,
-                            fornecedor,
+                            fornecedorLogado,
                             lerPais,
                             Linhas,
                             0

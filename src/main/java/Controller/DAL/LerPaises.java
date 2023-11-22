@@ -70,7 +70,7 @@ public class LerPaises {
         try {
             BaseDados basedados = new BaseDados();
             basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Pais WHERE ISO = " + ISO);
+            ResultSet resultado = basedados.Selecao("SELECT * FROM Pais WHERE ISO = '" + ISO + "'");
 
             if (resultado.next()) {
                 pais = criarObjeto(resultado);
@@ -82,9 +82,9 @@ public class LerPaises {
         return pais;
     }
 
-    private Pais criarObjeto(ResultSet dados) throws IOException, SQLException {
+    private Pais criarObjeto(ResultSet dados) throws SQLException {
         return new Pais(
-                dados.getInt("Id"),
+                dados.getInt("id"),
                 dados.getString("Nome"),
                 dados.getString("ISO"),
                 dados.getDouble("Taxa"),

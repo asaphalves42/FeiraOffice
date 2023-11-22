@@ -132,7 +132,7 @@ public class MenuFornecedor {
         //Validação do id do fornecedor
         if (arquivoSelecionado != null) {
             LerFicheiro lerFicheiro = new LerFicheiro();
-            OrderConfirmation orderConfirmation = lerFicheiro.orderConfirmation(arquivoSelecionado);
+            OrderConfirmation orderConfirmation = lerFicheiro.orderConfirmation(arquivoSelecionado, utilizador);
 
             // Obter o ID do fornecedor logado
             assert fornecedorLogado != null;
