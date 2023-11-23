@@ -56,10 +56,7 @@ public class LerPaises {
             ResultSet resultado = basedados.Selecao("SELECT * FROM Pais WHERE id = " + id);
 
             if (resultado.next()) {
-                pais = new Pais(
-                        resultado.getInt("Id"),
-                        resultado.getString("Nome")
-                );
+                pais = criarObjeto(resultado);
             }
             basedados.Desligar();
         } catch (SQLException e) {
@@ -67,4 +64,32 @@ public class LerPaises {
         }
         return pais;
     }
+
+    public Pais obterPaisPorISO(String ISO) throws IOException {
+        Pais pais = null;
+        try {
+            BaseDados basedados = new BaseDados();
+            basedados.Ligar();
+            ResultSet resultado = basedados.Selecao("SELECT * FROM Pais WHERE ISO = '" + ISO + "'");
+
+            if (resultado.next()) {
+                pais = criarObjeto(resultado);
+            }
+            basedados.Desligar();
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return pais;
+    }
+
+    private Pais criarObjeto(ResultSet dados) throws SQLException {
+        return new Pais(
+                dados.getInt("id"),
+                dados.getString("Nome"),
+                dados.getString("ISO"),
+                dados.getDouble("Taxa"),
+                dados.getString("Moeda")
+        );
+    }
+
 }

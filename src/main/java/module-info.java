@@ -2,7 +2,6 @@ module com.example.lp3_g2_feira_office_ {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
-    requires javafx.base;
 
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
@@ -14,41 +13,49 @@ module com.example.lp3_g2_feira_office_ {
     requires java.sql;
     requires junit;
     requires java.desktop;
+    requires eu.hansolo.fx.countries;
+    requires eu.hansolo.fx.heatmap;
+    requires eu.hansolo.toolboxfx;
+    requires eu.hansolo.toolbox;
+    requires java.xml.bind;
+    requires jakarta.xml.bind;
     requires org.mockito;
+
+    opens com.example.lp3_g2_feira_office_2023 to jakarta.xml.bind;
+
+
+    requires javafx.graphics;
+
+
+
+
+
+
 
     exports Model;
     opens Model to javafx.base;
 
     exports Utilidades;
+
     opens Utilidades to javafx.base;
 
-    exports TestesUnitarios to javafx.graphics, javafx.fxml, junit, org.mockito; // Adicionei javafx.graphics aqui
-    opens TestesUnitarios to javafx.graphics, javafx.fxml, junit, org.mockito; // Adicionei javafx.graphics aqui
-    exports TestesUnitarios.Login;
-    opens TestesUnitarios.Login to org.mockito;
-
-    exports TestesUnitarios.Fornecedores to junit, org.mockito;
-
+    // Outros exports e opens...
+    exports TestesUnitarios;
+    opens TestesUnitarios to javafx.fxml;
     exports Main;
     opens Main to javafx.fxml;
-
     exports Controller.Fornecedor;
     opens Controller.Fornecedor to javafx.fxml;
-    opens Controller.DAL to org.mockito;
-
-
     exports Controller.Login;
     opens Controller.Login to javafx.fxml;
-
     exports Controller.Administrador;
     opens Controller.Administrador to javafx.fxml;
-
     exports Controller.Operador;
     opens Controller.Operador to javafx.fxml;
-
     exports Controller.Produtos;
     opens Controller.Produtos to javafx.fxml;
-
     exports Controller.MensagensDeErro;
     opens Controller.MensagensDeErro to javafx.fxml;
+    exports Controller.Encomenda;
+    opens Controller.Encomenda to javafx.fxml;
 }

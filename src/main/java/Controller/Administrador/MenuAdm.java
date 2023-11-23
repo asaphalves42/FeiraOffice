@@ -41,7 +41,14 @@ public class MenuAdm {
 
     @FXML
     void clickAprovar() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Encomenda/menuAprovarStock.fxml"));
+            AnchorPane root = loader.load();
 
+            anchorPaneMenuAdm.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -99,6 +106,12 @@ public class MenuAdm {
 
     }
 
+    /**
+     * Inicializa a instância da classe com as informações do utilizador.
+     * Este construtor recebe um objeto Utilizador para configurar a instância.
+     *
+     * @param utilizador O objeto Utilizador contendo as informações necessárias.
+     */
     public void iniciaData(Utilizador utilizador) {
         this.utilizador = utilizador;
         System.out.println(utilizador.getEmail());

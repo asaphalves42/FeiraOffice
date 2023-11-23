@@ -1,26 +1,55 @@
 package Model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Encomenda {
     private int id;
+
     private String referencia;
+
     private LocalDate data;
+
     private Fornecedor fornecedor;
     private ArrayList<LinhaEncomenda> linhas;
-    private Moeda moeda;
+
+    private Pais pais;
+
     private double valorImposto;
     private double valorTotal;
 
-    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Moeda moeda, double valorImposto, double valorTotal) {
+    private int estado;
+
+    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, ArrayList<LinhaEncomenda> linhas, int estado) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
         this.fornecedor = fornecedor;
-        this.moeda = moeda;
+        this.pais = pais;
+        this.linhas = linhas;
+        this.estado = estado;
         this.valorImposto = valorImposto;
         this.valorTotal = valorTotal;
+    }
+
+    public int getEstado() {
+        return estado;
+    }
+
+    public void setEstado(int estado) {
+        this.estado = estado;
+    }
+
+    public Pais getPais() {
+        return pais;
+    }
+
+    public void setPais(Pais pais) {
+        this.pais = pais;
     }
 
     public int getId() {
@@ -63,27 +92,31 @@ public class Encomenda {
         this.linhas.add(linha);
     }
 
-    public Moeda getMoeda() {
-        return moeda;
+    public void setLinhas(ArrayList<LinhaEncomenda> linhas) {
+        this.linhas = linhas;
     }
 
-    public void setMoeda(Moeda moeda) {
-        this.moeda = moeda;
+    public double getTotal() {
+        double valor = 0;
+        for (LinhaEncomenda linha : this.linhas) {
+            valor += linha.getTotal();
+        }
+        return valor;
     }
 
-    public double getValorImposto() {
-        return valorImposto;
+    public double getTotalTaxa() {
+        double valor = 0;
+        for (LinhaEncomenda linha : this.linhas) {
+            valor += linha.getTotalTaxa();
+        }
+        return valor;
     }
 
-    public void setValorImposto(double valorImposto) {
-        this.valorImposto = valorImposto;
-    }
-
-    public double getValorTotal() {
-        return valorTotal;
-    }
-
-    public void setValorTotal(double valorTotal) {
-        this.valorTotal = valorTotal;
+    public double getTotalIncidencia() {
+        double valor = 0;
+        for (LinhaEncomenda linha : this.linhas) {
+            valor += linha.getTotalIncidencia();
+        }
+        return valor;
     }
 }

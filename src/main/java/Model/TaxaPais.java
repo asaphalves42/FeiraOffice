@@ -1,10 +1,10 @@
 package Model;
 
 public class TaxaPais {
-    private int id;
-    private String sigla;
-    private double valor;
-    private String tipo;
+        private int id;
+        private String sigla;
+        private double valor;
+        private String tipo;
 
     public TaxaPais(int id, String sigla, double valor, String tipo) {
         this.id = id;

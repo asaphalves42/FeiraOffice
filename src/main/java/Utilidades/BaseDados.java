@@ -60,6 +60,24 @@ public class BaseDados {
         return false;
     }
 
+    public int ExecutarInsert(String query) {
+        try {
+            //se já foi invocado o ligar e a ligação está valida então envia o comando da query
+            if (connection != null && !connection.isClosed()) {
+                Statement script = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+                script.executeUpdate(query); //executa o script e aguarda true ou false (boolean)
+                ResultSet rs = script.getGeneratedKeys();
+                if(rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
+
 
 
 

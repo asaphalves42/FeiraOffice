@@ -11,12 +11,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static Model.TipoUtilizador.Operador;
 
 
 public class LerUtilizadores {
-
-    ;
-
     /**
      * Lê os utilizadores da base de dados e os armazena em uma lista.
      * <p>
@@ -73,6 +71,54 @@ public class LerUtilizadores {
         }
     }
 
+    public ObservableList<Utilizador> lerOperadoresDaBaseDados() throws IOException {
+
+        ObservableList<Utilizador> utilizadores = FXCollections.observableArrayList();
+
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador WHERE id_role = 2");
+
+            while (resultado.next()) {
+                Utilizador aux;
+
+                // Obtém o ID do role do resultado
+                int idRole = resultado.getInt("id_role");
+
+                // Verifica se o ID do role é 2 (indicando um operador)
+                if (idRole == 2) {
+                    aux = new UtilizadorOperador(
+                            resultado.getInt("id_util"),
+                            resultado.getString("username"),
+                            resultado.getString("password")
+                    );
+                    utilizadores.add(aux);
+                }
+            }
+
+            baseDados.Desligar();
+            return utilizadores; // A leitura retorna a lista de utilizadores
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            return null; // A leitura falhou
+        }
+    }
+
+    /**
+     * Função que verifica se username ja existe na base de dados
+     * @param userName 'username' ou endereço eletrónico recebido do utilizador
+     * @return false se existir um igual
+     * @throws IOException caso ocorra uma execção
+     */
+    public boolean verificarUserName(String userName) throws IOException {
+        for (Utilizador util : lerUtilizadoresDaBaseDeDados()) {
+            return !util.getEmail().equals(userName);
+        }
+        return false;
+    }
+
+
 
     /**
      * Essa Função realiza uma query na base de dados baseado nos paramentros endereço eletrónico e senha e com base no id_role, retorna-me um tipo de utilizador.
@@ -110,13 +156,14 @@ public class LerUtilizadores {
                         resultado.getInt("id_util"),
                         resultado.getString("username"),
                         resultado.getString("password")
+
                 );
             } else if (idRole == 2){
                 utilizador = new UtilizadorOperador(
                         resultado.getInt("id_util"),
                         resultado.getString("username"),
                         resultado.getString("password")
-                );
+                );return utilizador;
             } else if (idRole == 3) {
                 utilizador = new UtilizadorFornecedor(
                         resultado.getInt("id_util"),
@@ -168,6 +215,31 @@ public class LerUtilizadores {
         return util; // Retorna o utilizador fornecedor encontrado ou null em caso de erro ou se não for encontrado.
     }
 
+    public boolean removerOperadorDaBaseDeDados(int utilizadorID) throws SQLException {
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+
+            String query = "DELETE FROM Utilizador WHERE id_role =2 ";
+            boolean linhasAfetadas = baseDados.Executar(query);
+
+            baseDados.Desligar();
+
+            if (linhasAfetadas) {
+                return true; // Retorna true se alguma linha foi afetada (remoção bem-sucedida)
+            }
+
+        } catch (Exception e) {
+            try {
+                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            return false; // Retorna false se alguma linha não foi afetada (remoção falhou)
+        }
+        return false;
+    }
+
 
     /**
      * Adiciona um operador à base de dados com o nome de utilizador e senha fornecidos.
@@ -196,6 +268,13 @@ public class LerUtilizadores {
         return false;
     }
 
+    /**
+     * Função que recebe um fornecedor, e deleta o mesmo a partir do ID fornecido.
+     *
+     * @param fornecedor fornecedor obtido a partir do utilizador
+     * @return true se a query for bem sucedida
+     * @throws IOException se acontecer uma exceção de IO
+     */
     public boolean removerUtilizador(UtilizadorFornecedor fornecedor) throws IOException {
         try {
             BaseDados baseDados = new BaseDados();
@@ -226,4 +305,7 @@ public class LerUtilizadores {
     }
 
 
-}
+    }
+
+
+

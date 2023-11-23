@@ -1,6 +1,8 @@
 package Controller.Operador;
 
+import Controller.DAL.LerFornecedores;
 import Controller.DAL.LerUtilizadores;
+import Model.Fornecedor;
 import Model.Utilizador;
 import Model.UtilizadorOperador;
 import Utilidades.DataSingleton;
@@ -12,15 +14,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+
+import static Model.TipoUtilizador.Operador;
 
 public class MenuFuncOperador{
 
@@ -46,7 +49,7 @@ public class MenuFuncOperador{
     public void tabelaUtilizadoresOperador() throws IOException {
 
         LerUtilizadores lerUtilizadoresOperador = new LerUtilizadores();
-        utilizador.addAll(lerUtilizadoresOperador.lerUtilizadoresDaBaseDeDados());
+        utilizador.addAll(lerUtilizadoresOperador.lerOperadoresDaBaseDados());
 
 
 
@@ -93,9 +96,33 @@ public class MenuFuncOperador{
     }
 
     @FXML
-    void clickEliminar(ActionEvent event) {
+    void clickEliminar() {
+        Utilizador operadorSelecionado = tableViewOperador.getSelectionModel().getSelectedItem();
 
+        if (operadorSelecionado != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmação");
+            alert.setHeaderText("Eliminar operador");
+            alert.setContentText("Tem certeza que deseja eliminar o operador selecionado?");
+
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    try {
+                        LerUtilizadores lerUtilizadores = new LerUtilizadores();
+                        boolean sucesso = lerUtilizadores.removerOperadorDaBaseDeDados(operadorSelecionado.getId());
+
+                        if (sucesso) {
+                            utilizador.remove(operadorSelecionado);
+                        }
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
+
 
 
 

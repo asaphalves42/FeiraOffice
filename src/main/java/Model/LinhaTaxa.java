@@ -3,14 +3,11 @@ package Model;
 public class LinhaTaxa {
     private int id;
     private TaxaPais taxaPais;
-    private Pais pais;
-    private double valor;
 
-    public LinhaTaxa(int id, TaxaPais taxaPais, Pais pais, double valor) {
+    public LinhaTaxa(int id, TaxaPais taxaPais) {
         this.id = id;
         this.taxaPais = taxaPais;
-        this.pais = pais;
-        this.valor = valor;
+
     }
 
     public int getId() {
@@ -29,19 +26,4 @@ public class LinhaTaxa {
         this.taxaPais = taxaPais;
     }
 
-    public Pais getPais() {
-        return pais;
-    }
-
-    public void setPais(Pais pais) {
-        this.pais = pais;
-    }
-
-    public double getValor() {
-        return valor;
-    }
-
-    public void setValor(double valor) {
-        this.valor = valor;
-    }
 }
