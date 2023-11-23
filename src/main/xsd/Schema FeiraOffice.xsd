@@ -82,7 +82,7 @@
 														<xs:complexType>
 															<xs:simpleContent>
 																<xs:extension base="xs:decimal">
-																	<xs:attribute type="xs:string" name="CurrencyType"/>
+																	<xs:attribute type="CurrencyType" name="CurrencyType"/>
 																</xs:extension>
 															</xs:simpleContent>
 														</xs:complexType>
@@ -113,7 +113,7 @@
 														<xs:complexType>
 															<xs:simpleContent>
 																<xs:extension base="xs:decimal">
-																	<xs:attribute type="xs:string" name="CurrencyType"/>
+																	<xs:attribute type="CurrencyType" name="CurrencyType"/>
 																</xs:extension>
 															</xs:simpleContent>
 														</xs:complexType>
@@ -132,7 +132,7 @@
 																	<xs:complexType>
 																		<xs:simpleContent>
 																			<xs:extension base="xs:decimal">
-																				<xs:attribute type="xs:string" name="CurrencyType"/>
+																				<xs:attribute type="CurrencyType" name="CurrencyType"/>
 																			</xs:extension>
 																		</xs:simpleContent>
 																	</xs:complexType>
@@ -188,7 +188,7 @@
 											<xs:complexType>
 												<xs:simpleContent>
 													<xs:extension base="xs:decimal">
-														<xs:attribute type="xs:string" name="CurrencyType"/>
+														<xs:attribute type="CurrencyType" name="CurrencyType"/>
 													</xs:extension>
 												</xs:simpleContent>
 											</xs:complexType>
@@ -219,6 +219,13 @@
 			<xs:enumeration value="FR"/>
 			<xs:enumeration value="DE"/>
 			<xs:enumeration value="PL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CurrencyType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="EUR"/>
+			<xs:enumeration value="GBP"/>
+			<xs:enumeration value="PLN"/>
 		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>

@@ -208,7 +208,7 @@ public class LerFicheiro {
                         System.out.println("Ajuste de taxas, linha: " + linha);
 
                         BigDecimal valorTotal = monetaryAdjustmentObj.getMonetaryAdjustmentStartAmount().getCurrencyValue().getValue();
-                        String tipoDeMoeda = monetaryAdjustmentObj.getMonetaryAdjustmentStartAmount().getCurrencyValue().getCurrencyType();
+                        String tipoDeMoeda = monetaryAdjustmentObj.getMonetaryAdjustmentStartAmount().getCurrencyValue().getCurrencyType().value();
 
                         System.out.println("Valor total: " +  valorTotal+ ", Em: " + tipoDeMoeda);
                         totalIncidencia = Double.parseDouble(valorTotal.toString());
@@ -220,7 +220,7 @@ public class LerFicheiro {
                         BigDecimal totalJuros = monetaryAdjustmentObj.getTaxAdjustment().getTaxAmount().getCurrencyValue().getValue();
                         totalTaxa = Double.parseDouble(totalJuros.toString());
 
-                        String tipoMoeda =  monetaryAdjustmentObj.getTaxAdjustment().getTaxAmount().getCurrencyValue().getCurrencyType();
+                        String tipoMoeda =  monetaryAdjustmentObj.getTaxAdjustment().getTaxType();
                         String paisTaxa = monetaryAdjustmentObj.getTaxAdjustment().getTaxLocation();
 
                         LerPaises lerPaises = new LerPaises();
@@ -299,6 +299,7 @@ public class LerFicheiro {
                     String referencia = orderConfirmation.getOrderConfirmationHeader().getOrderConfirmationReference();
 
                     //Data
+                    //Verificar parse
                     String dataString = orderConfirmation.getOrderConfirmationHeader().getOrderConfirmationIssuedDate().getDate().toString();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     LocalDate data = LocalDate.parse(dataString, formatter);
