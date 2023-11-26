@@ -113,9 +113,6 @@ public class MenuFuncoesFornecedor {
     void clickEditar() throws IOException {
         Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
 
-
-
-
         if (fornecedorSelecionado != null) {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/DialogEditarFornecedor.fxml"));
@@ -124,10 +121,16 @@ public class MenuFuncoesFornecedor {
             stage.setScene(scene);
 
 
+            DialogEditarFornecedor controller = fxmlLoader.getController();
+
+
+            controller.setFornecedorSelecionado(fornecedorSelecionado);
+
             stage.showAndWait();
 
-            // Atualize a tabela após a edição
-            tableViewFornecedores.refresh();
+            
+            int selectedIndex = tableViewFornecedores.getSelectionModel().getSelectedIndex();
+            fornecedores.set(selectedIndex, fornecedorSelecionado);
         }
     }
 

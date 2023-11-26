@@ -4,6 +4,9 @@ import eu.hansolo.toolbox.properties.StringProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Fornecedor {
+
+    private UtilizadorFornecedor utilizador;
+
     private int id;
     private String idExterno;
     private String nome;
@@ -109,5 +112,13 @@ public class Fornecedor {
     public String getIdUtilizadorString() {
         return getIdUtilizador().getTipo().name();
 
+    }
+
+    public UtilizadorFornecedor getUtilizador() {
+        return utilizador;
+    }
+
+    public void setUtilizador(UtilizadorFornecedor utilizador) {
+        this.utilizador = utilizador;
     }
 }

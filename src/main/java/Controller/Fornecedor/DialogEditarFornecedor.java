@@ -1,34 +1,27 @@
 package Controller.Fornecedor;
 
 import Controller.DAL.LerFornecedores;
+import Controller.DAL.LerPaises;
 import Model.Fornecedor;
 import Model.Pais;
 import Model.UtilizadorFornecedor;
-import Utilidades.BaseDados;
-import Utilidades.Mensagens;
+import Utilidades.*;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class DialogEditarFornecedor {
 
-
-
     @FXML
-    private ComboBox<?> comboBoxPais;
-
-
-
-
+    private ComboBox<Pais> comboBoxPais; // Corrigido para usar o tipo apropriado
+    private final DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
     @FXML
     private TextField textoCodigoPostal;
 
@@ -52,7 +45,20 @@ public class DialogEditarFornecedor {
 
     @FXML
     private PasswordField textoPassword;
+
+    // Removido a inicialização do fornecedor aqui
+    private Fornecedor fornecedorEmEdicao;
+
+    public void initialize() throws IOException {
+        LerPaises lerPaises = new LerPaises();
+        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises();
+        comboBoxPais.setItems(listaDePaises);
+    }
+
+    @FXML
     public void setFornecedorSelecionado(Fornecedor fornecedor) {
+        this.fornecedorEmEdicao = fornecedor;
+
         textoNome.setText(fornecedor.getNome());
         textoIdExterno.setText(fornecedor.getIdExterno());
 
@@ -61,63 +67,76 @@ public class DialogEditarFornecedor {
             textoEmail.setText(utilizador.getEmail());
         }
 
-        // Se desejar exibir a senha, você pode removê-lo ou definir um texto diferente
-        textoPassword.setText("");
-
+        textoPassword.setText(""); // Se desejar exibir a senha, ajuste conforme necessário
         textoMorada1.setText(fornecedor.getMorada1());
         textoMorada2.setText(fornecedor.getMorada2());
         textoLocalidade.setText(fornecedor.getLocalidade());
         textoCodigoPostal.setText(fornecedor.getCodigoPostal());
-
-
     }
+
     @FXML
     void clickCancelar(ActionEvent event) {
-
+        fecharJanela(event);
     }
 
     @FXML
     void clickComboPais(ActionEvent event) {
-
+        // Lógica para manipular a seleção do país, se necessário
     }
-
-    Fornecedor fornecedor = new Fornecedor();
 
     @FXML
     void clickConfirnar(ActionEvent event) throws IOException {
-        // Obter os novos valores dos campos
-        String novoNome = textoNome.getText();
-        String novoIdExterno = textoIdExterno.getText();
-        String novoEmail = textoEmail.getText();
-        String novaMorada1 = textoMorada1.getText();
-        String novaMorada2 = textoMorada2.getText();
-        String novaLocalidade = textoLocalidade.getText();
-        String novoCodigoPostal = textoCodigoPostal.getText();
-        Pais novoPais = (Pais) comboBoxPais.getValue();
+        try {
+            String nome = textoNome.getText();
+            String idExterno = textoIdExterno.getText();
+            String email = textoEmail.getText(); // validar email para o formato correto
+            String password = textoPassword.getText();
+            String morada1 = textoMorada1.getText();
+            String morada2 = textoMorada2.getText();
+            String localidade = textoLocalidade.getText();
+            String codigoPostal = textoCodigoPostal.getText();
+            Pais pais = comboBoxPais.getSelectionModel().getSelectedItem();
 
 
+            // Verificar se algum campo obrigatório está vazio
+            if (nome.isEmpty() || email.isEmpty() || idExterno.isEmpty() || password.isEmpty() || morada1.isEmpty() || localidade.isEmpty() || codigoPostal.isEmpty() || pais == null) {
+                // Exibir uma mensagem de erro ao utilizador
+                Mensagens.Erro("Campos obrigatórios!", "Por favor, preencha todos os campos obrigatórios.");
+                return;
+            }
 
+            ValidarEmail validarEmail = new ValidarEmail();
+            // Validar o formato do e-mail
+            if (!validarEmail.isValidEmailAddress(email)) {
+                Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido.");
+                return;
+            }
 
-        fornecedor.setNome(novoNome);
-        fornecedor.setIdExterno(novoIdExterno);
+            // Obtenha o fornecedor existente da instância compartilhada ou crie um novo se for nulo
+            Fornecedor fornecedorExistente = dadosCompartilhados.getDataFornecedor();
+            if (fornecedorExistente == null) {
+                fornecedorExistente = new Fornecedor(); // ou o construtor apropriado
+            }
 
-        if (fornecedor.getIdUtilizador() != null) {
-            fornecedor.getIdUtilizador().setEmail(novoEmail);
+            // Restante do código permanece inalterado
+
+            //chamar a DAL para editar o fornecedor
+            LerFornecedores editarFornecedor = new LerFornecedores();
+            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(fornecedorExistente);
+
+            if (fornecedorEditado == null) {
+                Mensagens.Erro("Erro", "Erro ao editar fornecedor!");
+            }
+
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+
+            Mensagens.Informacao("Fornecedor editado", "As informações do fornecedor foram editadas com sucesso!");
+
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro na edição de fornecedor!");
+            e.printStackTrace();
         }
-
-        fornecedor.setMorada1(novaMorada1);
-        fornecedor.setMorada2(novaMorada2);
-        fornecedor.setLocalidade(novaLocalidade);
-        fornecedor.setCodigoPostal(novoCodigoPostal);
-        fornecedor.setIdPais(novoPais);
-
-        atualizarFornecedorNaBaseDeDados(fornecedor);
-
-
-        fecharJanela(event);
-
-
-        Mensagens.Informacao("Edição Concluída", "O fornecedor foi editado com sucesso!");
     }
 
 
@@ -133,7 +152,7 @@ public class DialogEditarFornecedor {
                     "Morada2 = '" + fornecedor.getMorada2() + "', " +
                     "Localidade = '" + fornecedor.getLocalidade() + "', " +
                     "CodigoPostal = '" + fornecedor.getCodigoPostal() + "', " +
-                    //"Id_Pais = '" + novoPais.getId() + "' " +
+                    "Id_Pais = '" + fornecedor.getIdPais().getId() + "' " +
                     "WHERE id = " + fornecedor.getId();
 
             baseDados.Executar(query);
@@ -145,7 +164,6 @@ public class DialogEditarFornecedor {
     }
 
     private void fecharJanela(ActionEvent event) {
-
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.close();
     }

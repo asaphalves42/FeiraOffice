@@ -137,5 +137,41 @@ public class LerFornecedores {
         }
         return false;
     }
+
+
+    /**
+     * Atualiza um fornecedor na base de dados.
+     *
+     * @param fornecedor O fornecedor a ser atualizado.
+     * @return O fornecedor atualizado, ou null se ocorrer um erro durante a operação.
+     * @throws IOException Se ocorrer um erro durante a operação.
+     */
+    public Fornecedor atualizarFornecedorNaBaseDeDados(Fornecedor fornecedor) throws IOException {
+
+        BaseDados baseDados = new BaseDados();
+        baseDados.Ligar();
+
+        String query = "UPDATE Fornecedor SET " +
+                "Nome = '" + fornecedor.getNome() + "', " +
+                "Id_Externo = '" + fornecedor.getIdExterno() + "', " +
+                "Morada1 = '" + fornecedor.getMorada1() + "', " +
+                "Morada2 = '" + fornecedor.getMorada2() + "', " +
+                "Localidade = '" + fornecedor.getLocalidade() + "', " +
+                "CodigoPostal = '" + fornecedor.getCodigoPostal() + "', " +
+                "Id_Pais = '" + fornecedor.getIdPais().getId() + "' " +
+                "WHERE id = " + fornecedor.getId();
+
+        boolean sucesso = baseDados.Executar(query);
+
+        baseDados.Desligar();
+
+        if (sucesso) {
+            return fornecedor; // Retorna o fornecedor atualizado
+        } else {
+            // Se a atualização falhou, você pode querer lançar uma exceção ou lidar de outra forma
+            throw new IOException("Erro na atualização na base de dados!");
+        }
+
+    }
 }
 
