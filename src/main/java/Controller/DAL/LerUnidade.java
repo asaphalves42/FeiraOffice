@@ -34,7 +34,7 @@ public class LerUnidade {
         try {
             BaseDados basedados = new BaseDados();
             basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Unidade WHERE Descricao = " + id);
+            ResultSet resultado = basedados.Selecao("SELECT * FROM Unidade WHERE id = " + id);
 
             if (resultado.next()) {
                 unidade = criarObjeto(resultado);

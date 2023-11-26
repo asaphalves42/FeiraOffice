@@ -21,7 +21,7 @@ public class LerFornecedores {
     public ObservableList<Fornecedor> lerFornecedoresDaBaseDeDados() throws IOException {
 
         ObservableList<Fornecedor> fornecedores = FXCollections.observableArrayList();
-
+        Fornecedor fornecedor = null;
         try {
 
             BaseDados basedados = new BaseDados();
@@ -30,36 +30,59 @@ public class LerFornecedores {
 
 
             while (resultado.next()) { //Ler os forncedores da base de dados, um a um e cria um objeto novo
+               fornecedor = criarObjeto(resultado);
 
-                int idPais = resultado.getInt("Id_Pais");
-                int idUtilizador = resultado.getInt("Id_Utilizador");
-
-                LerPaises lerPaises = new LerPaises();
-                Pais pais = lerPaises.obterPaisPorId(idPais);
-
-                LerUtilizadores lerUtilizores = new LerUtilizadores();
-                UtilizadorFornecedor utilizador = lerUtilizores.obterUtilizadorPorIdFornecedor(idUtilizador);
-
-                Fornecedor aux = new Fornecedor(
-                        resultado.getInt("id"),
-                        resultado.getString("Nome"),
-                        resultado.getString("Id_Externo"),
-                        resultado.getString("Morada1"),
-                        resultado.getString("Morada2"),
-                        resultado.getString("Localidade"),
-                        resultado.getString("CodigoPostal"),
-                        pais,
-                        utilizador
-                );
-                fornecedores.add(aux);
+                fornecedores.add(fornecedor);
 
             }
+
             basedados.Desligar();
             return fornecedores; // A leitura foi bem-sucedida
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
             return null; // A leitura falhou, retorna false.
         }
+    }
+
+    public Fornecedor obterFornecedorPorId(String idFornecedor) throws IOException {
+        Fornecedor fornecedor = null;
+        try {
+            BaseDados basedados = new BaseDados();
+            basedados.Ligar();
+            ResultSet resultado = basedados.Selecao("SELECT * FROM Fornecedor WHERE Id_Externo = '" + idFornecedor + "'");
+
+            if (resultado.next()) {
+                fornecedor = criarObjeto(resultado);
+
+            }
+            basedados.Desligar();
+    } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return fornecedor;
+    }
+
+    private Fornecedor criarObjeto(ResultSet dados) throws IOException, SQLException {
+        int idPais = dados.getInt("Id_Pais");
+        int idUtilizador = dados.getInt("Id_Utilizador");
+
+        LerPaises lerPaises = new LerPaises();
+        Pais pais = lerPaises.obterPaisPorId(idPais);
+
+        LerUtilizadores lerUtilizores = new LerUtilizadores();
+        UtilizadorFornecedor utilizador = lerUtilizores.obterUtilizadorPorIdFornecedor(idUtilizador);
+
+        return new Fornecedor(
+                dados.getInt("id"),
+                dados.getString("Nome"),
+                dados.getString("Id_Externo"),
+                dados.getString("Morada1"),
+                dados.getString("Morada2"),
+                dados.getString("Localidade"),
+                dados.getString("CodigoPostal"),
+                pais,
+                utilizador
+        );
     }
 
     /**

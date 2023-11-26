@@ -19,6 +19,8 @@ public class Encomenda {
 
     private Pais pais;
 
+    private double valorIncidencia;
+
     private double valorImposto;
     private double valorTotal;
 
@@ -33,6 +35,46 @@ public class Encomenda {
         this.linhas = linhas;
         this.estado = estado;
         this.valorImposto = valorImposto;
+        this.valorTotal = valorTotal;
+        this.valorIncidencia = valorIncidencia;
+
+
+    }
+
+    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais,double totalTaxa, double totalIncidencia, double total, int estado) {
+        this.id = id;
+        this.referencia = referencia;
+        this.data = data;
+        this.fornecedor = fornecedor;
+        this.pais = pais;
+        this.valorImposto = totalTaxa;
+        this.valorIncidencia = totalIncidencia;
+        this.valorTotal = total;
+        this.estado = estado;
+
+    }
+
+    public double getValorIncidencia() {
+        return valorIncidencia;
+    }
+
+    public void setValorIncidencia(double valorIncidencia) {
+        this.valorIncidencia = valorIncidencia;
+    }
+
+    public double getValorImposto() {
+        return valorImposto;
+    }
+
+    public void setValorImposto(double valorImposto) {
+        this.valorImposto = valorImposto;
+    }
+
+    public double getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(double valorTotal) {
         this.valorTotal = valorTotal;
     }
 
@@ -81,7 +123,6 @@ public class Encomenda {
     }
 
     public void setFornecedor(Fornecedor Fornecedor) {
-        this.fornecedor = fornecedor;
     }
 
     public ArrayList<LinhaEncomenda> getLinhas() {
@@ -95,6 +136,7 @@ public class Encomenda {
     public void setLinhas(ArrayList<LinhaEncomenda> linhas) {
         this.linhas = linhas;
     }
+
 
     public double getTotal() {
         double valor = 0;
@@ -114,9 +156,9 @@ public class Encomenda {
 
     public double getTotalIncidencia() {
         double valor = 0;
-        for (LinhaEncomenda linha : this.linhas) {
-            valor += linha.getTotalIncidencia();
-        }
+            for (LinhaEncomenda linha : this.linhas) {
+                valor += linha.getTotalIncidencia();
+            }
         return valor;
     }
 }

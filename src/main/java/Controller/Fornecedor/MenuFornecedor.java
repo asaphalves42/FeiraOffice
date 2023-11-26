@@ -134,6 +134,10 @@ public class MenuFornecedor {
             LerFicheiro lerFicheiro = new LerFicheiro();
             OrderConfirmation orderConfirmation = lerFicheiro.orderConfirmation(arquivoSelecionado, utilizador);
 
+            if (orderConfirmation == null){
+                return;
+            }
+
             // Obter o ID do fornecedor logado
             assert fornecedorLogado != null;
             String idFornecedor = fornecedorLogado.getIdExterno();
