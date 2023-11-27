@@ -2,6 +2,7 @@ package Controller.Encomenda;
 
 import Controller.DAL.LerEncomenda;
 import Model.*;
+import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class AprovarStock {
+
+    BaseDados baseDados = new BaseDados();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -61,7 +64,7 @@ public class AprovarStock {
         try {
 
             LerEncomenda lerEncomenda = new LerEncomenda();
-            encomendas.addAll(lerEncomenda.lerEncomendaDaBaseDeDados());
+            encomendas.addAll(lerEncomenda.lerEncomendaDaBaseDeDados(baseDados));
 
 
             if (!encomendas.isEmpty()) {
@@ -140,7 +143,7 @@ public class AprovarStock {
                 LerEncomenda lerEncomenda = new LerEncomenda();
 
 
-                linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomendaBaseDados(encomenda.getId()));
+                linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomendaBaseDados(baseDados, encomenda.getId()));
 
                 if (!linhasEncomenda.isEmpty()) {
                     TableColumn<LinhaEncomenda, Integer> colunaId = new TableColumn<>("ID");
@@ -205,7 +208,7 @@ public class AprovarStock {
                                 if (unidade == null || empty) {
                                     setText(null);
                                 } else {
-                                    setText(String.valueOf(unidade.getId())); // ID do unidade
+                                    setText(unidade.getDescricao()); // descrição da unidade
                                 }
                             }
                         };
@@ -251,14 +254,5 @@ public class AprovarStock {
 
     }
 
-    /*
-    public void clickSelecionarCabecalho(javafx.scene.input.MouseEvent mouseEvent) throws IOException {
-
-       // int idEncomenda = tableViewEncomendas.getSelectionModel().getSelectedItem().getId();
-
-        tabelaLinhasEncomenda(tableViewEncomendas.getSelectionModel().getSelectedItem());
-
-    }
-     */
 
 }

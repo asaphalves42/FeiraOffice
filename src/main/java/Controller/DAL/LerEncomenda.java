@@ -13,12 +13,11 @@ import java.sql.SQLException;
 
 public class LerEncomenda {
 
-    public ObservableList<LinhaEncomenda> lerLinhaEncomendaBaseDados(int idEncomenda) throws IOException {
+    public ObservableList<LinhaEncomenda> lerLinhaEncomendaBaseDados(BaseDados baseDados, int idEncomenda) throws IOException {
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
         LinhaEncomenda linhaEncomenda = null;
         try {
-            BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
             ResultSet resultado = baseDados.Selecao("SELECT * FROM Linha_Encomenda WHERE Id_Encomenda = " + idEncomenda);
 
@@ -68,11 +67,11 @@ public class LerEncomenda {
         );
     }
 
-    public ObservableList<Encomenda> lerEncomendaDaBaseDeDados() throws IOException {
+    public ObservableList<Encomenda> lerEncomendaDaBaseDeDados(BaseDados baseDados) throws IOException {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-            BaseDados baseDados = new BaseDados();
+
             baseDados.Ligar();
             ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Estado = 0");
 

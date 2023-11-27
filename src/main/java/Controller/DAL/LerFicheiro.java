@@ -2,6 +2,7 @@ package Controller.DAL;
 
 
 import Model.*;
+import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import com.example.lp3_g2_feira_office_2023.OrderConfirmation;
 
@@ -28,6 +29,8 @@ public class LerFicheiro {
 
     private final JAXBContext jaxbContext;
     private Utilizador utilizador;
+
+    BaseDados baseDados = new BaseDados();
 
     public void iniciaData(Utilizador utilizador) throws IOException {
         this.utilizador = utilizador;
@@ -64,7 +67,7 @@ public class LerFicheiro {
             //verificar se encomenda ja foi inserida
             LerEncomenda lerEncomenda = new LerEncomenda();
 
-            for (Encomenda enc : lerEncomenda.lerEncomendaDaBaseDeDados()) {
+            for (Encomenda enc : lerEncomenda.lerEncomendaDaBaseDeDados(baseDados)) {
                 if (enc.getReferencia().equals(orderConfirmationReference)) {
 
                     // Encomenda já inserida, exibir mensagem de erro e retornar
