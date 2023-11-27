@@ -29,6 +29,7 @@ public class AprovarStock {
     @FXML
     private Button btnRecusar;
 
+
     @FXML
     private TableView<Encomenda> tableViewEncomendas;
 
@@ -41,10 +42,9 @@ public class AprovarStock {
 
     public void initialize() throws IOException {
         tabelaEncomendas();
-        //tabelaLinhasEncomenda(null);
-
 
     }
+
 
     public void tabelaEncomendas() throws IOException {
 
@@ -119,18 +119,20 @@ public class AprovarStock {
 
     }
 
+
+
     public void tabelaLinhasEncomenda(Encomenda encomenda) throws IOException {
         try {
 
             if (encomenda != null) {
+
                 // Ler apenas as linhas de encomenda para a encomenda selecionada
                 LerEncomenda lerEncomenda = new LerEncomenda();
 
-                List<LinhaEncomenda> linhasEncomendaParaEncomenda = lerEncomenda.lerLinhaEncomendaBaseDados(encomenda.getId());
 
-                //linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomendaBaseDados());
+                linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomendaBaseDados(encomenda.getId()));
 
-                if (!linhasEncomendaParaEncomenda.isEmpty()) {
+                if (!linhasEncomenda.isEmpty()) {
                     TableColumn<LinhaEncomenda, Integer> colunaId = new TableColumn<>("ID");
                     TableColumn<LinhaEncomenda, Encomenda> colunaIdEncomenda = new TableColumn<>("Id da encomenda");
                     TableColumn<LinhaEncomenda, Integer> colunaSequencia = new TableColumn<>("Sequência");
@@ -153,10 +155,18 @@ public class AprovarStock {
                     colunaTotalIncidencia.setCellValueFactory(new PropertyValueFactory<>("totalIncidencia"));
                     colunaTotalLinha.setCellValueFactory(new PropertyValueFactory<>("totalLinha"));
 
-                    tableViewLinhasEncomenda.getColumns().setAll(colunaId, colunaIdEncomenda, colunaSequencia, colunaidProduto, colunaQuantidade,
-                            colunaIdUnidade, colunaIdPais, colunaTotalTaxa, colunaTotalIncidencia, colunaTotalLinha);
+                    tableViewLinhasEncomenda.getColumns().add(colunaId);
+                    tableViewLinhasEncomenda.getColumns().add(colunaIdEncomenda);
+                    tableViewLinhasEncomenda.getColumns().add(colunaSequencia);
+                    tableViewLinhasEncomenda.getColumns().add(colunaidProduto);
+                    tableViewLinhasEncomenda.getColumns().add(colunaQuantidade);
+                    tableViewLinhasEncomenda.getColumns().add(colunaIdUnidade);
+                    tableViewLinhasEncomenda.getColumns().add(colunaIdPais);
+                    tableViewLinhasEncomenda.getColumns().add(colunaTotalTaxa);
+                    tableViewLinhasEncomenda.getColumns().add(colunaTotalIncidencia);
+                    tableViewLinhasEncomenda.getColumns().add(colunaTotalLinha);
 
-                    tableViewLinhasEncomenda.setItems(FXCollections.observableList(linhasEncomendaParaEncomenda));
+                    tableViewLinhasEncomenda.setItems(linhasEncomenda);
                 }
 
             }
@@ -180,5 +190,11 @@ public class AprovarStock {
 
     }
 
+    public void clickSelecionarCabecalho(javafx.scene.input.MouseEvent mouseEvent) throws IOException {
 
+        int idEncomenda = tableViewEncomendas.getSelectionModel().getSelectedItem().getId();
+
+        tabelaLinhasEncomenda(tableViewEncomendas.getSelectionModel().getSelectedItem());
+
+    }
 }

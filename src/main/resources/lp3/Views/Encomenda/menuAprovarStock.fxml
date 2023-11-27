@@ -15,7 +15,7 @@
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="417.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
                      <children>
-                        <TableView fx:id="tableViewEncomendas" layoutX="-1.0" layoutY="40.0" prefHeight="305.0" prefWidth="911.0" />
+                        <TableView fx:id="tableViewEncomendas" layoutX="-1.0" layoutY="40.0" onMouseClicked="#clickSelecionarCabecalho" prefHeight="305.0" prefWidth="911.0" />
                         <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ENCOMENDAS PENDENTES:" wrappingWidth="240.4765625">
                            <font>
                               <Font name="System Bold" size="18.0" />
