@@ -12,6 +12,7 @@ public class LinhaEncomenda {
     private Pais taxa;
     private final double totalTaxa;
     private final double totalIncidencia;
+    private double totalLinha;
 
     public LinhaEncomenda(int id, Encomenda idEncomenda, int sequencia, Produto produto, double preco, double quantidade, Unidade unidade, Pais taxa,
                           double totalTaxa, double totalIncidencia) {
@@ -25,6 +26,15 @@ public class LinhaEncomenda {
         this.taxa = taxa;
         this.totalTaxa = totalTaxa;
         this.totalIncidencia = totalIncidencia;
+        this.totalLinha = totalLinha;
+    }
+
+    public double getTotalLinha() {
+        return totalLinha;
+    }
+
+    public void setTotalLinha(double totalLinha) {
+        this.totalLinha = totalLinha;
     }
 
     public Encomenda getIdEncomenda() {

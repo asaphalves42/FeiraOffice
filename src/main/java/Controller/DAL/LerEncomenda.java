@@ -13,21 +13,19 @@ import java.sql.SQLException;
 
 public class LerEncomenda {
 
-    public ObservableList<LinhaEncomenda> lerLinhaEncomendaBaseDados() throws IOException {
+    public ObservableList<LinhaEncomenda> lerLinhaEncomendaBaseDados(int idEncomenda) throws IOException {
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
         LinhaEncomenda linhaEncomenda = null;
         try {
             BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Linha_Encomenda");
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Linha_Encomenda WHERE Id_Encomenda = " + idEncomenda);
 
-            if (resultado.next()) {
+            while (resultado.next()) {
                 linhaEncomenda = criarObjetoLinha(resultado);
-
+                linhasEncomenda.add(linhaEncomenda);
             }
-
-            linhasEncomenda.add(linhaEncomenda);
 
             baseDados.Desligar();
 
@@ -35,52 +33,6 @@ public class LerEncomenda {
             throw new RuntimeException(e);
         }
         return linhasEncomenda;
-    }
-
-    public ObservableList<Encomenda> lerEncomendaDaBaseDeDados() throws IOException {
-        ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
-
-        try {
-            BaseDados baseDados = new BaseDados();
-            baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda");
-
-            while (resultado.next()) {
-                Encomenda encomenda = criarObjetoEncomenda(resultado);
-                encomendas.add(encomenda);
-            }
-
-            baseDados.Desligar();
-
-            return encomendas;
-
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
-            return null; // ou lançar uma exceção, dependendo do comportamento desejado
-        }
-    }
-
-
-
-    private Encomenda criarObjetoEncomenda(ResultSet dados) throws IOException, SQLException {
-        LerFornecedores lerFornecedores = new LerFornecedores();
-        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_fornecedor"));
-
-        LerPaises lerPaises = new LerPaises();
-        Pais pais = lerPaises.obterPaisPorId(dados.getInt("Id_Pais"));
-
-
-        return new Encomenda(
-                dados.getInt("Id"),
-                dados.getString("Referencia"),
-                dados.getDate("Data").toLocalDate(),
-                fornecedor,
-                pais,
-                dados.getDouble("Total_Taxa"),
-                dados.getDouble("Total_Incidencia"),
-                dados.getDouble("Total"),
-                dados.getInt("Estado")
-        );
     }
 
     private LinhaEncomenda criarObjetoLinha(ResultSet dados) throws IOException, SQLException {
@@ -116,40 +68,49 @@ public class LerEncomenda {
         );
     }
 
-    public Encomenda obterEncomendaPorReferencia(String referencia) throws IOException {
-        Encomenda encomenda = null;
-        try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Encomenda WHERE Referencia = " + referencia);
+    public ObservableList<Encomenda> lerEncomendaDaBaseDeDados() throws IOException {
+        ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
-            if (resultado.next()) {
-                encomenda = criarObjetoEncomenda(resultado);
+        try {
+            BaseDados baseDados = new BaseDados();
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Estado = 0");
+
+            while (resultado.next()) {
+                Encomenda encomenda = criarObjetoEncomenda(resultado);
+                encomendas.add(encomenda);
             }
-            basedados.Desligar();
+
+            baseDados.Desligar();
+
+            return encomendas;
+
         } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
+            return null; // ou lançar uma exceção, dependendo do comportamento desejado
         }
-        return encomenda;
     }
 
-    public Encomenda obterEncomendaPorId(String id) throws IOException {
-        Encomenda encomenda = null;
-        try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Encomenda WHERE Id = " + id);
+    private Encomenda criarObjetoEncomenda(ResultSet dados) throws IOException, SQLException {
+        LerFornecedores lerFornecedores = new LerFornecedores();
+        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_fornecedor"));
 
-            if (resultado.next()) {
-                encomenda = criarObjetoEncomenda(resultado);
-            }
-            basedados.Desligar();
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-        }
-        return encomenda;
+        LerPaises lerPaises = new LerPaises();
+        Pais pais = lerPaises.obterPaisPorId(dados.getInt("Id_Pais"));
+
+
+        return new Encomenda(
+                dados.getInt("Id"),
+                dados.getString("Referencia"),
+                dados.getDate("Data").toLocalDate(),
+                fornecedor,
+                pais,
+                dados.getDouble("Total_Taxa"),
+                dados.getDouble("Total_Incidencia"),
+                dados.getDouble("Total"),
+                dados.getInt("Estado")
+        );
     }
-
 
     public int adicionarEncomendaBaseDeDados(Encomenda encomenda) throws IOException {
 
@@ -241,5 +202,39 @@ public class LerEncomenda {
                 encomenda.getTotalTaxa() + "," +
                 encomenda.getTotalIncidencia() + "," +
                 encomenda.getTotal() + ", 0)";
+    }
+
+    public Encomenda obterEncomendaPorReferencia(String referencia) throws IOException {
+        Encomenda encomenda = null;
+        try {
+            BaseDados basedados = new BaseDados();
+            basedados.Ligar();
+            ResultSet resultado = basedados.Selecao("SELECT * FROM Encomenda WHERE Referencia = " + referencia);
+
+            if (resultado.next()) {
+                encomenda = criarObjetoEncomenda(resultado);
+            }
+            basedados.Desligar();
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return encomenda;
+    }
+
+    public Encomenda obterEncomendaPorId(String id) throws IOException {
+        Encomenda encomenda = null;
+        try {
+            BaseDados basedados = new BaseDados();
+            basedados.Ligar();
+            ResultSet resultado = basedados.Selecao("SELECT * FROM Encomenda WHERE Id = " + id);
+
+            if (resultado.next()) {
+                encomenda = criarObjetoEncomenda(resultado);
+            }
+            basedados.Desligar();
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return encomenda;
     }
 }

@@ -60,12 +60,17 @@ public class LerFicheiro {
             // Acesso à referência da confirmação de pedido
             String orderConfirmationReference = orderConfirmation.getOrderConfirmationHeader().getOrderConfirmationReference();
             System.out.println("OrderConfirmationReference: " + orderConfirmationReference);
+
             //verificar se encomenda ja foi inserida
             LerEncomenda lerEncomenda = new LerEncomenda();
 
-            if(true) {
-                Mensagens.Erro("Duplicado", "Encomenda já foi integrada");
-                return null;
+            for (Encomenda enc : lerEncomenda.lerEncomendaDaBaseDeDados()) {
+                if (enc.getReferencia().equals(orderConfirmationReference)) {
+
+                    // Encomenda já inserida, exibir mensagem de erro e retornar
+                    Mensagens.Erro("Duplicado!", "Encomenda já foi integrada!");
+                    return null;
+                }
             }
 
             // Acesso à data de emissão da confirmação de pedido
@@ -127,6 +132,7 @@ public class LerFicheiro {
 
                 //referencia
                 String referencia = orderConfirmation.getOrderConfirmationHeader().getOrderConfirmationReference();
+
                 //Data
                 // Converta os valores para inteiros
                 int yearValue = year.intValue();
@@ -137,6 +143,7 @@ public class LerFicheiro {
                 LocalDate data = LocalDate.of(yearValue, monthValue, dayValue);
 
                 //País
+
                 Pais lerPais = pais.obterPaisPorISO(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getNameAddress().getCountry().getISOCountryCode().value());
 
                 // Define os valores do fornecedor antes de usá-lo
@@ -167,7 +174,10 @@ public class LerFicheiro {
 
                     // Converte o primeiro elemento para inteiro e atribui a sequencia
                     sequencia = Integer.parseInt(productDetails.get(0).toString());
+
                     LerUnidade lerUnidade = new LerUnidade();
+                    LerPaises lerPaises = new LerPaises();
+
                     // Iteração pelos detalhes do produto
                     for (Object product : productDetails) {
 
@@ -267,7 +277,10 @@ public class LerFicheiro {
                             String tipoMoeda = monetaryAdjustmentObj.getTaxAdjustment().getTaxType();
                             String paisTaxa = monetaryAdjustmentObj.getTaxAdjustment().getTaxLocation();
 
-                            LerPaises lerPaises = new LerPaises();
+                            if(lerPaises.obterPaisPorISO(paisTaxa) == null){
+                                Mensagens.Erro("País", "País (" + paisTaxa + ") existente na linha número " + sequencia + " não é válida.");
+                                return null;
+                            }
                             paisLinha = lerPaises.obterPaisPorISO(paisTaxa);
 
                             System.out.println("Total de juros: " + totalJuros
@@ -286,7 +299,7 @@ public class LerFicheiro {
                             String tipoQuantidade = quantity.getValue().getUOM().value();
 
                             if(lerUnidade.obterUnidadePorDescricaoBaseDados(tipoQuantidade) == null){
-                                Mensagens.Erro("Unidade", "Unidade ("+tipoQuantidade+") existente na linha número "+ sequencia +" não é válida.");
+                                Mensagens.Erro("Unidade", "Unidade (" + tipoQuantidade + ") existente na linha número " + sequencia + " não é válida.");
                                 return null;
                             }
 
@@ -305,7 +318,7 @@ public class LerFicheiro {
 
                             BigDecimal quantidadeKilo = informationalQuantity.getValue().getValue();
                             BigDecimal tipoSheet = informationalQuantity.getValue().getValue();
-                            //unidade = lerUnidade.obterUnidadePorDescricaoBaseDados(informationalQuantity.getValue().getUOM().value());
+
 
                             // Impressão da quantidade informativa (NetWeight ou Sheet)
                             if (informationalQuantity.getQuantityType().equals("NetWeight")) {
@@ -338,6 +351,8 @@ public class LerFicheiro {
 
                 if(sucesso == 0) {
                     Mensagens.Erro("Erro!", "Não foi possível adicionar a encomenda!");
+                }else{
+                    Mensagens.Informacao("Sucesso!","Encomenda enviada com sucesso, aguarda aprovação!");
                 }
 
                 System.out.println("-------------------------------------------------------");

@@ -121,6 +121,7 @@ public class MenuFornecedor {
 
     @FXML
     void clickUpload() throws IOException {
+
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
         for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
@@ -147,14 +148,8 @@ public class MenuFornecedor {
 
             // Validar se o ID é o mesmo do fornecedor
             if (!idFornecedor.equals(idFornecedorFicheiro)) {
-                Mensagens.Erro("Erro!", "ID do fornecedor não coincide com o do ficheiro!. Não foi possível fazer upload da encomenda");
+                Mensagens.Erro("Erro!", "ID do fornecedor não coincide com o do ficheiro. Não foi possível fazer upload da encomenda");
             }
-
-
-            //Validar se o id é o mesmo do fornecedor
-            //validar se o id da encomenda ja existe...
-
-
 
         } else {
             Mensagens.Erro("Erro!", "Erro ao ler o ficheiro!");

@@ -36,7 +36,14 @@ public class MenuOperador {
 
     @FXML
     void clickAprovar(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Encomenda/menuAprovarStock.fxml"));
+            AnchorPane root = loader.load();
 
+            anchorPaneOperador.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
