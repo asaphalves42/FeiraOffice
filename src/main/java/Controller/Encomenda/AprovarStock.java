@@ -149,7 +149,7 @@ public class AprovarStock {
                     TableColumn<LinhaEncomenda, Integer> colunaId = new TableColumn<>("ID");
                     TableColumn<LinhaEncomenda, Encomenda> colunaIdEncomenda = new TableColumn<>("Id da encomenda");
                     TableColumn<LinhaEncomenda, Integer> colunaSequencia = new TableColumn<>("Sequência");
-                    TableColumn<LinhaEncomenda, Produto> colunaidProduto = new TableColumn<>("Id do produto");
+                    TableColumn<LinhaEncomenda, Produto> colunaidProduto = new TableColumn<>("Descrição");
                     TableColumn<LinhaEncomenda, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
                     TableColumn<LinhaEncomenda, Unidade> colunaIdUnidade = new TableColumn<>("Unidade");
                     TableColumn<LinhaEncomenda, Pais> colunaIdPais = new TableColumn<>("Taxa do país");

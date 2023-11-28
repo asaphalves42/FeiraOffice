@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LerFornecedores {
+    BaseDados baseDados = new BaseDados();
 
     /**
      * Lê a lista de fornecedores a partir da base de dados e retorna uma lista observável de fornecedores.
@@ -67,7 +68,7 @@ public class LerFornecedores {
         int idUtilizador = dados.getInt("Id_Utilizador");
 
         LerPaises lerPaises = new LerPaises();
-        Pais pais = lerPaises.obterPaisPorId(idPais);
+        Pais pais = lerPaises.obterPaisPorId(baseDados,idPais);
 
         LerUtilizadores lerUtilizores = new LerUtilizadores();
         UtilizadorFornecedor utilizador = lerUtilizores.obterUtilizadorPorIdFornecedor(idUtilizador);

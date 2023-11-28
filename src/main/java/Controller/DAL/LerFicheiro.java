@@ -31,6 +31,11 @@ public class LerFicheiro {
     private Utilizador utilizador;
 
     BaseDados baseDados = new BaseDados();
+    LerUnidade lerUnidade = new LerUnidade();
+    LerPaises lerPaises = new LerPaises();
+    LerEncomenda lerEncomenda = new LerEncomenda();
+    LerPaises pais = new LerPaises();
+    LerFornecedores fornecedor = new LerFornecedores();
 
     public void iniciaData(Utilizador utilizador) throws IOException {
         this.utilizador = utilizador;
@@ -65,8 +70,6 @@ public class LerFicheiro {
             System.out.println("OrderConfirmationReference: " + orderConfirmationReference);
 
             //verificar se encomenda ja foi inserida
-            LerEncomenda lerEncomenda = new LerEncomenda();
-
             for (Encomenda enc : lerEncomenda.lerEncomendaDaBaseDeDados(baseDados)) {
                 if (enc.getReferencia().equals(orderConfirmationReference)) {
 
@@ -120,8 +123,7 @@ public class LerFicheiro {
 
             List<OrderConfirmation.OrderConfirmationLineItem> lineItems = orderConfirmation.getOrderConfirmationLineItem();
 
-            LerPaises pais = new LerPaises();
-            LerFornecedores fornecedor = new LerFornecedores();
+
             Fornecedor fornecedorLogado = null;
             for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
                 if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
@@ -146,8 +148,7 @@ public class LerFicheiro {
                 LocalDate data = LocalDate.of(yearValue, monthValue, dayValue);
 
                 //País
-
-                Pais lerPais = pais.obterPaisPorISO(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getNameAddress().getCountry().getISOCountryCode().value());
+                Pais lerPais = pais.obterPaisPorISO(baseDados, orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getNameAddress().getCountry().getISOCountryCode().value());
 
                 // Define os valores do fornecedor antes de usá-lo
                 fornecedorLogado.setIdExterno(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier());
@@ -178,8 +179,6 @@ public class LerFicheiro {
                     // Converte o primeiro elemento para inteiro e atribui a sequencia
                     sequencia = Integer.parseInt(productDetails.get(0).toString());
 
-                    LerUnidade lerUnidade = new LerUnidade();
-                    LerPaises lerPaises = new LerPaises();
 
                     // Iteração pelos detalhes do produto
                     for (Object product : productDetails) {
@@ -197,7 +196,6 @@ public class LerFicheiro {
 
                             // Iteração pela lista para acessar identificadores e descrições
                             for (Object identifierOrDescription : productIdentifierOrProductDescription) {
-
 
                                 // Verificação se é um identificador de produto (ProductIdentifier)
                                 if (identifierOrDescription instanceof OrderConfirmation.OrderConfirmationLineItem.Product.ProductIdentifier) {
@@ -280,11 +278,11 @@ public class LerFicheiro {
                             String tipoMoeda = monetaryAdjustmentObj.getTaxAdjustment().getTaxType();
                             String paisTaxa = monetaryAdjustmentObj.getTaxAdjustment().getTaxLocation();
 
-                            if(lerPaises.obterPaisPorISO(paisTaxa) == null){
+                            if(lerPaises.obterPaisPorISO(baseDados, paisTaxa) == null){
                                 Mensagens.Erro("País", "País (" + paisTaxa + ") existente na linha número " + sequencia + " não é válida.");
                                 return null;
                             }
-                            paisLinha = lerPaises.obterPaisPorISO(paisTaxa);
+                            paisLinha = lerPaises.obterPaisPorISO(baseDados, paisTaxa);
 
                             System.out.println("Total de juros: " + totalJuros
                                     + ", Em: " + tipoMoeda);
@@ -350,7 +348,7 @@ public class LerFicheiro {
                 }
 
 
-                int sucesso =  lerEncomenda.adicionarEncomendaBaseDeDados(encomenda);
+                int sucesso =  lerEncomenda.adicionarEncomendaBaseDeDados(baseDados,encomenda);
 
                 if(sucesso == 0) {
                     Mensagens.Erro("Erro!", "Não foi possível adicionar a encomenda!");
