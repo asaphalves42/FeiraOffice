@@ -20,13 +20,14 @@ module com.example.lp3_g2_feira_office_ {
     requires java.xml.bind;
     requires jakarta.xml.bind;
     requires org.mockito;
+    exports TestesUnitarios.Login;
     opens com.example.lp3_g2_feira_office_2023 to jakarta.xml.bind;
 
 
     requires javafx.graphics;
     requires annotations;
 
-
+    exports TestesUnitarios.Login;
     exports Model;
     opens Model to javafx.base;
 

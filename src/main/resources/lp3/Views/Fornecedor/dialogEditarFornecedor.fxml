@@ -86,7 +86,7 @@
             <TextField fx:id="textoIdExterno" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <Button fx:id="btnConfirmar" layoutX="129.0" layoutY="334.0" mnemonicParsing="false" onAction="#clickConfirnar" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="CONFIRMAR">
+      <Button fx:id="btnConfirmar" layoutX="129.0" layoutY="334.0" mnemonicParsing="false" onAction="#clickConfirmar" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="CONFIRMAR">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

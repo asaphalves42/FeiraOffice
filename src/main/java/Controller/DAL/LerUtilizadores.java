@@ -111,12 +111,25 @@ public class LerUtilizadores {
      * @return false se existir um igual
      * @throws IOException caso ocorra uma execção
      */
+
+
+
     public boolean verificarUserName(String userName) throws IOException {
-        for (Utilizador util : lerUtilizadoresDaBaseDeDados()) {
-            return !util.getEmail().equals(userName);
+        LerUtilizadores lerUtilizadores = new LerUtilizadores();
+
+        // Obtém a lista de utilizadores da base de dados
+        ObservableList<Utilizador> utilizadores = lerUtilizadores.lerUtilizadoresDaBaseDeDados();
+
+        // Verifica se o email já existe na base de dados
+        for (Utilizador util : utilizadores) {
+            if (util.getEmail().equals(userName)) {
+                return false;
+            }
         }
-        return false;
+
+        return true;
     }
+
 
 
 
