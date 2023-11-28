@@ -36,6 +36,7 @@ public class LoginTest {
                 new UtilizadorAdm(1, "admin@admin.pt", "123"),          // Simula um administrador
                 new UtilizadorFornecedor(2, "fornecedor", "senha"),  // Simula um fornecedor
                 new UtilizadorOperador(2, "fornecedor", "senha")
+
         ));
 
         // Executar o método a ser testado
@@ -51,7 +52,8 @@ public class LoginTest {
         lerUtilizadores.setUtilizadoresSimulados(FXCollections.observableArrayList(
                 new UtilizadorAdm(1, "admin@admin.pt", "123"),
                 new UtilizadorFornecedor(3, "papeldoporto@fornecedor.pt", "123"),
-                new UtilizadorOperador(2, "fornecedor", "senha")
+                new UtilizadorOperador(2, "fornecedor", "senha"),
+                new UtilizadorFornecedor(3,"rjr@isep.ipp.pt", "luc")
         ));
 
         // Executar o método a ser testado
