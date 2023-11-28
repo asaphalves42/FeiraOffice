@@ -11,17 +11,17 @@ import java.sql.SQLException;
 
 public class LerUnidade {
 
-    public Unidade obterUnidadePorDescricaoBaseDados(String UOM) throws IOException {
+    public Unidade obterUnidadePorDescricaoBaseDados(BaseDados baseDados, String UOM) throws IOException {
         Unidade unidade = null;
         try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Unidade WHERE Descricao = '" + UOM + "'");
+
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Unidade WHERE Descricao = '" + UOM + "'");
 
             if (resultado.next()) {
                 unidade = criarObjeto(resultado);
             }
-            basedados.Desligar();
+            baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
         }
@@ -29,17 +29,16 @@ public class LerUnidade {
 
     }
 
-    public Unidade obterUnidadePorIdBaseDados(int id) throws IOException {
+    public Unidade obterUnidadePorIdBaseDados(BaseDados baseDados, int id) throws IOException {
         Unidade unidade = null;
         try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Unidade WHERE id = " + id);
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Unidade WHERE id = " + id);
 
             if (resultado.next()) {
                 unidade = criarObjeto(resultado);
             }
-            basedados.Desligar();
+            baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
         }

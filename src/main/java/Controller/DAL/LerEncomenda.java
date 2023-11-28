@@ -44,13 +44,13 @@ public class LerEncomenda {
 
         Produto produtoEncontrado = null;
 
-        for (Produto produto : lerProduto.lerProdutosBaseDados()) {
+        for (Produto produto : lerProduto.lerProdutosBaseDados(baseDados)) {
             if (produto.getId().equals(dados.getString("Id_Produto"))) {
                 produtoEncontrado = produto;
             }
         }
 
-        Unidade unidade = lerUnidade.obterUnidadePorIdBaseDados(dados.getInt("Id_Unidade"));
+        Unidade unidade = lerUnidade.obterUnidadePorIdBaseDados(baseDados, dados.getInt("Id_Unidade"));
 
         Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais_Taxa"));
 

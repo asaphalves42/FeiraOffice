@@ -299,12 +299,12 @@ public class LerFicheiro {
                             BigDecimal quantidade = quantity.getValue().getValue();
                             String tipoQuantidade = quantity.getValue().getUOM().value();
 
-                            if(lerUnidade.obterUnidadePorDescricaoBaseDados(tipoQuantidade) == null){
+                            if(lerUnidade.obterUnidadePorDescricaoBaseDados(baseDados,tipoQuantidade) == null){
                                 Mensagens.Erro("Unidade", "Unidade (" + tipoQuantidade + ") existente na linha número " + sequencia + " não é válida.");
                                 return null;
                             }
 
-                            produto.setUnidade(lerUnidade.obterUnidadePorDescricaoBaseDados(tipoQuantidade));
+                            produto.setUnidade(lerUnidade.obterUnidadePorDescricaoBaseDados(baseDados,tipoQuantidade));
 
                             System.out.println("Quantidade: " + quantidade + ", Tipo: " + tipoQuantidade);
                             quantidadeLinha = Double.parseDouble(quantidade.toString());
