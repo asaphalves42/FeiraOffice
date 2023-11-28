@@ -168,10 +168,10 @@ public class LerFornecedores {
                 "WHERE id_util = " + fornecedor.getIdUtilizador().getId();
 
         try {
-            System.out.println("Query 1: " + query);
+            
             boolean sucesso1 = baseDados.Executar(query);
 
-            System.out.println("Query 2: " + query2);
+
             boolean sucesso2 = baseDados.Executar(query2);
 
             baseDados.Desligar();
