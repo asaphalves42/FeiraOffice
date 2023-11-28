@@ -27,7 +27,7 @@ module com.example.lp3_g2_feira_office_ {
     requires javafx.graphics;
     requires annotations;
 
-    exports TestesUnitarios.Login;
+    
     exports Model;
     opens Model to javafx.base;
 

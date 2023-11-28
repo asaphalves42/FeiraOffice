@@ -22,6 +22,8 @@ public class DialogEditarFornecedor {
     @FXML
     private ComboBox<Pais> comboBoxPais; // Corrigido para usar o tipo apropriado
     private final DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
+    LerPaises lerPaises = new LerPaises();
+    BaseDados baseDados = new BaseDados();
     @FXML
     private TextField textoCodigoPostal;
 
@@ -51,8 +53,8 @@ public class DialogEditarFornecedor {
 
 
     public void initialize() throws IOException {
-        LerPaises lerPaises = new LerPaises();
-        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises();
+
+        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises(baseDados);
         comboBoxPais.setItems(listaDePaises);
     }
 
