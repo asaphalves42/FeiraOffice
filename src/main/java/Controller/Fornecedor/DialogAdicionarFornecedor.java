@@ -91,9 +91,11 @@ public class DialogAdicionarFornecedor {
             }
 
             ValidarEmail validarEmail = new ValidarEmail();
+            LerUtilizadores lerUtilizadores = new LerUtilizadores();
             // Validar o formato do e-mail
-            if (!validarEmail.isValidEmailAddress(email)) {
+            if (!validarEmail.isValidEmailAddress(email)&& lerUtilizadores.verificarUserName(email)) {
                 Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido.");
+
                 return;
             }
 

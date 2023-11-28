@@ -146,32 +146,47 @@ public class LerFornecedores {
      * @return O fornecedor atualizado, ou null se ocorrer um erro durante a operação.
      * @throws IOException Se ocorrer um erro durante a operação.
      */
-    public Fornecedor atualizarFornecedorNaBaseDeDados(Fornecedor fornecedor) throws IOException {
+    public Fornecedor atualizarFornecedorNaBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
 
         BaseDados baseDados = new BaseDados();
         baseDados.Ligar();
 
         String query = "UPDATE Fornecedor SET " +
-                "Nome = '" + fornecedor.getNome() + "', " +
-                "Id_Externo = '" + fornecedor.getIdExterno() + "', " +
-                "Morada1 = '" + fornecedor.getMorada1() + "', " +
-                "Morada2 = '" + fornecedor.getMorada2() + "', " +
-                "Localidade = '" + fornecedor.getLocalidade() + "', " +
-                "CodigoPostal = '" + fornecedor.getCodigoPostal() + "', " +
-                "Id_Pais = '" + fornecedor.getIdPais().getId() + "' " +
-                "WHERE id = " + fornecedor.getId();
+                "nome = '" + fornecedor.getNome() + "', " +
+                "id_externo = '" + fornecedor.getIdExterno() + "', " +
+                "morada1 = '" + fornecedor.getMorada1() + "', " +
+                "morada2 = '" + fornecedor.getMorada2() + "', " +
+                "localidade = '" + fornecedor.getLocalidade() + "', " +
+                "codigopostal = '" + fornecedor.getCodigoPostal() + "', " +
+                "id_pais = '" + pais.getId() + "' " +
+                "WHERE id_Utilizador = " + fornecedor.getIdUtilizador().getId();
 
-        boolean sucesso = baseDados.Executar(query);
+        String query2 = "UPDATE Utilizador SET " +
+                "id_role = '" + utilizador.getTipo().getValue() + "', " +
+                "username = '" + fornecedor.getIdUtilizador().getEmail() + "', " +
+                "password = '" + fornecedor.getIdUtilizador().getPassword() + "' " +
+                "WHERE id_util = " + fornecedor.getIdUtilizador().getId();
 
-        baseDados.Desligar();
+        try {
+            System.out.println("Query 1: " + query);
+            boolean sucesso1 = baseDados.Executar(query);
 
-        if (sucesso) {
-            return fornecedor; // Retorna o fornecedor atualizado
-        } else {
-            // Se a atualização falhou, você pode querer lançar uma exceção ou lidar de outra forma
+            System.out.println("Query 2: " + query2);
+            boolean sucesso2 = baseDados.Executar(query2);
+
+            baseDados.Desligar();
+
+            if (sucesso1 && sucesso2) {
+                return fornecedor; // Retorna o fornecedor atualizado
+            } else {
+                throw new IOException("Erro na atualização na base de dados!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new IOException("Erro na atualização na base de dados!");
         }
-
     }
+
+
 }
 

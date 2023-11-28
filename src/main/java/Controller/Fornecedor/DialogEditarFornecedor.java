@@ -49,6 +49,7 @@ public class DialogEditarFornecedor {
     // Removido a inicialização do fornecedor aqui
     private Fornecedor fornecedorEmEdicao;
 
+
     public void initialize() throws IOException {
         LerPaises lerPaises = new LerPaises();
         ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises();
@@ -64,15 +65,25 @@ public class DialogEditarFornecedor {
 
         UtilizadorFornecedor utilizador = fornecedor.getIdUtilizador();
         if (utilizador != null) {
+            UtilizadorFornecedor utilizadorEdicao = this.fornecedorEmEdicao.getIdUtilizador();
+
+            utilizadorEdicao.setId(utilizador.getId());
             textoEmail.setText(utilizador.getEmail());
         }
 
-        textoPassword.setText(""); // Se desejar exibir a senha, ajuste conforme necessário
+
+        textoPassword.setText("");
         textoMorada1.setText(fornecedor.getMorada1());
         textoMorada2.setText(fornecedor.getMorada2());
         textoLocalidade.setText(fornecedor.getLocalidade());
         textoCodigoPostal.setText(fornecedor.getCodigoPostal());
+
+
+
+
     }
+
+
 
     @FXML
     void clickCancelar(ActionEvent event) {
@@ -85,11 +96,12 @@ public class DialogEditarFornecedor {
     }
 
     @FXML
-    void clickConfirnar(ActionEvent event) throws IOException {
+    void clickConfirmar(ActionEvent event) throws IOException {
         try {
+
             String nome = textoNome.getText();
             String idExterno = textoIdExterno.getText();
-            String email = textoEmail.getText(); // validar email para o formato correto
+            String email = textoEmail.getText();
             String password = textoPassword.getText();
             String morada1 = textoMorada1.getText();
             String morada2 = textoMorada2.getText();
@@ -98,70 +110,57 @@ public class DialogEditarFornecedor {
             Pais pais = comboBoxPais.getSelectionModel().getSelectedItem();
 
 
-            // Verificar se algum campo obrigatório está vazio
-            if (nome.isEmpty() || email.isEmpty() || idExterno.isEmpty() || password.isEmpty() || morada1.isEmpty() || localidade.isEmpty() || codigoPostal.isEmpty() || pais == null) {
-                // Exibir uma mensagem de erro ao utilizador
-                Mensagens.Erro("Campos obrigatórios!", "Por favor, preencha todos os campos obrigatórios.");
+
+            // Verificar campos obrigatórios
+            if (camposObrigatoriosVazios(nome, email, idExterno, password, morada1, localidade, codigoPostal)) {
+                Mensagens.Erro("Campos obrigatórios!", "Preencha todos os campos obrigatórios.");
                 return;
             }
 
+            // Validar formato do e-mail
             ValidarEmail validarEmail = new ValidarEmail();
-            // Validar o formato do e-mail
             if (!validarEmail.isValidEmailAddress(email)) {
-                Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido.");
+                Mensagens.Erro("E-mail inválido", "Insira um endereço de e-mail válido.");
                 return;
             }
 
-            // Obtenha o fornecedor existente da instância compartilhada ou crie um novo se for nulo
-            Fornecedor fornecedorExistente = dadosCompartilhados.getDataFornecedor();
-            if (fornecedorExistente == null) {
-                fornecedorExistente = new Fornecedor(); // ou o construtor apropriado
-            }
+            // Criar um objeto Utilizador com email e senha
+            Encriptacao encriptacao = new Encriptacao();
+            String senhaEncriptada = encriptacao.MD5(password);
+            UtilizadorFornecedor utilizador = new UtilizadorFornecedor(fornecedorEmEdicao.getIdUtilizador().getId(), email, senhaEncriptada);
 
-            // Restante do código permanece inalterado
+            // Criar um objeto Fornecedor
+            Fornecedor fornecedor = new Fornecedor(fornecedorEmEdicao.getId(), nome, idExterno, morada1, morada2, localidade, codigoPostal, pais, utilizador);
 
-            //chamar a DAL para editar o fornecedor
+            // Chamar a DAL para editar o fornecedor
             LerFornecedores editarFornecedor = new LerFornecedores();
-            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(fornecedorExistente);
+            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(fornecedor, pais, utilizador);
 
             if (fornecedorEditado == null) {
                 Mensagens.Erro("Erro", "Erro ao editar fornecedor!");
+            } else {
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage.close();
+                Mensagens.Informacao("Fornecedor editado", "As informações do fornecedor foram editadas com sucesso!");
             }
 
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            currentStage.close();
-
-            Mensagens.Informacao("Fornecedor editado", "As informações do fornecedor foram editadas com sucesso!");
-
-        } catch (Exception e) {
+        } catch (IOException e) {
             Mensagens.Erro("Erro!", "Erro na edição de fornecedor!");
             e.printStackTrace();
         }
     }
 
-
-    private void atualizarFornecedorNaBaseDeDados(Fornecedor fornecedor) throws IOException {
-        try {
-            BaseDados baseDados = new BaseDados();
-            baseDados.Ligar();
-
-            String query = "UPDATE Fornecedor SET " +
-                    "Nome = '" + fornecedor.getNome() + "', " +
-                    "Id_Externo = '" + fornecedor.getIdExterno() + "', " +
-                    "Morada1 = '" + fornecedor.getMorada1() + "', " +
-                    "Morada2 = '" + fornecedor.getMorada2() + "', " +
-                    "Localidade = '" + fornecedor.getLocalidade() + "', " +
-                    "CodigoPostal = '" + fornecedor.getCodigoPostal() + "', " +
-                    "Id_Pais = '" + fornecedor.getIdPais().getId() + "' " +
-                    "WHERE id = " + fornecedor.getId();
-
-            baseDados.Executar(query);
-            baseDados.Desligar();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagens.Erro("Erro na base de dados!", "Erro na atualização na base de dados!");
+    private boolean camposObrigatoriosVazios(String... campos) {
+        for (String campo : campos) {
+            if (campo == null || campo.trim().isEmpty()) {
+                return true; // Pelo menos um campo obrigatório está vazio
+            }
         }
+        return false; // Todos os campos obrigatórios estão preenchidos
     }
+
+
+
 
     private void fecharJanela(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

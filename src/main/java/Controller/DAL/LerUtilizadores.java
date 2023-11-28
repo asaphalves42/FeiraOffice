@@ -111,6 +111,9 @@ public class LerUtilizadores {
      * @return false se existir um igual
      * @throws IOException caso ocorra uma execção
      */
+
+
+    // Implementat na adicao do Fornecedor e Operador
     public boolean verificarUserName(String userName) throws IOException {
         for (Utilizador util : lerUtilizadoresDaBaseDeDados()) {
             return !util.getEmail().equals(userName);
