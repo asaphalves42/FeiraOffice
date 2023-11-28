@@ -18,12 +18,12 @@ public class LerPaises {
      * @return Uma ObservableList contendo a lista de países lidos da base de dados, ou uma lista vazia se ocorrer um erro na leitura.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public ObservableList<Pais> getListaDePaises() throws IOException {
+    public ObservableList<Pais> getListaDePaises(BaseDados baseDados) throws IOException {
         ObservableList<Pais> listaDePaises = FXCollections.observableArrayList();
         try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Pais");
+
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Pais");
 
             while (resultado.next()) {
                 Pais pais = new Pais(
@@ -33,7 +33,7 @@ public class LerPaises {
 
                 listaDePaises.add(pais);
             }
-            basedados.Desligar();
+            baseDados.Desligar();
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
@@ -48,34 +48,34 @@ public class LerPaises {
      * @return O país correspondente ao ID fornecido, ou null se o país não for encontrado na base de dados ou se ocorrer um erro na leitura.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public Pais obterPaisPorId(int id) throws IOException {
+    public Pais obterPaisPorId(BaseDados baseDados, int id) throws IOException {
         Pais pais = null;
         try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Pais WHERE id = " + id);
+
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Pais WHERE id = " + id);
 
             if (resultado.next()) {
                 pais = criarObjeto(resultado);
             }
-            basedados.Desligar();
+            baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
         }
         return pais;
     }
 
-    public Pais obterPaisPorISO(String ISO) throws IOException {
+    public Pais obterPaisPorISO(BaseDados baseDados, String ISO) throws IOException {
         Pais pais = null;
         try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Pais WHERE ISO = '" + ISO + "'");
+
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Pais WHERE ISO = '" + ISO + "'");
 
             if (resultado.next()) {
                 pais = criarObjeto(resultado);
             }
-            basedados.Desligar();
+            baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
         }

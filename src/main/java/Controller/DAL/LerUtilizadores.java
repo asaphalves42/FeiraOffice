@@ -15,6 +15,7 @@ import static Model.TipoUtilizador.Operador;
 
 
 public class LerUtilizadores {
+    BaseDados baseDados = new BaseDados();
     /**
      * Lê os utilizadores da base de dados e os armazena em uma lista.
      * <p>
@@ -24,14 +25,14 @@ public class LerUtilizadores {
      *
      * @return true se a leitura for bem-sucedida, false se ocorrer um erro.
      */
-    public ObservableList<Utilizador> lerUtilizadoresDaBaseDeDados() throws IOException {
+    public ObservableList<Utilizador> lerUtilizadoresDaBaseDeDados(BaseDados baseDados) throws IOException {
 
         ObservableList<Utilizador> utilizador= FXCollections.observableArrayList();
 
         try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Utilizador");
+
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador");
 
             while (resultado.next()) {
                 Utilizador aux;
@@ -63,7 +64,7 @@ public class LerUtilizadores {
                     utilizador.add(aux);
                 }
             }
-            basedados.Desligar();
+            baseDados.Desligar();
             return utilizador; // A leitura retorna o utilizador
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
@@ -71,12 +72,13 @@ public class LerUtilizadores {
         }
     }
 
-    public ObservableList<Utilizador> lerOperadoresDaBaseDados() throws IOException {
+
+    public ObservableList<Utilizador> lerOperadoresDaBaseDados(BaseDados baseDados) throws IOException {
 
         ObservableList<Utilizador> utilizadores = FXCollections.observableArrayList();
 
         try {
-            BaseDados baseDados = new BaseDados();
+
             baseDados.Ligar();
             ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador WHERE id_role = 2");
 
@@ -111,14 +113,11 @@ public class LerUtilizadores {
      * @return false se existir um igual
      * @throws IOException caso ocorra uma execção
      */
-
-
-
     public boolean verificarUserName(String userName) throws IOException {
         LerUtilizadores lerUtilizadores = new LerUtilizadores();
 
         // Obtém a lista de utilizadores da base de dados
-        ObservableList<Utilizador> utilizadores = lerUtilizadores.lerUtilizadoresDaBaseDeDados();
+        ObservableList<Utilizador> utilizadores = lerUtilizadores.lerUtilizadoresDaBaseDeDados(baseDados);
 
         // Verifica se o email já existe na base de dados
         for (Utilizador util : utilizadores) {
@@ -131,8 +130,6 @@ public class LerUtilizadores {
     }
 
 
-
-
     /**
      * Essa Função realiza uma query na base de dados baseado nos paramentros endereço eletrónico e senha e com base no id_role, retorna-me um tipo de utilizador.
      * @param  email email
@@ -140,7 +137,7 @@ public class LerUtilizadores {
      * @return TipoUtilizador
      * @throws SQLException SQLException
      */
-    public Utilizador verificarLoginUtilizador(String email, String password) throws SQLException {
+    public Utilizador verificarLoginUtilizador(BaseDados baseDados, String email, String password) throws SQLException {
         Encriptacao encript = new Encriptacao();
         ValidarEmail validarEmail = new ValidarEmail();
 
@@ -155,9 +152,8 @@ public class LerUtilizadores {
         // Criptografa a senha usando MD5
         String encryptedPassword = encript.MD5(password);
 
-        BaseDados basedados = new BaseDados();
-        basedados.Ligar();
-        ResultSet resultado = basedados.Selecao("SELECT * FROM Utilizador WHERE username = '" + email + "' AND password = '" + encryptedPassword + "'");
+        baseDados.Ligar();
+        ResultSet resultado = baseDados.Selecao("SELECT * FROM Utilizador WHERE username = '" + email + "' AND password = '" + encryptedPassword + "'");
 
         Utilizador utilizador = null;
 
@@ -197,12 +193,11 @@ public class LerUtilizadores {
      * @return O utilizador fornecedor correspondente ao ID fornecido, ou null se o utilizador não for encontrado na base de dados ou se ocorrer um erro na leitura.
      * @throws IOException Se ocorrer um erro de E/S durante a leitura.
      */
-    public UtilizadorFornecedor obterUtilizadorPorIdFornecedor(int idUtilizador) throws IOException {
+    public UtilizadorFornecedor obterUtilizadorPorIdFornecedor(BaseDados baseDados, int idUtilizador) throws IOException {
         UtilizadorFornecedor util = null; // Inicializa a variável de retorno como nula.
 
         try {
 
-            BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
 
             // Executa uma consulta SQL para selecionar um registro da tabela Utilizador com base no ID fornecido.
@@ -228,12 +223,11 @@ public class LerUtilizadores {
         return util; // Retorna o utilizador fornecedor encontrado ou null em caso de erro ou se não for encontrado.
     }
 
-    public boolean removerOperadorDaBaseDeDados(int utilizadorID) throws SQLException {
+    public boolean removerOperadorDaBaseDeDados(BaseDados baseDados, int utilizadorID) throws SQLException {
         try {
-            BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
 
-            String query = "DELETE FROM Utilizador WHERE id_role =2 ";
+            String query = "DELETE FROM Utilizador WHERE id_role = '" + utilizadorID + "'";
             boolean linhasAfetadas = baseDados.Executar(query);
 
             baseDados.Desligar();
@@ -262,9 +256,9 @@ public class LerUtilizadores {
      * @return true se a adição for bem-sucedida, false em caso de erro.
      * @throws IOException se ocorrer um erro de entrada/saída durante a execução.
      */
-    public boolean adicionarOperadorBaseDados(String username, String password) throws IOException {
+    public boolean adicionarOperadorBaseDados(BaseDados baseDados, String username, String password) throws IOException {
         try {
-            BaseDados baseDados = new BaseDados();
+
             baseDados.Ligar();
 
             String query = "INSERT INTO Utilizador (username, password, id_role) VALUES ('" + username + "', '" + password + "', 2)";
@@ -288,9 +282,9 @@ public class LerUtilizadores {
      * @return true se a query for bem sucedida
      * @throws IOException se acontecer uma exceção de IO
      */
-    public boolean removerUtilizador(UtilizadorFornecedor fornecedor) throws IOException {
+    public boolean removerUtilizador(BaseDados baseDados, UtilizadorFornecedor fornecedor) throws IOException {
         try {
-            BaseDados baseDados = new BaseDados();
+
             baseDados.Ligar();
 
             String query = "DELETE FROM Utilizador WHERE id_util = " + fornecedor.getId();
@@ -305,6 +299,31 @@ public class LerUtilizadores {
             Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
         }
         return false;
+    }
+    public boolean atualizarOperadorBaseDados(BaseDados baseDados, int id, String novoEmail, String encryptedNovaPassword) {
+        try {
+
+            baseDados.Ligar();
+
+
+            // Construir a query UPDATE
+            String query = "UPDATE Utilizador SET username = '" + novoEmail + "', password = '" + encryptedNovaPassword + "' WHERE id_util = " + id + " AND id_role = 2";
+
+            // Executar a query de atualização
+
+            boolean linhasAfetadasInsert = baseDados.Executar(query);
+
+            // Desconectar
+            baseDados.Desligar();
+            return linhasAfetadasInsert;
+        } catch (Exception e) {
+            try {
+                Mensagens.Erro("Erro na atualização!", "Erro na atualização da base de dados!");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            return false; // Retorna false se a atualização falhou
+        }
     }
     private ObservableList<Utilizador> utilizadoresSimulados;
     private Utilizador utilizadorSimulado;

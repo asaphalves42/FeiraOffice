@@ -24,6 +24,10 @@ public class DialogAdicionarFornecedor {
 
     private final DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
 
+    BaseDados baseDados = new BaseDados();
+    LerPaises lerPaises = new LerPaises();
+    LerFornecedores adicionarFornecedor = new LerFornecedores();
+
     @FXML
     private Button btnAdicionar;
 
@@ -56,8 +60,7 @@ public class DialogAdicionarFornecedor {
     private PasswordField textoPassword;
 
     public void initialize() throws IOException {
-        LerPaises lerPaises = new LerPaises();
-        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises();
+        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises(baseDados);
         comboBoxPais.setItems(listaDePaises);
     }
 
@@ -120,8 +123,7 @@ public class DialogAdicionarFornecedor {
                     utilizador);
 
             //chamar a DAL para adicionar o fornecedor
-            LerFornecedores adicionarFornecedor = new LerFornecedores();
-            Fornecedor fornecedorInserido = adicionarFornecedor.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
+            Fornecedor fornecedorInserido = adicionarFornecedor.adicionarFornecedorBaseDeDados(baseDados,fornecedor, pais, utilizador);
 
             dadosCompartilhados.setDataFornecedor(fornecedor);
 

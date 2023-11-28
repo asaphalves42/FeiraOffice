@@ -6,6 +6,7 @@ import Controller.Fornecedor.MenuFornecedor;
 import Controller.Operador.MenuOperador;
 import Model.TipoUtilizador;
 import Model.Utilizador;
+import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +23,7 @@ import java.sql.SQLException;
 
 public class Login {
 
-
+    BaseDados baseDados = new BaseDados();
     @FXML
     private Button btnLogin;
 
@@ -108,7 +109,7 @@ public class Login {
         String password = labelPassword.getText(); // Senha
 
         // Verifica as credenciais de 'login' e determina o tipo de utilizador.
-        return lerUtilizadores.verificarLoginUtilizador(username, password);
+        return lerUtilizadores.verificarLoginUtilizador(baseDados,username, password);
     }
 
 

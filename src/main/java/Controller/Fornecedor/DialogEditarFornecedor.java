@@ -22,6 +22,8 @@ public class DialogEditarFornecedor {
     @FXML
     private ComboBox<Pais> comboBoxPais; // Corrigido para usar o tipo apropriado
     private final DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
+    LerPaises lerPaises = new LerPaises();
+    BaseDados baseDados = new BaseDados();
     @FXML
     private TextField textoCodigoPostal;
 
@@ -51,8 +53,8 @@ public class DialogEditarFornecedor {
 
 
     public void initialize() throws IOException {
-        LerPaises lerPaises = new LerPaises();
-        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises();
+
+        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises(baseDados);
         comboBoxPais.setItems(listaDePaises);
     }
 
@@ -77,8 +79,6 @@ public class DialogEditarFornecedor {
         textoMorada2.setText(fornecedor.getMorada2());
         textoLocalidade.setText(fornecedor.getLocalidade());
         textoCodigoPostal.setText(fornecedor.getCodigoPostal());
-
-
 
 
     }
@@ -134,7 +134,7 @@ public class DialogEditarFornecedor {
 
             // Chamar a DAL para editar o fornecedor
             LerFornecedores editarFornecedor = new LerFornecedores();
-            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(fornecedor, pais, utilizador);
+            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(baseDados,fornecedor, pais, utilizador);
 
             if (fornecedorEditado == null) {
                 Mensagens.Erro("Erro", "Erro ao editar fornecedor!");
@@ -146,7 +146,6 @@ public class DialogEditarFornecedor {
 
         } catch (IOException e) {
             Mensagens.Erro("Erro!", "Erro na edição de fornecedor!");
-            e.printStackTrace();
         }
     }
 
