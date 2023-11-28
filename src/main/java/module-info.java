@@ -22,6 +22,8 @@ module com.example.lp3_g2_feira_office_ {
     requires org.mockito;
     exports TestesUnitarios.Login;
     exports TestesUnitarios.Operadores;
+    exports TestesUnitarios.Fornecedores;
+
     opens com.example.lp3_g2_feira_office_2023 to jakarta.xml.bind;
 
 
