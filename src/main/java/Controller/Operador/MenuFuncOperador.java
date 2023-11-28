@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 import static Model.TipoUtilizador.Operador;
 
 public class MenuFuncOperador{
-
+    LerUtilizadores lerUtilizadoresOperador = new LerUtilizadores();
     @FXML
     private Button btnEditar;
 
@@ -48,7 +48,7 @@ public class MenuFuncOperador{
 
     public void tabelaUtilizadoresOperador() throws IOException {
 
-        LerUtilizadores lerUtilizadoresOperador = new LerUtilizadores();
+
         utilizador.addAll(lerUtilizadoresOperador.lerOperadoresDaBaseDados());
 
 
@@ -108,8 +108,8 @@ public class MenuFuncOperador{
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     try {
-                        LerUtilizadores lerUtilizadores = new LerUtilizadores();
-                        boolean sucesso = lerUtilizadores.removerOperadorDaBaseDeDados(operadorSelecionado.getId());
+
+                        boolean sucesso = lerUtilizadoresOperador.removerOperadorDaBaseDeDados(operadorSelecionado.getId());
 
                         if (sucesso) {
                             utilizador.remove(operadorSelecionado);

@@ -30,7 +30,7 @@ public class LerProdutos {
                 produto = criarObjeto(resultado);
                 produtos.add(produto);
             }
-            
+
             baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
