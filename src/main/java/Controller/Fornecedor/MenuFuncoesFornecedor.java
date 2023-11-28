@@ -3,6 +3,7 @@ package Controller.Fornecedor;
 import Controller.DAL.LerFornecedores;
 import Controller.DAL.LerUtilizadores;
 import Model.*;
+import Utilidades.BaseDados;
 import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
@@ -34,6 +35,8 @@ import java.util.ResourceBundle;
 
 public class MenuFuncoesFornecedor {
 
+    BaseDados baseDados = new BaseDados();
+
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
 
@@ -64,7 +67,7 @@ public class MenuFuncoesFornecedor {
     public void tabelaFornecedores() throws IOException {
 
         LerFornecedores lerFornecedores = new LerFornecedores();
-        fornecedores.addAll(lerFornecedores.lerFornecedoresDaBaseDeDados());
+        fornecedores.addAll(lerFornecedores.lerFornecedoresDaBaseDeDados(baseDados));
 
         if (!fornecedores.isEmpty()) {
             if (tableViewFornecedores.getColumns().isEmpty()) {
@@ -151,7 +154,7 @@ public class MenuFuncoesFornecedor {
                 if (response == ButtonType.OK) {
                     try {
                         LerFornecedores lerFornecedores = new LerFornecedores();
-                        boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(fornecedorSelecionado.getId());
+                        boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados,fornecedorSelecionado.getId());
 
                         if (sucesso) {
                             // Remover o fornecedor da lista
@@ -159,7 +162,7 @@ public class MenuFuncoesFornecedor {
 
                             // Remover o utilizador associado ao fornecedor
                             LerUtilizadores lerUtilizadores = new LerUtilizadores();
-                            boolean remover = lerUtilizadores.removerUtilizador(fornecedorSelecionado.getIdUtilizador());
+                            boolean remover = lerUtilizadores.removerUtilizador(baseDados,fornecedorSelecionado.getIdUtilizador());
 
                             if (remover) {
                                 // Remover o utilizador da lista

@@ -39,6 +39,8 @@ public class LerEncomenda {
         return linhasEncomenda;
     }
 
+
+
     private LinhaEncomenda criarObjetoLinha(ResultSet dados) throws IOException, SQLException {
         Encomenda idEncomenda = obterEncomendaPorId(baseDados, dados.getString("Id_Encomenda"));
 
@@ -94,7 +96,7 @@ public class LerEncomenda {
 
     private Encomenda criarObjetoEncomenda(ResultSet dados) throws IOException, SQLException {
 
-        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_fornecedor"));
+        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados,dados.getString("Id_fornecedor"));
 
 
         Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais"));
@@ -145,18 +147,28 @@ public class LerEncomenda {
     }
 
     private void inserirProdutoNaTabelaProduto(BaseDados baseDados, Produto produto) {
-        // Construa a string da consulta SQL, escapando os valores
-        String queryProduto = "INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado) " +
-                "VALUES (" +
-                "'" + produto.getId() + "'," +
-                "'" + produto.getFornecedor().getIdExterno() + "'," +
-                "'" + produto.getDescricao() + "'," +
-                produto.getUnidade().getId() + "," +
-                "'" + produto.getIdExterno() + "'," +
-                "0" +
-                ")";
-
-        baseDados.Executar(queryProduto);
+        //Verificar se o produto já eiste na tabela antes de o inserir
+        if (!produtoExisteNaTabela(baseDados, produto.getId())) {
+            // Construa a string da consulta SQL, escapando os valores
+            String queryProduto = "INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado) " +
+                    "VALUES (" +
+                    "'" + produto.getId() + "'," +
+                    "'" + produto.getFornecedor().getIdExterno() + "'," +
+                    "'" + produto.getDescricao() + "'," +
+                    produto.getUnidade().getId() + "," +
+                    "'" + produto.getIdExterno() + "'," +
+                    "0" +
+                    ")";
+            baseDados.Executar(queryProduto);
+        }
+    }
+    private boolean produtoExisteNaTabela(BaseDados baseDados, String Id) {
+        try {
+            ResultSet resultado = baseDados.Selecao("SELECT Id FROM Produto WHERE Id = '" + Id + "'");
+            return resultado.next(); // Retorna true se o produto já existir na tabela
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void inserirLinhaEncomenda(BaseDados baseDados, int Id_Encomenda, LinhaEncomenda linha) {

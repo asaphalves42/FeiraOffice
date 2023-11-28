@@ -19,15 +19,14 @@ public class LerFornecedores {
      * @return Uma ObservableList contendo os fornecedores lidos da base de dados, ou null se ocorrer um erro na leitura.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public ObservableList<Fornecedor> lerFornecedoresDaBaseDeDados() throws IOException {
+    public ObservableList<Fornecedor> lerFornecedoresDaBaseDeDados(BaseDados baseDados) throws IOException {
 
         ObservableList<Fornecedor> fornecedores = FXCollections.observableArrayList();
         Fornecedor fornecedor = null;
         try {
 
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Fornecedor");
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Fornecedor");
 
 
             while (resultado.next()) { //Ler os forncedores da base de dados, um a um e cria um objeto novo
@@ -37,7 +36,7 @@ public class LerFornecedores {
 
             }
 
-            basedados.Desligar();
+            baseDados.Desligar();
             return fornecedores; // A leitura foi bem-sucedida
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
@@ -45,18 +44,17 @@ public class LerFornecedores {
         }
     }
 
-    public Fornecedor obterFornecedorPorId(String idFornecedor) throws IOException {
+    public Fornecedor obterFornecedorPorId(BaseDados baseDados, String idFornecedor) throws IOException {
         Fornecedor fornecedor = null;
         try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Fornecedor WHERE Id_Externo = '" + idFornecedor + "'");
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Fornecedor WHERE Id_Externo = '" + idFornecedor + "'");
 
             if (resultado.next()) {
                 fornecedor = criarObjeto(resultado);
 
             }
-            basedados.Desligar();
+            baseDados.Desligar();
     } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
         }
@@ -71,7 +69,7 @@ public class LerFornecedores {
         Pais pais = lerPaises.obterPaisPorId(baseDados,idPais);
 
         LerUtilizadores lerUtilizores = new LerUtilizadores();
-        UtilizadorFornecedor utilizador = lerUtilizores.obterUtilizadorPorIdFornecedor(idUtilizador);
+        UtilizadorFornecedor utilizador = lerUtilizores.obterUtilizadorPorIdFornecedor(baseDados,idUtilizador);
 
         return new Fornecedor(
                 dados.getInt("id"),
@@ -95,10 +93,10 @@ public class LerFornecedores {
      * @return O fornecedor adicionado à base de dados, ou null se ocorrer um erro durante a operação.
      * @throws IOException Se ocorrer um erro durante a operação.
      */
-    public Fornecedor adicionarFornecedorBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
+    public Fornecedor adicionarFornecedorBaseDeDados(BaseDados baseDados, Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
 
         try {
-            BaseDados baseDados = new BaseDados();
+
             baseDados.Ligar();
 
             /*
@@ -135,9 +133,9 @@ public class LerFornecedores {
      * @return true se a remoção for bem-sucedida, false caso contrário.
      * @throws SQLException Se ocorrer um erro ao interagir com a base de dados.
      */
-    public boolean removerFornecedorDaBaseDeDados(int fornecedorId) throws SQLException {
+    public boolean removerFornecedorDaBaseDeDados(BaseDados baseDados, int fornecedorId) throws SQLException {
         try {
-            BaseDados baseDados = new BaseDados();
+
             baseDados.Ligar();
 
             String query = ("DELETE FROM Fornecedor WHERE id = " + fornecedorId);
@@ -170,9 +168,8 @@ public class LerFornecedores {
      * @return O fornecedor atualizado, ou null se ocorrer um erro durante a operação.
      * @throws IOException Se ocorrer um erro durante a operação.
      */
-    public Fornecedor atualizarFornecedorNaBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
+    public Fornecedor atualizarFornecedorNaBaseDeDados(BaseDados baseDados, Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
 
-        BaseDados baseDados = new BaseDados();
         baseDados.Ligar();
 
         String query = "UPDATE Fornecedor SET " +
@@ -198,6 +195,7 @@ public class LerFornecedores {
 
             boolean sucesso2 = baseDados.Executar(query2);
 
+
             baseDados.Desligar();
 
             if (sucesso1 && sucesso2) {
@@ -206,7 +204,7 @@ public class LerFornecedores {
                 throw new IOException("Erro na atualização na base de dados!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
             throw new IOException("Erro na atualização na base de dados!");
         }
     }

@@ -3,6 +3,7 @@ package Controller.Fornecedor;
 import Controller.DAL.LerFicheiro;
 import Controller.DAL.LerFornecedores;
 import Model.*;
+import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import com.example.lp3_g2_feira_office_2023.OrderConfirmation;
 import javafx.fxml.FXML;
@@ -20,7 +21,7 @@ public class MenuFornecedor {
     private Utilizador utilizador;
     private File arquivoSelecionado;
 
-
+    BaseDados baseDados = new BaseDados();
 
     @FXML
     private Button btnEscolherFicheiro;
@@ -83,7 +84,7 @@ public class MenuFornecedor {
     public void carregarFornecedor() throws IOException {
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
-        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
+        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados(baseDados)){
             if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
                 fornecedorLogado = fornec;
             }
@@ -124,7 +125,7 @@ public class MenuFornecedor {
 
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
-        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
+        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados(baseDados)){
             if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
                 fornecedorLogado = fornec;
             }

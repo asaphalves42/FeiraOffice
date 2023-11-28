@@ -81,8 +81,6 @@ public class DialogEditarFornecedor {
         textoCodigoPostal.setText(fornecedor.getCodigoPostal());
 
 
-
-
     }
 
 
@@ -136,7 +134,7 @@ public class DialogEditarFornecedor {
 
             // Chamar a DAL para editar o fornecedor
             LerFornecedores editarFornecedor = new LerFornecedores();
-            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(fornecedor, pais, utilizador);
+            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(baseDados,fornecedor, pais, utilizador);
 
             if (fornecedorEditado == null) {
                 Mensagens.Erro("Erro", "Erro ao editar fornecedor!");
@@ -148,7 +146,6 @@ public class DialogEditarFornecedor {
 
         } catch (IOException e) {
             Mensagens.Erro("Erro!", "Erro na edição de fornecedor!");
-            e.printStackTrace();
         }
     }
 

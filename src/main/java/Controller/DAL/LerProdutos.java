@@ -41,7 +41,7 @@ public class LerProdutos {
 
     private Produto criarObjeto(ResultSet dados) throws IOException, SQLException {
 
-        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_Fornecedor"));
+        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados,dados.getString("Id_Fornecedor"));
 
         Unidade unidade = lerUnidade.obterUnidadePorIdBaseDados(baseDados, dados.getInt("Id_Unidade"));
 

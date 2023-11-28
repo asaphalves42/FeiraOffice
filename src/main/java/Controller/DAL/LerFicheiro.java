@@ -125,7 +125,7 @@ public class LerFicheiro {
 
 
             Fornecedor fornecedorLogado = null;
-            for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
+            for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados(baseDados)){
                 if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
                     fornecedorLogado = fornec;
                 }

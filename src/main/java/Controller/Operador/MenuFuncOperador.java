@@ -5,6 +5,7 @@ import Controller.DAL.LerUtilizadores;
 import Model.Fornecedor;
 import Model.Utilizador;
 import Model.UtilizadorOperador;
+import Utilidades.BaseDados;
 import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
 import javafx.collections.FXCollections;
@@ -27,6 +28,7 @@ import static Model.TipoUtilizador.Operador;
 
 public class MenuFuncOperador{
     LerUtilizadores lerUtilizadoresOperador = new LerUtilizadores();
+    BaseDados baseDados = new BaseDados();
     @FXML
     private Button btnEditar;
 
@@ -49,7 +51,7 @@ public class MenuFuncOperador{
     public void tabelaUtilizadoresOperador() throws IOException {
 
 
-        utilizador.addAll(lerUtilizadoresOperador.lerOperadoresDaBaseDados());
+        utilizador.addAll(lerUtilizadoresOperador.lerOperadoresDaBaseDados(baseDados));
 
 
 
@@ -91,8 +93,25 @@ public class MenuFuncOperador{
     }
 
     @FXML
-    void clickEditar(ActionEvent event) {
+    void clickEditar(ActionEvent event) throws IOException {
+        Utilizador operadorSelecionado = tableViewOperador.getSelectionModel().getSelectedItem();
 
+        if (operadorSelecionado != null) {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Operador/dialogEditarOperador.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("EDITAR OPERADOR");
+            stage.setScene(scene);
+
+            // Pass the selected operator to the controller of the edit dialog
+            DialogEditarOperador editController = fxmlLoader.getController();
+            editController.setOperador(operadorSelecionado);
+
+            stage.showAndWait();
+
+            // Update the table view after editing
+            tableViewOperador.refresh();
+        }
     }
 
     @FXML
@@ -109,7 +128,7 @@ public class MenuFuncOperador{
                 if (response == ButtonType.OK) {
                     try {
 
-                        boolean sucesso = lerUtilizadoresOperador.removerOperadorDaBaseDeDados(operadorSelecionado.getId());
+                        boolean sucesso = lerUtilizadoresOperador.removerOperadorDaBaseDeDados(baseDados, operadorSelecionado.getId());
 
                         if (sucesso) {
                             utilizador.remove(operadorSelecionado);

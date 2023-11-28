@@ -53,7 +53,7 @@ public class LerFornecedoresTest {
         Fornecedor fornecedor = new Fornecedor(1, "NomeFornecedor", "Externo123", "Rua Principal", "Rua Secundária", "Feira", "3885-261", pais, utilizador);
 
         // Tentativa de adicionar um fornecedor ao banco de dados
-        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
+        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(baseDados,fornecedor, pais, utilizador);
 
         // Verifica se a inserção foi bem-sucedida
         assertEquals(fornecedor, fornecedorInserido);
@@ -72,7 +72,7 @@ public class LerFornecedoresTest {
         Fornecedor fornecedor = new Fornecedor(1, "TesteFornecedor", "Externo123", "Rua Principal", "Rua Secundária", "Feira", "3885-261", pais, utilizador);
 
         // Tentativa de adicionar um fornecedor ao banco de dados
-        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
+        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(baseDados,fornecedor, pais, utilizador);
 
         // Verifica se a inserção falhou
         assertEquals(fornecedor, fornecedorInserido);
@@ -89,14 +89,14 @@ public class LerFornecedoresTest {
 
 
         // Tentativa de adicionar um fornecedor ao banco de dados
-        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
+        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(baseDados,fornecedor, pais, utilizador);
 
         // Verifica se a inserção foi bem-sucedida
         assertEquals(fornecedor, fornecedorInserido);
 
         // Agora, tentamos excluir o fornecedor
-        boolean exclusaoBemSucedida = lerFornecedores.removerFornecedorDaBaseDeDados(fornecedorInserido.getId());
-       boolean exclusaoutilizadorfornecedor= lerUtilizadores.removerUtilizador(utilizador);
+        boolean exclusaoBemSucedida = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados,fornecedorInserido.getId());
+       boolean exclusaoutilizadorfornecedor= lerUtilizadores.removerUtilizador(baseDados, utilizador);
         // Verifica se a exclusão foi bem-sucedida
         assertTrue(exclusaoBemSucedida);
         assertTrue(exclusaoutilizadorfornecedor);
