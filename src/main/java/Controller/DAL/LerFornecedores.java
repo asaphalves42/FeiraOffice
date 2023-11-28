@@ -173,6 +173,9 @@ public class LerFornecedores {
 
 
             boolean sucesso2 = baseDados.Executar(query2);
+            System.out.println( "Query 1 "+ query);
+            System.out.println("Query2"+ query2);
+
 
             baseDados.Desligar();
 
@@ -180,6 +183,7 @@ public class LerFornecedores {
                 return fornecedor; // Retorna o fornecedor atualizado
             } else {
                 throw new IOException("Erro na atualização na base de dados!");
+
             }
         } catch (Exception e) {
             e.printStackTrace();

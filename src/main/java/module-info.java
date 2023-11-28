@@ -22,6 +22,7 @@ module com.example.lp3_g2_feira_office_ {
     requires org.mockito;
     exports TestesUnitarios.Login;
     opens com.example.lp3_g2_feira_office_2023 to jakarta.xml.bind;
+    exports TestesUnitarios.Fornecedores to junit;
 
 
     requires javafx.graphics;
