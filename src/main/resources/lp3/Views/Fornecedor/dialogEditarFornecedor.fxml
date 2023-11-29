@@ -10,10 +10,11 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="417.0" prefWidth="682.0" style="-fx-background-color: #d4d6d5; -fx-border-color: black; -fx-border-width: 2px;;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Fornecedor.DialogEditarFornecedor">
+<AnchorPane prefHeight="448.0" prefWidth="711.0" style="-fx-background-color: #d4d6d5; -fx-border-color: black; -fx-border-width: 2px;;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Fornecedor.DialogEditarFornecedor">
    <children>
-      <GridPane layoutX="69.0" layoutY="23.0" prefHeight="300.0" prefWidth="560.0">
+      <GridPane layoutX="26.0" layoutY="51.0" prefHeight="300.0" prefWidth="647.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -86,15 +87,20 @@
             <TextField fx:id="textoIdExterno" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <Button fx:id="btnConfirmar" layoutX="129.0" layoutY="334.0" mnemonicParsing="false" onAction="#clickConfirmar" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="CONFIRMAR">
+      <Button fx:id="btnConfirmar" layoutX="141.0" layoutY="366.0" mnemonicParsing="false" onAction="#clickConfirmar" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="CONFIRMAR">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button fx:id="btnCancelar" layoutX="433.0" layoutY="334.0" mnemonicParsing="false" onAction="#clickCancelar" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="CANCELAR">
+      <Button fx:id="btnCancelar" layoutX="451.0" layoutY="366.0" mnemonicParsing="false" onAction="#clickCancelar" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="CANCELAR">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
+      <Text layoutX="259.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EDITAR FORNECEDOR" wrappingWidth="209.46875">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

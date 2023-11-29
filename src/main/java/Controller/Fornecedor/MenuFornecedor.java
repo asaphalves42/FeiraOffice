@@ -3,6 +3,7 @@ package Controller.Fornecedor;
 import Controller.DAL.LerFicheiro;
 import Controller.DAL.LerFornecedores;
 import Model.*;
+import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import com.example.lp3_g2_feira_office_2023.OrderConfirmation;
 import javafx.fxml.FXML;
@@ -20,7 +21,7 @@ public class MenuFornecedor {
     private Utilizador utilizador;
     private File arquivoSelecionado;
 
-
+    BaseDados baseDados = new BaseDados();
 
     @FXML
     private Button btnEscolherFicheiro;
@@ -83,7 +84,7 @@ public class MenuFornecedor {
     public void carregarFornecedor() throws IOException {
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
-        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
+        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados(baseDados)){
             if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
                 fornecedorLogado = fornec;
             }
@@ -121,9 +122,10 @@ public class MenuFornecedor {
 
     @FXML
     void clickUpload() throws IOException {
+
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
-        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
+        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados(baseDados)){
             if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
                 fornecedorLogado = fornec;
             }
@@ -134,6 +136,10 @@ public class MenuFornecedor {
             LerFicheiro lerFicheiro = new LerFicheiro();
             OrderConfirmation orderConfirmation = lerFicheiro.orderConfirmation(arquivoSelecionado, utilizador);
 
+            if (orderConfirmation == null){
+                return;
+            }
+
             // Obter o ID do fornecedor logado
             assert fornecedorLogado != null;
             String idFornecedor = fornecedorLogado.getIdExterno();
@@ -143,14 +149,8 @@ public class MenuFornecedor {
 
             // Validar se o ID é o mesmo do fornecedor
             if (!idFornecedor.equals(idFornecedorFicheiro)) {
-                Mensagens.Erro("Erro!", "ID do fornecedor não coincide com o do ficheiro!. Não foi possível fazer upload da encomenda");
+                Mensagens.Erro("Erro!", "ID do fornecedor não coincide com o do ficheiro. Não foi possível fazer upload da encomenda");
             }
-
-
-            //Validar se o id é o mesmo do fornecedor
-            //validar se o id da encomenda ja existe...
-
-
 
         } else {
             Mensagens.Erro("Erro!", "Erro ao ler o ficheiro!");

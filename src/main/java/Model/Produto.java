@@ -1,22 +1,57 @@
 package Model;
 
 public class Produto {
-    private int id;
+    private String id;
+    private Fornecedor fornecedor;
     private String idExterno;
     private String descricao;
+    private Unidade unidade;
 
-    public Produto(int id, String idExterno, String descricao) {
-        this.id = id;
-        this.idExterno = idExterno;
-        this.descricao = descricao;
-    }
+    private int estado;
     public Produto(){}
 
-    public int getId() {
+    public Produto(String id, Fornecedor fornecedor, String idExterno, String descricao, Unidade unidade,int estado) {
+        this.id = id;
+        this.fornecedor = fornecedor;
+        this.idExterno = idExterno;
+        this.descricao = descricao;
+        this.unidade = unidade;
+        this.estado = estado;
+    }
+
+
+    public int getEstado() {
+        return estado;
+    }
+
+    public void setEstado(int estado) {
+        this.estado = estado;
+    }
+
+
+
+    public Unidade getUnidade() {
+        return unidade;
+    }
+
+    public void setUnidade(Unidade unidade) {
+        this.unidade = unidade;
+    }
+
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

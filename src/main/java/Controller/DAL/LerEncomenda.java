@@ -5,119 +5,107 @@ import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class LerEncomenda {
+    LerUnidade lerUnidade = new LerUnidade();
+    LerProdutos lerProduto = new LerProdutos();
+    LerFornecedores lerFornecedores = new LerFornecedores();
+    LerPaises lerPaises = new LerPaises();
+    BaseDados baseDados = new BaseDados();
 
-    /*
-     public ObservableList<LinhaEncomenda> lerLinhaEncomendaBaseDados() throws IOException {
+    public ObservableList<LinhaEncomenda> lerLinhaEncomendaBaseDados(BaseDados baseDados, int idEncomenda) throws IOException {
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
+        LinhaEncomenda linhaEncomenda = null;
         try {
-            BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Linha_Encomenda");
-
-            LerProdutos lerProdutos = new LerProdutos();
-            Produto produto = lerProdutos.obterProdutoPorId(resultado.getInt("id"));
-
-            LerUnidade lerUnidade = new LerUnidade();
-            Unidade unidade = lerUnidade.obterUnidadePorIdBaseDados(resultado.getInt("Id_Unidade"));
-
-            LerPaises lerPaises = new LerPaises();
-            Pais pais = lerPaises.obterPaisPorId(resultado.getInt("Id_Pais_Taxa"));
-
-            Encomenda encomenda = obterEncomendaPorId(resultado.getInt("Id"));
-
-
-
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Linha_Encomenda WHERE Id_Encomenda = " + idEncomenda);
 
             while (resultado.next()) {
-
-                LinhaEncomenda linhaEncomenda = new LinhaEncomenda(
-                        resultado.getInt("Id"),
-                        encomenda,
-                        resultado.getInt("Sequencia"),
-                        produto,
-                        resultado.getDouble("Preco_Unitario"),
-                        resultado.getInt("Quantidade"),
-                        unidade,
-                        pais,
-                        resultado.getDouble("Total_Taxa"),
-                        resultado.getDouble("Total_Incidencia"),
-                        resultado.getDouble("Total_Linha")
-                        );
+                linhaEncomenda = criarObjetoLinha(resultado);
+                linhasEncomenda.add(linhaEncomenda);
             }
+
+            baseDados.Desligar();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return linhasEncomenda;
+    }
 
 
-        public ObservableList<Encomenda> lerEncomendaDaBaseDeDados () throws IOException {
-            ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
-            try {
-                BaseDados baseDados = new BaseDados();
-                baseDados.Ligar();
-                ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda");
+    private LinhaEncomenda criarObjetoLinha(ResultSet dados) throws IOException, SQLException {
+        Encomenda idEncomenda = obterEncomendaPorId(baseDados, dados.getString("Id_Encomenda"));
 
-                while (resultado.next()) {
-                    String idUtilizador = resultado.getString("Id_Fornecedor");
-                    int idPais = resultado.getInt("Id_pais");
+        Produto produtoEncontrado = null;
 
-                    LerFornecedores lerFornecedores = new LerFornecedores();
-                    for (Fornecedor utilFornecedor : lerFornecedores.lerFornecedoresDaBaseDeDados()) {
-                        if (utilFornecedor.getIdExterno().equals(idUtilizador)) {
-                            LerPaises lerPaises = new LerPaises();
-                            Pais pais = lerPaises.obterPaisPorId(idPais);
+        for (Produto produto : lerProduto.lerProdutosBaseDados(baseDados)) {
+            if (produto.getId().equals(dados.getString("Id_Produto"))) {
+                produtoEncontrado = produto;
+            }
+        }
 
-                            // Corrigindo a criação da data se estiver utilizando LocalDate
-                            LocalDate data = resultado.getDate("Data").toLocalDate();
+        Unidade unidade = lerUnidade.obterUnidadePorIdBaseDados(baseDados, dados.getInt("Id_Unidade"));
 
-                            // Obtenha as linhas da encomenda chamando o método lerLinhaEncomendaBaseDados
-                            ObservableList<LinhaEncomenda> linhasEncomenda = lerLinhaEncomendaBaseDados();
+        Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais_Taxa"));
 
-                            // Corrigindo a sintaxe do construtor da Encomenda e adicionando a data e as linhas
-                            Encomenda aux = new Encomenda(
-                                    resultado.getInt("Id"),
-                                    resultado.getString("Referencia"),
-                                    data, // Utilizando o LocalDate
-                                    utilFornecedor,
-                                    pais,
-                                    linhasEncomenda
-                            );
-                            encomendas.add(aux);
-                        }
-                    }
-                }
 
-                baseDados.Desligar();
-            } catch (SQLException e) {
-                Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
+        return new LinhaEncomenda(
+                dados.getInt("Id"),
+                idEncomenda,
+                dados.getInt("Sequencia"),
+                produtoEncontrado,
+                dados.getDouble("Preco_Unitario"),
+                dados.getDouble("Quantidade"),
+                unidade,
+                pais,
+                dados.getDouble("Total_Taxa"),
+                dados.getDouble("Total_Incidencia")
+        );
+    }
+
+    public ObservableList<Encomenda> lerEncomendaDaBaseDeDados(BaseDados baseDados) throws IOException {
+        ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
+
+        try {
+
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Estado = 0");
+
+            while (resultado.next()) {
+                Encomenda encomenda = criarObjetoEncomenda(resultado);
+                encomendas.add(encomenda);
             }
 
+            baseDados.Desligar();
+
             return encomendas;
+
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
+            return null; // ou lançar uma exceção, dependendo do comportamento desejado
         }
     }
 
-    private Encomenda criarObjeto(ResultSet dados) throws IOException, SQLException {
-        LerFornecedores lerFornecedores = new LerFornecedores();
-        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_fornecedor"));
+    private Encomenda criarObjetoEncomenda(ResultSet dados) throws IOException, SQLException {
 
-        LerPaises lerPaises = new LerPaises();
-        Pais pais = lerPaises.obterPaisPorId(dados.getInt("Id_Pais"));
+        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados,dados.getString("Id_fornecedor"));
+
+
+        Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais"));
 
 
         return new Encomenda(
                 dados.getInt("Id"),
                 dados.getString("Referencia"),
-                dados.getDate("Data"),
+                dados.getDate("Data").toLocalDate(),
                 fornecedor,
                 pais,
                 dados.getDouble("Total_Taxa"),
@@ -127,89 +115,135 @@ public class LerEncomenda {
         );
     }
 
-    public Encomenda obterEncomendaPorReferencia(String referencia) throws IOException {
-        Encomenda encomenda = null;
+    public int adicionarEncomendaBaseDeDados(BaseDados baseDados, Encomenda encomenda) throws IOException {
         try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Encomenda WHERE Refencia = " + referencia);
-
-            if (resultado.next()) {
-                encomenda = criarObjeto(resultado);
-            }
-            basedados.Desligar();
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-        }
-        return encomenda;
-    }
-
-    public Encomenda obterEncomendaPorId(int id) throws IOException {
-        Encomenda encomenda = null;
-        try {
-            BaseDados basedados = new BaseDados();
-            basedados.Ligar();
-            ResultSet resultado = basedados.Selecao("SELECT * FROM Encomenda WHERE Id = " + id);
-
-            if (resultado.next()) {
-                encomenda = criarObjeto(resultado);
-            }
-            basedados.Desligar();
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-        }
-        return encomenda;
-    }
-     */
-
-    public int adicionarEncomendaBaseDeDados(Encomenda encomenda) throws IOException {
-
-        try {
-            BaseDados baseDados = new BaseDados();
             baseDados.Ligar();
 
-            //gravar encomenda
-            String queryEncomenda = "INSERT INTO Encomenda (Id, Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Estado) " +
-                    "VALUES " +
-                    "(" + encomenda.getId() + "," +
-                    "'"+encomenda.getReferencia()+"'," +
-                    "'"+encomenda.getData()+"'," +
-                    "'"+encomenda.getFornecedor().getId()+"'," +
-                    "'"+encomenda.getPais().getISO()+"'," +
-                    encomenda.getTotalTaxa()+"," +
-                    encomenda.getTotalIncidencia()+"," +
-                    encomenda.getTotal()+"," +
-                    "0" +
-                    ")";
+            String queryEncomenda = getQueryEncomenda(encomenda);
 
-            int Id_Encomenda = baseDados.ExecutarInsert(queryEncomenda);
+            int Id_Encomenda = baseDados.ExecutarPreparementStatement(queryEncomenda);
 
-            for (LinhaEncomenda Linha: encomenda.getLinhas()) {
 
-                String queryLinha = "INSERT INTO Linha_Encomenda (Id_Encomenda, Sequencia, Id_Produto, Preco_Unitario, Quantidade, Id_Unidade," +
-                        " Id_Pais_Taxa, Total_Taxa, Total_Incidencia, Total_Linha) " +
-                        "VALUES " +
-                        "(" +
-                        Id_Encomenda+"," +
-                        "'"+Linha.getSequencia()+"'," +
-                        "'"+Linha.getProduto().getId()+"'," +
-                        Linha.getPreco()+"," +
-                        Linha.getQuantidade()+"," +
-                        "'"+Linha.getUnidade().getId()+"'," +
-                        "'"+Linha.getTaxa().getISO()+"'," +
-                        Linha.getTotalTaxa()+"," +
-                        Linha.getTotalIncidencia()+"," +
-                        Linha.getTotal() +
-                        ")";
+            // Inserir produtos associados à encomenda na tabela Produto
+            for (LinhaEncomenda linha : encomenda.getLinhas()) {
 
-                baseDados.Executar(queryLinha);
+                //lerProdutos.lerProdutoPorId ja existe, nao grava
+                inserirProdutoNaTabelaProduto(baseDados, linha.getProduto());
             }
+
+            // Inserir na tabela Linha_Encomenda
+            for (LinhaEncomenda linha : encomenda.getLinhas()) {
+                inserirLinhaEncomenda(baseDados, Id_Encomenda, linha);
+            }
+
             baseDados.Desligar();
 
             return Id_Encomenda;
         } catch (Exception e) {
-            Mensagens.Erro("Erro na base de dados!", "Erro na adição da bade de dados!");
+            Mensagens.Erro("Erro na base de dados!", "Erro na adição da base de dados!");
         }
+
         return 0;
+    }
+
+    private void inserirProdutoNaTabelaProduto(BaseDados baseDados, Produto produto) {
+        //Verificar se o produto já eiste na tabela antes de o inserir
+        if (!produtoExisteNaTabela(baseDados, produto.getId())) {
+            // Construa a string da consulta SQL, escapando os valores
+            String queryProduto = "INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado) " +
+                    "VALUES (" +
+                    "'" + produto.getId() + "'," +
+                    "'" + produto.getFornecedor().getIdExterno() + "'," +
+                    "'" + produto.getDescricao() + "'," +
+                    produto.getUnidade().getId() + "," +
+                    "'" + produto.getIdExterno() + "'," +
+                    "0" +
+                    ")";
+            baseDados.Executar(queryProduto);
+        }
+    }
+    private boolean produtoExisteNaTabela(BaseDados baseDados, String Id) {
+        try {
+            ResultSet resultado = baseDados.Selecao("SELECT Id FROM Produto WHERE Id = '" + Id + "'");
+            return resultado.next(); // Retorna true se o produto já existir na tabela
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void inserirLinhaEncomenda(BaseDados baseDados, int Id_Encomenda, LinhaEncomenda linha) {
+        // Construa a string da consulta SQL, escapando os valores
+        String queryLinha = "INSERT INTO Linha_Encomenda (Id_Encomenda, Sequencia, Id_Produto, Preco_Unitario, Quantidade, Id_Unidade," +
+                " Id_Pais_Taxa, Total_Taxa, Total_Incidencia, Total_Linha) " +
+                "VALUES (" +
+                Id_Encomenda + "," +
+                "'" + linha.getSequencia() + "'," +
+                "'" + linha.getProduto().getId() + "'," +
+                linha.getPreco() + "," +
+                linha.getQuantidade() + "," +
+                linha.getUnidade().getId() + "," +
+                linha.getTaxa().getId() + "," +
+                linha.getTotalTaxa() + "," +
+                linha.getTotalIncidencia() + "," +
+                linha.getTotal() +
+                ")";
+
+        baseDados.Executar(queryLinha);
+    }
+
+    @NotNull
+    private String getQueryEncomenda(Encomenda encomenda) throws IOException {
+
+        Pais idPais = lerPaises.obterPaisPorId(baseDados,encomenda.getPais().getId());
+
+        //gravar encomenda
+        String referencia = "'" + encomenda.getReferencia() + "'";
+        String data = "'" + encomenda.getData() + "'";
+        String idFornecedor = "'" + encomenda.getFornecedor().getIdExterno() + "'";
+        int idPaisInt = idPais.getId();
+
+        // Construa a string da consulta SQL, escapando os valores
+        return "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Estado) " +
+                "VALUES (" +
+                referencia + "," +
+                data + "," +
+                idFornecedor + "," +
+                idPaisInt + "," +
+                encomenda.getTotalTaxa() + "," +
+                encomenda.getTotalIncidencia() + "," +
+                encomenda.getTotal() + ", 0)";
+    }
+
+    public Encomenda obterEncomendaPorReferencia(BaseDados baseDados, String referencia) throws IOException {
+        Encomenda encomenda = null;
+        try {
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Referencia = " + referencia);
+
+            if (resultado.next()) {
+                encomenda = criarObjetoEncomenda(resultado);
+            }
+            baseDados.Desligar();
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return encomenda;
+    }
+
+    public Encomenda obterEncomendaPorId(BaseDados baseDados, String id) throws IOException {
+        Encomenda encomenda = null;
+        try {
+
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Id = " + id);
+
+            if (resultado.next()) {
+                encomenda = criarObjetoEncomenda(resultado);
+            }
+            baseDados.Desligar();
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return encomenda;
     }
 }

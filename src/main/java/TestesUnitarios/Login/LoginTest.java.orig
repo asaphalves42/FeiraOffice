@@ -31,6 +31,13 @@ public class LoginTest {
 
     @Test
     public void testVerificarLoginUtilizadorAdm() throws SQLException {
+<<<<<<< HEAD
+        
+
+
+        // Executar o método a ser testado
+        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador("email", "123");
+=======
         // Adicionar lógica de simulação de dados diretamente no LerUtilizadores
         lerUtilizadores.setUtilizadoresSimulados(FXCollections.observableArrayList(
                 new UtilizadorAdm(1, "admin@admin.pt", "123"),          // Simula um administrador
@@ -41,6 +48,7 @@ public class LoginTest {
 
         // Executar o método a ser testado
         Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados,"admin@admin.pt", "123");
+>>>>>>> 792ff66e7a54abfb09bc3a570e1a668317ef64fe
 
         // Verificar se o método retornou o utilizador esperado
         assertEquals(UtilizadorAdm.class, utilizador.getClass());
@@ -48,6 +56,9 @@ public class LoginTest {
 
     @Test
     public void testVerificarLoginUtilizadorFornecedor() throws SQLException {
+<<<<<<< HEAD
+
+=======
         // Adicionar lógica de simulação de dados diretamente no LerUtilizadores
         lerUtilizadores.setUtilizadoresSimulados(FXCollections.observableArrayList(
                 new UtilizadorAdm(1, "admin@admin.pt", "123"),
@@ -55,6 +66,7 @@ public class LoginTest {
                 new UtilizadorOperador(2, "fornecedor", "senha"),
                 new UtilizadorFornecedor(3,"rjr@isep.ipp.pt", "luc")
         ));
+>>>>>>> 792ff66e7a54abfb09bc3a570e1a668317ef64fe
 
         // Executar o método a ser testado
         Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados,"admin@admin.pt", "123");
@@ -65,6 +77,12 @@ public class LoginTest {
 
     @Test
     public void testVerificarLoginOperador() throws SQLException {
+<<<<<<< HEAD
+
+
+        // Executar o método a ser testado
+        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador("teste@operador.pt", "123");
+=======
         // Adicionar lógica de simulação de dados diretamente no LerUtilizadores
         lerUtilizadores.setUtilizadoresSimulados(FXCollections.observableArrayList(
                 new UtilizadorAdm(1, "admin@admin.pt", "123"),
@@ -74,10 +92,12 @@ public class LoginTest {
 
         // Executar o método a ser testado
         Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados,"teste@operador.pt", "123");
+>>>>>>> 792ff66e7a54abfb09bc3a570e1a668317ef64fe
 
         // Verificar se o método retornou o utilizador esperado
         assertEquals(UtilizadorOperador.class, utilizador.getClass());
     }
+
 
 
 }

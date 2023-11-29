@@ -2,10 +2,7 @@ package Controller.Operador;
 
 import Controller.DAL.LerUtilizadores;
 import Model.UtilizadorOperador;
-import Utilidades.DataSingleton;
-import Utilidades.Encriptacao;
-import Utilidades.Mensagens;
-import Utilidades.ValidarEmail;
+import Utilidades.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -17,6 +14,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class DialogAdicionarOperador {
+
+    BaseDados baseDados = new BaseDados();
 
     private final DataSingleton dadosCompartilhados =DataSingleton.getInstance();
 
@@ -71,7 +70,7 @@ public class DialogAdicionarOperador {
 
             // Chamar a DAL para adicionar o utilizador à tabela "Utilizador"
             LerUtilizadores adicionarOperador = new LerUtilizadores();
-            if(adicionarOperador.adicionarOperadorBaseDados(email, encryptedPassword)){
+            if(adicionarOperador.adicionarOperadorBaseDados(baseDados, email, encryptedPassword)){
                 Mensagens.Informacao("Novo operador!", "Novo operador inserido com sucesso!");
             }
             dadosCompartilhados.setDataOperador(utilizador);
