@@ -62,9 +62,12 @@ public class DialogEditarOperador {
                 return;
             }
 
-            // Validar o formato do e-mail
-            if (!validarEmail.isValidEmailAddress(novoEmail)) {
-                Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido.");
+
+            LerUtilizadores lerUtilizadores = new LerUtilizadores();
+
+            // Validar o formato do e-mail e verificar se já existe na base de dados
+            if (!validarEmail.isValidEmailAddress(novoEmail) || !lerUtilizadores.verificarUserName(novoEmail)) {
+                Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido e que não esteja em uso.");
                 return;
             }
 
@@ -73,7 +76,7 @@ public class DialogEditarOperador {
             operador.setPassword(novaPassword);  // Pode ser necessário atualizar a lógica conforme necessário
 
             // Chamar a DAL para atualizar o utilizador na tabela "Utilizador"
-            LerUtilizadores lerUtilizadores = new LerUtilizadores();
+
             if (lerUtilizadores.atualizarOperadorBaseDados(baseDados, operador.getId(), novoEmail, encryptedNovaPassword)) {
                 Mensagens.Informacao("Operador atualizado!", "Operador atualizado com sucesso!");
             }

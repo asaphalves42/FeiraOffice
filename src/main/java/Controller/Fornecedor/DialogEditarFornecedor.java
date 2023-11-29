@@ -2,6 +2,7 @@ package Controller.Fornecedor;
 
 import Controller.DAL.LerFornecedores;
 import Controller.DAL.LerPaises;
+import Controller.DAL.LerUtilizadores;
 import Model.Fornecedor;
 import Model.Pais;
 import Model.UtilizadorFornecedor;
@@ -118,9 +119,10 @@ public class DialogEditarFornecedor {
             }
 
             // Validar formato do e-mail
+            LerUtilizadores  lerUtilizadores = new LerUtilizadores();
             ValidarEmail validarEmail = new ValidarEmail();
-            if (!validarEmail.isValidEmailAddress(email)) {
-                Mensagens.Erro("E-mail inválido", "Insira um endereço de e-mail válido.");
+            if (!validarEmail.isValidEmailAddress(email) || !lerUtilizadores.verificarUserName(email)) {
+                Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido e que não esteja em uso.");
                 return;
             }
 
