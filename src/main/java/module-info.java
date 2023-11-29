@@ -25,11 +25,12 @@ module com.example.lp3_g2_feira_office_ {
     exports TestesUnitarios.Fornecedores;
 
     opens com.example.lp3_g2_feira_office_2023 to jakarta.xml.bind;
-    exports TestesUnitarios.Fornecedores to junit;
 
 
     requires javafx.graphics;
     requires annotations;
+
+    requires jakarta.mail;
 
 
     exports Model;
