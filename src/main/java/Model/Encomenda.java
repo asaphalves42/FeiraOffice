@@ -26,6 +26,10 @@ public class Encomenda {
 
     private int estado;
 
+    public Encomenda(int id){
+        this.id = id;
+    }
+
     public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, ArrayList<LinhaEncomenda> linhas, int estado) {
         this.id = id;
         this.referencia = referencia;
@@ -37,7 +41,6 @@ public class Encomenda {
         this.valorImposto = valorImposto;
         this.valorTotal = valorTotal;
         this.valorIncidencia = valorIncidencia;
-
 
     }
 

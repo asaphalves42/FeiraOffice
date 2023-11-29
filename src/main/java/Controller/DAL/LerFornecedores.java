@@ -12,6 +12,8 @@ import java.sql.SQLException;
 
 public class LerFornecedores {
     BaseDados baseDados = new BaseDados();
+    LerPaises lerPaises = new LerPaises();
+    LerUtilizadores lerUtilizadores = new LerUtilizadores();
 
     /**
      * Lê a lista de fornecedores a partir da base de dados e retorna uma lista observável de fornecedores.
@@ -65,11 +67,9 @@ public class LerFornecedores {
         int idPais = dados.getInt("Id_Pais");
         int idUtilizador = dados.getInt("Id_Utilizador");
 
-        LerPaises lerPaises = new LerPaises();
-        Pais pais = lerPaises.obterPaisPorId(baseDados,idPais);
 
-        LerUtilizadores lerUtilizores = new LerUtilizadores();
-        UtilizadorFornecedor utilizador = lerUtilizores.obterUtilizadorPorIdFornecedor(baseDados,idUtilizador);
+        Pais pais = lerPaises.obterPaisPorId(baseDados,idPais);
+        UtilizadorFornecedor utilizador = lerUtilizadores.obterUtilizadorPorIdFornecedor(baseDados,idUtilizador);
 
         return new Fornecedor(
                 dados.getInt("id"),
@@ -140,7 +140,6 @@ public class LerFornecedores {
 
             String query = ("DELETE FROM Fornecedor WHERE id = " + fornecedorId);
 
-
             boolean linhasAfetadas = baseDados.Executar(query);
 
             baseDados.Desligar();
@@ -191,8 +190,6 @@ public class LerFornecedores {
         try {
             
             boolean sucesso1 = baseDados.Executar(query);
-
-
             boolean sucesso2 = baseDados.Executar(query2);
 
 
