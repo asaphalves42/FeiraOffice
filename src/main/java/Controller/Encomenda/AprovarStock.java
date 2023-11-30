@@ -3,6 +3,7 @@ package Controller.Encomenda;
 import Controller.DAL.LerEncomenda;
 import Model.*;
 import Utilidades.BaseDados;
+import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -14,11 +15,13 @@ import javafx.scene.control.TableColumn;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 public class AprovarStock {
 
     BaseDados baseDados = new BaseDados();
     LerEncomenda lerEncomenda = new LerEncomenda();
+    private final DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -29,7 +32,6 @@ public class AprovarStock {
     @FXML
     private Button btnRecusar;
 
-
     @FXML
     private TableView<Encomenda> tableViewEncomendas;
 
@@ -38,7 +40,6 @@ public class AprovarStock {
 
     ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
     ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
-
 
     public void initialize() throws IOException {
         tabelaEncomendas();
@@ -54,8 +55,6 @@ public class AprovarStock {
         });
     }
 
-
-
     public void tabelaEncomendas() throws IOException {
 
         try {
@@ -66,7 +65,8 @@ public class AprovarStock {
                 TableColumn<Encomenda, Integer> colunaId = new TableColumn<>("ID");
                 TableColumn<Encomenda, String> colunaReferencia = new TableColumn<>("Referência");
                 TableColumn<Encomenda, LocalDate> colunaData = new TableColumn<>("Data");
-                TableColumn<Encomenda, Fornecedor> colunaIdFornecedor = new TableColumn<>("Id do Fornecedor");
+                TableColumn<Encomenda, Fornecedor> colunaNomeFornecedor = new TableColumn<>("Fornecedor");
+                TableColumn<Encomenda, Fornecedor> colunaIdFornecedor = new TableColumn<>("Id do fornecedor");
                 TableColumn<Encomenda, Pais> colunaidPais = new TableColumn<>("País");
                 TableColumn<Encomenda, Double> colunaTotalTaxa = new TableColumn<>("Total dos impostos");
                 TableColumn<Encomenda, Double> colunaIncidencia = new TableColumn<>("Total sem impostos");
@@ -77,6 +77,23 @@ public class AprovarStock {
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
                 colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
+
+                colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("fornecedor"));
+
+                colunaNomeFornecedor.setCellFactory(column -> {
+                    return new TableCell<Encomenda, Fornecedor>() {
+                        @Override
+                        protected void updateItem(Fornecedor fornecedor, boolean empty) {
+                            super.updateItem(fornecedor, empty);
+
+                            if (fornecedor == null || empty) {
+                                setText(null);
+                            } else {
+                                setText(String.valueOf(fornecedor.getNome())); // Nome do fornecedor
+                            }
+                        }
+                    };
+                });
 
                 colunaIdFornecedor.setCellValueFactory(new PropertyValueFactory<>("fornecedor"));
 
@@ -108,15 +125,17 @@ public class AprovarStock {
                 tableViewEncomendas.getColumns().add(colunaId);
                 tableViewEncomendas.getColumns().add(colunaReferencia);
                 tableViewEncomendas.getColumns().add(colunaData);
+                tableViewEncomendas.getColumns().add(colunaNomeFornecedor);
                 tableViewEncomendas.getColumns().add(colunaIdFornecedor);
                 tableViewEncomendas.getColumns().add(colunaidPais);
                 tableViewEncomendas.getColumns().add(colunaTotalTaxa);
                 tableViewEncomendas.getColumns().add(colunaIncidencia);
                 tableViewEncomendas.getColumns().add(colunaTotal);
 
+                DataSingleton data = DataSingleton.getInstance();
+                encomendas.add(data.getDataEncomenda());
 
                 tableViewEncomendas.setItems(encomendas);
-
 
             }
 
@@ -126,23 +145,22 @@ public class AprovarStock {
 
     }
 
-
     public void tabelaLinhasEncomenda(Encomenda encomenda) throws IOException {
         try {
 
             if (encomenda != null) {
 
                 // Ler apenas as linhas de encomenda para a encomenda selecionada
-                linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomendaBaseDados(baseDados, encomenda.getId()));
+                linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomenda(baseDados, encomenda.getId()));
 
                 if (!linhasEncomenda.isEmpty()) {
                     TableColumn<LinhaEncomenda, Integer> colunaId = new TableColumn<>("ID");
-                    TableColumn<LinhaEncomenda, Encomenda> colunaIdEncomenda = new TableColumn<>("Id da encomenda");
+                    TableColumn<LinhaEncomenda, Encomenda> colunaIdEncomenda = new TableColumn<>("Encomenda");
                     TableColumn<LinhaEncomenda, Integer> colunaSequencia = new TableColumn<>("Sequência");
-                    TableColumn<LinhaEncomenda, String> colunaDescricaoProduto = new TableColumn<>("Descrição do Produto");
+                    TableColumn<LinhaEncomenda, String> colunaDescricaoProduto = new TableColumn<>("Descrição");
                     TableColumn<LinhaEncomenda, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
                     TableColumn<LinhaEncomenda, String> colunaDescricaoUnidade = new TableColumn<>("Unidade");
-                    TableColumn<LinhaEncomenda, String> colunaNomePais = new TableColumn<>("Nome do País");
+                    TableColumn<LinhaEncomenda, String> colunaNomePais = new TableColumn<>("País");
                     TableColumn<LinhaEncomenda, Double> colunaTotalTaxa = new TableColumn<>("Total taxa");
                     TableColumn<LinhaEncomenda, Double> colunaTotalIncidencia = new TableColumn<>("Total incidência");
                     TableColumn<LinhaEncomenda, Double> colunaTotalLinha = new TableColumn<>("Total da linha");
@@ -186,23 +204,37 @@ public class AprovarStock {
             Mensagens.Erro("Erro!", "Erro ao ler tabela!");
         }
     }
-
-
-
     @FXML
-    void clickAprovar() {
+    void clickAprovar() throws IOException {
+        // Aceder a encomenda
+        Encomenda encomenda = tableViewEncomendas.getSelectionModel().getSelectedItem();
 
-        //Aceder a encomenda
+        // Aceder as linhas
+        List<LinhaEncomenda> linhasEncomenda = lerEncomenda.lerLinhasParaAprovacao(baseDados, encomenda.getId());
 
-        //Aceder as linhas
 
-        //Os produtos da linha colocar numa lista
+        boolean sucesso = false;
+        boolean sucessoEncomenda = false;
+        for (LinhaEncomenda linhas : linhasEncomenda) {
+            Produto produto = linhas.getProduto();
+            double quantidade = linhas.getQuantidade();
 
-        //for pela lista e adicionar na BD
+            // Lógica para atualizar o estoque na base de dados
+            sucesso = lerEncomenda.atualizarStock(baseDados, produto.getId(), produto.getUnidade().getId(), quantidade);
 
+            //atualizar estado da encomenda
+            sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(baseDados, encomenda.getId());
+
+            dadosCompartilhados.setDataEncomenda(encomenda);
+        }
+
+        if (sucesso && sucessoEncomenda) {
+            Mensagens.Informacao("Sucesso", "Stock aprovado com sucesso!");
+        } else {
+            Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
+        }
 
     }
-
     @FXML
     void clickRecusar() {
 

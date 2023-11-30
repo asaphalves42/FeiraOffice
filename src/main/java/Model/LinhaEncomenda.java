@@ -10,8 +10,8 @@ public class LinhaEncomenda {
     private double quantidade;
     private Unidade unidade;
     private Pais taxa;
-    private final double totalTaxa;
-    private final double totalIncidencia;
+    private double totalTaxa;
+    private double totalIncidencia;
     private double totalLinha;
 
     public LinhaEncomenda(int id, Encomenda idEncomenda, int sequencia, Produto produto, double preco, double quantidade, Unidade unidade, Pais taxa,
@@ -28,6 +28,13 @@ public class LinhaEncomenda {
         this.totalIncidencia = totalIncidencia;
         this.totalLinha = totalLinha;
     }
+
+    public LinhaEncomenda(Produto produtoEncontrado, double quantidade) {
+        this.produto = produtoEncontrado;
+        this.quantidade = quantidade;
+
+    }
+
 
     public double getTotalLinha() {
         return totalLinha;
