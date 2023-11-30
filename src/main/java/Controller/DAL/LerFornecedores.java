@@ -32,7 +32,7 @@ public class LerFornecedores {
 
 
             while (resultado.next()) { //Ler os forncedores da base de dados, um a um e cria um objeto novo
-               fornecedor = criarObjeto(resultado);
+               fornecedor = criarObjetoFornecedor(resultado);
 
                 fornecedores.add(fornecedor);
 
@@ -46,24 +46,7 @@ public class LerFornecedores {
         }
     }
 
-    public Fornecedor obterFornecedorPorId(BaseDados baseDados, String idFornecedor) throws IOException {
-        Fornecedor fornecedor = null;
-        try {
-            baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Fornecedor WHERE Id_Externo = '" + idFornecedor + "'");
-
-            if (resultado.next()) {
-                fornecedor = criarObjeto(resultado);
-
-            }
-            baseDados.Desligar();
-    } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-        }
-        return fornecedor;
-    }
-
-    private Fornecedor criarObjeto(ResultSet dados) throws IOException, SQLException {
+    private Fornecedor criarObjetoFornecedor(ResultSet dados) throws IOException, SQLException {
         int idPais = dados.getInt("Id_Pais");
         int idUtilizador = dados.getInt("Id_Utilizador");
 
@@ -83,6 +66,25 @@ public class LerFornecedores {
                 utilizador
         );
     }
+
+    public Fornecedor obterFornecedorPorId(BaseDados baseDados, String idFornecedor) throws IOException {
+        Fornecedor fornecedor = null;
+        try {
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Fornecedor WHERE Id_Externo = '" + idFornecedor + "'");
+
+            if (resultado.next()) {
+                fornecedor = criarObjetoFornecedor(resultado);
+
+            }
+            baseDados.Desligar();
+    } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return fornecedor;
+    }
+
+
 
     /**
      * Adiciona um fornecedor à base de dados, com informações de país e utilizador, e retorna o fornecedor adicionado.

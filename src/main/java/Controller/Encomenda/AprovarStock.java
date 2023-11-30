@@ -37,12 +37,11 @@ public class AprovarStock {
 
     @FXML
     private TableView<LinhaEncomenda> tableViewLinhasEncomenda;
-
     ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
     ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
     public void initialize() throws IOException {
-        tabelaEncomendas();
+        tabelaEncomendasPendentes();
 
         tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -55,7 +54,7 @@ public class AprovarStock {
         });
     }
 
-    public void tabelaEncomendas() throws IOException {
+    public void tabelaEncomendasPendentes() throws IOException {
 
         try {
             encomendas.addAll(lerEncomenda.lerEncomendaDaBaseDeDados(baseDados));
@@ -132,8 +131,6 @@ public class AprovarStock {
                 tableViewEncomendas.getColumns().add(colunaIncidencia);
                 tableViewEncomendas.getColumns().add(colunaTotal);
 
-                DataSingleton data = DataSingleton.getInstance();
-                encomendas.add(data.getDataEncomenda());
 
                 tableViewEncomendas.setItems(encomendas);
 
@@ -225,7 +222,9 @@ public class AprovarStock {
             //atualizar estado da encomenda
             sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(baseDados, encomenda.getId());
 
-            dadosCompartilhados.setDataEncomenda(encomenda);
+            tableViewEncomendas.getItems().remove(encomenda);
+            tableViewLinhasEncomenda.getItems().clear();
+
         }
 
         if (sucesso && sucessoEncomenda) {
