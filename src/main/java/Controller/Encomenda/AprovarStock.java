@@ -3,25 +3,25 @@ package Controller.Encomenda;
 import Controller.DAL.LerEncomenda;
 import Model.*;
 import Utilidades.BaseDados;
+import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableColumn;
-import org.w3c.dom.events.MouseEvent;
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class AprovarStock {
 
     BaseDados baseDados = new BaseDados();
+    LerEncomenda lerEncomenda = new LerEncomenda();
+    private final DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -32,19 +32,16 @@ public class AprovarStock {
     @FXML
     private Button btnRecusar;
 
-
     @FXML
     private TableView<Encomenda> tableViewEncomendas;
 
     @FXML
     private TableView<LinhaEncomenda> tableViewLinhasEncomenda;
-
     ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
     ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
-
     public void initialize() throws IOException {
-        tabelaEncomendas();
+        tabelaEncomendasPendentes();
 
         tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -57,22 +54,18 @@ public class AprovarStock {
         });
     }
 
-
-
-    public void tabelaEncomendas() throws IOException {
+    public void tabelaEncomendasPendentes() throws IOException {
 
         try {
-
-            LerEncomenda lerEncomenda = new LerEncomenda();
             encomendas.addAll(lerEncomenda.lerEncomendaDaBaseDeDados(baseDados));
-
 
             if (!encomendas.isEmpty()) {
                 // Defina as colunas da tabela
                 TableColumn<Encomenda, Integer> colunaId = new TableColumn<>("ID");
                 TableColumn<Encomenda, String> colunaReferencia = new TableColumn<>("Referência");
                 TableColumn<Encomenda, LocalDate> colunaData = new TableColumn<>("Data");
-                TableColumn<Encomenda, Fornecedor> colunaIdFornecedor = new TableColumn<>("Id do Fornecedor");
+                TableColumn<Encomenda, Fornecedor> colunaNomeFornecedor = new TableColumn<>("Fornecedor");
+                TableColumn<Encomenda, Fornecedor> colunaIdFornecedor = new TableColumn<>("Id do fornecedor");
                 TableColumn<Encomenda, Pais> colunaidPais = new TableColumn<>("País");
                 TableColumn<Encomenda, Double> colunaTotalTaxa = new TableColumn<>("Total dos impostos");
                 TableColumn<Encomenda, Double> colunaIncidencia = new TableColumn<>("Total sem impostos");
@@ -83,6 +76,23 @@ public class AprovarStock {
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
                 colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
+
+                colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("fornecedor"));
+
+                colunaNomeFornecedor.setCellFactory(column -> {
+                    return new TableCell<Encomenda, Fornecedor>() {
+                        @Override
+                        protected void updateItem(Fornecedor fornecedor, boolean empty) {
+                            super.updateItem(fornecedor, empty);
+
+                            if (fornecedor == null || empty) {
+                                setText(null);
+                            } else {
+                                setText(String.valueOf(fornecedor.getNome())); // Nome do fornecedor
+                            }
+                        }
+                    };
+                });
 
                 colunaIdFornecedor.setCellValueFactory(new PropertyValueFactory<>("fornecedor"));
 
@@ -114,6 +124,7 @@ public class AprovarStock {
                 tableViewEncomendas.getColumns().add(colunaId);
                 tableViewEncomendas.getColumns().add(colunaReferencia);
                 tableViewEncomendas.getColumns().add(colunaData);
+                tableViewEncomendas.getColumns().add(colunaNomeFornecedor);
                 tableViewEncomendas.getColumns().add(colunaIdFornecedor);
                 tableViewEncomendas.getColumns().add(colunaidPais);
                 tableViewEncomendas.getColumns().add(colunaTotalTaxa);
@@ -123,7 +134,6 @@ public class AprovarStock {
 
                 tableViewEncomendas.setItems(encomendas);
 
-
             }
 
         } catch (IOException e) {
@@ -132,33 +142,27 @@ public class AprovarStock {
 
     }
 
-
-
     public void tabelaLinhasEncomenda(Encomenda encomenda) throws IOException {
         try {
 
             if (encomenda != null) {
 
                 // Ler apenas as linhas de encomenda para a encomenda selecionada
-                LerEncomenda lerEncomenda = new LerEncomenda();
-
-
-                linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomendaBaseDados(baseDados, encomenda.getId()));
+                linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomenda(baseDados, encomenda.getId()));
 
                 if (!linhasEncomenda.isEmpty()) {
                     TableColumn<LinhaEncomenda, Integer> colunaId = new TableColumn<>("ID");
-                    TableColumn<LinhaEncomenda, Encomenda> colunaIdEncomenda = new TableColumn<>("Id da encomenda");
+                    TableColumn<LinhaEncomenda, Encomenda> colunaIdEncomenda = new TableColumn<>("Encomenda");
                     TableColumn<LinhaEncomenda, Integer> colunaSequencia = new TableColumn<>("Sequência");
-                    TableColumn<LinhaEncomenda, Produto> colunaidProduto = new TableColumn<>("Descrição");
+                    TableColumn<LinhaEncomenda, String> colunaDescricaoProduto = new TableColumn<>("Descrição");
                     TableColumn<LinhaEncomenda, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
-                    TableColumn<LinhaEncomenda, Unidade> colunaIdUnidade = new TableColumn<>("Unidade");
-                    TableColumn<LinhaEncomenda, Pais> colunaIdPais = new TableColumn<>("Taxa do país");
+                    TableColumn<LinhaEncomenda, String> colunaDescricaoUnidade = new TableColumn<>("Unidade");
+                    TableColumn<LinhaEncomenda, String> colunaNomePais = new TableColumn<>("País");
                     TableColumn<LinhaEncomenda, Double> colunaTotalTaxa = new TableColumn<>("Total taxa");
                     TableColumn<LinhaEncomenda, Double> colunaTotalIncidencia = new TableColumn<>("Total incidência");
                     TableColumn<LinhaEncomenda, Double> colunaTotalLinha = new TableColumn<>("Total da linha");
 
                     colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-
                     colunaIdEncomenda.setCellValueFactory(new PropertyValueFactory<>("IdEncomenda"));
 
                     colunaIdEncomenda.setCellFactory(column -> {
@@ -175,79 +179,61 @@ public class AprovarStock {
                             }
                         };
                     });
-
                     colunaSequencia.setCellValueFactory(new PropertyValueFactory<>("sequencia"));
-
-                    colunaidProduto.setCellValueFactory(new PropertyValueFactory<>("produto"));
-
-                    colunaidProduto.setCellFactory(column -> {
-                        return new TableCell<LinhaEncomenda, Produto>() {
-                            @Override
-                            protected void updateItem(Produto produto, boolean empty) {
-                                super.updateItem(produto, empty);
-
-                                if (produto == null || empty) {
-                                    setText(null);
-                                } else {
-                                    setText(produto.getDescricao()); // Descricao do produto
-                                }
-                            }
-                        };
-                    });
-
+                    colunaDescricaoProduto.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getIdExterno()));
                     colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
-
-                    colunaIdUnidade.setCellValueFactory(new PropertyValueFactory<>("unidade"));
-
-                    colunaIdUnidade.setCellFactory(column -> {
-                        return new TableCell<LinhaEncomenda, Unidade>() {
-                            @Override
-                            protected void updateItem(Unidade unidade, boolean empty) {
-                                super.updateItem(unidade, empty);
-
-                                if (unidade == null || empty) {
-                                    setText(null);
-                                } else {
-                                    setText(unidade.getDescricao()); // descrição da unidade
-                                }
-                            }
-                        };
-                    });
-
-                    colunaIdPais.setCellValueFactory(new PropertyValueFactory<>("taxa"));
+                    colunaDescricaoUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnidade().getDescricao()));
+                    colunaNomePais.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTaxa().getNome()));
                     colunaTotalTaxa.setCellValueFactory(new PropertyValueFactory<>("totalTaxa"));
                     colunaTotalIncidencia.setCellValueFactory(new PropertyValueFactory<>("totalIncidencia"));
                     colunaTotalLinha.setCellValueFactory(new PropertyValueFactory<>("total"));
 
-                    tableViewLinhasEncomenda.getColumns().add(colunaId);
-                    tableViewLinhasEncomenda.getColumns().add(colunaIdEncomenda);
-                    tableViewLinhasEncomenda.getColumns().add(colunaSequencia);
-                    tableViewLinhasEncomenda.getColumns().add(colunaidProduto);
-                    tableViewLinhasEncomenda.getColumns().add(colunaQuantidade);
-                    tableViewLinhasEncomenda.getColumns().add(colunaIdUnidade);
-                    tableViewLinhasEncomenda.getColumns().add(colunaIdPais);
-                    tableViewLinhasEncomenda.getColumns().add(colunaTotalTaxa);
-                    tableViewLinhasEncomenda.getColumns().add(colunaTotalIncidencia);
-                    tableViewLinhasEncomenda.getColumns().add(colunaTotalLinha);
+                    tableViewLinhasEncomenda.getColumns().addAll(
+                            colunaId, colunaIdEncomenda, colunaSequencia,
+                            colunaDescricaoProduto, colunaQuantidade, colunaDescricaoUnidade,
+                            colunaNomePais, colunaTotalTaxa, colunaTotalIncidencia, colunaTotalLinha
+                    );
 
                     tableViewLinhasEncomenda.setItems(linhasEncomenda);
                 }
-
             }
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao ler tabela!");
         }
-
-
     }
-
-
     @FXML
-    void clickAprovar() {
+    void clickAprovar() throws IOException {
+        // Aceder a encomenda
+        Encomenda encomenda = tableViewEncomendas.getSelectionModel().getSelectedItem();
 
+        // Aceder as linhas
+        List<LinhaEncomenda> linhasEncomenda = lerEncomenda.lerLinhasParaAprovacao(baseDados, encomenda.getId());
+
+
+        boolean sucesso = false;
+        boolean sucessoEncomenda = false;
+        for (LinhaEncomenda linhas : linhasEncomenda) {
+            Produto produto = linhas.getProduto();
+            double quantidade = linhas.getQuantidade();
+
+            // Lógica para atualizar o estoque na base de dados
+            sucesso = lerEncomenda.atualizarStock(baseDados, produto.getId(), produto.getUnidade().getId(), quantidade);
+
+            //atualizar estado da encomenda
+            sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(baseDados, encomenda.getId());
+
+            tableViewEncomendas.getItems().remove(encomenda);
+            tableViewLinhasEncomenda.getItems().clear();
+
+        }
+
+        if (sucesso && sucessoEncomenda) {
+            Mensagens.Informacao("Sucesso", "Stock aprovado com sucesso!");
+        } else {
+            Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
+        }
 
     }
-
     @FXML
     void clickRecusar() {
 

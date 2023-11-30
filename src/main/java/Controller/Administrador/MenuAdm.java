@@ -46,6 +46,7 @@ public class MenuAdm {
             AnchorPane root = loader.load();
 
             anchorPaneMenuAdm.getChildren().setAll(root);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
