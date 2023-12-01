@@ -2,6 +2,7 @@ package Controller.Fornecedor;
 
 import Controller.DAL.LerFicheiro;
 import Controller.DAL.LerFornecedores;
+import Controller.DAL.VerificaFicheiroDAL;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
@@ -115,6 +116,11 @@ public class MenuFornecedor {
             novoFicheiro.getExtensionFilters().add(new FileChooser.ExtensionFilter("Documento", "*.xml"));
             arquivoSelecionado = novoFicheiro.showOpenDialog(new Stage());
             labelFicheiroEscolhido.setText(arquivoSelecionado.getAbsolutePath());
+
+            VerificaFicheiroDAL verificaFicheiroDAL = new VerificaFicheiroDAL();
+            verificaFicheiroDAL.lerFicheiroXML(arquivoSelecionado);
+
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
