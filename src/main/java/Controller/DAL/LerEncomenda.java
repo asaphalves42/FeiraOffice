@@ -140,6 +140,7 @@ public class LerEncomenda {
 
             int Id_Encomenda = baseDados.ExecutarPreparementStatement(queryEncomenda);
 
+
             // Inserir produtos associados à encomenda na tabela Produto
             for (LinhaEncomenda linha : encomenda.getLinhas()) {
 
@@ -163,19 +164,28 @@ public class LerEncomenda {
     }
 
     private void inserirProdutoNaTabelaProduto(BaseDados baseDados, Produto produto) {
-
-        // Construa a string da consulta SQL, escapando os valores
-        String queryProduto = "INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado) " +
-                "VALUES (" +
-                "'" + produto.getId() + "'," +
-                "'" + produto.getFornecedor().getIdExterno() + "'," +
-                "'" + produto.getDescricao() + "'," +
-                produto.getUnidade().getId() + "," +
-                "'" + produto.getIdExterno() + "'," +
-                "0" +
-                ")";
-        baseDados.Executar(queryProduto);
-
+        //Verificar se o produto já eiste na tabela antes de o inserir
+        if (!produtoExisteNaTabela(baseDados, produto.getId())) {
+            // Construa a string da consulta SQL, escapando os valores
+            String queryProduto = "INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado) " +
+                    "VALUES (" +
+                    "'" + produto.getId() + "'," +
+                    "'" + produto.getFornecedor().getIdExterno() + "'," +
+                    "'" + produto.getDescricao() + "'," +
+                    produto.getUnidade().getId() + "," +
+                    "'" + produto.getIdExterno() + "'," +
+                    "0" +
+                    ")";
+            baseDados.Executar(queryProduto);
+        }
+    }
+    private boolean produtoExisteNaTabela(BaseDados baseDados, String Id) {
+        try {
+            ResultSet resultado = baseDados.Selecao("SELECT Id FROM Produto WHERE Id = '" + Id + "'");
+            return resultado.next(); // Retorna true se o produto já existir na tabela
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void inserirLinhaEncomenda(BaseDados baseDados, int Id_Encomenda, LinhaEncomenda linha) {
@@ -338,6 +348,22 @@ public class LerEncomenda {
         }
 
         return false;
+    }
+
+    public boolean actualizarEstadoEncomendaRecusada(BaseDados baseDados, int idEncomenda) throws IOException {
+        try {
+            baseDados.Ligar();
+
+            String query = "UPDATE Encomenda Set Estado = 2 WHERE Id = " + idEncomenda;
+
+            baseDados.Executar(query);
+            return true;
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao atualizar encomenda!");
+            baseDados.Desligar();
+        }
+        return false;
+
     }
 
 }
