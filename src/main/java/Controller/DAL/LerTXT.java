@@ -1,9 +1,6 @@
 package Controller.DAL;
 
-import Model.Fornecedor;
-import Utilidades.BaseDados;
 import Utilidades.Mensagens;
-import javafx.collections.ObservableList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -18,7 +15,7 @@ import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class VerificaFicheiroDAL {
+public class LerTXT {
 
     public void lerFicheiroXML(File selectedFile) throws IOException {
 
@@ -33,8 +30,8 @@ public class VerificaFicheiroDAL {
             doc.getDocumentElement().normalize();
 
             // Crie um arquivo para a saída
-            //File outputFile = new File("C:\\Users\\asaph\\IdeaProjects\\LP3_G2_Feira_Office_2023\\VerificaEncomenda.txt");
-            File outputFile = new File("C:\\Users\\asaph\\IdeaProjects\\LP3_G2_Feira_Office_2023\\verificaEncomenda.pdf");
+            File outputFile = new File("VerificaEncomenda.txt");
+
             fileOutputStream = new FileOutputStream(outputFile);
             printStream = new PrintStream(fileOutputStream);
 
@@ -151,8 +148,8 @@ public class VerificaFicheiroDAL {
             }
 
             // Abre o programa padrão associado ao arquivo PDF
-            Runtime.getRuntime().exec("cmd /c start \"\" \"" + outputFile.getAbsolutePath() + "\"");
-            //Runtime.getRuntime().exec("notepad.exe " + outputFile.getAbsolutePath());
+            //Runtime.getRuntime().exec("cmd /c start \"\" \"" + outputFile.getAbsolutePath() + "\"");
+            Runtime.getRuntime().exec("notepad.exe " + outputFile.getAbsolutePath());
 
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao mostrar arquivo selecionado!");

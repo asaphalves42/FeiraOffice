@@ -2,7 +2,7 @@ package Controller.Fornecedor;
 
 import Controller.DAL.LerFicheiro;
 import Controller.DAL.LerFornecedores;
-import Controller.DAL.VerificaFicheiroDAL;
+import Controller.DAL.LerTXT;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
@@ -13,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 
@@ -117,7 +116,7 @@ public class MenuFornecedor {
             arquivoSelecionado = novoFicheiro.showOpenDialog(new Stage());
             labelFicheiroEscolhido.setText(arquivoSelecionado.getAbsolutePath());
 
-            VerificaFicheiroDAL verificaFicheiroDAL = new VerificaFicheiroDAL();
+            LerTXT verificaFicheiroDAL = new LerTXT();
             verificaFicheiroDAL.lerFicheiroXML(arquivoSelecionado);
 
 
