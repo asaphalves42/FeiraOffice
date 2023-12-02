@@ -212,7 +212,7 @@ public class LerFornecedores {
 
 
     public ObservableList<ContaCorrente> lerDividaFornecedores(BaseDados baseDados) throws IOException {
-        ObservableList<ContaCorrente> contasCorrentes = FXCollections.observableArrayList();
+        ObservableList<ContaCorrente> contas = FXCollections.observableArrayList();
         try {
             baseDados.Ligar();
 
@@ -225,20 +225,17 @@ public class LerFornecedores {
                     "INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Conta_Corrente.Id_Fornecedor";
 
             ResultSet resultado = baseDados.Selecao(query);
-
-
             // Processar os resultados do ResultSet
             while (resultado.next()) {
                 ContaCorrente contaCorrente = criarObjetoDivida(resultado);
-                contasCorrentes.add(contaCorrente);
+                contas.add(contaCorrente);
             }
-
 
             baseDados.Desligar();
         } catch (Exception e) {
-            Mensagens.Erro("Errou!", "Ta fazendo cagada!");
+            Mensagens.Erro("Erro!!", "Erro ao ler tabela!");
         }
-        return contasCorrentes;
+        return contas;
     }
 
     private ContaCorrente criarObjetoDivida(ResultSet dados) throws SQLException {

@@ -366,5 +366,17 @@ public class LerEncomenda {
 
     }
 
+    public void atualizarSaldoDevedores(BaseDados baseDados, int id) throws IOException {
+        try {
+            baseDados.Ligar();
+
+
+        } catch (Exception e) {
+            Mensagens.Erro("Error","Ta fazendo cagada");
+        }
+
+
+
+    }
 }
 

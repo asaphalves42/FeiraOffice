@@ -5,6 +5,7 @@ import Model.ContaCorrente;
 import Model.Fornecedor;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -71,6 +72,7 @@ public class MenuContaCorrente {
 
     public void initialize() throws IOException {
         tabelaDividas();
+        //carregarLabels();
 
     }
 
@@ -81,19 +83,21 @@ public class MenuContaCorrente {
             if (tableViewDividas.getColumns().isEmpty()) {
                 // Defina as colunas da tabela
                 TableColumn<ContaCorrente, Integer> colunaId = new TableColumn<>("ID");
+                TableColumn<ContaCorrente, String> colunaIdExterno = new TableColumn<>("ID do fornecedor");
                 TableColumn<ContaCorrente, String> colunaNome = new TableColumn<>("Nome");
                 TableColumn<ContaCorrente, String> colunaDivida = new TableColumn<>("Saldo devedor");
 
-
                 // Associe as colunas às propriedades da classe Fornecedor
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-                colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+                colunaIdExterno.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdFornecedor().getNome()));
+                colunaNome.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdFornecedor().getIdExterno()));
                 colunaDivida.setCellValueFactory(new PropertyValueFactory<>("saldo"));
 
                 // Adicione as colunas à tabela
                 tableViewDividas.getColumns().add(colunaId);
+                tableViewDividas.getColumns().add(colunaIdExterno);
                 tableViewDividas.getColumns().add(colunaNome);
-
+                tableViewDividas.getColumns().add(colunaDivida);
 
                 // Configure a fonte de dados da tabela
                 tableViewDividas.setItems(dividasFornecedores);
@@ -103,7 +107,12 @@ public class MenuContaCorrente {
         }
     }
 
+    public void carregarLabels(){
+        Fornecedor fornecedor = tableViewEncomendaFornc.getSelectionModel().getSelectedItem();
 
+        labelNome.setText(fornecedor.getNome());
+
+    }
 
 
     @FXML

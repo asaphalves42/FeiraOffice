@@ -227,6 +227,7 @@ public class AprovarStock {
             sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(baseDados, encomenda.getId());
 
             //atualizar saldo em divida
+            lerEncomenda.atualizarSaldoDevedores(baseDados, encomenda.getId());
 
             tableViewEncomendas.getItems().remove(encomenda);
 
