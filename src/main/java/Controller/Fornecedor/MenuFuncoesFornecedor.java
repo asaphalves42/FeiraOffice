@@ -37,6 +37,8 @@ public class MenuFuncoesFornecedor {
 
     BaseDados baseDados = new BaseDados();
 
+    LerFornecedores lerFornecedores = new LerFornecedores();
+
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
 
@@ -66,7 +68,7 @@ public class MenuFuncoesFornecedor {
      */
     public void tabelaFornecedores() throws IOException {
 
-        LerFornecedores lerFornecedores = new LerFornecedores();
+
         fornecedores.addAll(lerFornecedores.lerFornecedoresDaBaseDeDados(baseDados));
 
         if (!fornecedores.isEmpty()) {
@@ -116,8 +118,6 @@ public class MenuFuncoesFornecedor {
     void clickEditar() throws IOException {
         Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
 
-
-
         if (fornecedorSelecionado != null) {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/DialogEditarFornecedor.fxml"));
@@ -153,7 +153,7 @@ public class MenuFuncoesFornecedor {
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     try {
-                        LerFornecedores lerFornecedores = new LerFornecedores();
+
                         boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados,fornecedorSelecionado.getId());
 
                         if (sucesso) {

@@ -33,6 +33,11 @@ public class Fornecedor {
         this.idUtilizador = idUtilizador;
     }
 
+    public Fornecedor(String nome, String idExterno){
+        this.nome = nome;
+        this.idExterno = idExterno;
+    }
+
     public String getIdExterno() {
         return idExterno;
     }

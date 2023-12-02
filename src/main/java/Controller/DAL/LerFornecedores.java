@@ -9,6 +9,8 @@ import javafx.collections.ObservableList;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LerFornecedores {
     BaseDados baseDados = new BaseDados();
@@ -208,6 +210,49 @@ public class LerFornecedores {
         }
     }
 
+
+    public ObservableList<ContaCorrente> lerDividaFornecedores(BaseDados baseDados) throws IOException {
+        ObservableList<ContaCorrente> contasCorrentes = FXCollections.observableArrayList();
+        try {
+            baseDados.Ligar();
+
+            // Complete a string da query SQL
+            String query = "SELECT Conta_Corrente.Id as id, " +
+                    "Fornecedor.Id_Externo as id_fornecedor, " +
+                    "Fornecedor.Nome as nome_fornecedor, " +
+                    "Conta_Corrente.Saldo as saldo " +
+                    "FROM Conta_Corrente " +
+                    "INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Conta_Corrente.Id_Fornecedor";
+
+            ResultSet resultado = baseDados.Selecao(query);
+
+
+            // Processar os resultados do ResultSet
+            while (resultado.next()) {
+                ContaCorrente contaCorrente = criarObjetoDivida(resultado);
+                contasCorrentes.add(contaCorrente);
+            }
+
+
+            baseDados.Desligar();
+        } catch (Exception e) {
+            Mensagens.Erro("Errou!", "Ta fazendo cagada!");
+        }
+        return contasCorrentes;
+    }
+
+    private ContaCorrente criarObjetoDivida(ResultSet dados) throws SQLException {
+        Fornecedor fornecedor = new Fornecedor(
+                dados.getString("id_fornecedor"),
+                dados.getString("nome_fornecedor")
+        );
+
+        return new ContaCorrente(
+                dados.getInt("id"),
+                fornecedor,
+                dados.getDouble("saldo")
+        );
+    }
 
 }
 
