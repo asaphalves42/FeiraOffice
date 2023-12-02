@@ -1,8 +1,8 @@
 Confira sua encomenda antes de enviar!
 -----------------------------------------------------------------
 
-Referência: 0C-LLL333444
-Data: 2023-10-06
+Referência: OC-58472
+Data: 2023-11-15
 Fornecedor: 11PT920
 Nome: Papel do Porto
 Moeda: EUR
@@ -11,52 +11,18 @@ A escrever linhas:
 
 Sequência linha: 1
 
-Descrição do produto: Resma Papel A4 80g 297 x 210 mm
-Código interno do produto: 654782
-Código no fornecedor: P1-5297
-Preço unitário: 1.28
-Quantidade: 250.0
-Unidade: Ream
-Valor total do produto: 393.6
-
-Taxas e valores .........
-Tipo de taxa: VAT (Conferir se taxa é a mesma do país!)
-País: PT
-Percentagem: 23.0
-Total das taxas: 73.6
-______________________________________________________________
-
-Sequência linha: 2
-
-Descrição do produto: Envolope Comercial DL 110 x 220 mm - 1 caixa de 250 unidades
-Código interno do produto: 994230
-Código no fornecedor: PX-7630
-Preço unitário: 10.0
+Descrição do produto: Lápis de Cor Faber-Castell - Conjunto de 24
+Código interno do produto: 763891
+Código no fornecedor: PZ-3476
+Preço unitário: 6.75
 Quantidade: 5.0
-Unidade: Box
-Valor total do produto: 61.5
+Unidade: Set
+Valor total do produto: 37.75
 
 Taxas e valores .........
 Tipo de taxa: VAT (Conferir se taxa é a mesma do país!)
 País: PT
 Percentagem: 23.0
-Total das taxas: 11.5
-______________________________________________________________
-
-Sequência linha: 3
-
-Descrição do produto: Caneta Esferográfica BIC Azul - Pack 10
-Código interno do produto: 857423
-Código no fornecedor: PZ-1989
-Preço unitário: 2.51
-Quantidade: 20.0
-Unidade: Box
-Valor total do produto: 61.75
-
-Taxas e valores .........
-Tipo de taxa: VAT (Conferir se taxa é a mesma do país!)
-País: PT
-Percentagem: 23.0
-Total das taxas: 11.55
+Total das taxas: 15.53
 ______________________________________________________________
 

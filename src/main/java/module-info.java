@@ -29,7 +29,8 @@ module com.example.lp3_g2_feira_office_ {
 
     requires javafx.graphics;
     requires annotations;
-    requires itextpdf;
+    requires kernel;
+    requires layout;
 
 
     exports Model;
