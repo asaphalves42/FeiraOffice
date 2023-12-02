@@ -1,6 +1,7 @@
 package Controller.Operador;
 
 import Controller.DAL.LerUtilizadores;
+import Model.Utilizador;
 import Model.UtilizadorOperador;
 import Utilidades.*;
 import javafx.event.ActionEvent;
@@ -70,10 +71,11 @@ public class DialogAdicionarOperador {
 
             // Chamar a DAL para adicionar o utilizador à tabela "Utilizador"
             LerUtilizadores adicionarOperador = new LerUtilizadores();
-            if(adicionarOperador.adicionarOperadorBaseDados(baseDados, email, encryptedPassword)){
-                Mensagens.Informacao("Novo operador!", "Novo operador inserido com sucesso!");
-            }
-            dadosCompartilhados.setDataOperador(utilizador);
+            Utilizador operador = utilizador;
+            operador = adicionarOperador.adicionarOperadorBaseDados(baseDados, email, encryptedPassword,operador);
+            Mensagens.Informacao("Novo operador!", "Novo operador inserido com sucesso!");
+            
+            dadosCompartilhados.setDataOperador((UtilizadorOperador) operador);
 
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             currentStage.close();
