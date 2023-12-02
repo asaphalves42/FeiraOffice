@@ -121,9 +121,12 @@ public class DialogEditarFornecedor {
             // Validar formato do e-mail
             LerUtilizadores  lerUtilizadores = new LerUtilizadores();
             ValidarEmail validarEmail = new ValidarEmail();
-            if (!validarEmail.isValidEmailAddress(email) || !lerUtilizadores.verificarUserName(email)) {
-                Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido e que não esteja em uso.");
-                return;
+            if (!email.equals(fornecedorEmEdicao.getIdUtilizador().getEmail())) {
+
+                if (!validarEmail.isValidEmailAddress(email) || !lerUtilizadores.verificarUserName(email)) {
+                    Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido e que não esteja em uso.");
+                    return;
+                }
             }
 
             // Criar um objeto Utilizador com email e senha
