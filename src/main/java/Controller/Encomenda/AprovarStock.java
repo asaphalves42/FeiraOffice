@@ -227,7 +227,7 @@ public class AprovarStock {
             sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(baseDados, encomenda.getId());
 
             //atualizar saldo em divida
-            
+
             tableViewEncomendas.getItems().remove(encomenda);
 
             // Listener para seleção de encomendas

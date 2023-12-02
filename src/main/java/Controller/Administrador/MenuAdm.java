@@ -60,7 +60,7 @@ public class MenuAdm {
     @FXML
     void clickFatura() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/menuContaCorrente.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Admin/menuContaCorrente.fxml"));
             AnchorPane root = loader.load();
 
             anchorPaneMenuAdm.getChildren().setAll(root);
