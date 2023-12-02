@@ -10,56 +10,76 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class LerEncomenda {
-    LerUnidade lerUnidade = new LerUnidade();
-    LerProdutos lerProduto = new LerProdutos();
+
     LerFornecedores lerFornecedores = new LerFornecedores();
     LerPaises lerPaises = new LerPaises();
     BaseDados baseDados = new BaseDados();
 
-    public ObservableList<LinhaEncomenda> lerLinhaEncomendaBaseDados(BaseDados baseDados, int idEncomenda) throws IOException {
+    public ObservableList<LinhaEncomenda> lerLinhaEncomenda(BaseDados baseDados, int idEncomenda) throws IOException {
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
-        LinhaEncomenda linhaEncomenda = null;
         try {
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Linha_Encomenda WHERE Id_Encomenda = " + idEncomenda);
+
+            // Utilizando JOIN para obter todas as informações necessárias em uma única consulta
+            String query = "SELECT LE.*, " +
+                    "P.Id_Fornecedor, P.Descricao AS DescricaoProduto, P.IdExterno AS IdExternoProduto, P.Estado AS EstadoProduto, " +
+                    "U.Descricao AS DescricaoUnidade, " +
+                    "PA.Nome AS NomePais " +
+                    "FROM Linha_Encomenda LE " +
+                    "JOIN Produto P ON LE.Id_Produto = P.Id " +
+                    "JOIN Unidade U ON LE.Id_Unidade = U.Id " +
+                    "JOIN Pais PA ON LE.Id_Pais_Taxa = PA.Id " +
+                    "WHERE LE.Id_Encomenda = " + idEncomenda;
+
+            ResultSet resultado = baseDados.Selecao(query);
 
             while (resultado.next()) {
-                linhaEncomenda = criarObjetoLinha(resultado);
+                LinhaEncomenda linhaEncomenda = criarObjetoLinha(resultado);
                 linhasEncomenda.add(linhaEncomenda);
             }
 
             baseDados.Desligar();
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         return linhasEncomenda;
     }
 
-
-
     private LinhaEncomenda criarObjetoLinha(ResultSet dados) throws IOException, SQLException {
-        Encomenda idEncomenda = obterEncomendaPorId(baseDados, dados.getString("Id_Encomenda"));
 
-        Produto produtoEncontrado = null;
+        Unidade unidade = new Unidade(
+                dados.getInt("Id"),
+                dados.getString("DescricaoUnidade")
 
-        for (Produto produto : lerProduto.lerProdutosBaseDados(baseDados)) {
-            if (produto.getId().equals(dados.getString("Id_Produto"))) {
-                produtoEncontrado = produto;
-            }
-        }
+        );
 
-        Unidade unidade = lerUnidade.obterUnidadePorIdBaseDados(baseDados, dados.getInt("Id_Unidade"));
+        Pais pais = new Pais(
+                dados.getInt("Id"),
+                dados.getString("NomePais")
+        );
 
-        Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais_Taxa"));
+        Produto produtoEncontrado = new Produto(
+                dados.getString("Id"),
+                null,
+                dados.getString("DescricaoProduto"),
+                dados.getString("IdExternoProduto"),
+                unidade,
+                dados.getInt("EstadoProduto")
+        );
 
+        Encomenda encomenda = new Encomenda(
+                dados.getInt("Id_Encomenda")
+
+        );
 
         return new LinhaEncomenda(
                 dados.getInt("Id"),
-                idEncomenda,
+                encomenda,
                 dados.getInt("Sequencia"),
                 produtoEncontrado,
                 dados.getDouble("Preco_Unitario"),
@@ -96,11 +116,8 @@ public class LerEncomenda {
 
     private Encomenda criarObjetoEncomenda(ResultSet dados) throws IOException, SQLException {
 
-        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados,dados.getString("Id_fornecedor"));
-
-
+        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados, dados.getString("Id_fornecedor"));
         Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais"));
-
 
         return new Encomenda(
                 dados.getInt("Id"),
@@ -194,7 +211,7 @@ public class LerEncomenda {
     @NotNull
     private String getQueryEncomenda(Encomenda encomenda) throws IOException {
 
-        Pais idPais = lerPaises.obterPaisPorId(baseDados,encomenda.getPais().getId());
+        Pais idPais = lerPaises.obterPaisPorId(baseDados, encomenda.getPais().getId());
 
         //gravar encomenda
         String referencia = "'" + encomenda.getReferencia() + "'";
@@ -214,26 +231,9 @@ public class LerEncomenda {
                 encomenda.getTotal() + ", 0)";
     }
 
-    public Encomenda obterEncomendaPorReferencia(BaseDados baseDados, String referencia) throws IOException {
-        Encomenda encomenda = null;
-        try {
-            baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Referencia = " + referencia);
-
-            if (resultado.next()) {
-                encomenda = criarObjetoEncomenda(resultado);
-            }
-            baseDados.Desligar();
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-        }
-        return encomenda;
-    }
-
     public Encomenda obterEncomendaPorId(BaseDados baseDados, String id) throws IOException {
         Encomenda encomenda = null;
         try {
-
             baseDados.Ligar();
             ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Id = " + id);
 
@@ -246,4 +246,125 @@ public class LerEncomenda {
         }
         return encomenda;
     }
+
+    public List<LinhaEncomenda> lerLinhasParaAprovacao(BaseDados baseDados, int idEncomenda) throws IOException {
+        ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
+
+        try {
+            baseDados.Ligar();
+
+            // Utilizando JOIN para obter todas as informações necessárias em uma única consulta
+            String query = "SELECT " +
+                    "Linha_Encomenda.Id_Produto AS id_produto, " +
+                    "Produto.Descricao AS descricao_produto, " +
+                    "Linha_Encomenda.Id_Unidade AS id_unidade, " +
+                    "Unidade.Descricao AS descricao_unidade, " +
+                    "Linha_Encomenda.Quantidade AS quantidade " +
+                    "FROM Linha_Encomenda " +
+                    "INNER JOIN Produto ON Produto.Id = Linha_Encomenda.Id_Produto " +
+                    "INNER JOIN Unidade ON Unidade.Id = Produto.Id_Unidade " +
+                    "WHERE Linha_Encomenda.Id_Encomenda = " + idEncomenda;
+
+            ResultSet resultado = baseDados.Selecao(query);
+
+            while (resultado.next()) {
+                LinhaEncomenda linhaEncomenda = criarObjetoLinhaParaAprovacao(resultado);
+                linhasEncomenda.add(linhaEncomenda);
+            }
+
+            baseDados.Desligar();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return linhasEncomenda;
+    }
+
+    private LinhaEncomenda criarObjetoLinhaParaAprovacao(ResultSet dados) throws SQLException {
+
+        Unidade unidade = new Unidade(
+                dados.getInt("id_unidade"),
+                dados.getString("descricao_unidade")
+        );
+
+        Produto produtoEncontrado = new Produto(
+                dados.getString("id_produto"),
+                dados.getString("descricao_produto"),
+                unidade
+        );
+
+        return new LinhaEncomenda(
+                produtoEncontrado,
+                dados.getDouble("Quantidade")
+        );
+    }
+
+    public boolean atualizarStock(BaseDados baseDados, String idProduto, int idUnidade, double quantidade) throws IOException {
+        try {
+            baseDados.Ligar();
+
+            // Se existir, dá um update apenas na quantidade, soma a que tem na tabela mais a nova quantidade
+            String script;
+            if (produtoExiste(baseDados, idProduto)) {
+                script = "UPDATE Stock SET Id_Unidade = " + idUnidade + ", Quantidade = Quantidade + " + quantidade +
+                        " WHERE Id_Produto = '" + idProduto + "'";
+            } else {
+                // Senão, insere o produto
+                script = "INSERT INTO Stock (Id_Produto, Id_Unidade, Quantidade) " +
+                        "VALUES ('" + idProduto + "', " + idUnidade + ", " + quantidade + ")";
+            }
+
+            // Execute o script
+            baseDados.Executar(script);
+
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao adicionar/atualizar stock!");
+            return false;
+        } finally {
+            baseDados.Desligar();
+        }
+        return true;
+    }
+
+    private boolean produtoExiste(BaseDados baseDados, String idProduto) throws SQLException {
+        String query = "SELECT * FROM Stock WHERE Id_Produto = '" + idProduto + "'";
+        ResultSet resultSet = baseDados.Selecao(query);
+        return resultSet.next();
+    }
+    public boolean atualizarEstadoEncomenda(BaseDados baseDados, int idEncomenda) throws IOException {
+        try {
+            baseDados.Ligar();
+
+            String query = "UPDATE Encomenda SET Estado = 1 WHERE Id = " + idEncomenda;
+
+            baseDados.Executar(query);
+
+            return true;
+
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao atualizar a encomenda!");
+        } finally {
+            baseDados.Desligar();
+        }
+
+        return false;
+    }
+
+    public boolean actualizarEstadoEncomendaRecusada(BaseDados baseDados, int idEncomenda) throws IOException {
+        try {
+            baseDados.Ligar();
+
+            String query = "UPDATE Encomenda Set Estado = 2 WHERE Id = " + idEncomenda;
+
+            baseDados.Executar(query);
+            return true;
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao atualizar encomenda!");
+            baseDados.Desligar();
+        }
+        return false;
+
+    }
+
 }
+

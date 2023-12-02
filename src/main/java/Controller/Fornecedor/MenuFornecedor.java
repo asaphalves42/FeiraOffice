@@ -2,6 +2,8 @@ package Controller.Fornecedor;
 
 import Controller.DAL.LerFicheiro;
 import Controller.DAL.LerFornecedores;
+import Controller.DAL.LerPDF;
+import Controller.DAL.LerTXT;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
@@ -12,7 +14,6 @@ import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 
@@ -115,6 +116,12 @@ public class MenuFornecedor {
             novoFicheiro.getExtensionFilters().add(new FileChooser.ExtensionFilter("Documento", "*.xml"));
             arquivoSelecionado = novoFicheiro.showOpenDialog(new Stage());
             labelFicheiroEscolhido.setText(arquivoSelecionado.getAbsolutePath());
+
+            //LerTXT verificaFicheiroDAL = new LerTXT();
+            LerPDF verificaFicheiroDAL = new LerPDF();
+            verificaFicheiroDAL.lerFicheiroXML(arquivoSelecionado);
+
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }

@@ -1,5 +1,6 @@
 package Utilidades;
 
+import Model.Encomenda;
 import Model.Fornecedor;
 import Model.UtilizadorOperador;
 
@@ -9,8 +10,18 @@ public class DataSingleton {
     private Fornecedor dataFornecedor;
     private UtilizadorOperador dataOperador;
 
+    private Encomenda dataEncomenda;
+
     private DataSingleton() {
         // Private constructor to prevent other classes from instantiating
+    }
+
+    public Encomenda getDataEncomenda() {
+        return dataEncomenda;
+    }
+
+    public void setDataEncomenda(Encomenda dataEncomenda) {
+        this.dataEncomenda = dataEncomenda;
     }
 
     public static void setInstance(DataSingleton instance) {

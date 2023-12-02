@@ -19,6 +19,12 @@ public class Produto {
         this.estado = estado;
     }
 
+    public Produto(String idProduto, String descricaoProduto, Unidade unidade) {
+        this.id = idProduto;
+        this.descricao = descricaoProduto;
+        this.unidade = unidade;
+    }
+
 
     public int getEstado() {
         return estado;
@@ -27,7 +33,6 @@ public class Produto {
     public void setEstado(int estado) {
         this.estado = estado;
     }
-
 
 
     public Unidade getUnidade() {

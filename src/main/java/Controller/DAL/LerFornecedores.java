@@ -9,9 +9,13 @@ import javafx.collections.ObservableList;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LerFornecedores {
     BaseDados baseDados = new BaseDados();
+    LerPaises lerPaises = new LerPaises();
+    LerUtilizadores lerUtilizadores = new LerUtilizadores();
 
     /**
      * Lê a lista de fornecedores a partir da base de dados e retorna uma lista observável de fornecedores.
@@ -30,7 +34,7 @@ public class LerFornecedores {
 
 
             while (resultado.next()) { //Ler os forncedores da base de dados, um a um e cria um objeto novo
-               fornecedor = criarObjeto(resultado);
+               fornecedor = criarObjetoFornecedor(resultado);
 
                 fornecedores.add(fornecedor);
 
@@ -44,32 +48,13 @@ public class LerFornecedores {
         }
     }
 
-    public Fornecedor obterFornecedorPorId(BaseDados baseDados, String idFornecedor) throws IOException {
-        Fornecedor fornecedor = null;
-        try {
-            baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Fornecedor WHERE Id_Externo = '" + idFornecedor + "'");
-
-            if (resultado.next()) {
-                fornecedor = criarObjeto(resultado);
-
-            }
-            baseDados.Desligar();
-    } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-        }
-        return fornecedor;
-    }
-
-    private Fornecedor criarObjeto(ResultSet dados) throws IOException, SQLException {
+    private Fornecedor criarObjetoFornecedor(ResultSet dados) throws IOException, SQLException {
         int idPais = dados.getInt("Id_Pais");
         int idUtilizador = dados.getInt("Id_Utilizador");
 
-        LerPaises lerPaises = new LerPaises();
-        Pais pais = lerPaises.obterPaisPorId(baseDados,idPais);
 
-        LerUtilizadores lerUtilizores = new LerUtilizadores();
-        UtilizadorFornecedor utilizador = lerUtilizores.obterUtilizadorPorIdFornecedor(baseDados,idUtilizador);
+        Pais pais = lerPaises.obterPaisPorId(baseDados,idPais);
+        UtilizadorFornecedor utilizador = lerUtilizadores.obterUtilizadorPorIdFornecedor(baseDados,idUtilizador);
 
         return new Fornecedor(
                 dados.getInt("id"),
@@ -83,6 +68,25 @@ public class LerFornecedores {
                 utilizador
         );
     }
+
+    public Fornecedor obterFornecedorPorId(BaseDados baseDados, String idFornecedor) throws IOException {
+        Fornecedor fornecedor = null;
+        try {
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Fornecedor WHERE Id_Externo = '" + idFornecedor + "'");
+
+            if (resultado.next()) {
+                fornecedor = criarObjetoFornecedor(resultado);
+
+            }
+            baseDados.Desligar();
+    } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+        return fornecedor;
+    }
+
+
 
     /**
      * Adiciona um fornecedor à base de dados, com informações de país e utilizador, e retorna o fornecedor adicionado.
@@ -140,7 +144,6 @@ public class LerFornecedores {
 
             String query = ("DELETE FROM Fornecedor WHERE id = " + fornecedorId);
 
-
             boolean linhasAfetadas = baseDados.Executar(query);
 
             baseDados.Desligar();
@@ -191,8 +194,6 @@ public class LerFornecedores {
         try {
             
             boolean sucesso1 = baseDados.Executar(query);
-
-
             boolean sucesso2 = baseDados.Executar(query2);
             System.out.println( "Query 1 "+ query);
             System.out.println("Query2"+ query2);
@@ -213,6 +214,49 @@ public class LerFornecedores {
         }
     }
 
+
+    public ObservableList<ContaCorrente> lerDividaFornecedores(BaseDados baseDados) throws IOException {
+        ObservableList<ContaCorrente> contasCorrentes = FXCollections.observableArrayList();
+        try {
+            baseDados.Ligar();
+
+            // Complete a string da query SQL
+            String query = "SELECT Conta_Corrente.Id as id, " +
+                    "Fornecedor.Id_Externo as id_fornecedor, " +
+                    "Fornecedor.Nome as nome_fornecedor, " +
+                    "Conta_Corrente.Saldo as saldo " +
+                    "FROM Conta_Corrente " +
+                    "INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Conta_Corrente.Id_Fornecedor";
+
+            ResultSet resultado = baseDados.Selecao(query);
+
+
+            // Processar os resultados do ResultSet
+            while (resultado.next()) {
+                ContaCorrente contaCorrente = criarObjetoDivida(resultado);
+                contasCorrentes.add(contaCorrente);
+            }
+
+
+            baseDados.Desligar();
+        } catch (Exception e) {
+            Mensagens.Erro("Errou!", "Ta fazendo cagada!");
+        }
+        return contasCorrentes;
+    }
+
+    private ContaCorrente criarObjetoDivida(ResultSet dados) throws SQLException {
+        Fornecedor fornecedor = new Fornecedor(
+                dados.getString("id_fornecedor"),
+                dados.getString("nome_fornecedor")
+        );
+
+        return new ContaCorrente(
+                dados.getInt("id"),
+                fornecedor,
+                dados.getDouble("saldo")
+        );
+    }
 
 }
 
