@@ -21,7 +21,7 @@ public class AprovarStock {
 
     BaseDados baseDados = new BaseDados();
     LerEncomenda lerEncomenda = new LerEncomenda();
-    private final DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
+    private final DataSingleton dadosCompartilhados = DataSingleton.getInstance();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -52,6 +52,7 @@ public class AprovarStock {
                 }
             }
         });
+
     }
 
     public void tabelaEncomendasPendentes() throws IOException {
@@ -119,7 +120,6 @@ public class AprovarStock {
                 colunaTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
 
 
-
                 // Adicione as colunas à tabela
                 tableViewEncomendas.getColumns().add(colunaId);
                 tableViewEncomendas.getColumns().add(colunaReferencia);
@@ -134,6 +134,7 @@ public class AprovarStock {
 
                 tableViewEncomendas.setItems(encomendas);
 
+
             }
 
         } catch (IOException e) {
@@ -146,6 +147,8 @@ public class AprovarStock {
         try {
 
             if (encomenda != null) {
+
+                tableViewLinhasEncomenda.getItems().clear();
 
                 // Ler apenas as linhas de encomenda para a encomenda selecionada
                 linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomenda(baseDados, encomenda.getId()));
@@ -201,6 +204,7 @@ public class AprovarStock {
             Mensagens.Erro("Erro!", "Erro ao ler tabela!");
         }
     }
+
     @FXML
     void clickAprovar() throws IOException {
         // Aceder a encomenda
@@ -223,7 +227,24 @@ public class AprovarStock {
             sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(baseDados, encomenda.getId());
 
             tableViewEncomendas.getItems().remove(encomenda);
-            tableViewLinhasEncomenda.getItems().clear();
+
+            // Listener para seleção de encomendas
+            tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                if (newSelection != null) {
+                    try {
+                        // Quando uma nova encomenda é selecionada, atualize a tabela de linhas
+                        tabelaLinhasEncomenda(newSelection);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+
+            });
+
+            if(tableViewEncomendas.getItems().isEmpty()) {
+                tableViewLinhasEncomenda.getItems().clear();
+            }
 
         }
 
@@ -232,27 +253,37 @@ public class AprovarStock {
         } else {
             Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
         }
-
     }
+
+
+
     @FXML
     void clickRecusar() throws IOException {
         // Aceder a encomenda
         Encomenda encomenda = tableViewEncomendas.getSelectionModel().getSelectedItem();
 
-        // Aceder as linhas
-        List<LinhaEncomenda> linhasEncomenda = lerEncomenda.lerLinhasParaAprovacao(baseDados, encomenda.getId());
-
-        boolean sucessoEncomenda = false;
-
-
         //atualizar estado da encomenda para recusada (Estado 2)
-        sucessoEncomenda = lerEncomenda.actualizarEstadoEncomendaRecusada(baseDados, encomenda.getId());
+        boolean sucessoEncomenda = lerEncomenda.actualizarEstadoEncomendaRecusada(baseDados, encomenda.getId());
 
         // Remover encomenda da tabela apresentada
         tableViewEncomendas.getItems().remove(encomenda);
 
-        // Limpar as linhas da tabela de linhas de encomenda
-        tableViewLinhasEncomenda.getItems().clear();
+        // Listener para seleção de encomendas
+        tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                try {
+                    // Quando uma nova encomenda é selecionada, atualize a tabela de linhas
+                    tabelaLinhasEncomenda(newSelection);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        if(tableViewEncomendas.getItems().isEmpty()) {
+            tableViewLinhasEncomenda.getItems().clear();
+        }
+
 
         if (sucessoEncomenda) {
             Mensagens.Informacao("Sucesso", "Encomenda recusada com sucesso!");
@@ -260,8 +291,6 @@ public class AprovarStock {
             Mensagens.Erro("Erro!", "Erro ao recusar encomenda!");
         }
 
-
     }
-
 
 }
