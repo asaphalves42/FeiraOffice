@@ -121,7 +121,22 @@ public class MenuProdutos {
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
                 colunaIdFornecedor.setCellValueFactory(new PropertyValueFactory<>("idFornecedorAsString"));
-                colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>(""));
+                colunaNomeFornecedor.setCellValueFactory(cellData -> {
+                    Produto produto = cellData.getValue();
+                    if (produto != null) {
+                        try {
+                            String idFornecedor = produto.getIdFornecedorAsString();
+                            String nomeFornecedor = lerFornecedor.obterNomeFornecedorPorIdExterno(baseDados, idFornecedor);
+                            return new SimpleStringProperty(nomeFornecedor != null ? nomeFornecedor : "");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return new SimpleStringProperty("");
+                        }
+                    } else {
+                        return new SimpleStringProperty("");
+                    }
+                });
+
 
 
 
