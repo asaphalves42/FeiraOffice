@@ -6,25 +6,28 @@ public class Produto {
     private String idExterno;
     private String descricao;
     private Unidade unidade;
-
     private int estado;
-    public Produto(){}
+    private String descricaoUnidade;
 
-    public Produto(String id, Fornecedor fornecedor, String idExterno, String descricao, Unidade unidade,int estado) {
+    public Produto() {
+    }
+
+    public Produto(String id, Fornecedor fornecedor, String idExterno, String descricao, Unidade unidade, int estado) {
         this.id = id;
         this.fornecedor = fornecedor;
         this.idExterno = idExterno;
         this.descricao = descricao;
         this.unidade = unidade;
         this.estado = estado;
+        this.descricaoUnidade = unidade != null ? unidade.getDescricao() : "";
     }
 
     public Produto(String idProduto, String descricaoProduto, Unidade unidade) {
         this.id = idProduto;
         this.descricao = descricaoProduto;
         this.unidade = unidade;
+        this.descricaoUnidade = unidade != null ? unidade.getDescricao() : "";
     }
-
 
     public int getEstado() {
         return estado;
@@ -34,15 +37,14 @@ public class Produto {
         this.estado = estado;
     }
 
-
     public Unidade getUnidade() {
         return unidade;
     }
 
     public void setUnidade(Unidade unidade) {
         this.unidade = unidade;
+        this.descricaoUnidade = unidade != null ? unidade.getDescricao() : "";
     }
-
 
     public Fornecedor getFornecedor() {
         return fornecedor;
@@ -75,8 +77,12 @@ public class Produto {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
-    public Fornecedor getIdFornecedor(){
+
+    public Fornecedor getIdFornecedor() {
         return fornecedor.getIdUtilizador().getFornecedor();
     }
 
+    public String getDescricaoUnidade() {
+        return descricaoUnidade;
+    }
 }
