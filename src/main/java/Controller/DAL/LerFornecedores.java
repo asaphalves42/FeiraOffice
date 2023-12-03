@@ -211,6 +211,31 @@ public class LerFornecedores {
             throw new IOException("Erro na atualização na base de dados!");
         }
     }
+    /**
+     * Obtém o nome do fornecedor associado a um Id_Externo.
+     *
+     * @param baseDados A instância da classe BaseDados.
+     * @param idExterno O Id_Externo do fornecedor.
+     * @return O nome do fornecedor associado ao Id_Externo, ou null se não encontrado.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
+    public String obterNomeFornecedorPorIdExterno(BaseDados baseDados, String idExterno) throws IOException {
+        try {
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT Nome FROM Fornecedor WHERE Id_Externo = '" + idExterno + "'");
+
+            if (resultado.next()) {
+                String nomeFornecedor = resultado.getString("Nome");
+                return nomeFornecedor;
+            }
+
+            baseDados.Desligar();
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        }
+
+        return null; // Retorna null se não encontrado
+    }
 
 
 }

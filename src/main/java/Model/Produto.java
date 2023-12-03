@@ -29,6 +29,10 @@ public class Produto {
         this.descricaoUnidade = unidade != null ? unidade.getDescricao() : "";
     }
 
+    public String getIdFornecedorAsString() {
+        return fornecedor != null ? fornecedor.getIdExterno() : "";
+    }
+
     public int getEstado() {
         return estado;
     }

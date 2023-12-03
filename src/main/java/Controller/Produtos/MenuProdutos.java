@@ -1,5 +1,6 @@
 package Controller.Produtos;
 
+import Controller.DAL.LerFornecedores;
 import Controller.DAL.LerProdutos;
 
 import Controller.DAL.LerStock;
@@ -64,7 +65,7 @@ public class MenuProdutos {
                 TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descriçao");
                 TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
                 TableColumn<Produto, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
-               
+
 
                 // Associe as colunas às propriedades da classe Produto
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -103,6 +104,7 @@ public class MenuProdutos {
 
     public void tabela2() throws IOException {
         LerProdutos lerProdutos = new LerProdutos();
+        LerFornecedores lerFornecedor = new LerFornecedores();
 
         produtos2.addAll(lerProdutos.lerProdutosBaseDados(baseDados));
 
@@ -111,17 +113,23 @@ public class MenuProdutos {
                 // Defina as colunas da tabela
                 TableColumn<Produto, Integer> colunaId = new TableColumn<>("ID Produto");
                 TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descrição");
-                TableColumn<Produto, String> colunaIdNoFornecedor = new TableColumn<>("Id no Fornecedor");
-                TableColumn<Produto, Integer> colunaFornecedor = new TableColumn<>("Fornecedor");
+                TableColumn<Produto, String> colunaIdFornecedor = new TableColumn<>("Id no Fornecedor");
+                TableColumn<Produto, String> colunaNomeFornecedor = new TableColumn<>("Fornecedor");
                 TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
 
                 // Associe as colunas às propriedades da classe Produto
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-              colunaIdNoFornecedor.setCellValueFactory(new PropertyValueFactory<>("id_Fornecedor"));
+                colunaIdFornecedor.setCellValueFactory(new PropertyValueFactory<>("idFornecedorAsString"));
+                colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>(""));
+
+
+
+
+
 
                 // Adicione as colunas à tabela
-                tableView2.getColumns().addAll(colunaId, colunaDescricao,colunaIdNoFornecedor, colunaFornecedor, colunaIdUnidade);
+                tableView2.getColumns().addAll(colunaId, colunaDescricao, colunaIdFornecedor,colunaNomeFornecedor, colunaIdUnidade);
 
                 // Configure a fonte de dados da tabela
                 tableView2.setItems(produtos2);
@@ -129,7 +137,8 @@ public class MenuProdutos {
                 // Configurar a cellValueFactory para a coluna de Unidade na tabela2
                 colunaIdUnidade.setCellValueFactory(cellData -> {
                     // Obtém a linha selecionada na tabela1
-                    Produto produtoTabela1 = cellData.getValue(); // Usar cellData.getValue() em vez de tableViewProdutos.getSelectionModel().getSelectedItem()
+                    Produto produtoTabela1 = cellData.getValue();
+                    // Usar cellData.getValue() em vez de tableViewProdutos.getSelectionModel().getSelectedItem()
                     if (produtoTabela1 != null) {
                         // Retorna a Unidade da linha correspondente na tabela1
                         return new SimpleStringProperty(produtoTabela1.getDescricaoUnidade());
@@ -142,9 +151,6 @@ public class MenuProdutos {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
         }
     }
-
-
-
 
 
 
