@@ -210,26 +210,31 @@ public class AprovarStock {
         // Aceder a encomenda
         Encomenda encomenda = tableViewEncomendas.getSelectionModel().getSelectedItem();
 
-        // Aceder as linhas
-        List<LinhaEncomenda> linhasEncomenda = lerEncomenda.lerLinhasParaAprovacao(baseDados, encomenda.getId());
+        if (encomenda != null) {  // Verificar se a encomenda não é nula
+            // Aceder as linhas
+            List<LinhaEncomenda> linhasEncomenda = lerEncomenda.lerLinhasParaAprovacao(baseDados, encomenda.getId());
 
+            boolean sucesso = false;
+            boolean sucessoEncomenda = false;
+            boolean atualizado = false;
 
-        boolean sucesso = false;
-        boolean sucessoEncomenda = false;
-        for (LinhaEncomenda linhas : linhasEncomenda) {
-            Produto produto = linhas.getProduto();
-            double quantidade = linhas.getQuantidade();
+            double total = encomenda.getValorTotal();
 
-            // Lógica para atualizar o estoque na base de dados
-            sucesso = lerEncomenda.atualizarStock(baseDados, produto.getId(), produto.getUnidade().getId(), quantidade);
+            for (LinhaEncomenda linhas : linhasEncomenda) {
+                Produto produto = linhas.getProduto();
+                double quantidade = linhas.getQuantidade();
 
-            //atualizar estado da encomenda
-            sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(baseDados, encomenda.getId());
+                // Lógica para atualizar o estoque na base de dados
+                sucesso = lerEncomenda.atualizarStock(baseDados, produto.getId(), produto.getUnidade().getId(), quantidade);
+
+                //atualizar estado da encomenda
+                sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(baseDados, encomenda.getId());
+
+                tableViewEncomendas.getItems().remove(encomenda);
+            }
 
             //atualizar saldo em divida
-            lerEncomenda.atualizarSaldoDevedores(baseDados, encomenda.getId());
-
-            tableViewEncomendas.getItems().remove(encomenda);
+            atualizado = lerEncomenda.atualizarSaldoDevedores(baseDados, total, encomenda.getFornecedor().getIdExterno());
 
             // Listener para seleção de encomendas
             tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -241,24 +246,19 @@ public class AprovarStock {
                         throw new RuntimeException(e);
                     }
                 }
-
-
             });
 
-            if(tableViewEncomendas.getItems().isEmpty()) {
+            if (tableViewEncomendas.getItems().isEmpty()) {
                 tableViewLinhasEncomenda.getItems().clear();
             }
 
-        }
-
-        if (sucesso && sucessoEncomenda) {
-            Mensagens.Informacao("Sucesso", "Stock aprovado com sucesso!");
-        } else {
-            Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
+            if (sucesso && sucessoEncomenda && atualizado) {
+                Mensagens.Informacao("Sucesso", "Stock aprovado com sucesso!");
+            } else {
+                Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
+            }
         }
     }
-
-
 
     @FXML
     void clickRecusar() throws IOException {

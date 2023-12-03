@@ -366,17 +366,35 @@ public class LerEncomenda {
 
     }
 
-    public void atualizarSaldoDevedores(BaseDados baseDados, int id) throws IOException {
+    public boolean atualizarSaldoDevedores(BaseDados baseDados, double valorEncomenda, String idFornecedor) throws IOException {
         try {
             baseDados.Ligar();
 
+            // Verificar se já existe um registro para o fornecedor
+            String verificaExistencia = "SELECT * FROM Conta_Corrente WHERE Id_Fornecedor = '" + idFornecedor + "'";
+            ResultSet resultSet = baseDados.Selecao(verificaExistencia);
+
+            String script;
+            if (resultSet.next()) {
+                // Se existir, faz o UPDATE
+                script = "UPDATE Conta_Corrente SET Saldo = Saldo + " + valorEncomenda + " WHERE Id_Fornecedor = '" + idFornecedor + "'";
+            } else {
+                // Se não existir, faz a inserção
+                script = "INSERT INTO Conta_Corrente (Id_Fornecedor, Saldo) VALUES ('" + idFornecedor + "', " + valorEncomenda + ")";
+            }
+
+            baseDados.Executar(script);
+
+            return true;
 
         } catch (Exception e) {
-            Mensagens.Erro("Error","Ta fazendo cagada");
+            Mensagens.Erro("Error", "Ocorreu um erro ao atualizar o saldo devedor");
+            return false; // Retorna false em caso de erro
+        } finally {
+            baseDados.Desligar();
         }
-
-
-
     }
+
 }
+
 
