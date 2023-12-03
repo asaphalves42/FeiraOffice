@@ -179,6 +179,7 @@ public class LerEncomenda {
             baseDados.Executar(queryProduto);
         }
     }
+
     private boolean produtoExisteNaTabela(BaseDados baseDados, String Id) {
         try {
             ResultSet resultado = baseDados.Selecao("SELECT Id FROM Produto WHERE Id = '" + Id + "'");
@@ -331,6 +332,7 @@ public class LerEncomenda {
         ResultSet resultSet = baseDados.Selecao(query);
         return resultSet.next();
     }
+
     public boolean atualizarEstadoEncomenda(BaseDados baseDados, int idEncomenda) throws IOException {
         try {
             baseDados.Ligar();
@@ -365,30 +367,34 @@ public class LerEncomenda {
         return false;
 
     }
-    public boolean temEncomenda(Fornecedor fornecedor) {
+
+    public boolean podeEliminarFornecedor(BaseDados baseDados,Utilizador fornecedor) {
         try {
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Id_Fornecedor = " + fornecedor.getIdExterno());
 
-            return resultado.next(); // Returns true if there are associated orders Retorna true se existirem encomendas
+            try (ResultSet resultado = baseDados.Selecao("SELECT Id_Fornecedor FROM Encomenda");
+                 ResultSet resultado2 = baseDados.Selecao("SELECT Id_Externo FROM Fornecedor WHERE Id_Utilizador=" +fornecedor.getId())){
+
+                while (resultado.next()) {
+                    String encomendaIdExterno = resultado.getString("Id_Fornecedor");
+
+                    while (resultado2.next()) {
+                        String idExternoFornecedor = resultado2.getString("Id_Externo");
+
+                        if (encomendaIdExterno.equals(idExternoFornecedor)) {
+                            // Se alguma EncomendaIdExterno == IdExternoFornecedor, impede a eliminação
+                            return false;
+                        }
+                    }
+                }return true;
+            }
+
+            // Se não encontra igual, a eliminação pode proceder
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             baseDados.Desligar();
         }
     }
-    public boolean podeEliminarFornecedor(String externalIdFornecedor) {
-        try {
-            baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE IdExterno = '" + externalIdFornecedor + "'");
-
-            return !resultado.next(); // Retorna verdadeiro se não existerem encomendas com idExtenos iguais
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            baseDados.Desligar();
-        }
-    }
-
 }
 

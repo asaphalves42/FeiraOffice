@@ -153,7 +153,7 @@ public class LerFornecedores {
 
         } catch (Exception e) {
             try {
-                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
+                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados! Ou fornecedor tem encomendas");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

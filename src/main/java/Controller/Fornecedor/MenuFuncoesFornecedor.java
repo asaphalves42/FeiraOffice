@@ -1,38 +1,25 @@
 package Controller.Fornecedor;
 
 import Controller.DAL.LerFornecedores;
-import Controller.DAL.LerUtilizadores;
 import Controller.DAL.LerEncomenda;
+import Controller.DAL.LerUtilizadores;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
-import java.sql.SQLOutput;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ResourceBundle;
+
+import static Utilidades.Mensagens.Erro;
 
 
 public class MenuFuncoesFornecedor {
@@ -113,14 +100,13 @@ public class MenuFuncoesFornecedor {
                 tableViewFornecedores.setItems(fornecedores);
             }
         } else {
-            Mensagens.Erro("Erro!", "Erro ao ler tabela");
+            Erro("Erro!", "Erro ao ler tabela");
         }
     }
 
     @FXML
     void clickEditar() throws IOException {
         Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
-
         if (fornecedorSelecionado != null) {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/DialogEditarFornecedor.fxml"));
@@ -143,44 +129,38 @@ public class MenuFuncoesFornecedor {
     }
 
 
-
     @FXML
     void clickEliminar() throws IOException {
         Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
 
         if (fornecedorSelecionado != null) {
-            /*// Check if the supplier has associated orders
-            if (lerEncomenda.temEncomenda(fornecedorSelecionado.getIdExterno())) {
-                Mensagens.Erro("Aviso!", "Não é possível eliminar o fornecedor pois tem encomendas associadas.");*/
-            } else {
-                // Proceed with deletion if no associated orders
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmação");
-                alert.setHeaderText("Eliminar fornecedor");
-                alert.setContentText("Tem certeza que deseja eliminar o fornecedor selecionado?");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmação");
+            alert.setHeaderText("Eliminar fornecedor");
+            alert.setContentText("Tem certeza que deseja eliminar o fornecedor selecionado?");
 
-                alert.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.OK) {
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    if (lerEncomenda.podeEliminarFornecedor(baseDados, fornecedorSelecionado.getIdUtilizador())==true){
                         try {
-                            // Check if external ID of Fornecedor matches external ID of any Encomenda
-                            if (!lerEncomenda.podeEliminarFornecedor(fornecedorSelecionado.getIdExterno())) {
-                                Mensagens.Erro("Aviso!", "Não é possível eliminar o fornecedor pois tem encomendas associadas.");
-                                return;
-                            }
 
-                            // Remove the supplier from the database
                             boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados, fornecedorSelecionado.getId());
 
                             if (sucesso) {
-                                // Remove the supplier from the list
+                                // Remover o fornecedor da lista
                                 fornecedores.remove(fornecedorSelecionado);
 
-                                // Remove the associated user (if any) from the list
-                                if (fornecedorSelecionado.getIdUtilizador() != null) {
+                                // Remover o utilizador associado ao fornecedor
+                                LerUtilizadores lerUtilizadores = new LerUtilizadores();
+                                boolean remover = lerUtilizadores.removerUtilizador(baseDados, fornecedorSelecionado.getIdUtilizador());
+
+                                if (remover) {
+                                    // Remover o utilizador da lista
                                     fornecedores.remove(fornecedorSelecionado.getIdUtilizador());
+                                } else {
+                                    // Se a remoção do utilizador falhar, adicione o fornecedor de volta à lista
+                                    fornecedores.add(fornecedorSelecionado);
                                 }
-                            } else {
-                                Mensagens.Erro("Erro!", "Erro ao remover o fornecedor da base de dados.");
                             }
 
                         } catch (SQLException e) {
@@ -188,24 +168,81 @@ public class MenuFuncoesFornecedor {
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
+
+
+
+                    }else{
+                        try {
+                            Mensagens.Erro("Erro!", "Fornecedor não pode ser eliminado por ter encomendas");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                });
-            }
+                }
+            });
         }
-   // }
-
-
-    @FXML
-    void clickNovo() throws IOException {
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/dialogAdicionarFornecedor.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("ADICIONAR FORNECEDOR!");
-        stage.setScene(scene);
-        stage.showAndWait();
-
-        DataSingleton data = DataSingleton.getInstance();
-        fornecedores.add(data.getDataFornecedor());
-
     }
-}
+
+        // }
+    /*
+@FXML
+
+void clickEliminar() {
+    Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
+    int id_util= fornecedorSelecionado.getIdUtilizador().getId();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmação");
+        alert.setHeaderText("Eliminar fornecedor");
+        alert.setContentText("Tem certeza que deseja eliminar o fornecedor selecionado?");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                if (!lerEncomenda.podeEliminarFornecedor(id_util)) {
+                    try {
+                        boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados, fornecedorSelecionado.getId());
+
+                        if (sucesso) {
+                            // Remover o fornecedor da lista
+                            fornecedores.remove(fornecedorSelecionado);
+
+                            // Remover o utilizador associado ao fornecedor
+                            LerUtilizadores lerUtilizadores = new LerUtilizadores();
+                            boolean remover = lerUtilizadores.removerUtilizador(baseDados, fornecedorSelecionado.getIdUtilizador());
+
+                            if (remover) {
+                                // Remover o utilizador da lista
+                                // Note: Make sure fornecedores is a list of users
+                                fornecedores.remove(fornecedorSelecionado.getIdUtilizador());
+                            } else {
+                                // Se a remoção do utilizador falhar, adicione o fornecedor de volta à lista
+                                fornecedores.add(fornecedorSelecionado);
+                            }
+                        }
+
+                    } catch (SQLException e) {
+                        // Handle SQLException more gracefully
+                        e.printStackTrace(); // Consider logging the exception
+                    } catch (IOException e) {
+                        // Handle IOException more gracefully
+                        throw new RuntimeException(e); // Consider logging the exception
+                    }
+                }
+            }
+        });
+    }
+*/
+
+        @FXML
+        void clickNovo () throws IOException {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/dialogAdicionarFornecedor.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("ADICIONAR FORNECEDOR!");
+            stage.setScene(scene);
+            stage.showAndWait();
+
+            DataSingleton data = DataSingleton.getInstance();
+            fornecedores.add(data.getDataFornecedor());
+
+        }
+    }
