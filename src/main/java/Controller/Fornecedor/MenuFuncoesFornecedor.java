@@ -2,6 +2,7 @@ package Controller.Fornecedor;
 
 import Controller.DAL.LerFornecedores;
 import Controller.DAL.LerUtilizadores;
+import Controller.DAL.LerEncomenda;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.DataSingleton;
@@ -33,11 +34,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+
 public class MenuFuncoesFornecedor {
 
     BaseDados baseDados = new BaseDados();
 
     LerFornecedores lerFornecedores = new LerFornecedores();
+    LerEncomenda lerEncomenda = new LerEncomenda();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -133,55 +136,63 @@ public class MenuFuncoesFornecedor {
 
             stage.showAndWait();
 
-            
+
             int selectedIndex = tableViewFornecedores.getSelectionModel().getSelectedIndex();
             fornecedores.set(selectedIndex, fornecedorSelecionado);
         }
     }
 
-    @FXML
 
-    void clickEliminar() {
+
+    @FXML
+    void clickEliminar() throws IOException {
         Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
 
         if (fornecedorSelecionado != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmação");
-            alert.setHeaderText("Eliminar fornecedor");
-            alert.setContentText("Tem certeza que deseja eliminar o fornecedor selecionado?");
+            /*// Check if the supplier has associated orders
+            if (lerEncomenda.temEncomenda(fornecedorSelecionado.getIdExterno())) {
+                Mensagens.Erro("Aviso!", "Não é possível eliminar o fornecedor pois tem encomendas associadas.");*/
+            } else {
+                // Proceed with deletion if no associated orders
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmação");
+                alert.setHeaderText("Eliminar fornecedor");
+                alert.setContentText("Tem certeza que deseja eliminar o fornecedor selecionado?");
 
-            alert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    try {
-
-                        boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados,fornecedorSelecionado.getId());
-
-                        if (sucesso) {
-                            // Remover o fornecedor da lista
-                            fornecedores.remove(fornecedorSelecionado);
-
-                            // Remover o utilizador associado ao fornecedor
-                            LerUtilizadores lerUtilizadores = new LerUtilizadores();
-                            boolean remover = lerUtilizadores.removerUtilizador(baseDados,fornecedorSelecionado.getIdUtilizador());
-
-                            if (remover) {
-                                // Remover o utilizador da lista
-                                fornecedores.remove(fornecedorSelecionado.getIdUtilizador());
-                            } else {
-                                // Se a remoção do utilizador falhar, adicione o fornecedor de volta à lista
-                                fornecedores.add(fornecedorSelecionado);
+                alert.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK) {
+                        try {
+                            // Check if external ID of Fornecedor matches external ID of any Encomenda
+                            if (!lerEncomenda.podeEliminarFornecedor(fornecedorSelecionado.getIdExterno())) {
+                                Mensagens.Erro("Aviso!", "Não é possível eliminar o fornecedor pois tem encomendas associadas.");
+                                return;
                             }
-                        }
 
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                            // Remove the supplier from the database
+                            boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados, fornecedorSelecionado.getId());
+
+                            if (sucesso) {
+                                // Remove the supplier from the list
+                                fornecedores.remove(fornecedorSelecionado);
+
+                                // Remove the associated user (if any) from the list
+                                if (fornecedorSelecionado.getIdUtilizador() != null) {
+                                    fornecedores.remove(fornecedorSelecionado.getIdUtilizador());
+                                }
+                            } else {
+                                Mensagens.Erro("Erro!", "Erro ao remover o fornecedor da base de dados.");
+                            }
+
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
-    }
+   // }
 
 
     @FXML

@@ -365,6 +365,30 @@ public class LerEncomenda {
         return false;
 
     }
+    public boolean temEncomenda(Fornecedor fornecedor) {
+        try {
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Id_Fornecedor = " + fornecedor.getIdExterno());
+
+            return resultado.next(); // Returns true if there are associated orders Retorna true se existirem encomendas
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            baseDados.Desligar();
+        }
+    }
+    public boolean podeEliminarFornecedor(String externalIdFornecedor) {
+        try {
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE IdExterno = '" + externalIdFornecedor + "'");
+
+            return !resultado.next(); // Retorna verdadeiro se não existerem encomendas com idExtenos iguais
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            baseDados.Desligar();
+        }
+    }
 
 }
 
