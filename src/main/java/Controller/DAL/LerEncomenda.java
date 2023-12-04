@@ -11,13 +11,23 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
+/**
+ * A classe LerEncomenda é responsável por ler e manipular dados relacionados a encomendas,
+ * linhas de encomendas e operações associadas à base de dados.
+ */
 public class LerEncomenda {
-
     LerFornecedores lerFornecedores = new LerFornecedores();
     LerPaises lerPaises = new LerPaises();
     BaseDados baseDados = new BaseDados();
 
+    /**
+     * Lê as linhas de uma encomenda específica a partir da base de dados.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @param idEncomenda O ID da encomenda para a qual as linhas serão lidas.
+     * @return  Uma lista observável de LinhaEncomenda.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public ObservableList<LinhaEncomenda> lerLinhaEncomenda(BaseDados baseDados, int idEncomenda) throws IOException {
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
@@ -50,6 +60,14 @@ public class LerEncomenda {
         return linhasEncomenda;
     }
 
+    /**
+     * Cria um objeto LinhaEncomenda a partir dos dados de um ResultSet.
+     *
+     * @param dados Resultado da consulta que contém os dados da linha de encomenda.
+     * @return Um objeto LinhaEncomenda com as informações obtidas do ResultSet.
+     * @throws IOException   Se ocorrer um erro durante a obtenção de informações adicionais.
+     * @throws SQLException  Se ocorrer um erro ao acessar os dados do ResultSet.
+     */
     private LinhaEncomenda criarObjetoLinha(ResultSet dados) throws IOException, SQLException {
 
         Unidade unidade = new Unidade(
@@ -91,6 +109,13 @@ public class LerEncomenda {
         );
     }
 
+    /**
+     * Lê as encomendas da base de dados que estão no estado indicado.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @return Uma lista observável de objetos Encomenda correspondentes ao estado indicado.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public ObservableList<Encomenda> lerEncomendaDaBaseDeDados(BaseDados baseDados) throws IOException {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
@@ -114,6 +139,14 @@ public class LerEncomenda {
         }
     }
 
+    /**
+     * Cria um objeto Encomenda a partir dos dados de um ResultSet.
+     *
+     * @param dados Resultado da consulta que contém os dados da encomenda.
+     * @return Um objeto Encomenda com as informações obtidas do ResultSet.
+     * @throws IOException   Se ocorrer um erro durante a obtenção de informações adicionais.
+     * @throws SQLException  Se ocorrer um erro ao acessar os dados do ResultSet.
+     */
     private Encomenda criarObjetoEncomenda(ResultSet dados) throws IOException, SQLException {
 
         Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados, dados.getString("Id_fornecedor"));
@@ -132,6 +165,14 @@ public class LerEncomenda {
         );
     }
 
+    /**
+     * Adiciona uma encomenda à base de dados, incluindo a inserção de produtos associados e suas linhas.
+     *
+     * @param baseDados  A instância da classe BaseDados para conexão com o banco de dados.
+     * @param encomenda  A encomenda a ser adicionada à base de dados.
+     * @return O ID da encomenda adicionada, ou 0 se ocorrer um erro.
+     * @throws IOException Se ocorrer um erro durante a adição à base de dados.
+     */
     public int adicionarEncomendaBaseDeDados(BaseDados baseDados, Encomenda encomenda) throws IOException {
         try {
             baseDados.Ligar();
@@ -163,6 +204,12 @@ public class LerEncomenda {
         return 0;
     }
 
+    /**
+     * Insere um produto na tabela Produto, verificando se já existe antes de realizar a inserção.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @param produto   O produto a ser inserido na tabela.
+     */
     private void inserirProdutoNaTabelaProduto(BaseDados baseDados, Produto produto) {
         //Verificar se o produto já eiste na tabela antes de o inserir
         if (!produtoExisteNaTabela(baseDados, produto.getId())) {
@@ -179,6 +226,15 @@ public class LerEncomenda {
             baseDados.Executar(queryProduto);
         }
     }
+
+    /**
+     * Verifica se um produto com o ID especificado já existe na tabela Produto.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @param Id        O ID do produto a ser verificado.
+     * @return          True se o produto já existir na tabela, false caso contrário.
+     * @throws RuntimeException Se ocorrer um erro durante a verificação.
+     */
     private boolean produtoExisteNaTabela(BaseDados baseDados, String Id) {
         try {
             ResultSet resultado = baseDados.Selecao("SELECT Id FROM Produto WHERE Id = '" + Id + "'");
@@ -188,6 +244,13 @@ public class LerEncomenda {
         }
     }
 
+    /**
+     * Insere uma linha de encomenda na base de dados.
+     *
+     * @param baseDados    A instância da classe BaseDados para conexão com o banco de dados.
+     * @param Id_Encomenda O ID da encomenda à qual a linha pertence.
+     * @param linha        A linha de encomenda a ser inserida.
+     */
     private void inserirLinhaEncomenda(BaseDados baseDados, int Id_Encomenda, LinhaEncomenda linha) {
         // Construa a string da consulta SQL, escapando os valores
         String queryLinha = "INSERT INTO Linha_Encomenda (Id_Encomenda, Sequencia, Id_Produto, Preco_Unitario, Quantidade, Id_Unidade," +
@@ -208,6 +271,13 @@ public class LerEncomenda {
         baseDados.Executar(queryLinha);
     }
 
+    /**
+     * Obtém a consulta SQL para inserir uma encomenda na base de dados.
+     *
+     * @param encomenda A encomenda a ser inserida na base de dados.
+     * @return Uma string contendo a consulta SQL para inserção da encomenda.
+     * @throws IOException Se ocorrer um erro durante a obtenção do ID do país.
+     */
     @NotNull
     private String getQueryEncomenda(Encomenda encomenda) throws IOException {
 
@@ -231,6 +301,14 @@ public class LerEncomenda {
                 encomenda.getTotal() + ", 0)";
     }
 
+    /**
+     * Obtém uma encomenda da base de dados com base no ID fornecido.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @param id        O ID da encomenda a ser obtida.
+     * @return          Um objeto Encomenda contendo as informações da encomenda correspondente ao ID.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public Encomenda obterEncomendaPorId(BaseDados baseDados, String id) throws IOException {
         Encomenda encomenda = null;
         try {
@@ -247,6 +325,14 @@ public class LerEncomenda {
         return encomenda;
     }
 
+    /**
+     * Lê as linhas de encomenda para aprovação da base de dados com base no ID da encomenda.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @param idEncomenda O ID da encomenda para a qual as linhas devem ser lidas.
+     * @return Uma lista de objetos LinhaEncomenda contendo as informações para aprovação.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public List<LinhaEncomenda> lerLinhasParaAprovacao(BaseDados baseDados, int idEncomenda) throws IOException {
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
@@ -280,6 +366,13 @@ public class LerEncomenda {
         return linhasEncomenda;
     }
 
+    /**
+     * Cria um objeto LinhaEncomenda para aprovação a partir dos dados do ResultSet.
+     *
+     * @param dados Resultado da consulta que contém os dados da linha de encomenda.
+     * @return Um objeto LinhaEncomenda para aprovação.
+     * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
+     */
     private LinhaEncomenda criarObjetoLinhaParaAprovacao(ResultSet dados) throws SQLException {
 
         Unidade unidade = new Unidade(
@@ -299,6 +392,17 @@ public class LerEncomenda {
         );
     }
 
+
+    /**
+     * Atualiza o estoque de um produto na base de dados.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @param idProduto O ID do produto cujo estoque será atualizado.
+     * @param idUnidade O ID da unidade associada ao produto.
+     * @param quantidade A quantidade a ser adicionada ao estoque.
+     * @return True se a atualização do estoque for bem-sucedida, false caso contrário.
+     * @throws IOException Se ocorrer um erro durante a atualização.
+     */
     public boolean atualizarStock(BaseDados baseDados, String idProduto, int idUnidade, double quantidade) throws IOException {
         try {
             baseDados.Ligar();
@@ -326,11 +430,28 @@ public class LerEncomenda {
         return true;
     }
 
+    /**
+     * Verifica se um produto já existe na tabela de produtos da base de dados.
+     *
+     * @param baseDados  A instância da classe BaseDados para conexão com o banco de dados.
+     * @param idProduto  O ID do produto a ser verificado.
+     * @return True se o produto existir, false caso contrário.
+     * @throws SQLException Se ocorrer um erro durante a verificação na base de dados.
+     */
     private boolean produtoExiste(BaseDados baseDados, String idProduto) throws SQLException {
         String query = "SELECT * FROM Stock WHERE Id_Produto = '" + idProduto + "'";
         ResultSet resultSet = baseDados.Selecao(query);
         return resultSet.next();
     }
+
+    /**
+     * Atualiza o estado de uma encomenda para "Aprovada" na base de dados.
+     *
+     * @param baseDados  A instância da classe BaseDados para conexão com o banco de dados.
+     * @param idEncomenda  O ID da encomenda a ser atualizada.
+     * @return True se a atualização for bem-sucedida, false caso contrário.
+     * @throws IOException Se ocorrer um erro durante a atualização.
+     */
     public boolean atualizarEstadoEncomenda(BaseDados baseDados, int idEncomenda) throws IOException {
         try {
             baseDados.Ligar();
@@ -350,6 +471,15 @@ public class LerEncomenda {
         return false;
     }
 
+
+    /**
+     * Atualiza o estado de uma encomenda para "Recusada" na base de dados.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @param idEncomenda O ID da encomenda a ser atualizada.
+     * @return True se a atualização for bem-sucedida, false caso contrário.
+     * @throws IOException Se ocorrer um erro durante a atualização.
+     */
     public boolean actualizarEstadoEncomendaRecusada(BaseDados baseDados, int idEncomenda) throws IOException {
         try {
             baseDados.Ligar();
@@ -366,6 +496,15 @@ public class LerEncomenda {
 
     }
 
+    /**
+     * Atualiza o saldo devedor na conta corrente de um fornecedor na base de dados.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @param valorEncomenda O valor da encomenda a ser adicionado ao saldo devedor.
+     * @param idFornecedor  O ID do fornecedor cuja conta corrente será atualizada.
+     * @return True se a atualização for bem-sucedida, false caso contrário.
+     * @throws IOException   Se ocorrer um erro durante a atualização.
+     */
     public boolean atualizarSaldoDevedores(BaseDados baseDados, double valorEncomenda, String idFornecedor) throws IOException {
         try {
             baseDados.Ligar();
@@ -395,6 +534,13 @@ public class LerEncomenda {
         }
     }
 
+    /**
+     * Verifica se é possível eliminar um fornecedor com base nas encomendas associadas.
+     *
+     * @param baseDados    A instância da classe BaseDados para conexão com o banco de dados.
+     * @param fornecedor   O utilizador (fornecedor) a ser verificado para eliminação.
+     * @return             True se a eliminação for possível, false caso contrário.
+     */
     public boolean podeEliminarFornecedor(BaseDados baseDados,Utilizador fornecedor) {
         try {
             baseDados.Ligar();

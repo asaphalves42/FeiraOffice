@@ -48,6 +48,14 @@ public class LerFornecedores {
         }
     }
 
+    /**
+     * Cria um objeto Fornecedor a partir dos dados de um ResultSet.
+     *
+     * @param dados Resultado da consulta que contém os dados do fornecedor.
+     * @return Um objeto Fornecedor com as informações obtidas do ResultSet.
+     * @throws IOException   Se ocorrer um erro durante a obtenção de informações adicionais.
+     * @throws SQLException  Se ocorrer um erro ao acessar os dados do ResultSet.
+     */
     private Fornecedor criarObjetoFornecedor(ResultSet dados) throws IOException, SQLException {
         int idPais = dados.getInt("Id_Pais");
         int idUtilizador = dados.getInt("Id_Utilizador");
@@ -69,6 +77,14 @@ public class LerFornecedores {
         );
     }
 
+    /**
+     * Obtém um fornecedor da base de dados com base no seu identificador externo.
+     *
+     * @param baseDados     A instância da classe BaseDados para conexão com o banco de dados.
+     * @param idFornecedor  O identificador externo do fornecedor a ser obtido.
+     * @return Um objeto Fornecedor correspondente ao identificador externo fornecido, ou null se não encontrado.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public Fornecedor obterFornecedorPorId(BaseDados baseDados, String idFornecedor) throws IOException {
         Fornecedor fornecedor = null;
         try {
@@ -192,11 +208,10 @@ public class LerFornecedores {
 
         try {
 
+
+
             boolean sucesso1 = baseDados.Executar(query);
             boolean sucesso2 = baseDados.Executar(query2);
-            System.out.println("Query 1 " + query);
-            System.out.println("Query2" + query2);
-
 
             baseDados.Desligar();
 
@@ -211,6 +226,7 @@ public class LerFornecedores {
             throw new IOException("Erro na atualização na base de dados!");
         }
     }
+
     /**
      * Obtém o nome do fornecedor associado a um Id_Externo.
      *
@@ -238,6 +254,13 @@ public class LerFornecedores {
     }
 
 
+    /**
+     * Lê informações sobre a dívida dos fornecedores na base de dados.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @return Uma lista observável de objetos ContaCorrente representando a dívida dos fornecedores.
+     * @throws IOException Se ocorrer um erro durante a leitura da base de dados.
+     */
     public ObservableList<ContaCorrente> lerDividaFornecedores(BaseDados baseDados) throws IOException {
         ObservableList<ContaCorrente> contas = FXCollections.observableArrayList();
         try {
@@ -265,6 +288,13 @@ public class LerFornecedores {
         return contas;
     }
 
+    /**
+     * Cria um objeto ContaCorrente a partir dos dados de um ResultSet representando a dívida de um fornecedor.
+     *
+     * @param dados Resultado da consulta que contém os dados da dívida do fornecedor.
+     * @return Um objeto ContaCorrente com as informações obtidas do ResultSet.
+     * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
+     */
     private ContaCorrente criarObjetoDivida(ResultSet dados) throws SQLException {
         Fornecedor fornecedor = new Fornecedor(
                 dados.getString("id_fornecedor"),

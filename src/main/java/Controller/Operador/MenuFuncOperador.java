@@ -41,13 +41,21 @@ public class MenuFuncOperador{
     @FXML
     private TableView<Utilizador> tableViewOperador;
     ObservableList<Utilizador> utilizador= FXCollections.observableArrayList();
-
+    /**
+     * Inicializa a interface, limpando e preenchendo a tabela de operadores.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura dos operadores.
+     */
     public void initialize() throws IOException {
         tableViewOperador.getColumns().clear();
         tableViewOperador.getItems().clear();
         tabelaUtilizadoresOperador();
     }
-
+    /**
+     * Preenche a tabela de operadores com os dados da base de dados.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura dos operadores.
+     */
     public void tabelaUtilizadoresOperador() throws IOException {
 
 
@@ -78,6 +86,12 @@ public class MenuFuncOperador{
 
     }
 
+    /**
+     * Manipula o evento de clique no botão "Novo Operador".
+     *
+     * @param event O evento de ação associado ao clique no botão "Novo Operador".
+     * @throws IOException Se ocorrer um erro durante a exibição da janela de adição de operador.
+     */
     @FXML
     void clickNovo(ActionEvent event) throws IOException {
         Stage stage = new Stage();
@@ -91,7 +105,12 @@ public class MenuFuncOperador{
         DataSingleton data = DataSingleton.getInstance();
         utilizador.add(data.getDataOperador());
     }
-
+    /**
+     * Manipula o evento de clique no botão "Editar".
+     *
+     * @param event O evento de ação associado ao clique no botão "Editar".
+     * @throws IOException Se ocorrer um erro durante a exibição da janela de edição de operador.
+     */
     @FXML
     void clickEditar(ActionEvent event) throws IOException {
         Utilizador operadorSelecionado = tableViewOperador.getSelectionModel().getSelectedItem();
@@ -113,7 +132,10 @@ public class MenuFuncOperador{
             tableViewOperador.refresh();
         }
     }
-
+    /**
+     * Manipula o evento de clique no botão "Eliminar operador".
+     * Remove o operador selecionado da base de dados e da lista de operadores exibida na tabela.
+     */
     @FXML
     void clickEliminar() {
         Utilizador operadorSelecionado = tableViewOperador.getSelectionModel().getSelectedItem();

@@ -68,7 +68,13 @@ public class LerUtilizadores {
         }
     }
 
-
+    /**
+     * Lê os operadores da base de dados e retorna uma lista observável de Utilizadores.
+     *
+     * @param baseDados A instância da classe BaseDados para realizar a operação.
+     * @return Uma ObservableList de Utilizador contendo os operadores lidos da base de dados.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public ObservableList<Utilizador> lerOperadoresDaBaseDados(BaseDados baseDados) throws IOException {
 
         ObservableList<Utilizador> utilizadores = FXCollections.observableArrayList();
@@ -182,7 +188,6 @@ public class LerUtilizadores {
 
     }
 
-
     /**
      * Obtém um utilizador fornecedor a partir da base de dados com base no seu ID e retorna o utilizador encontrado.
      *
@@ -221,12 +226,19 @@ public class LerUtilizadores {
     }
 
 
-
+    /**
+     * Remove um operador da base de dados com base no ID do utilizador.
+     *
+     * @param baseDados    A instância da classe BaseDados para realizar a operação.
+     * @param utilizadorID O ID do utilizador a ser removido.
+     * @return True se a remoção foi bem-sucedida, false caso contrário.
+     * @throws SQLException Se ocorrer um erro durante a execução da operação SQL.
+     */
     public boolean removerOperadorDaBaseDeDados(BaseDados baseDados, int utilizadorID) throws SQLException {
         try {
             baseDados.Ligar();
 
-            String query = "DELETE FROM Utilizador WHERE id_role = '" + utilizadorID + "'";
+            String query = "DELETE FROM Utilizador WHERE id_util = '" + utilizadorID + "'";
             boolean linhasAfetadas = baseDados.Executar(query);
 
             baseDados.Desligar();
@@ -300,6 +312,16 @@ public class LerUtilizadores {
         }
         return false;
     }
+
+    /**
+     * Atualiza as informações de um operador na base de dados.
+     *
+     * @param baseDados             A instância da classe BaseDados para realizar a operação.
+     * @param id                    O ID do operador a ser atualizado.
+     * @param novoEmail             O novo email a ser atribuído ao operador.
+     * @param encryptedNovaPassword A nova senha criptografada a ser atribuída ao operador.
+     * @return True se a atualização foi bem-sucedida, false caso contrário.
+     */
     public boolean atualizarOperadorBaseDados(BaseDados baseDados, int id, String novoEmail, String encryptedNovaPassword) {
         try {
 
@@ -324,17 +346,6 @@ public class LerUtilizadores {
             return false; // Retorna false se a atualização falhou
         }
     }
-    private ObservableList<Utilizador> utilizadoresSimulados;
-    private Utilizador utilizadorSimulado;
-
-    public void setUtilizadoresSimulados(ObservableList<Utilizador> utilizadores) {
-        this.utilizadoresSimulados = utilizadores;
-    }
-
-    public void setUtilizadorSimulado(Utilizador utilizador) {
-        this.utilizadorSimulado = utilizador;
-    }
-
 
     }
 

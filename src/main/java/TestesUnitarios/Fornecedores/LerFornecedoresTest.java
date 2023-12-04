@@ -41,6 +41,13 @@ public class LerFornecedoresTest {
         // Desligar a conexão após cada teste
         doReturn(true).when(baseDados).Desligar();
     }
+
+    /**
+     * Testa o método de adição de fornecedor à base de dados.
+     *
+     * @throws IOException Em caso de erro de leitura/escrita.
+     * @throws SQLException Em caso de erro na execução da SQL.
+     */
     @Test
     public void testAdicionarFornecedorBaseDeDados() throws IOException, SQLException {
 
@@ -61,6 +68,12 @@ public class LerFornecedoresTest {
         // Verifica se a inserção foi bem-sucedida
         assertEquals(fornecedor, fornecedorInserido);
     }
+    /**
+     * Testa o método de adição de fornecedor à base de dados, simulando um falha na execução da SQL.
+     *
+     * @throws IOException Em caso de erro de leitura/escrita.
+     * @throws SQLException Em caso de erro na execução da SQL.
+     */
     @Test
     public void testAdicionarFornecedorBaseDeDados_Falha() throws IOException, SQLException {
         // Configurando o comportamento da BaseDados para retornar false se a query contiver "falhar"
@@ -81,7 +94,12 @@ public class LerFornecedoresTest {
         // Verifica se a inserção falhou
         assertEquals(fornecedor, fornecedorInserido);
     }
-
+    /**
+     * Testa os métodos de adição e exclusão de fornecedor à base de dados.
+     *
+     * @throws IOException Em caso de erro de leitura/escrita.
+     * @throws SQLException Em caso de erro na execução da SQL.
+     */
     @Test
     public void testAdicionarEExcluirFornecedorBaseDeDados() throws IOException, SQLException {
         // Criar test data

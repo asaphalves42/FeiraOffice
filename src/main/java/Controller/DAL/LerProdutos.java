@@ -17,6 +17,14 @@ public class LerProdutos {
     BaseDados baseDados = new BaseDados();
     LerFornecedores lerFornecedores = new LerFornecedores();
     LerUnidade lerUnidade = new LerUnidade();
+
+    /**
+     * Lê os produtos da base de dados e os retorna como uma lista observável.
+     *
+     * @param baseDados A instância da base de dados.
+     * @return Uma lista observável de produtos lidos da base de dados.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public ObservableList<Produto> lerProdutosBaseDados(BaseDados baseDados) throws IOException {
         ObservableList<Produto> produtos = FXCollections.observableArrayList();
         Produto produto = null;
@@ -39,6 +47,14 @@ public class LerProdutos {
         return produtos;
     }
 
+    /**
+     * Cria um objeto Produto a partir dos dados do ResultSet.
+     *
+     * @param dados O ResultSet contendo os dados do produto.
+     * @return Um objeto Produto criado a partir dos dados do ResultSet.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     * @throws SQLException Se ocorrer um erro ao acessar os dados no ResultSet.
+     */
     private Produto criarObjeto(ResultSet dados) throws IOException, SQLException {
         Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados, dados.getString("Id_Fornecedor"));
         Unidade unidade = lerUnidade.obterUnidadePorIdBaseDados(baseDados, dados.getInt("Id_Unidade"));

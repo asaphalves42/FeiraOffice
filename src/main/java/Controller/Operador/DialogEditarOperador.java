@@ -38,13 +38,22 @@ public class DialogEditarOperador {
 
     private Utilizador operador;
 
-
+    /**
+     * Define o operador a ser editado na janela.
+     *
+     * @param operador O operador a ser editado.
+     */
     public void setOperador(Utilizador operador) {
         this.operador = operador;
         txtNovoEmail.setText(operador.getEmail());
 
     }
-
+    /**
+     * Manipula o evento de clique no botão "Guardar".
+     * Atualiza as informações do operador na base de dados.
+     *
+     * @throws IOException Se ocorrer um erro durante a operação de atualização.
+     */
     @FXML
     public void clickGuardar() throws IOException {
         try {
@@ -66,9 +75,13 @@ public class DialogEditarOperador {
             LerUtilizadores lerUtilizadores = new LerUtilizadores();
 
             // Validar o formato do e-mail e verificar se já existe na base de dados
-            if (!validarEmail.isValidEmailAddress(novoEmail) || !lerUtilizadores.verificarUserName(novoEmail)) {
-                Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido e que não esteja em uso.");
-                return;
+
+            if (!novoEmail.equals(operador.getEmail())) {
+
+                if (!validarEmail.isValidEmailAddress(novoEmail) || !lerUtilizadores.verificarUserName(novoEmail)) {
+                    Mensagens.Erro("E-mail inválido", "Por favor, insira um endereço de e-mail válido e que não esteja em uso.");
+                    return;
+                }
             }
 
             // Atualizar o objeto Utilizador com os novos valores
@@ -89,7 +102,12 @@ public class DialogEditarOperador {
             Mensagens.Erro("Erro!", "Erro na edição de operador!");
         }
     }
-
+    /**
+     * Manipula o evento de clique no botão "Cancelar".
+     * Fecha a janela atual em que o botão "Cancelar" está localizado.
+     *
+     * @param event O evento de ação associado ao clique do botão "Cancelar".
+     */
     public void clickCancelar(javafx.event.ActionEvent event) {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.close();

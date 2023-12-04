@@ -140,7 +140,11 @@ public class Encomenda {
         this.linhas = linhas;
     }
 
-
+    /**
+     * Calcula o valor total da encomenda somando os totais de todas as linhas.
+     *
+     * @return O valor total da encomenda.
+     */
     public double getTotal() {
         double valor = 0;
         for (LinhaEncomenda linha : this.linhas) {
@@ -148,7 +152,11 @@ public class Encomenda {
         }
         return valor;
     }
-
+    /**
+     * Calcula o valor total da taxa da encomenda somando as taxas de todas as linhas.
+     *
+     * @return O valor total da taxa da encomenda.
+     */
     public double getTotalTaxa() {
         double valor = 0;
         for (LinhaEncomenda linha : this.linhas) {
@@ -156,7 +164,11 @@ public class Encomenda {
         }
         return valor;
     }
-
+    /**
+     * Calcula o valor total de incidência da encomenda somando os totais de incidência de todas as linhas.
+     *
+     * @return O valor total de incidência da encomenda.
+     */
     public double getTotalIncidencia() {
         double valor = 0;
             for (LinhaEncomenda linha : this.linhas) {

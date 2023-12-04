@@ -17,6 +17,12 @@ import java.time.format.DateTimeFormatter;
 
 public class LerTXT {
 
+    /**
+     * Lê um arquivo XML e gera um arquivo de texto para conferir uma encomenda.
+     *
+     * @param selectedFile O arquivo XML a ser lido e processado.
+     * @throws IOException Se ocorrer um erro durante a leitura ou gravação do arquivo.
+     */
     public void lerFicheiroXML(File selectedFile) throws IOException {
 
         FileOutputStream fileOutputStream = null;

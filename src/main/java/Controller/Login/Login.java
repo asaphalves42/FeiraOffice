@@ -40,6 +40,13 @@ public class Login {
         abrirMenuCorrespondente(utilizador);
     }
 
+    /**
+     * Abre o menu correspondente ao tipo de utilizador após a autenticação bem-sucedida. Fecha a janela de login
+     * atual e exibe a interface gráfica do menu apropriado.
+     *
+     * @param utilizador O utilizador autenticado.
+     * @throws IOException Se ocorrer um erro durante o carregamento da interface gráfica do menu.
+     */
     private void abrirMenuCorrespondente(Utilizador utilizador) throws IOException {
         String resource = null;
         String title = null;
@@ -74,6 +81,14 @@ public class Login {
 
     }
 
+    /**
+     * Abre a interface gráfica do menu correspondente ao tipo de utilizador e inicia os dados necessários.
+     *
+     * @param resource   O caminho do recurso FXML do menu.
+     * @param title      O título da janela do menu.
+     * @param utilizador O utilizador autenticado.
+     * @throws IOException Se ocorrer um erro durante o carregamento da interface gráfica do menu.
+     */
     private void abrirMenu(String resource, String title, Utilizador utilizador) throws IOException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(resource));
@@ -95,11 +110,20 @@ public class Login {
         stage.show();
     }
 
+    /**
+     * Fecha a janela atual em que o botão de login está localizado.
+     */
     private void fecharJanelaAtual() {
         Stage currentStage = (Stage) btnLogin.getScene().getWindow();
         currentStage.close();
     }
 
+    /**
+     * Obtém o utilizador com base nas credenciais inseridas na interface gráfica de login.
+     *
+     * @return O utilizador autenticado ou null se as credenciais forem inválidas.
+     * @throws SQLException Se ocorrer um erro durante a leitura da base de dados.
+     */
     private Utilizador getUtilizador() throws SQLException {
         // Instância da classe para ler os utilizadores.
         LerUtilizadores lerUtilizadores = new LerUtilizadores();
@@ -113,6 +137,13 @@ public class Login {
     }
 
 
+    /**
+     * Manipula o evento de pressionar a tecla Enter. Chama o método de login quando a tecla Enter é pressionada.
+     *
+     * @param keyEvent O evento de tecla pressionada.
+     * @throws SQLException Se ocorrer um erro durante a leitura da base de dados.
+     * @throws IOException Se ocorrer um erro durante a execução do login.
+     */
     public void clickEnter(KeyEvent keyEvent) throws SQLException, IOException {
         if(keyEvent.getCode().toString().equals("ENTER")){
             clickLogin();

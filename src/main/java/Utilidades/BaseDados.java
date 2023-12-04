@@ -9,7 +9,12 @@ public class BaseDados {
     String password = "LP32023g2*123";
     Connection connection; // a ligação ao SQL
 
-    //função de estabelecer ligação ao SQL
+
+    /**
+     * Estabelece uma ligação com o SQL Server.
+     *
+     * @return true se a ligação for bem-sucedida, false caso contrário.
+     */
 
     public boolean Ligar() {
         try {
@@ -20,7 +25,11 @@ public class BaseDados {
         }
     }
 
-    // função de terminar a ligação ao SQL
+    /**
+     * Termina a ligação com o SQL Server.
+     *
+     * @return true se a desligação for bem-sucedida, false caso contrário.
+     */
     public boolean Desligar() {
         try {
             if (!connection.isClosed()) {
@@ -31,8 +40,13 @@ public class BaseDados {
             throw new RuntimeException(e);
         }
     }
+    /**
+     * Executa uma consulta de seleção SQL e retorna o resultado como um conjunto de resultados (ResultSet).
+     *
+     * @param query A consulta SQL a ser executada.
+     * @return O conjunto de resultados (ResultSet) da consulta.
+     */
 
-    // função de executar uma query no SQL
     public ResultSet Selecao(String query) {
         try {
             //se já foi invocado o ligar e a ligação está valida então envia o comando da query
@@ -45,7 +59,12 @@ public class BaseDados {
         }
         return null;
     }
-
+    /**
+     * Executa uma consulta SQL que não retorna um conjunto de resultados (por exemplo, INSERT, UPDATE, DELETE).
+     *
+     * @param query A consulta SQL a ser executada.
+     * @return true se a consulta for bem-sucedida, false caso contrário.
+     */
     public boolean Executar(String query) {
         try {
             //se já foi invocado o ligar e a ligação está valida então envia o comando da query
@@ -59,25 +78,12 @@ public class BaseDados {
         }
         return false;
     }
-
-    public int ExecutarInsert(String query) {
-        try {
-            //se já foi invocado o ligar e a ligação está valida então envia o comando da query
-            if (connection != null && !connection.isClosed()) {
-                Statement script = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-
-                script.executeUpdate(query); //executa o script e aguarda true ou false (boolean)
-                ResultSet rs = script.getGeneratedKeys();
-                if(rs.next()) {
-                    return rs.getInt(1);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return 0;
-    }
-
+    /**
+     * Executa uma consulta preparada (PreparedStatement) e retorna a chave gerada (se houver).
+     *
+     * @param query A consulta preparada a ser executada.
+     * @return A chave gerada pela consulta, ou -1 se nenhuma chave foi gerada.
+     */
     public int ExecutarPreparementStatement(String query) {
         try {
             // Se já foi invocado o ligar e a ligação está válida, então envia o comando da query

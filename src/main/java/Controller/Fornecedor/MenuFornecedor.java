@@ -109,6 +109,10 @@ public class MenuFornecedor {
 
     }
 
+    /**
+     * Manipula o evento de clique no botão para escolher um arquivo. Abre um seletor de arquivo
+     * para escolher um documento XML, exibe o caminho do arquivo selecionado e lê o conteúdo do arquivo XML.
+     */
     @FXML
     void clickEscolherFicheiro() {
         try {
@@ -127,6 +131,12 @@ public class MenuFornecedor {
         }
     }
 
+    /**
+     * Manipula o evento de clique no botão de upload. Lê o arquivo XML escolhido, valida o ID do fornecedor,
+     * e faz upload da encomenda se o ID do fornecedor no arquivo coincidir com o ID do fornecedor logado.
+     *
+     * @throws IOException Se ocorrer um erro durante o upload da encomenda.
+     */
     @FXML
     void clickUpload() throws IOException {
 

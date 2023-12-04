@@ -35,6 +35,9 @@ public class MenuAdm {
     @FXML
     private Button btnProdutos;
 
+    /**
+     * Carrega e exibe o menu para aprovação de estoque quando o botão "Aprovar" é clicado.
+     */
     @FXML
     void clickAprovar() {
         try {
@@ -48,11 +51,17 @@ public class MenuAdm {
         }
     }
 
+    /**
+     * Método de espaço reservado para lidar com o clique no botão "Estatísticas".
+     */
     @FXML
     void clickEstatisticas() {
 
     }
 
+    /**
+     * Carrega e exibe o menu de extrato de conta quando o botão "Fatura" é clicado.
+     */
     @FXML
     void clickFatura() {
         try {
@@ -66,6 +75,9 @@ public class MenuAdm {
 
     }
 
+    /**
+     * Carrega e exibe o menu de funções para o fornecedor quando o botão "Fornecedor" é clicado.
+     */
     @FXML
     void clickFornecedor() {
         try {
@@ -79,6 +91,9 @@ public class MenuAdm {
 
     }
 
+    /**
+     * Carrega e exibe o menu de funções para o operador quando o botão "Operador" é clicado.
+     */
     @FXML
     void clickOperador() {
         try {
@@ -92,6 +107,9 @@ public class MenuAdm {
 
     }
 
+    /**
+     * Carrega e exibe o menu de produtos quando o botão "Produtos" é clicado.
+     */
     @FXML
     void clickProdutos() {
         try {
@@ -105,6 +123,9 @@ public class MenuAdm {
 
     }
 
+    /**
+     * Encerra a aplicação quando o botão "Logout" é clicado.
+     */
     @FXML
     void clickLogout() {
         System.exit(0);

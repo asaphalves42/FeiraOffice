@@ -8,6 +8,12 @@ import java.util.Properties;
 
 public class ControllerEmail {
 
+    /**
+     * Envia um email contendo as credenciais de acesso à Feira Office.
+     *
+     * @param username O endereço de email do destinatário.
+     * @param password A senha a ser enviada no email.
+     */
     public void enviarEmail( String username, String password) {
         String from = "jakartafrom@example.com";
 

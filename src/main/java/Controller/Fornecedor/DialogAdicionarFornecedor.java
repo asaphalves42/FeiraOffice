@@ -3,6 +3,7 @@ package Controller.Fornecedor;
 import Controller.DAL.LerFornecedores;
 import Controller.DAL.LerPaises;
 import Controller.DAL.LerUtilizadores;
+import Controller.Email.ControllerEmail;
 import Model.*;
 import Utilidades.*;
 import Utilidades.Encriptacao;
@@ -135,6 +136,9 @@ public class DialogAdicionarFornecedor {
             currentStage.close();
 
             Mensagens.Informacao("Novo fornecedor", "Novo fornecedor inserido com sucesso!");
+            ControllerEmail controllerEmail = new ControllerEmail();
+            controllerEmail.enviarEmail(email, password);
+
 
 
         } catch (Exception e) {
@@ -142,12 +146,24 @@ public class DialogAdicionarFornecedor {
         }
     }
 
+    /**
+     * Manipula o evento de clique no botão "Cancelar".
+     * Fecha a janela atual ao qual o botão pertence.
+     *
+     * @param event O evento de clique do botão.
+     */
     @FXML
     void clickCancelar(ActionEvent event) {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.close();
     }
 
+    /**
+     * Manipula o evento de seleção no ComboBox de países.
+     * Obtém e não utiliza o item selecionado no ComboBox de países.
+     *
+     * @param event O evento de seleção do ComboBox.
+     */
     @FXML
     void clickComboPais(ActionEvent event) {
         comboBoxPais.getSelectionModel().getSelectedItem();

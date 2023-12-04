@@ -84,7 +84,12 @@ public class DialogAdicionarOperador {
             Mensagens.Erro("Erro!", "Erro na adição de operador!");
         }
     }
-
+    /**
+     * Manipula o evento de clique no botão "Cancelar".
+     * Fecha a janela atual em que o botão "Cancelar" está localizado.
+     *
+     * @param event O evento de ação associado ao clique do botão "Cancelar".
+     */
     @FXML
     void clickCancelar(ActionEvent event) {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

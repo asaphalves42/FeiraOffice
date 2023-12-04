@@ -19,7 +19,7 @@ import static org.mockito.Mockito.mock;
 public class LerOperadoresTest {
     private BaseDados baseDados;
     Encriptacao encript = new Encriptacao();
-    String email = "fornecedor222@teste.pt";
+    String email = "operador222@teste.pt";
     String password = "123";
     String encryptedPassword = encript.MD5(password);
 
@@ -36,7 +36,12 @@ public class LerOperadoresTest {
         // Desligar a conexão após cada teste
         doReturn(true).when(baseDados).Desligar();
     }
-
+    /**
+     * Testa o método de adição de fornecedor à base de dados.
+     *
+     * @throws IOException Em caso de erro de leitura/escrita.
+     * @throws SQLException Em caso de erro na execução da SQL.
+     */
     @Test
     public void testAdicionarOperBaseDeDados() throws IOException, SQLException {
         // Criar instância do LerUtilizadores usando a conexão da base de dados
@@ -52,7 +57,12 @@ public class LerOperadoresTest {
         // Verifica se a inserção foi bem-sucedida
         assertEquals(operador, operadorInserido);
     }
-
+    /**
+     * Testa o método de adição de fornecedor à base de dados, simulando um falha na execução da SQL.
+     *
+     * @throws IOException Em caso de erro de leitura/escrita.
+     * @throws SQLException Em caso de erro na execução da SQL.
+     */
     @Test
     public void testAdicionarOperBaseDeDados_Falha() throws IOException, SQLException {
         // Configurando o comportamento da BaseDados para retornar false se a query contiver "falhar"
@@ -73,7 +83,12 @@ public class LerOperadoresTest {
         // Verifier se a inserção falhou
         assertEquals(operador, operadorInserido);
     }
-
+    /**
+     * Testa os métodos de adição e exclusão de fornecedor à base de dados.
+     *
+     * @throws IOException Em caso de erro de leitura/escrita.
+     * @throws SQLException Em caso de erro na execução da SQL.
+     */
     @Test
     public void testAdicionarEExcluirOperBaseDeDados() throws IOException, SQLException {
         doReturn(true).when(baseDados).Executar(anyString());

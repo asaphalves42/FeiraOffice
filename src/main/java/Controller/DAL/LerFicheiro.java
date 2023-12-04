@@ -43,7 +43,6 @@ public class LerFicheiro {
     }
 
     public LerFicheiro() {
-
         try {
             // Create the JAXB context for the generated class
             this.jaxbContext = JAXBContext.newInstance(OrderConfirmation.class);
@@ -53,7 +52,15 @@ public class LerFicheiro {
         }
     }
 
-
+    /**
+     * Processa um arquivo XML e extrai informações de uma confirmação de pedido (OrderConfirmation).
+     *
+     * @param arquivoXml O arquivo XML a ser processado.
+     * @param utilizador O utilizador associado à confirmação de pedido.
+     * @return Um objeto OrderConfirmation contendo as informações extraídas do arquivo XML.
+     * @throws IOException Se ocorrer um erro durante a leitura do arquivo ou acesso à base de dados.
+     * @throws RuntimeException Se ocorrer um erro durante o processamento do arquivo XML.
+     */
     // Função para processar um arquivo XML e extrair informações de uma confirmação de pedido (OrderConfirmation)
     public OrderConfirmation orderConfirmation(File arquivoXml, Utilizador utilizador) throws IOException {
         OrderConfirmation orderConfirmation = null;

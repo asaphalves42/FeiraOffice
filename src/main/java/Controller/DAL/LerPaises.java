@@ -65,6 +65,14 @@ public class LerPaises {
         return pais;
     }
 
+    /**
+     * Obtém informações sobre um país com base no código ISO na base de dados.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @param ISO O código ISO do país a ser procurado.
+     * @return Um objeto Pais contendo as informações do país encontrado ou null se não for encontrado.
+     * @throws IOException Se ocorrer um erro durante a leitura da base de dados.
+     */
     public Pais obterPaisPorISO(BaseDados baseDados, String ISO) throws IOException {
         Pais pais = null;
         try {
@@ -82,6 +90,13 @@ public class LerPaises {
         return pais;
     }
 
+    /**
+     * Cria um objeto Pais a partir dos dados de um ResultSet representando um país.
+     *
+     * @param dados Resultado da consulta que contém os dados do país.
+     * @return Um objeto Pais com as informações obtidas do ResultSet.
+     * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
+     */
     private Pais criarObjeto(ResultSet dados) throws SQLException {
         return new Pais(
                 dados.getInt("id"),

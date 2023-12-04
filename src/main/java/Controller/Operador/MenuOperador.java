@@ -30,9 +30,12 @@ public class MenuOperador {
 
     @FXML
     private Button btnLogout;
-
+    /**
+     * Manipula o evento de clique no botão "Aprovar".
+     * Carrega a interface gráfica para aprovação de stock e substitui o conteúdo do painel principal.
+     */
     @FXML
-    void clickAprovar(ActionEvent event) {
+    void clickAprovar() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Encomenda/menuAprovarStock.fxml"));
             AnchorPane root = loader.load();
@@ -42,14 +45,29 @@ public class MenuOperador {
             e.printStackTrace();
         }
     }
-
+    /**
+     * Manipula o evento de clique no botão "Fatura".
+     * Carrega a interface gráfica para consulta de conta corrente e substitui o conteúdo do painel principal.
+     */
     @FXML
-    void clickFatura(ActionEvent event) {
+    void clickFatura() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Admin/menuContaCorrente.fxml"));
+            AnchorPane root = loader.load();
+
+            anchorPaneOperador.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
     }
-
+    /**
+     * Manipula o evento de clique no botão "Fornecedor".
+     * Carrega a interface gráfica com as funcionalidades disponíveis para o fornecedor e substitui o conteúdo do painel principal.
+     */
     @FXML
-    void clickFornecedor(ActionEvent event) {
+    void clickFornecedor() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/menuFuncoesFornecedor.fxml"));
             AnchorPane root = loader.load();
@@ -60,15 +78,21 @@ public class MenuOperador {
         }
 
     }
-
+    /**
+     * Manipula o evento de clique no botão "Logout".
+     * Encerra a aplicação ao clicar no botão "Logout".
+     */
     @FXML
     void clickLogout() {
         System.exit(0);
         ;
     }
-
+    /**
+     * Manipula o evento de clique no botão "Produto".
+     * Carrega a interface gráfica para gestão de produtos e substitui o conteúdo do painel principal.
+     */
     @FXML
-    void clickProduto(ActionEvent event) {
+    void clickProduto() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Produtos/menuProdutos.fxml"));
             AnchorPane root = loader.load();
@@ -79,7 +103,11 @@ public class MenuOperador {
         }
 
     }
-
+    /**
+     * Inicializa os dados da interface com o utilizador logado.
+     *
+     * @param utilizador O utilizador que efetuou o login.
+     */
     public void iniciaData(Utilizador utilizador) {
         this.utilizador = utilizador;
         System.out.println(utilizador.getEmail());

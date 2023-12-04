@@ -21,7 +21,6 @@ public class AprovarStock {
 
     BaseDados baseDados = new BaseDados();
     LerEncomenda lerEncomenda = new LerEncomenda();
-    private final DataSingleton dadosCompartilhados = DataSingleton.getInstance();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -40,6 +39,12 @@ public class AprovarStock {
     ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
     ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
+    /**
+     * Inicializa a interface do usuário e configura a tabela de encomendas pendentes.
+     * Adiciona um ouvinte para a seleção de itens na tabela de encomendas para atualizar a tabela de linhas de encomenda.
+     *
+     * @throws IOException Se ocorrer um erro durante a inicialização.
+     */
     public void initialize() throws IOException {
         tabelaEncomendasPendentes();
 
@@ -55,6 +60,13 @@ public class AprovarStock {
 
     }
 
+    /**
+     * Preenche a tabela de encomendas pendentes com dados da base de dados.
+     * Configura as colunas da tabela e associa-as às propriedades da classe Encomenda.
+     * Adiciona a tabela à interface do usuário e exibe as encomendas pendentes.
+     *
+     * @throws IOException Se ocorrer um erro ao ler a tabela.
+     */
     public void tabelaEncomendasPendentes() throws IOException {
 
         try {
@@ -143,6 +155,13 @@ public class AprovarStock {
 
     }
 
+    /**
+     * Preenche a tabela de linhas de encomenda com base na encomenda selecionada.
+     * Configura as colunas da tabela e associa-as às propriedades da classe LinhaEncomenda.
+     *
+     * @param encomenda A encomenda selecionada.
+     * @throws IOException Se ocorrer um erro ao ler a tabela.
+     */
     public void tabelaLinhasEncomenda(Encomenda encomenda) throws IOException {
         try {
 
@@ -205,6 +224,12 @@ public class AprovarStock {
         }
     }
 
+    /**
+     * Manipula o evento de clique no botão "Aprovar".
+     * Aprova a encomenda, atualiza o estoque na base de dados e atualiza o saldo em dívida do fornecedor.
+     *
+     * @throws IOException Se ocorrer um erro durante o processo de aprovação.
+     */
     @FXML
     void clickAprovar() throws IOException {
         // Aceder a encomenda
@@ -260,6 +285,12 @@ public class AprovarStock {
         }
     }
 
+    /**
+     * Manipula o evento de clique no botão "Recusar".
+     * Recusa a encomenda e atualiza o estado da encomenda na base de dados.
+     *
+     * @throws IOException Se ocorrer um erro durante o processo de recusa.
+     */
     @FXML
     void clickRecusar() throws IOException {
         // Aceder a encomenda

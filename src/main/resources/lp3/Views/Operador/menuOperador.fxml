@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Operador.MenuOperador">
+<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Operador.MenuOperador">
    <children>
       <AnchorPane layoutX="1.0" layoutY="-2.0" prefHeight="900.0" prefWidth="294.0" style="-fx-background-color: #d4d6d5;">
          <children>
@@ -21,44 +21,44 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Button>
-            <ImageView fitHeight="65.0" fitWidth="72.0" layoutX="114.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" style="-fx-image: #d7e6f5;">
+            <ImageView fitHeight="65.0" fitWidth="72.0" layoutX="114.0" layoutY="24.0" onMouseClicked="#clickFornecedor" pickOnBounds="true" preserveRatio="true" style="-fx-image: #d7e6f5;">
                <image>
                   <Image url="@../Imagens/caminhao-de-entrega.png" />
                </image>
             </ImageView>
-            <Text layoutX="88.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FORNECEDOR" wrappingWidth="140.0">
+            <Text layoutX="88.0" layoutY="108.0" onMouseClicked="#clickFornecedor" strokeType="OUTSIDE" strokeWidth="0.0" text="FORNECEDOR" wrappingWidth="140.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="114.0" layoutY="450.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="114.0" layoutY="450.0" onMouseClicked="#clickFatura" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/fatura.png" />
                </image>
             </ImageView>
-            <Text layoutX="111.0" layoutY="545.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FATURA" wrappingWidth="72.0">
+            <Text layoutX="111.0" layoutY="540.0" onMouseClicked="#clickFatura" strokeType="OUTSIDE" strokeWidth="0.0" text="FATURA" wrappingWidth="72.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
             <Button fx:id="btnProduto" layoutX="19.0" layoutY="220.0" mnemonicParsing="false" onAction="#clickProduto" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
             <Button fx:id="btnAprovar" layoutX="24.0" layoutY="646.0" mnemonicParsing="false" onAction="#clickAprovar" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" />
-            <Text layoutX="98.0" layoutY="319.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS">
+            <Text layoutX="98.0" layoutY="319.0" onMouseClicked="#clickProduto" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <Text layoutX="76.0" layoutY="750.0" strokeType="OUTSIDE" strokeWidth="0.0" text="APROVAR STOCK" wrappingWidth="164.0">
+            <Text layoutX="76.0" layoutY="750.0" onMouseClicked="#clickAprovar" strokeType="OUTSIDE" strokeWidth="0.0" text="APROVAR STOCK" wrappingWidth="164.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <ImageView fitHeight="65.0" fitWidth="72.0" layoutX="114.0" layoutY="234.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="72.0" layoutX="114.0" layoutY="234.0" onMouseClicked="#clickProduto" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/caracteristicas.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="65.0" fitWidth="85.0" layoutX="117.0" layoutY="661.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="85.0" layoutX="117.0" layoutY="661.0" onMouseClicked="#clickAprovar" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/aprovar.png" />
                </image>

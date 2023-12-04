@@ -11,6 +11,14 @@ import java.sql.SQLException;
 
 public class LerUnidade {
 
+    /**
+     * Obtém uma unidade da base de dados com base na descrição.
+     *
+     * @param baseDados A instância da base de dados.
+     * @param UOM A descrição da unidade.
+     * @return A unidade obtida da base de dados, ou null se não encontrada.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public Unidade obterUnidadePorDescricaoBaseDados(BaseDados baseDados, String UOM) throws IOException {
         Unidade unidade = null;
         try {
@@ -29,6 +37,14 @@ public class LerUnidade {
 
     }
 
+    /**
+     * Obtém uma unidade da base de dados com base no ID.
+     *
+     * @param baseDados A instância da base de dados.
+     * @param id O ID da unidade.
+     * @return A unidade obtida da base de dados, ou null se não encontrada.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
     public Unidade obterUnidadePorIdBaseDados(BaseDados baseDados, int id) throws IOException {
         Unidade unidade = null;
         try {
@@ -46,8 +62,14 @@ public class LerUnidade {
 
     }
 
-
-
+    /**
+     * Cria um objeto Unidade a partir dos dados do ResultSet.
+     *
+     * @param dados O ResultSet contendo os dados da unidade.
+     * @return Um objeto Unidade criado a partir dos dados do ResultSet.
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     * @throws SQLException Se ocorrer um erro ao acessar os dados no ResultSet.
+     */
     private Unidade criarObjeto(ResultSet dados) throws IOException, SQLException {
         return new Unidade(
                 dados.getInt("Id"),

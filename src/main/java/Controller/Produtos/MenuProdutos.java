@@ -24,14 +24,14 @@ import java.io.IOException;
 public class MenuProdutos {
     BaseDados baseDados = new BaseDados();
     LerStock lerStock = new LerStock();
+    LerProdutos lerProdutos = new LerProdutos();
+    LerFornecedores lerFornecedor = new LerFornecedores();
 
     @FXML
     private TableView<Produto> tableViewProdutos;
 
     @FXML
     private TableView<Produto> tableView2;
-
-
 
     ObservableList<Produto> produtos = FXCollections.observableArrayList();
     ObservableList<Produto> produtos2 = FXCollections.observableArrayList();
@@ -59,8 +59,6 @@ public class MenuProdutos {
      * @throws IOException Se houver um erro ao ler os dados.
      */
     public void tabelaProdutos() throws IOException {
-
-        LerProdutos lerProdutos = new LerProdutos();
 
 
         produtos.addAll(lerProdutos.lerProdutosBaseDados(baseDados));
@@ -91,15 +89,12 @@ public class MenuProdutos {
                 });
 
 
-
-
                 // Adicione as colunas à tabela
                 tableViewProdutos.getColumns().add(colunaId);
 
                 tableViewProdutos.getColumns().add(colunaDescricao);
                 tableViewProdutos.getColumns().add(colunaIdUnidade);
                 tableViewProdutos.getColumns().add(colunaQuantidade);
-
 
 
                 // Configure a fonte de dados da tabela
@@ -115,8 +110,6 @@ public class MenuProdutos {
      * @throws IOException Se houver um erro ao ler os dados.
      */
     public void tabela2() throws IOException {
-        LerProdutos lerProdutos = new LerProdutos();
-        LerFornecedores lerFornecedor = new LerFornecedores();
 
         produtos2.addAll(lerProdutos.lerProdutosBaseDados(baseDados));
 
@@ -150,11 +143,6 @@ public class MenuProdutos {
                 });
 
 
-
-
-
-
-
                 // Adicione as colunas à tabela
                 tableView2.getColumns().addAll(colunaId, colunaDescricao, colunaIdFornecedor,colunaNomeFornecedor, colunaIdUnidade);
 
@@ -178,8 +166,5 @@ public class MenuProdutos {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
         }
     }
-
-
-
 
 }

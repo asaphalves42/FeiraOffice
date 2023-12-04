@@ -66,16 +66,26 @@ public class MenuContaCorrente {
     private TableView<Fornecedor> tableViewEncomendaFornc;
 
     @FXML
-        private TableView<ContaCorrente> tableViewDividas;
+    private TableView<ContaCorrente> tableViewDividas;
 
     ObservableList<ContaCorrente> dividasFornecedores = FXCollections.observableArrayList();
 
+    /**
+     * Inicializa a aplicação carregando a tabela de dívidas dos fornecedores.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura ou inicialização.
+     */
     public void initialize() throws IOException {
         tabelaDividas();
         //carregarLabels();
 
     }
 
+    /**
+     * Popula a tabela de dívidas dos fornecedores com os dados provenientes do arquivo de base de dados.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura dos dados.
+     */
     public void tabelaDividas() throws IOException {
         dividasFornecedores.addAll(lerFornecedores.lerDividaFornecedores(baseDados));
 
@@ -107,6 +117,9 @@ public class MenuContaCorrente {
         }
     }
 
+    /**
+     * Carrega as labels com informações do fornecedor selecionado na tabela de encomendas.
+     */
     public void carregarLabels(){
         Fornecedor fornecedor = tableViewEncomendaFornc.getSelectionModel().getSelectedItem();
 
@@ -114,7 +127,11 @@ public class MenuContaCorrente {
 
     }
 
-
+    /**
+     * Método associado ao clique no botão "Pagar".
+     *
+     * @param event O evento associado ao clique no botão "Pagar".
+     */
     @FXML
     void clickPagar(ActionEvent event) {
 

@@ -2,6 +2,7 @@ package Controller.Fornecedor;
 
 import Controller.DAL.LerFornecedores;
 import Controller.DAL.LerPaises;
+import Controller.Email.ControllerEmail;
 import Model.Fornecedor;
 import Model.Pais;
 import Model.UtilizadorFornecedor;
@@ -21,7 +22,7 @@ public class DialogEditarFornecedor {
 
     @FXML
     private ComboBox<Pais> comboBoxPais; // Corrigido para usar o tipo apropriado
-    private final DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
+    private final DataSingleton dadosCompartilhados = DataSingleton.getInstance();
     LerPaises lerPaises = new LerPaises();
     BaseDados baseDados = new BaseDados();
     @FXML
@@ -48,7 +49,6 @@ public class DialogEditarFornecedor {
     @FXML
     private PasswordField textoPassword;
 
-    // Removido a inicialização do fornecedor aqui
     private Fornecedor fornecedorEmEdicao;
 
 
@@ -58,6 +58,11 @@ public class DialogEditarFornecedor {
         comboBoxPais.setItems(listaDePaises);
     }
 
+    /**
+     * Define os campos de entrada com os detalhes do fornecedor selecionado para edição.
+     *
+     * @param fornecedor O fornecedor selecionado para edição.
+     */
     @FXML
     public void setFornecedorSelecionado(Fornecedor fornecedor) {
         this.fornecedorEmEdicao = fornecedor;
@@ -73,18 +78,20 @@ public class DialogEditarFornecedor {
             textoEmail.setText(utilizador.getEmail());
         }
 
-
         textoPassword.setText("");
         textoMorada1.setText(fornecedor.getMorada1());
         textoMorada2.setText(fornecedor.getMorada2());
         textoLocalidade.setText(fornecedor.getLocalidade());
         textoCodigoPostal.setText(fornecedor.getCodigoPostal());
 
-
     }
 
-
-
+    /**
+     * Manipula o evento de clique no botão "Cancelar".
+     * Fecha a janela atual ao qual o botão pertence.
+     *
+     * @param event O evento de clique do botão.
+     */
     @FXML
     void clickCancelar(ActionEvent event) {
         fecharJanela(event);
@@ -95,6 +102,13 @@ public class DialogEditarFornecedor {
         // Lógica para manipular a seleção do país, se necessário
     }
 
+    /**
+     * Manipula o evento de clique no botão "Confirmar".
+     * Coleta os dados dos campos de entrada, valida-os e, se válidos, atualiza o fornecedor na base de dados.
+     *
+     * @param event O evento de clique do botão.
+     * @throws IOException Se ocorrer um erro durante a edição do fornecedor.
+     */
     @FXML
     void clickConfirmar(ActionEvent event) throws IOException {
         try {
@@ -108,7 +122,6 @@ public class DialogEditarFornecedor {
             String localidade = textoLocalidade.getText();
             String codigoPostal = textoCodigoPostal.getText();
             Pais pais = comboBoxPais.getSelectionModel().getSelectedItem();
-
 
 
             // Verificar campos obrigatórios
@@ -134,7 +147,9 @@ public class DialogEditarFornecedor {
 
             // Chamar a DAL para editar o fornecedor
             LerFornecedores editarFornecedor = new LerFornecedores();
-            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(baseDados,fornecedor, pais, utilizador);
+            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(baseDados, fornecedor, pais, utilizador);
+
+            dadosCompartilhados.setDataFornecedor(fornecedor);
 
             if (fornecedorEditado == null) {
                 Mensagens.Erro("Erro", "Erro ao editar fornecedor!");
@@ -142,6 +157,8 @@ public class DialogEditarFornecedor {
                 Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 currentStage.close();
                 Mensagens.Informacao("Fornecedor editado", "As informações do fornecedor foram editadas com sucesso!");
+                ControllerEmail controllerEmail = new ControllerEmail();
+                controllerEmail.enviarEmail(email, password);
             }
 
         } catch (IOException e) {
@@ -149,6 +166,11 @@ public class DialogEditarFornecedor {
         }
     }
 
+    /**
+     * Função para obter todos os campos obrigatórios para edição do fornecedor.
+     * @param campos obtém os campos
+     * @return
+     */
     private boolean camposObrigatoriosVazios(String... campos) {
         for (String campo : campos) {
             if (campo == null || campo.trim().isEmpty()) {
@@ -159,8 +181,11 @@ public class DialogEditarFornecedor {
     }
 
 
-
-
+    /**
+     * Fecha a janela atual associada ao evento fornecido.
+     *
+     * @param event O evento que desencadeou o fechamento da janela.
+     */
     private void fecharJanela(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.close();

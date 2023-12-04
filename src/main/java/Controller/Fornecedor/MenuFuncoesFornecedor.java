@@ -98,12 +98,19 @@ public class MenuFuncoesFornecedor {
 
                 // Configure a fonte de dados da tabela
                 tableViewFornecedores.setItems(fornecedores);
+
             }
         } else {
             Erro("Erro!", "Erro ao ler tabela");
         }
     }
 
+    /**
+     * Manipula o evento de clique no botão "Editar". Abre uma janela de diálogo para editar um fornecedor
+     * selecionado na tabela de fornecedores. Atualiza a tabela após o processo de edição.
+     *
+     * @throws IOException Se ocorrer um erro durante o carregamento da interface gráfica de edição.
+     */
     @FXML
     void clickEditar() throws IOException {
         Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
@@ -116,12 +123,9 @@ public class MenuFuncoesFornecedor {
 
 
             DialogEditarFornecedor controller = fxmlLoader.getController();
-
-
             controller.setFornecedorSelecionado(fornecedorSelecionado);
 
             stage.showAndWait();
-
 
             int selectedIndex = tableViewFornecedores.getSelectionModel().getSelectedIndex();
             fornecedores.set(selectedIndex, fornecedorSelecionado);
@@ -129,6 +133,13 @@ public class MenuFuncoesFornecedor {
     }
 
 
+    /**
+     * Manipula o evento de clique no botão "Eliminar". Abre uma caixa de diálogo de confirmação antes de
+     * eliminar um fornecedor selecionado da tabela. Remove o fornecedor e o utilizador associado se a
+     * confirmação for positiva.
+     *
+     * @throws IOException Se ocorrer um erro durante a remoção do fornecedor ou utilizador.
+     */
     @FXML
     void clickEliminar() throws IOException {
         Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
@@ -141,7 +152,7 @@ public class MenuFuncoesFornecedor {
 
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    if (lerEncomenda.podeEliminarFornecedor(baseDados, fornecedorSelecionado.getIdUtilizador())==true){
+                    if (lerEncomenda.podeEliminarFornecedor(baseDados, fornecedorSelecionado.getIdUtilizador()) == true) {
                         try {
 
                             boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados, fornecedorSelecionado.getId());
@@ -170,8 +181,7 @@ public class MenuFuncoesFornecedor {
                         }
 
 
-
-                    }else{
+                    } else {
                         try {
                             Mensagens.Erro("Erro!", "Fornecedor não pode ser eliminado por ter encomendas");
                         } catch (IOException e) {
@@ -183,17 +193,23 @@ public class MenuFuncoesFornecedor {
         }
     }
 
-        @FXML
-        void clickNovo () throws IOException {
-            Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/dialogAdicionarFornecedor.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setTitle("ADICIONAR FORNECEDOR!");
-            stage.setScene(scene);
-            stage.showAndWait();
+    /**
+     * Manipula o evento de clique no botão "Novo". Abre uma janela de diálogo para adicionar um novo fornecedor,
+     * atualizando a tabela após o processo de adição.
+     *
+     * @throws IOException Se ocorrer um erro durante o carregamento da interface gráfica de adição.
+     */
+    @FXML
+    void clickNovo() throws IOException {
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/dialogAdicionarFornecedor.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("ADICIONAR FORNECEDOR!");
+        stage.setScene(scene);
+        stage.showAndWait();
 
-            DataSingleton data = DataSingleton.getInstance();
-            fornecedores.add(data.getDataFornecedor());
+        DataSingleton data = DataSingleton.getInstance();
+        fornecedores.add(data.getDataFornecedor());
 
-        }
     }
+}
