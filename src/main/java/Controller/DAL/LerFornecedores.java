@@ -34,7 +34,7 @@ public class LerFornecedores {
 
 
             while (resultado.next()) { //Ler os forncedores da base de dados, um a um e cria um objeto novo
-               fornecedor = criarObjetoFornecedor(resultado);
+                fornecedor = criarObjetoFornecedor(resultado);
 
                 fornecedores.add(fornecedor);
 
@@ -53,8 +53,8 @@ public class LerFornecedores {
         int idUtilizador = dados.getInt("Id_Utilizador");
 
 
-        Pais pais = lerPaises.obterPaisPorId(baseDados,idPais);
-        UtilizadorFornecedor utilizador = lerUtilizadores.obterUtilizadorPorIdFornecedor(baseDados,idUtilizador);
+        Pais pais = lerPaises.obterPaisPorId(baseDados, idPais);
+        UtilizadorFornecedor utilizador = lerUtilizadores.obterUtilizadorPorIdFornecedor(baseDados, idUtilizador);
 
         return new Fornecedor(
                 dados.getInt("id"),
@@ -80,19 +80,18 @@ public class LerFornecedores {
 
             }
             baseDados.Desligar();
-    } catch (SQLException e) {
+        } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
         }
         return fornecedor;
     }
 
 
-
     /**
      * Adiciona um fornecedor à base de dados, com informações de país e utilizador, e retorna o fornecedor adicionado.
      *
      * @param fornecedor O fornecedor a ser adicionado à base de dados.
-     * @param pais O país associado ao fornecedor.
+     * @param pais       O país associado ao fornecedor.
      * @param utilizador O utilizador associado ao fornecedor.
      * @return O fornecedor adicionado à base de dados, ou null se ocorrer um erro durante a operação.
      * @throws IOException Se ocorrer um erro durante a operação.
@@ -154,7 +153,7 @@ public class LerFornecedores {
 
         } catch (Exception e) {
             try {
-                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
+                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados! Ou fornecedor tem encomendas");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -192,12 +191,11 @@ public class LerFornecedores {
                 "WHERE id_util = " + fornecedor.getIdUtilizador().getId();
 
         try {
-            
+
             boolean sucesso1 = baseDados.Executar(query);
             boolean sucesso2 = baseDados.Executar(query2);
-            System.out.println( "Query 1 "+ query);
-            System.out.println("Query2"+ query2);
-
+            System.out.println("Query 1 " + query);
+            System.out.println("Query2" + query2);
 
 
             baseDados.Desligar();
@@ -281,4 +279,3 @@ public class LerFornecedores {
     }
 
 }
-

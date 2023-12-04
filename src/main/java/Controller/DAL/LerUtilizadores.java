@@ -6,12 +6,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-
-import static Model.TipoUtilizador.Operador;
 
 
 public class LerUtilizadores {
@@ -186,6 +182,7 @@ public class LerUtilizadores {
 
     }
 
+
     /**
      * Obtém um utilizador fornecedor a partir da base de dados com base no seu ID e retorna o utilizador encontrado.
      *
@@ -223,6 +220,8 @@ public class LerUtilizadores {
         return util; // Retorna o utilizador fornecedor encontrado ou null em caso de erro ou se não for encontrado.
     }
 
+
+
     public boolean removerOperadorDaBaseDeDados(BaseDados baseDados, int utilizadorID) throws SQLException {
         try {
             baseDados.Ligar();
@@ -256,7 +255,7 @@ public class LerUtilizadores {
      * @return true se a adição for bem-sucedida, false em caso de erro.
      * @throws IOException se ocorrer um erro de entrada/saída durante a execução.
      */
-    public boolean adicionarOperadorBaseDados(BaseDados baseDados, String username, String password) throws IOException {
+    public Utilizador adicionarOperadorBaseDados(BaseDados baseDados, String username, String password, Utilizador utilizador) throws IOException {
         try {
 
             baseDados.Ligar();
@@ -267,12 +266,13 @@ public class LerUtilizadores {
 
             baseDados.Desligar();
 
-            return true;
+
+            return utilizador;
 
         }catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
         }
-        return false;
+        return null;
     }
 
     /**

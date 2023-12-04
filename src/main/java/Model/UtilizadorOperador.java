@@ -8,6 +8,7 @@ public class UtilizadorOperador extends Utilizador {
     public TipoUtilizador getTipo() {
         return TipoUtilizador.Operador;
     }
+
 }
 
 
