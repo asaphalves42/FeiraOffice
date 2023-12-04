@@ -73,7 +73,7 @@ public class AprovarStock {
     public void tabelaEncomendasPendentes() throws IOException {
 
         try {
-            encomendas.addAll(lerEncomenda.lerEncomendaDaBaseDeDados(baseDados));
+            encomendas.addAll(lerEncomenda.lerEncomendaDaBaseDeDadosPendentes(baseDados));
 
             if (!encomendas.isEmpty()) {
                 // Defina as colunas da tabela
