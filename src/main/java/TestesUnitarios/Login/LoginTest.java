@@ -6,6 +6,7 @@ import Model.UtilizadorAdm;
 import Model.UtilizadorFornecedor;
 import Model.UtilizadorOperador;
 import Utilidades.BaseDados;
+import Utilidades.Encriptacao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.junit.Before;
@@ -16,63 +17,73 @@ import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Testes unitários para a funcionalidade de login.
+ */
 public class LoginTest {
 
     private LerUtilizadores lerUtilizadores;
+    private BaseDados baseDados = new BaseDados();
 
-    BaseDados baseDados = new BaseDados();
+    private String emailadmin = "admin@admin.pt";
+    private String passwordadmin = "123";
 
-    String emailadmin = "admin@admin.pt";
-    String passwordadmin = "passwordadmin";
+    private String emailoperador = "teste@operador.pt";
+    private String passwordoperador = "123";
 
-    String emailoperador = "teste@operador.pt";
-    String passwordoperador = "123";
+    private String emailfornecedor = "f1@f1.pt";
+    private String passwordfornecedor = "123";
 
-    String emailfornecedor =  "emailfornecedor";
-    String passwordfornecedor = "passwordfornecedor";
+    private Encriptacao encript = new Encriptacao();
 
-
-
-
+    /**
+     * Configuração inicial para os testes.
+     */
     @Before
     public void setUp() {
-        // Inicializar o LerUtilizadores sem usar StubUtilizadorRepository
+        // Inicializar o LerUtilizadores
         lerUtilizadores = new LerUtilizadores();
     }
 
-
-
+    /**
+     * Testa a verificação de login para um Utilizador Administrador.
+     *
+     * @throws SQLException Se ocorrer um erro ao executar o teste.
+     */
     @Test
     public void testVerificarLoginUtilizadorAdm() throws SQLException {
-
-
         // Executar o método a ser testado
-        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados,emailadmin, passwordadmin);
+        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados, emailadmin, passwordadmin);
 
         // Verificar se o método retornou o utilizador esperado
         assertEquals(UtilizadorAdm.class, utilizador.getClass());
     }
 
+    /**
+     * Testa a verificação de login para um Utilizador Fornecedor.
+     *
+     * @throws SQLException Se ocorrer um erro ao executar o teste.
+     */
     @Test
     public void testVerificarLoginUtilizadorFornecedor() throws SQLException {
-        // Adicionar lógica de simulação de dados diretamente no LerUtilizadores
-
-
         // Executar o método a ser testado
-        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados,emailfornecedor, passwordfornecedor);
+        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados, emailfornecedor, passwordfornecedor);
 
         // Verificar se o método retornou o utilizador esperado
         assertEquals(UtilizadorFornecedor.class, utilizador.getClass());
     }
 
+    /**
+     * Testa a verificação de login para um Utilizador Operador.
+     *
+     * @throws SQLException Se ocorrer um erro ao executar o teste.
+     */
     @Test
     public void testVerificarLoginOperador() throws SQLException {
         // Executar o método a ser testado
-        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados,emailoperador, passwordoperador);
+        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados, emailoperador, passwordoperador);
 
         // Verificar se o método retornou o utilizador esperado
         assertEquals(UtilizadorOperador.class, utilizador.getClass());
     }
-
-
 }

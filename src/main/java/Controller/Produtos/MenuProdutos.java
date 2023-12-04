@@ -36,7 +36,11 @@ public class MenuProdutos {
     ObservableList<Produto> produtos = FXCollections.observableArrayList();
     ObservableList<Produto> produtos2 = FXCollections.observableArrayList();
 
-
+    /**
+     * Inicializa o controller e configura as tabelas de produtos.
+     *
+     * @throws IOException Se houver um erro ao ler os dados.
+     */
 
     public void initialize() throws IOException {
 
@@ -49,7 +53,11 @@ public class MenuProdutos {
         tabela2();
 
     }
-
+    /**
+     * Configura a tabela de produtos na interface do utilizador.
+     *
+     * @throws IOException Se houver um erro ao ler os dados.
+     */
     public void tabelaProdutos() throws IOException {
 
         LerProdutos lerProdutos = new LerProdutos();
@@ -101,7 +109,11 @@ public class MenuProdutos {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
         }
     }
-
+    /**
+     * Configura a segunda tabela de produtos na interface do utilizador, incluindo informações de fornecedores.
+     *
+     * @throws IOException Se houver um erro ao ler os dados.
+     */
     public void tabela2() throws IOException {
         LerProdutos lerProdutos = new LerProdutos();
         LerFornecedores lerFornecedor = new LerFornecedores();

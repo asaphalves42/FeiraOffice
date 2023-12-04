@@ -22,6 +22,9 @@ import static org.mockito.Mockito.mock;
 
 public class LerFornecedoresTest {
 
+    String emailfornecedor = "fornecedor222@teste.pt";
+    String password = "123";
+
     private BaseDados baseDados;
 
     @Before
@@ -41,7 +44,7 @@ public class LerFornecedoresTest {
     @Test
     public void testAdicionarFornecedorBaseDeDados() throws IOException, SQLException {
 
-        String   password = "123";
+
         String encryptedPassword = encript.MD5(password);
 
         // Criar instância do LerFornecedores usando a conexão da base de dados
@@ -49,7 +52,7 @@ public class LerFornecedoresTest {
 
         // Criar test data
         Pais pais = new Pais(1, "Brasil");
-        UtilizadorFornecedor utilizador = new UtilizadorFornecedor(1, "fornecedor222@teste.pt", encryptedPassword);
+        UtilizadorFornecedor utilizador = new UtilizadorFornecedor(1, emailfornecedor, encryptedPassword);
         Fornecedor fornecedor = new Fornecedor(1, "NomeFornecedor", "Externo123", "Rua Principal", "Rua Secundária", "Feira", "3885-261", pais, utilizador);
 
         // Tentativa de adicionar um fornecedor ao banco de dados
@@ -68,7 +71,8 @@ public class LerFornecedoresTest {
 
         // Criar test data
         Pais pais = new Pais(1, "Brasil");
-        UtilizadorFornecedor utilizador = new UtilizadorFornecedor(1, "fornecedor@teste.pt", "123");
+        String encryptedPassword = encript.MD5(password);
+        UtilizadorFornecedor utilizador = new UtilizadorFornecedor(1, emailfornecedor, encryptedPassword);
         Fornecedor fornecedor = new Fornecedor(1, "TesteFornecedor", "Externo123", "Rua Principal", "Rua Secundária", "Feira", "3885-261", pais, utilizador);
 
         // Tentativa de adicionar um fornecedor ao banco de dados
@@ -81,9 +85,10 @@ public class LerFornecedoresTest {
     @Test
     public void testAdicionarEExcluirFornecedorBaseDeDados() throws IOException, SQLException {
         // Criar test data
+        String encryptedPassword = encript.MD5(password);
         LerFornecedores lerFornecedores = new LerFornecedores();
         Pais pais = new Pais(1, "Brasil");
-        UtilizadorFornecedor utilizador = new UtilizadorFornecedor(1, "fornecedor222@teste.pt", "123");
+        UtilizadorFornecedor utilizador = new UtilizadorFornecedor(1, emailfornecedor, encryptedPassword);
         Fornecedor fornecedor = new Fornecedor(1, "NomeFornecedor", "Externo123", "Rua Principal", "Rua Secundária", "Feira", "3885-261", pais, utilizador);
         LerUtilizadores lerUtilizadores = new LerUtilizadores();
 
