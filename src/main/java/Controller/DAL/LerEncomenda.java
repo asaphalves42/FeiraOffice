@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
 /**
  * A classe LerEncomenda é responsável por ler e manipular dados relacionados a encomendas,
  * linhas de encomendas e operações associadas à base de dados.

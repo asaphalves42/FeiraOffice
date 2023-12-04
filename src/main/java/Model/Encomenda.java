@@ -7,6 +7,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Atributos da encomenda, construtores, getters e setters.
+ */
 public class Encomenda {
     private int id;
 

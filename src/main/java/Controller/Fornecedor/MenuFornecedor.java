@@ -17,6 +17,9 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Classe que contém as funções de um fornecedor, que inclui fazer o upload de um arquivo XML.
+ */
 public class MenuFornecedor {
 
     private Utilizador utilizador;

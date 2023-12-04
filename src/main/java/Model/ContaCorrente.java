@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * Classe com atributos, getters e setters referentes a conta corrente.
+ */
 public class ContaCorrente {
 
     private int id;

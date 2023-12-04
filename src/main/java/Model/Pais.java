@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * Classe com atributos, getters e setters referentes a país.
+ */
 public class Pais {
     private int id;
     private String nome;

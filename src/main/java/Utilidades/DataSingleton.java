@@ -4,6 +4,10 @@ import Model.Encomenda;
 import Model.Fornecedor;
 import Model.UtilizadorOperador;
 
+
+/**
+ * Classe com dados e contrutores para o método DataSingleton.
+ */
 public class DataSingleton {
 
     private static DataSingleton instance = null;

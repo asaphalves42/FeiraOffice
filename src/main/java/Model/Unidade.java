@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * Classe com atributos, getters e setters referentes as unidades.
+ */
 public class Unidade {
     private int id;
     private String descricao;

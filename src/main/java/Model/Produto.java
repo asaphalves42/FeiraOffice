@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * Classe com atributos, getters e setters referentes ao produto.
+ */
 public class Produto {
     private String id;
     private Fornecedor fornecedor;

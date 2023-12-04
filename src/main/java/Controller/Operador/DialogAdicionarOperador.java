@@ -14,6 +14,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Classe que recebe os dados novos de um operador e os adiciona na base de dados.
+ */
 public class DialogAdicionarOperador {
 
     BaseDados baseDados = new BaseDados();

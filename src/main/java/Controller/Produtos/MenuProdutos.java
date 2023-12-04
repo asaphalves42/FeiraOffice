@@ -20,7 +20,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 
-
+/**
+ * Classe que mostra os produtos disponíveis e o stock da empresa.
+ */
 public class MenuProdutos {
     BaseDados baseDados = new BaseDados();
     LerStock lerStock = new LerStock();

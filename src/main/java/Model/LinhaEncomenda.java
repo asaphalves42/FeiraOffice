@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * Classe com atributos, getters e setters referentes as linhas da encomenda.
+ */
 public class LinhaEncomenda {
 
     private int id;

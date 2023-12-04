@@ -15,6 +15,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 
+/**
+ *  Menu com as funções da conta corrente, ler saldo em dívida.
+ */
 public class MenuContaCorrente {
 
     BaseDados baseDados = new BaseDados();

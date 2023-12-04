@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Classe com funções que leem tabelas de encomendas, linhas das encomendas e aprovam ou recusam as encomendas.
+ */
 public class AprovarStock {
 
     BaseDados baseDados = new BaseDados();

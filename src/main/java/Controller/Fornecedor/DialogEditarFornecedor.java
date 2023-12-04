@@ -18,6 +18,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Classe que recebe os dados de um novo fornecedor, e edita os mesmos alterando assim na base de dados.
+ */
 public class DialogEditarFornecedor {
 
     @FXML

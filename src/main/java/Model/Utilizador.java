@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * Classe com atributos, getters e setters referentes ao utilizador.
+ */
 public abstract class Utilizador {
 
     public Utilizador(int id, String email, String password, TipoUtilizador tipo) {

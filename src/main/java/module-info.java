@@ -57,8 +57,6 @@ module com.example.lp3_g2_feira_office_ {
     opens Controller.Operador to javafx.fxml;
     exports Controller.Produtos;
     opens Controller.Produtos to javafx.fxml;
-    exports Controller.MensagensDeErro;
-    opens Controller.MensagensDeErro to javafx.fxml;
     exports Controller.Encomenda;
     opens Controller.Encomenda to javafx.fxml;
 }

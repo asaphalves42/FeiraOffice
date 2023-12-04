@@ -6,6 +6,9 @@ import jakarta.mail.internet.MimeMessage;
 
 import java.util.Properties;
 
+/**
+ * Classe com funções que enviam um email automático.
+ */
 public class ControllerEmail {
 
     /**

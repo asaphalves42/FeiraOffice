@@ -1,5 +1,8 @@
 package Utilidades;
 
+/**
+ * Classe com método que encripta as passwords em MD5.
+ */
 public class Encriptacao {
     //Função retirada da internet, https://stackoverflow.com/questions/415953/how-can-i-generate-an-md5-hash-in-java
 

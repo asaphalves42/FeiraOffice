@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * Classe com atributos, getters e setters referentes ao stock.
+ */
 public class Stock {
     private String idProduto;
     private int idUnidade;

@@ -15,6 +15,9 @@ import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Classe que lê os dados de um ficheiro XML e cria um ficheiro .txt com os mesmos.
+ */
 public class LerTXT {
 
     /**

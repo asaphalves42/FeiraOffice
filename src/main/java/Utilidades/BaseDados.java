@@ -2,6 +2,9 @@ package Utilidades;
 
 import java.sql.*;
 
+/**
+ * Métodos de conexão com a base de Dados SQL
+ */
 public class BaseDados {
     // credenciais de acesso ao SQL SERVER
     String url = "jdbc:sqlserver://CTESPBD.DEI.ISEP.IPP.PT;databasename=2023_LP3_G2_FEIRA;encrypt=true;trustServerCertificate=true;";
