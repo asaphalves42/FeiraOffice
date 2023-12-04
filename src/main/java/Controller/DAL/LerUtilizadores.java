@@ -237,7 +237,7 @@ public class LerUtilizadores {
 
         } catch (Exception e) {
             try {
-                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
+                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados! ");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -296,7 +296,7 @@ public class LerUtilizadores {
             return true;
 
         }catch (Exception e) {
-            Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
+            Mensagens.Erro("Erro na base de dados!", "Erro na remoção na base de dados ou utilizador tem encomendas!");
         }
         return false;
     }
@@ -304,7 +304,6 @@ public class LerUtilizadores {
         try {
 
             baseDados.Ligar();
-
 
             // Construir a query UPDATE
             String query = "UPDATE Utilizador SET username = '" + novoEmail + "', password = '" + encryptedNovaPassword + "' WHERE id_util = " + id + " AND id_role = 2";

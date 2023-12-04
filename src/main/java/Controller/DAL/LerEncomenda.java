@@ -395,6 +395,35 @@ public class LerEncomenda {
         }
     }
 
+    public boolean podeEliminarFornecedor(BaseDados baseDados,Utilizador fornecedor) {
+        try {
+            baseDados.Ligar();
+
+            try (ResultSet resultado = baseDados.Selecao("SELECT Id_Fornecedor FROM Encomenda");
+                 ResultSet resultado2 = baseDados.Selecao("SELECT Id_Externo FROM Fornecedor WHERE Id_Utilizador=" +fornecedor.getId())){
+
+                while (resultado.next()) {
+                    String encomendaIdExterno = resultado.getString("Id_Fornecedor");
+
+                    while (resultado2.next()) {
+                        String idExternoFornecedor = resultado2.getString("Id_Externo");
+
+                        if (encomendaIdExterno.equals(idExternoFornecedor)) {
+                            // Se alguma EncomendaIdExterno == IdExternoFornecedor, impede a eliminação
+                            return false;
+                        }
+                    }
+                }return true;
+            }
+
+            // Se não encontra igual, a eliminação pode proceder
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            baseDados.Desligar();
+        }
+    }
 }
+
 
 

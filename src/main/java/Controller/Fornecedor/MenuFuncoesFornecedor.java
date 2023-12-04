@@ -183,55 +183,6 @@ public class MenuFuncoesFornecedor {
         }
     }
 
-        // }
-    /*
-@FXML
-
-void clickEliminar() {
-    Fornecedor fornecedorSelecionado = tableViewFornecedores.getSelectionModel().getSelectedItem();
-    int id_util= fornecedorSelecionado.getIdUtilizador().getId();
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmação");
-        alert.setHeaderText("Eliminar fornecedor");
-        alert.setContentText("Tem certeza que deseja eliminar o fornecedor selecionado?");
-
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                if (!lerEncomenda.podeEliminarFornecedor(id_util)) {
-                    try {
-                        boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados, fornecedorSelecionado.getId());
-
-                        if (sucesso) {
-                            // Remover o fornecedor da lista
-                            fornecedores.remove(fornecedorSelecionado);
-
-                            // Remover o utilizador associado ao fornecedor
-                            LerUtilizadores lerUtilizadores = new LerUtilizadores();
-                            boolean remover = lerUtilizadores.removerUtilizador(baseDados, fornecedorSelecionado.getIdUtilizador());
-
-                            if (remover) {
-                                // Remover o utilizador da lista
-                                // Note: Make sure fornecedores is a list of users
-                                fornecedores.remove(fornecedorSelecionado.getIdUtilizador());
-                            } else {
-                                // Se a remoção do utilizador falhar, adicione o fornecedor de volta à lista
-                                fornecedores.add(fornecedorSelecionado);
-                            }
-                        }
-
-                    } catch (SQLException e) {
-                        // Handle SQLException more gracefully
-                        e.printStackTrace(); // Consider logging the exception
-                    } catch (IOException e) {
-                        // Handle IOException more gracefully
-                        throw new RuntimeException(e); // Consider logging the exception
-                    }
-                }
-            }
-        });
-    }
-*/
-
         @FXML
         void clickNovo () throws IOException {
             Stage stage = new Stage();
