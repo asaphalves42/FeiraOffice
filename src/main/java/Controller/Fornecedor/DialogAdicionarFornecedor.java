@@ -3,6 +3,7 @@ package Controller.Fornecedor;
 import Controller.DAL.LerFornecedores;
 import Controller.DAL.LerPaises;
 import Controller.DAL.LerUtilizadores;
+import Controller.Email.ControllerEmail;
 import Model.*;
 import Utilidades.*;
 import Utilidades.Encriptacao;
@@ -135,6 +136,8 @@ public class DialogAdicionarFornecedor {
             currentStage.close();
 
             Mensagens.Informacao("Novo fornecedor", "Novo fornecedor inserido com sucesso!");
+            ControllerEmail controllerEmail = new ControllerEmail();
+            controllerEmail.enviarEmail(email, password);
 
 
         } catch (Exception e) {

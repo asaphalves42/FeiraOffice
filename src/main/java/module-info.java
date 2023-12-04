@@ -32,6 +32,8 @@ module com.example.lp3_g2_feira_office_ {
     requires kernel;
     requires layout;
 
+    requires jakarta.mail;
+
 
     exports Model;
     opens Model to javafx.base;
