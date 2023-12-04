@@ -39,4 +39,5 @@ build/
 
 /out
 .idea/
-.idea
+*.idea
+*.jar
