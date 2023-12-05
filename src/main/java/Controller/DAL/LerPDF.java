@@ -16,6 +16,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+/**
+ * Classe que lê os dados de um ficheiro XML e cria um PDF com os mesmos.
+ */
 public class LerPDF {
 
     /**

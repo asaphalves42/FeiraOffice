@@ -3,6 +3,9 @@ package Model;
 import eu.hansolo.toolbox.properties.StringProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Classe com atributos, getters e setters referentes ao fornecedor.
+ */
 public class Fornecedor {
 
     private UtilizadorFornecedor utilizador;

@@ -20,6 +20,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+/**
+ * Classe de testes unitários referentes aos fornecedores.
+ */
 public class LerFornecedoresTest {
 
     String emailfornecedor = "fornecedor222@teste.pt";

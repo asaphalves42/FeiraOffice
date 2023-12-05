@@ -9,6 +9,9 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 
+/**
+ * Classe com funções de acesso restrito ao operador, aprovar uma encomenda, acesso às faturas, fornecedores e estatísticas.
+ */
 public class MenuOperador {
 
     private Utilizador utilizador;

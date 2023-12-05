@@ -22,6 +22,9 @@ import java.sql.SQLException;
 import static Utilidades.Mensagens.Erro;
 
 
+/**
+ * Classe que contém as funções para lidar com um fornecedor, adicionar, eliminar e mostra os fornecedores do sistema.
+ */
 public class MenuFuncoesFornecedor {
 
     BaseDados baseDados = new BaseDados();

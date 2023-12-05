@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Classe que gera alertas de mensagens editáveis.
+ */
 public class Mensagens {
 
     /**

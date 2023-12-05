@@ -8,6 +8,9 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 
+/**
+ * Menu com as opções do administrador
+ */
 public class MenuAdm {
 
     private Utilizador utilizador;

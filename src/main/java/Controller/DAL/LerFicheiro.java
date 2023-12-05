@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
+/**
+ * Classe com função de importar ficheiro XML, com leitura e validação de dados.
+ **/
 public class LerFicheiro {
-
     private final JAXBContext jaxbContext;
     private Utilizador utilizador;
-
     BaseDados baseDados = new BaseDados();
     LerUnidade lerUnidade = new LerUnidade();
     LerPaises lerPaises = new LerPaises();
@@ -37,11 +37,18 @@ public class LerFicheiro {
     LerPaises pais = new LerPaises();
     LerFornecedores fornecedor = new LerFornecedores();
 
-    public void iniciaData(Utilizador utilizador) throws IOException {
+    /**
+     * Constructor que obtem o utilizador que está logado no sistema.
+     * @param utilizador utilizador logado
+     */
+    public void iniciaData(Utilizador utilizador) {
         this.utilizador = utilizador;
 
     }
 
+    /**
+     * Construtor do JAXB para criar um contexto.
+     */
     public LerFicheiro() {
         try {
             // Create the JAXB context for the generated class

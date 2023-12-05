@@ -1,5 +1,8 @@
 package Utilidades;
 
+/**
+ * Classe que valida os emails para o formato correto.
+ */
 public class ValidarEmail {
 
     /**

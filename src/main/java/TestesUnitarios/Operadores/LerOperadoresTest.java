@@ -16,6 +16,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+/**
+ * Classe de testes unitários referente aos operadores.
+ */
 public class LerOperadoresTest {
     private BaseDados baseDados;
     Encriptacao encript = new Encriptacao();

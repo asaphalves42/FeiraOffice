@@ -26,6 +26,9 @@ import java.util.ResourceBundle;
 
 import static Model.TipoUtilizador.Operador;
 
+/**
+ * Classe que mostra os operadores existentes no sistema e contém funções de manipulação dos dados, adicionar, editar e eliminar.
+ */
 public class MenuFuncOperador{
     LerUtilizadores lerUtilizadoresOperador = new LerUtilizadores();
     BaseDados baseDados = new BaseDados();

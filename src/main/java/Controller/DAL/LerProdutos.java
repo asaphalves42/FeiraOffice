@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Classe com funções de leitura e acesso de dados referentes aos produtos.
+ */
 public class LerProdutos {
     BaseDados baseDados = new BaseDados();
     LerFornecedores lerFornecedores = new LerFornecedores();

@@ -21,6 +21,9 @@ import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * Classe que lida com os dados de acesso, email e password, e faz o correto acesso ao sistema.
+ */
 public class Login {
 
     BaseDados baseDados = new BaseDados();

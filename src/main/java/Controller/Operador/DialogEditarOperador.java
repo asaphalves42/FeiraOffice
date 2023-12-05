@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Classe que seleciona um operador existente e edita os dados do mesmo, adicionando na base de dados.
+ */
 public class DialogEditarOperador {
 
     BaseDados baseDados = new BaseDados();

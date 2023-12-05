@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * Enumeração com os tipos de utilizadores.
+ */
 public enum TipoUtilizador {
     Operador(2),
     Administrador(1),

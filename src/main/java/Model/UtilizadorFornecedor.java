@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * Classe filha do utilizador, referente ao utilizador fornecedor.
+ */
 public class UtilizadorFornecedor extends Utilizador {
     private Fornecedor fornecedor;  // Adicionando um atributo para armazenar o fornecedor associado
 

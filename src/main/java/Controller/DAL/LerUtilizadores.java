@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+/**
+ * Classe com funções de leitura e acesso de dados referentes aos utilizadores.
+ */
 public class LerUtilizadores {
     BaseDados baseDados = new BaseDados();
     /**

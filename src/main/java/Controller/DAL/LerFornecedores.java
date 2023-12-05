@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe com funções de acesso a base de dados e leitura, referentes aos fornecedores.
+ */
 public class LerFornecedores {
     BaseDados baseDados = new BaseDados();
     LerPaises lerPaises = new LerPaises();

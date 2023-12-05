@@ -21,6 +21,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 
+/**
+ * Classe que recebe os dados de um novo fornecedor, e adiciona os mesmos na base de dados.
+ */
 public class DialogAdicionarFornecedor {
 
     private final DataSingleton dadosCompartilhados =  DataSingleton.getInstance();
@@ -60,6 +63,10 @@ public class DialogAdicionarFornecedor {
     @FXML
     private PasswordField textoPassword;
 
+    /**
+     * Inicia os dados assim que classe é chamada.
+     * @throws IOException lança uma exception caso um erro aconteça.
+     */
     public void initialize() throws IOException {
         ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises(baseDados);
         comboBoxPais.setItems(listaDePaises);

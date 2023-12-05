@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Classe com funções de leitura e acesso de dados referentes as unidades de medida.
+ */
 public class LerUnidade {
 
     /**

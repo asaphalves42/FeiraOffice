@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
 /**
  * A classe LerEncomenda é responsável por ler e manipular dados relacionados a encomendas,
  * linhas de encomendas e operações associadas à base de dados.
@@ -110,13 +111,43 @@ public class LerEncomenda {
     }
 
     /**
+     * Lê todas as encomendas da base de dados.
+     *
+     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
+     * @return Uma lista observável de objetos Encomenda .
+     * @throws IOException Se ocorrer um erro durante a leitura.
+     */
+    public ObservableList<Encomenda> lerEncomendaDaBaseDeDados(BaseDados baseDados) throws IOException {
+        ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
+
+        try {
+
+            baseDados.Ligar();
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda");
+
+            while (resultado.next()) {
+                Encomenda encomenda = criarObjetoEncomenda(resultado);
+                encomendas.add(encomenda);
+            }
+
+            baseDados.Desligar();
+
+            return encomendas;
+
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
+            return null; // ou lançar uma exceção, dependendo do comportamento desejado
+        }
+    }
+
+    /**
      * Lê as encomendas da base de dados que estão no estado indicado.
      *
      * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
      * @return Uma lista observável de objetos Encomenda correspondentes ao estado indicado.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public ObservableList<Encomenda> lerEncomendaDaBaseDeDados(BaseDados baseDados) throws IOException {
+    public ObservableList<Encomenda> lerEncomendaDaBaseDeDadosPendentes(BaseDados baseDados) throws IOException {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
