@@ -1,30 +1,21 @@
 package Controller.Operador;
 
-import Controller.DAL.LerFornecedores;
-import Controller.DAL.LerUtilizadores;
-import Model.Fornecedor;
+import DAL.LerUtilizadores;
 import Model.Utilizador;
-import Model.UtilizadorOperador;
 import Utilidades.BaseDados;
 import Utilidades.DataSingleton;
-import Utilidades.Mensagens;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
-
-import static Model.TipoUtilizador.Operador;
 
 /**
  * Classe que mostra os operadores existentes no sistema e contém funções de manipulação dos dados, adicionar, editar e eliminar.

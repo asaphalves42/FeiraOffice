@@ -1,4 +1,4 @@
-package Controller.DAL;
+package DAL;
 
 import Model.Pais;
 import Utilidades.BaseDados;

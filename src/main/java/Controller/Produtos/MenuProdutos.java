@@ -1,11 +1,10 @@
 package Controller.Produtos;
 
-import Controller.DAL.LerFornecedores;
-import Controller.DAL.LerProdutos;
+import DAL.LerFornecedores;
+import DAL.LerProdutos;
 
-import Controller.DAL.LerStock;
+import DAL.LerStock;
 
-import Model.Produto;
 import Model.Produto;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;

@@ -1,13 +1,12 @@
 package Controller.Fornecedor;
 
-import Controller.DAL.LerFornecedores;
-import Controller.DAL.LerPaises;
-import Controller.DAL.LerUtilizadores;
+import DAL.LerFornecedores;
+import DAL.LerPaises;
+import DAL.LerUtilizadores;
 import Controller.Email.ControllerEmail;
 import Model.*;
 import Utilidades.*;
 import Utilidades.Encriptacao;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

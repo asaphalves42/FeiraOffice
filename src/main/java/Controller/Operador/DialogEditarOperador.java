@@ -1,6 +1,6 @@
 package Controller.Operador;
 
-import Controller.DAL.LerUtilizadores;
+import DAL.LerUtilizadores;
 import Model.Utilizador;
 import Utilidades.BaseDados;
 import Utilidades.Encriptacao;
@@ -12,12 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.fxml.Initializable;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 /**
  * Classe que seleciona um operador existente e edita os dados do mesmo, adicionando na base de dados.

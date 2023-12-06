@@ -1,6 +1,10 @@
-package Controller.DAL;
+package BL;
 
 
+import DAL.LerEncomenda;
+import DAL.LerFornecedores;
+import DAL.LerPaises;
+import DAL.LerUnidade;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;

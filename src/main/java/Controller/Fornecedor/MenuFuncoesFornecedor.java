@@ -1,8 +1,8 @@
 package Controller.Fornecedor;
 
-import Controller.DAL.LerFornecedores;
-import Controller.DAL.LerEncomenda;
-import Controller.DAL.LerUtilizadores;
+import DAL.LerFornecedores;
+import DAL.LerEncomenda;
+import DAL.LerUtilizadores;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.DataSingleton;

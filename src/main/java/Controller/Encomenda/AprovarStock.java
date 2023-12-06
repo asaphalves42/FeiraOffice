@@ -1,9 +1,8 @@
 package Controller.Encomenda;
 
-import Controller.DAL.LerEncomenda;
+import DAL.LerEncomenda;
 import Model.*;
 import Utilidades.BaseDados;
-import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;

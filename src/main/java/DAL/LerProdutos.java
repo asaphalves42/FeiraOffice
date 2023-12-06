@@ -1,6 +1,7 @@
-package Controller.DAL;
+package DAL;
 
-import Model.Encomenda;
+import DAL.LerFornecedores;
+import DAL.LerUnidade;
 import Model.Fornecedor;
 import Model.Produto;
 import Model.Unidade;

@@ -1,5 +1,7 @@
-package Controller.DAL;
+package DAL;
 
+import DAL.LerFornecedores;
+import DAL.LerPaises;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;

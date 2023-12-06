@@ -1,7 +1,7 @@
 package TestesUnitarios.Fornecedores;
 
-import Controller.DAL.LerFornecedores;
-import Controller.DAL.LerUtilizadores;
+import DAL.LerFornecedores;
+import DAL.LerUtilizadores;
 import Model.Fornecedor;
 import Model.Pais;
 import Model.UtilizadorFornecedor;

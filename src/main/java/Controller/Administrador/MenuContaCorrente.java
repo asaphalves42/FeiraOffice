@@ -1,6 +1,6 @@
 package Controller.Administrador;
 
-import Controller.DAL.LerFornecedores;
+import DAL.LerFornecedores;
 import Model.ContaCorrente;
 import Model.Fornecedor;
 import Utilidades.BaseDados;

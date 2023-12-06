@@ -1,7 +1,7 @@
 package Controller.Login;
 
 import Controller.Administrador.MenuAdm;
-import Controller.DAL.LerUtilizadores;
+import DAL.LerUtilizadores;
 import Controller.Fornecedor.MenuFornecedor;
 import Controller.Operador.MenuOperador;
 import Model.TipoUtilizador;
@@ -17,7 +17,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
 

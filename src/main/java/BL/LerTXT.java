@@ -1,4 +1,4 @@
-package Controller.DAL;
+package BL;
 
 import Utilidades.Mensagens;
 import org.w3c.dom.Document;

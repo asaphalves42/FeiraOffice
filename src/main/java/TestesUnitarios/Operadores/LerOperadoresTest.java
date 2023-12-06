@@ -1,6 +1,6 @@
 package TestesUnitarios.Operadores;
 
-import Controller.DAL.LerUtilizadores;
+import DAL.LerUtilizadores;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Encriptacao;
