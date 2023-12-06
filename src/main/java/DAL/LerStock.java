@@ -1,4 +1,4 @@
-package Controller.DAL;
+package DAL;
 
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;

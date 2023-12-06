@@ -1,9 +1,8 @@
 package Controller.Fornecedor;
 
-import Controller.DAL.LerFicheiro;
-import Controller.DAL.LerFornecedores;
-import Controller.DAL.LerPDF;
-import Controller.DAL.LerTXT;
+import BL.LerFicheiro;
+import DAL.LerFornecedores;
+import BL.LerPDF;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;

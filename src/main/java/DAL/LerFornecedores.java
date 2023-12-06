@@ -1,4 +1,4 @@
-package Controller.DAL;
+package DAL;
 
 import Model.*;
 import Utilidades.BaseDados;
@@ -9,8 +9,6 @@ import javafx.collections.ObservableList;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Classe com funções de acesso a base de dados e leitura, referentes aos fornecedores.
@@ -210,8 +208,6 @@ public class LerFornecedores {
                 "WHERE id_util = " + fornecedor.getIdUtilizador().getId();
 
         try {
-
-
 
             boolean sucesso1 = baseDados.Executar(query);
             boolean sucesso2 = baseDados.Executar(query2);

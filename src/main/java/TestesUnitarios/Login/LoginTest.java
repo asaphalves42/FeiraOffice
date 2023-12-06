@@ -1,18 +1,15 @@
 package TestesUnitarios.Login;
 
-import Controller.DAL.LerUtilizadores;
+import DAL.LerUtilizadores;
 import Model.Utilizador;
 import Model.UtilizadorAdm;
 import Model.UtilizadorFornecedor;
 import Model.UtilizadorOperador;
 import Utilidades.BaseDados;
 import Utilidades.Encriptacao;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;

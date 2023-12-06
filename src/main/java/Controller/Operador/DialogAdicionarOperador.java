@@ -1,6 +1,6 @@
 package Controller.Operador;
 
-import Controller.DAL.LerUtilizadores;
+import DAL.LerUtilizadores;
 import Model.Utilizador;
 import Model.UtilizadorOperador;
 import Utilidades.*;

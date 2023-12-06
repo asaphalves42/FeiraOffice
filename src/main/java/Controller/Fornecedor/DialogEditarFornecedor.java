@@ -1,7 +1,7 @@
 package Controller.Fornecedor;
 
-import Controller.DAL.LerFornecedores;
-import Controller.DAL.LerPaises;
+import DAL.LerFornecedores;
+import DAL.LerPaises;
 import Controller.Email.ControllerEmail;
 import Model.Fornecedor;
 import Model.Pais;
