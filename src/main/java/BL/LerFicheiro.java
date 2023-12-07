@@ -15,8 +15,14 @@ import com.example.lp3_g2_feira_office_2023.UOM;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.util.JAXBSource;
+import org.xml.sax.SAXException;
 
 
+import javax.xml.XMLConstants;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.File;
 
 import java.io.IOException;
@@ -81,7 +87,20 @@ public class LerFicheiro {
 
             // Criar um Unmarshaller
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+            //Validação do schema
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = schemaFactory.newSchema(new File("src/main/xsd/SchemaFeiraOfficeUp.xsd"));
+
+            unmarshaller.setSchema(schema);
+
             orderConfirmation = (OrderConfirmation) unmarshaller.unmarshal(arquivoXml);
+
+
+            // Validar o objeto OrderConfirmation com o Validator
+            Validator validator = schema.newValidator();
+            validator.validate(new JAXBSource(jaxbContext, orderConfirmation));
+
 
             // Acesso à referência da confirmação de pedido
             String orderConfirmationReference = orderConfirmation.getOrderConfirmationHeader().getOrderConfirmationReference();
@@ -377,8 +396,14 @@ public class LerFicheiro {
                 System.out.println("-------------------------------------------------------");
 
             }
-        } catch (Exception e) {
-            Mensagens.Erro("Erro!", "Erro ao ler arquixo XML!");
+        } catch (JAXBException e) {
+            // Lidar com exceções JAXB (deserialização)
+            Mensagens.Erro("Erro!", "Erro durante a deserialização do arquivo, confira o XML e tente novamente!");
+        } catch (IOException e) {
+            // Lidar com exceções de IO (leitura do arquivo)
+            Mensagens.Erro("Erro!", "Erro durante a leitura do arquivo, confira o XML e tente novamente!");
+        } catch (SAXException e) {
+            Mensagens.Erro("Erro!", "Erro durante a validação do arquivo, confira o XML e tente novamente!");
         }
 
         return orderConfirmation;

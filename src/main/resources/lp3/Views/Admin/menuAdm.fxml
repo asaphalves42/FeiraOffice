@@ -42,12 +42,12 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Text>
-            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="116.0" layoutY="577.0" onMouseClicked="#clickFatura" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="112.0" layoutY="568.0" onMouseClicked="#clickFatura" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagens/fatura.png" />
                </image>
             </ImageView>
-            <Text layoutX="113.0" layoutY="664.0" onMouseClicked="#clickFatura" strokeType="OUTSIDE" strokeWidth="0.0" text="FATURA" wrappingWidth="72.0">
+            <Text layoutX="65.0" layoutY="662.0" onMouseClicked="#clickFatura" strokeType="OUTSIDE" strokeWidth="0.0" text="CONTA CORRENTE" wrappingWidth="187.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
