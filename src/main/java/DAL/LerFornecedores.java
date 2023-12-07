@@ -121,7 +121,7 @@ public class LerFornecedores {
 
             /*
             Procedure com as variáveis que preciso inserir nas tabelas, Fornecedor e Utilizador. Quando insere o utilizador, vou buscar o ultimo id que acabei de inserir através
-            da função 'MAX' do SQL, quando obtido o ID, insiro o mesmo na tabela de fornecedor.
+            da função 'ScopeIdentity()' do SQL, quando obtido o ID, insiro o mesmo na tabela de fornecedor.
              */
             String query = "exec [Inserir_Fornecedor] @username = '" + fornecedor.getIdUtilizador().getEmail() +
                     "', @password = '" + fornecedor.getIdUtilizador().getPassword() +
