@@ -27,6 +27,11 @@ public class Pais {
 
     }
 
+    public Pais(String nomePais, String moedaPais) {
+        this.nome = nomePais;
+        this.moeda = moedaPais;
+    }
+
     public String getISO() {
         return ISO;
     }

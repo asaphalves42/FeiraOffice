@@ -60,6 +60,14 @@ public class Encomenda {
 
     }
 
+    public Encomenda(int idEncomenda, Fornecedor fornecedor,  String referencia, LocalDate dataEncomenda, double total) {
+        this.id = idEncomenda;
+        this.fornecedor = fornecedor;
+        this.referencia = referencia;
+        this.data = dataEncomenda;
+        this.valorTotal = total;
+    }
+
     public double getValorIncidencia() {
         return valorIncidencia;
     }

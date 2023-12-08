@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -602,6 +603,76 @@ public class LerEncomenda {
             baseDados.Desligar();
         }
     }
+
+    /**
+     * Lê as encomendas associadas a um fornecedor específico com base no ID externo do fornecedor.
+     *
+     * @param baseDados A instância da classe {@code BaseDados} para realizar operações no banco de dados.
+     * @param idFornecedorExterno O ID externo do fornecedor para o qual deseja recuperar as encomendas.
+     * @return Uma lista observável de encomendas associadas ao fornecedor específico.
+     * @throws IOException Se ocorrer um erro durante a leitura das encomendas.
+     */
+    public ObservableList<Encomenda> lerEncomendasPorFornecedor(BaseDados baseDados, String idFornecedorExterno) throws IOException {
+        ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
+
+        try {
+            baseDados.Ligar();
+
+            String query = """
+                SELECT 
+                    Encomenda.Id as id_encomenda, 
+                    Fornecedor.Id_Externo as id_fornecedor,
+                    Encomenda.Referencia as referencia, 
+                    Encomenda.Data as data_encomenda,
+                    Encomenda.Total as total 
+                FROM Encomenda 
+                    INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
+                    WHERE Fornecedor.Id_Externo = ? 
+                    AND Encomenda.Estado = 1
+                """;
+
+            // Preparar a declaração SQL com o fornecedor externo como parâmetro
+            PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
+            preparedStatement.setString(1, idFornecedorExterno);
+
+            ResultSet resultado = preparedStatement.executeQuery();
+
+            while (resultado.next()) {
+                Encomenda encomenda = criarObjetoEncomendaContaCorrente(resultado);
+                encomendas.add(encomenda);
+            }
+
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao carregar encomendas");
+        } finally {
+            baseDados.Desligar();
+        }
+
+        return encomendas;
+    }
+
+    /**
+     * Cria um objeto Encomenda com base nos dados do ResultSet, considerando a associação com Conta Corrente.
+     *
+     * @param dados O conjunto de dados resultante de uma consulta SQL.
+     * @return Um objeto Encomenda populado com os dados do ResultSet.
+     * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
+     */
+    private Encomenda criarObjetoEncomendaContaCorrente(ResultSet dados) throws SQLException {
+
+        Fornecedor fornecedor = new Fornecedor(
+                dados.getString("id_fornecedor")
+        );
+
+        return new Encomenda(
+                dados.getInt("Id_encomenda"),
+                fornecedor,
+                dados.getString("referencia"),
+                dados.getDate("data_encomenda").toLocalDate(),
+                dados.getDouble("total")
+        );
+    }
+
 }
 
 

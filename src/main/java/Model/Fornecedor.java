@@ -7,9 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
  * Classe com atributos, getters e setters referentes ao fornecedor.
  */
 public class Fornecedor {
-
     private UtilizadorFornecedor utilizador;
-
     private int id;
     private String idExterno;
     private String nome;
@@ -24,6 +22,10 @@ public class Fornecedor {
 
     }
 
+    public Fornecedor(String id){
+        this.idExterno = id;
+    }
+
     public Fornecedor(int id, String nome, String idExterno, String morada1, String morada2, String localidade, String codigoPostal, Pais idPais, UtilizadorFornecedor idUtilizador) {
         this.id = id;
         this.nome = nome;
@@ -36,10 +38,23 @@ public class Fornecedor {
         this.idUtilizador = idUtilizador;
     }
 
-    public Fornecedor(String nome, String idExterno){
+    public Fornecedor(String nome, String idExterno, Pais idPais){
         this.nome = nome;
         this.idExterno = idExterno;
+        this.idPais = idPais;
     }
+
+    public Fornecedor(int idInterno, String nomeFornecedor, String idExterno, String morada1, String morada2, String localidade, String codigoPostal, Pais pais) {
+        this.id = idInterno;
+        this.nome = nomeFornecedor;
+        this.idExterno = idExterno;
+        this.morada1 = morada1;
+        this.morada2 = morada2;
+        this.localidade = localidade;
+        this.codigoPostal = codigoPostal;
+        this.idPais = pais;
+    }
+
 
     public String getIdExterno() {
         return idExterno;
