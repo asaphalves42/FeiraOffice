@@ -156,7 +156,7 @@ public class LerEncomenda {
         try {
 
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Estado = 0");
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Id_Estado = 1");
 
             while (resultado.next()) {
                 Encomenda encomenda = criarObjetoEncomenda(resultado);
@@ -185,6 +185,7 @@ public class LerEncomenda {
 
         Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados, dados.getString("Id_fornecedor"));
         Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais"));
+        Estado estado = Estado.valueOfId(dados.getInt("Id_Estado"));
 
         return new Encomenda(
                 dados.getInt("Id"),
@@ -195,7 +196,7 @@ public class LerEncomenda {
                 dados.getDouble("Total_Taxa"),
                 dados.getDouble("Total_Incidencia"),
                 dados.getDouble("Total"),
-                dados.getInt("Estado")
+                estado
         );
     }
 
@@ -322,9 +323,10 @@ public class LerEncomenda {
         String data = "'" + encomenda.getData() + "'";
         String idFornecedor = "'" + encomenda.getFornecedor().getIdExterno() + "'";
         int idPaisInt = idPais.getId();
+       int idEstado = encomenda.getEstado().getValue();
 
         // Construa a string da consulta SQL, escapando os valores
-        return "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Estado) " +
+        return "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Id_Estado) " +
                 "VALUES (" +
                 referencia + "," +
                 data + "," +
@@ -332,7 +334,8 @@ public class LerEncomenda {
                 idPaisInt + "," +
                 encomenda.getTotalTaxa() + "," +
                 encomenda.getTotalIncidencia() + "," +
-                encomenda.getTotal() + ", 0)";
+                encomenda.getTotal() + "," +
+                idEstado + ")";
     }
 
     /**
@@ -490,7 +493,7 @@ public class LerEncomenda {
         try {
             baseDados.Ligar();
 
-            String query = "UPDATE Encomenda SET Estado = 1 WHERE Id = " + idEncomenda;
+            String query = "UPDATE Encomenda SET Id_Estado = 2 WHERE Id = " + idEncomenda;
 
             baseDados.Executar(query);
 
@@ -518,7 +521,7 @@ public class LerEncomenda {
         try {
             baseDados.Ligar();
 
-            String query = "UPDATE Encomenda Set Estado = 2 WHERE Id = " + idEncomenda;
+            String query = "UPDATE Encomenda Set Id_Estado = 3 WHERE Id = " + idEncomenda;
 
             baseDados.Executar(query);
             return true;
@@ -624,11 +627,13 @@ public class LerEncomenda {
                     Fornecedor.Id_Externo as id_fornecedor,
                     Encomenda.Referencia as referencia, 
                     Encomenda.Data as data_encomenda,
-                    Encomenda.Total as total 
+                    Encomenda.Total as total, 
+                    Estado.Id as estado
                 FROM Encomenda 
                     INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
+                    INNER JOIN Estado ON Estado.Id = Encomenda.Id_Estado
                     WHERE Fornecedor.Id_Externo = ? 
-                    AND Encomenda.Estado = 1
+                    AND Estado.Id = 2
                 """;
 
             // Preparar a declaração SQL com o fornecedor externo como parâmetro
@@ -658,18 +663,21 @@ public class LerEncomenda {
      * @return Um objeto Encomenda populado com os dados do ResultSet.
      * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
      */
-    private Encomenda criarObjetoEncomendaContaCorrente(ResultSet dados) throws SQLException {
+    private Encomenda criarObjetoEncomendaContaCorrente(ResultSet dados) throws SQLException, IOException {
 
         Fornecedor fornecedor = new Fornecedor(
                 dados.getString("id_fornecedor")
         );
+
+        Estado estado = Estado.valueOfId(dados.getInt("estado"));
 
         return new Encomenda(
                 dados.getInt("Id_encomenda"),
                 fornecedor,
                 dados.getString("referencia"),
                 dados.getDate("data_encomenda").toLocalDate(),
-                dados.getDouble("total")
+                dados.getDouble("total"),
+                estado
         );
     }
 

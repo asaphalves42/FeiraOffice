@@ -190,14 +190,17 @@ public class LerFicheiro {
                 // Define os valores do fornecedor antes de usá-lo
                 fornecedorLogado.setIdExterno(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier());
 
+                Estado estado = Estado.valueOfId(1); //pendente
+
                 encomenda = new Encomenda(0,
                         referencia,
                         data,
                         fornecedorLogado,
                         lerPais,
                         new ArrayList<>(),
-                        0
+                        estado
                 );
+
 
                 // Iteração pelos itens da confirmação de pedido
                 for (OrderConfirmation.OrderConfirmationLineItem lineItem : lineItems) {
