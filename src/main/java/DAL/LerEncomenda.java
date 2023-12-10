@@ -56,9 +56,11 @@ public class LerEncomenda {
                 linhasEncomenda.add(linhaEncomenda);
             }
 
-            baseDados.Desligar();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            baseDados.Desligar();
         }
 
         return linhasEncomenda;
@@ -124,7 +126,6 @@ public class LerEncomenda {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-
             baseDados.Ligar();
             ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda");
 
@@ -133,15 +134,16 @@ public class LerEncomenda {
                 encomendas.add(encomenda);
             }
 
-            baseDados.Desligar();
-
             return encomendas;
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
-            return null; // ou lançar uma exceção, dependendo do comportamento desejado
+            return null; // Retorna null apenas se houver exceção
+        } finally {
+            baseDados.Desligar();
         }
     }
+
 
     /**
      * Lê as encomendas da base de dados que estão no estado indicado.
@@ -154,7 +156,6 @@ public class LerEncomenda {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-
             baseDados.Ligar();
             ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Id_Estado = 1");
 
@@ -163,15 +164,16 @@ public class LerEncomenda {
                 encomendas.add(encomenda);
             }
 
-            baseDados.Desligar();
-
             return encomendas;
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
-            return null; // ou lançar uma exceção, dependendo do comportamento desejado
+            return null; // Retorna null apenas se houver exceção
+        } finally {
+            baseDados.Desligar();
         }
     }
+
 
     /**
      * Cria um objeto Encomenda a partir dos dados de um ResultSet.
@@ -229,11 +231,11 @@ public class LerEncomenda {
                 inserirLinhaEncomenda(baseDados, Id_Encomenda, linha);
             }
 
-            baseDados.Desligar();
-
             return Id_Encomenda;
         } catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na adição da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
 
         return 0;
@@ -323,7 +325,7 @@ public class LerEncomenda {
         String data = "'" + encomenda.getData() + "'";
         String idFornecedor = "'" + encomenda.getFornecedor().getIdExterno() + "'";
         int idPaisInt = idPais.getId();
-       int idEstado = encomenda.getEstado().getValue();
+        int idEstado = encomenda.getEstado().getValue();
 
         // Construa a string da consulta SQL, escapando os valores
         return "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Id_Estado) " +
@@ -355,9 +357,10 @@ public class LerEncomenda {
             if (resultado.next()) {
                 encomenda = criarObjetoEncomenda(resultado);
             }
-            baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
         return encomenda;
     }
@@ -395,9 +398,10 @@ public class LerEncomenda {
                 linhasEncomenda.add(linhaEncomenda);
             }
 
-            baseDados.Desligar();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            baseDados.Desligar();
         }
 
         return linhasEncomenda;
@@ -527,6 +531,7 @@ public class LerEncomenda {
             return true;
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao atualizar encomenda!");
+        } finally {
             baseDados.Desligar();
         }
         return false;
@@ -682,6 +687,3 @@ public class LerEncomenda {
     }
 
 }
-
-
-

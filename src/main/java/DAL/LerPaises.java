@@ -36,10 +36,11 @@ public class LerPaises {
 
                 listaDePaises.add(pais);
             }
-            baseDados.Desligar();
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
         return listaDePaises;
     }
@@ -61,9 +62,11 @@ public class LerPaises {
             if (resultado.next()) {
                 pais = criarObjeto(resultado);
             }
-            baseDados.Desligar();
+
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
         return pais;
     }
@@ -86,9 +89,10 @@ public class LerPaises {
             if (resultado.next()) {
                 pais = criarObjeto(resultado);
             }
-            baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
         return pais;
     }

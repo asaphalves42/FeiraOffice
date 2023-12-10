@@ -47,12 +47,14 @@ public class LerFornecedores {
 
             }
 
-            baseDados.Desligar();
             return fornecedores; // A leitura foi bem-sucedida
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
             return null; // A leitura falhou, retorna false.
+        } finally {
+            baseDados.Desligar();
         }
+
     }
 
     /**
@@ -110,12 +112,15 @@ public class LerFornecedores {
                 fornecedor = criarObjetoFornecedor(resultado);
             }
 
-            baseDados.Desligar();
+
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
 
         return fornecedor;
+
     }
 
 
@@ -151,12 +156,12 @@ public class LerFornecedores {
 
             baseDados.Executar(query);
 
-            baseDados.Desligar();
-
             return fornecedor; // retorna o fornecedor
 
         } catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
         return null;
     }
