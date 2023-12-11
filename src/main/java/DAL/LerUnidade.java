@@ -6,6 +6,7 @@ import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -25,20 +26,29 @@ public class LerUnidade {
     public Unidade obterUnidadePorDescricaoBaseDados(BaseDados baseDados, String UOM) throws IOException {
         Unidade unidade = null;
         try {
-
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Unidade WHERE Descricao = '" + UOM + "'");
+            baseDados.iniciarTransacao(baseDados.getConexao());
 
-            if (resultado.next()) {
-                unidade = criarObjeto(resultado);
+            String query = "SELECT * FROM Unidade WHERE Descricao = ?";
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+                preparedStatement.setString(1, UOM);
+
+                try (ResultSet resultado = preparedStatement.executeQuery()) {
+                    if (resultado.next()) {
+                        unidade = criarObjeto(resultado);
+                    }
+                }
+
+                baseDados.commit(baseDados.getConexao());
             }
+
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            baseDados.rollback(baseDados.getConexao());
         } finally {
             baseDados.Desligar();
         }
         return unidade;
-
     }
 
     /**
@@ -53,29 +63,31 @@ public class LerUnidade {
         Unidade unidade = null;
         try {
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Unidade WHERE id = " + id);
+            baseDados.iniciarTransacao(baseDados.getConexao());
 
-            if (resultado.next()) {
-                unidade = criarObjeto(resultado);
+            String query = "SELECT * FROM Unidade WHERE id = ?";
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+                preparedStatement.setInt(1, id);
+
+                try (ResultSet resultado = preparedStatement.executeQuery()) {
+                    if (resultado.next()) {
+                        unidade = criarObjeto(resultado);
+                    }
+                }
+
+                baseDados.commit(baseDados.getConexao());
             }
+
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            baseDados.rollback(baseDados.getConexao());
         } finally {
             baseDados.Desligar();
         }
         return unidade;
-
     }
 
-    /**
-     * Cria um objeto Unidade a partir dos dados do ResultSet.
-     *
-     * @param dados O ResultSet contendo os dados da unidade.
-     * @return Um objeto Unidade criado a partir dos dados do ResultSet.
-     * @throws IOException Se ocorrer um erro durante a leitura.
-     * @throws SQLException Se ocorrer um erro ao acessar os dados no ResultSet.
-     */
-    private Unidade criarObjeto(ResultSet dados) throws IOException, SQLException {
+    private Unidade criarObjeto(ResultSet dados) throws SQLException {
         return new Unidade(
                 dados.getInt("Id"),
                 dados.getString("Descricao")
