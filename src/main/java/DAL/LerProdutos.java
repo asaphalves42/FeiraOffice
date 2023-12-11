@@ -42,11 +42,11 @@ public class LerProdutos {
                 produto = criarObjeto(resultado);
                 produtos.add(produto);
             }
-
-            baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
             return null; // A leitura falhou, retorna false.
+        } finally {
+            baseDados.Desligar();
         }
         return produtos;
     }

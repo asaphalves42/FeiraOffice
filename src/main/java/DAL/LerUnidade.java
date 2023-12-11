@@ -32,9 +32,10 @@ public class LerUnidade {
             if (resultado.next()) {
                 unidade = criarObjeto(resultado);
             }
-            baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
         return unidade;
 
@@ -57,9 +58,10 @@ public class LerUnidade {
             if (resultado.next()) {
                 unidade = criarObjeto(resultado);
             }
-            baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
         return unidade;
 
