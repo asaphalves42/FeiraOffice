@@ -6,7 +6,10 @@ package Model;
 public class UtilizadorFornecedor extends Utilizador {
     private Fornecedor fornecedor;  // Adicionando um atributo para armazenar o fornecedor associado
 
-    // Construtores, métodos e outros atributos já existentes na sua classe
+
+    public UtilizadorFornecedor(int idUtilizador, int tipoUtilizador) {
+        super (idUtilizador, TipoUtilizador.Fornecedor);
+    }
 
     public Fornecedor getFornecedor() {
         return fornecedor;

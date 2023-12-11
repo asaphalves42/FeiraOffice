@@ -5,6 +5,12 @@ package Model;
  */
 public abstract class Utilizador {
 
+    public Utilizador (int id, TipoUtilizador tipo) {
+        this.id = id;
+        this.tipo = tipo;
+    }
+
+
     public Utilizador(int id, String email, String password, TipoUtilizador tipo) {
         this.id = id;
         this.email = email;
@@ -15,6 +21,7 @@ public abstract class Utilizador {
     private String password;
     private int id;
     private TipoUtilizador tipo;
+
 
 
     public int getId() {

@@ -7,6 +7,7 @@ import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.DataSingleton;
 import Utilidades.Mensagens;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -73,9 +74,9 @@ public class MenuFuncoesFornecedor {
                 TableColumn<Fornecedor, String> colunaMorada2 = new TableColumn<>("Morada 2");
                 TableColumn<Fornecedor, String> colunaLocalidade = new TableColumn<>("Localidade");
                 TableColumn<Fornecedor, String> colunaCodPostal = new TableColumn<>("Código postal");
-                TableColumn<Fornecedor, Integer> colunaIdPais = new TableColumn<>("País");
-                TableColumn<Fornecedor, Integer> colunaIdUtilizador = new TableColumn<>(" Tipo de utilizador");
-                TableColumn<Fornecedor, String> colunaIdExterno = new TableColumn<>(" ID Externo");
+                TableColumn<Fornecedor, String> colunaIdPais = new TableColumn<>("País");
+                TableColumn<Fornecedor, String> colunaIdUtilizador = new TableColumn<>("Tipo de utilizador");
+                TableColumn<Fornecedor, String> colunaIdExterno = new TableColumn<>("ID Externo");
 
                 // Associe as colunas às propriedades da classe Fornecedor
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -84,8 +85,8 @@ public class MenuFuncoesFornecedor {
                 colunaMorada2.setCellValueFactory(new PropertyValueFactory<>("morada2"));
                 colunaLocalidade.setCellValueFactory(new PropertyValueFactory<>("localidade"));
                 colunaCodPostal.setCellValueFactory(new PropertyValueFactory<>("codigoPostal"));
-                colunaIdPais.setCellValueFactory(new PropertyValueFactory<>("idPaisString"));
-                colunaIdUtilizador.setCellValueFactory(new PropertyValueFactory<>("idUtilizadorString"));
+                colunaIdPais.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdPais().getNome()));
+                colunaIdUtilizador.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdUtilizador().getTipo().name()));
                 colunaIdExterno.setCellValueFactory(new PropertyValueFactory<>("idExterno"));
 
                 // Adicione as colunas à tabela
