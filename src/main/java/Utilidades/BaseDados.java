@@ -1,5 +1,6 @@
 package Utilidades;
 
+import java.io.IOException;
 import java.sql.*;
 
 /**
@@ -28,6 +29,48 @@ public class BaseDados {
         }
 
         return conexao;
+    }
+
+    /**
+     * Inicia uma transação na conexão.
+     *
+     * @param conexao A conexão com o banco de dados.
+     */
+    public void iniciarTransacao(Connection conexao) throws IOException {
+        try {
+            conexao.setAutoCommit(false);
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro!","Erro ao iniciar transação!");
+        }
+    }
+
+    /**
+     * Realiza o commit da transação na conexão.
+     *
+     * @param conexao A conexão com o banco de dados.
+     */
+    public void commit(Connection conexao) throws IOException {
+        try {
+            conexao.commit();
+            conexao.setAutoCommit(true);
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro!","Erro ao realizar commit!");
+            rollback(conexao); // Em caso de falha, realiza rollback
+        }
+    }
+
+    /**
+     * Realiza o rollback da transação na conexão.
+     *
+     * @param conexao A conexão com o banco de dados.
+     */
+    public void rollback(Connection conexao) throws IOException {
+        try {
+            conexao.rollback();
+            conexao.setAutoCommit(true);
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro!","Erro ao realizar rollback!");
+        }
     }
 
 
