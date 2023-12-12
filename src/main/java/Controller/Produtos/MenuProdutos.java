@@ -11,11 +11,12 @@ import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
@@ -113,41 +114,43 @@ public class MenuProdutos {
      * @throws IOException Se houver um erro ao ler os dados.
      */
     public void tabela2() throws IOException {
-
         produtos2.addAll(lerProdutos.lerProdutosBaseDados(baseDados));
 
         if (!produtos2.isEmpty()) {
             if (tableView2.getColumns().isEmpty()) {
-                // Defina as colunas da tabela
                 TableColumn<Produto, Integer> colunaId = new TableColumn<>("ID Produto");
                 TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descrição");
                 TableColumn<Produto, String> colunaIdFornecedor = new TableColumn<>("Id no Fornecedor");
-
                 TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
 
-                // Associe as colunas às propriedades da classe Produto
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
                 colunaIdFornecedor.setCellValueFactory(new PropertyValueFactory<>("idFornecedorAsString"));
 
-
-
-                // Adicione as colunas à tabela
                 tableView2.getColumns().addAll(colunaId, colunaDescricao, colunaIdFornecedor, colunaIdUnidade);
-
-                // Configure a fonte de dados da tabela
                 tableView2.setItems(produtos2);
 
-                // Configurar a cellValueFactory para a coluna de Unidade na tabela2
                 colunaIdUnidade.setCellValueFactory(cellData -> {
-                    // Obtém a linha selecionada na tabela1
                     Produto produtoTabela1 = cellData.getValue();
-                    // Usar cellData.getValue() em vez de tableViewProdutos.getSelectionModel().getSelectedItem()
                     if (produtoTabela1 != null) {
-                        // Retorna a Unidade da linha correspondente na tabela1
                         return new SimpleStringProperty(produtoTabela1.getDescricaoUnidade());
                     } else {
                         return new SimpleStringProperty("");
+                    }
+                });
+
+                // Configura a seleção da tabela2 para seleção única
+                tableView2.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+                // Adiciona um ouvinte para detectar mudanças na seleção da tabela2
+                tableView2.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Produto>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Produto> observable, Produto oldValue, Produto newValue) {
+                        try {
+                            exibirFornecedoresParaProdutoSelecionado();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
             }
@@ -156,17 +159,46 @@ public class MenuProdutos {
         }
     }
     private void exibirFornecedoresParaProdutoSelecionado() throws IOException {
-        // Obtém o produto selecionado na tabela
         Produto produtoSelecionado = tableView2.getSelectionModel().getSelectedItem();
-        int idProduto = Integer.parseInt(produtoSelecionado.getId());
 
         if (produtoSelecionado != null) {
-            // Aqui você deve implementar a lógica para obter os fornecedores para o produto selecionado
-            List<Fornecedor> fornecedores = lerFornecedor.obterFornecedoresPorProduto(baseDados,idProduto);
+            try {
+                int idProduto = Integer.parseInt(produtoSelecionado.getId());
+                List<Fornecedor> fornecedores = lerFornecedor.obterFornecedoresPorProduto(baseDados, idProduto);
 
-            // Exibe os fornecedores em uma janela ou caixa de diálogo
-            exibirDialogoFornecedores(fornecedores);
+                if (fornecedores != null) {
+                    exibirDialogoFornecedores(fornecedores);
+                } else {
+                    Mensagens.Erro("Erro!", "Erro ao obter fornecedores do produto.");
+                }
+            } catch (IOException e) {
+                Mensagens.Erro("Erro!", "Erro ao ler dados da base de dados.");
+                e.printStackTrace();
+            }
         }
     }
 
+    private void exibirDialogoFornecedores(List<Fornecedor> fornecedores) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Fornecedores para o Produto");
+        alert.setHeaderText("Fornecedores associados ao produto selecionado");
+
+        if (fornecedores != null && !fornecedores.isEmpty()) {
+            TextArea textArea = new TextArea();
+            textArea.setEditable(false);
+
+            // Adiciona informações dos fornecedores ao TextArea
+            for (Fornecedor fornecedor : fornecedores) {
+                textArea.appendText("ID: " + fornecedor.getId() + "\n");
+                textArea.appendText("Nome: " + fornecedor.getNome() + "\n");
+                textArea.appendText("Endereço: " + fornecedor.getMorada1() + "\n\n");
+            }
+
+            alert.getDialogPane().setContent(textArea);
+        } else {
+            alert.setContentText("Não há fornecedores associados a este produto.");
+        }
+
+        alert.showAndWait();
+    }
 }

@@ -396,27 +396,30 @@ public class LerFornecedores {
         try {
             baseDados.Ligar();
 
-            // Complete a string da query SQL
-            String query = "SELECT Fornecedor.* FROM Fornecedor " +
-                    "INNER JOIN ProdutoFornecedor ON Fornecedor.Id = ProdutoFornecedor.Id_Fornecedor " +
-                    "WHERE ProdutoFornecedor.Id_Produto = ?";
+            String query = "SELECT Fornecedor.* " +
+                    "FROM Fornecedor " +
+                    "INNER JOIN Produtos ON Fornecedor.id = Produto.id_fornecedor " +
+                    "WHERE Produtos.id = ?";
 
-            PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
-            preparedStatement.setInt(1, idProduto);
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+                preparedStatement.setInt(1, idProduto); // Bind do parâmetro de forma segura
 
-            ResultSet resultado = preparedStatement.executeQuery();
-
-            while (resultado.next()) {
-                Fornecedor fornecedor = criarObjetoFornecedor(resultado);
-                fornecedores.add(fornecedor);
+                try (ResultSet resultado = preparedStatement.executeQuery()) {
+                    while (resultado.next()) {
+                        Fornecedor fornecedor = criarObjetoFornecedor(resultado);
+                        fornecedores.add(fornecedor);
+                    }
+                }
             }
 
         } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados: " + e.getMessage());
+            e.printStackTrace();
         } finally {
             baseDados.Desligar();
         }
 
         return fornecedores;
     }
+
 }
