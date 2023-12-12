@@ -31,7 +31,6 @@ public class LerFornecedores {
         Fornecedor fornecedor = null;
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
 
             String query = """
                     SELECT
@@ -47,9 +46,9 @@ public class LerFornecedores {
                     Pais.id AS id_pais,
                     Utilizador.id_util AS id_utilizador,
                     Utilizador.id_role AS tipo_utilizador
-                    
+                                        
                     FROM Fornecedor
-                    
+                                        
                     INNER JOIN Pais ON Pais.id = Fornecedor.Id_Pais
                     INNER JOIN Utilizador ON Utilizador.id_util = Fornecedor.Id_Utilizador
                                         
@@ -66,11 +65,9 @@ public class LerFornecedores {
 
             }
 
-            baseDados.commit(baseDados.getConexao());
             return fornecedores; // A leitura foi bem-sucedida
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            baseDados.rollback(baseDados.getConexao());
             return FXCollections.observableArrayList(); // retorna uma lista vazia
         } finally {
             baseDados.Desligar();
@@ -141,7 +138,6 @@ public class LerFornecedores {
     }
 
 
-
     /**
      * Obtém um fornecedor da base de dados com base no seu identificador externo.
      *
@@ -155,7 +151,7 @@ public class LerFornecedores {
 
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+
 
             String query = """
                     SELECT * FROM Fornecedor WHERE Id_Externo = ?
@@ -169,12 +165,12 @@ public class LerFornecedores {
                 fornecedor = criarObjetoFornecedor1(resultado);
             }
 
-            baseDados.commit(baseDados.getConexao());
+
 
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            baseDados.rollback(baseDados.getConexao());
+
         } finally {
             baseDados.Desligar();
         }
@@ -358,7 +354,7 @@ public class LerFornecedores {
         try {
 
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+
 
             String query = """
                     SELECT Nome FROM Fornecedor WHERE Id_Externo = ?
@@ -373,12 +369,12 @@ public class LerFornecedores {
                 return resultado.getString("Nome");
             }
 
-            baseDados.commit(baseDados.getConexao());
+
 
             baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            baseDados.rollback(baseDados.getConexao());
+
         } finally {
             baseDados.Desligar();
         }
@@ -398,7 +394,7 @@ public class LerFornecedores {
         ObservableList<ContaCorrente> contas = FXCollections.observableArrayList();
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+
 
             // Complete a string da query SQL
             String query = "SELECT Conta_Corrente.Id as id, " +
@@ -430,7 +426,7 @@ public class LerFornecedores {
             baseDados.Desligar();
         } catch (Exception e) {
             Mensagens.Erro("Erro!!", "Erro ao ler tabela!");
-            baseDados.rollback(baseDados.getConexao());
+
         } finally {
             baseDados.Desligar();
         }

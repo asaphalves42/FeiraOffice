@@ -1,13 +1,10 @@
 package DAL;
 
-import DAL.LerFornecedores;
-import DAL.LerPaises;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -38,7 +35,6 @@ public class LerEncomenda {
 
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
 
             // Utilizando JOIN para obter todas as informações necessárias em uma única consulta
             String query = """
@@ -70,11 +66,11 @@ public class LerEncomenda {
                 }
             }
 
-            baseDados.commit(baseDados.getConexao());
+
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao ler linhas da encomenda!");
-            baseDados.rollback(baseDados.getConexao());
+
         } finally {
             baseDados.Desligar();
         }
@@ -143,7 +139,6 @@ public class LerEncomenda {
 
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
 
             String query = """
                     SELECT * FROM Encomenda
@@ -159,14 +154,10 @@ public class LerEncomenda {
                 }
 
             }
-
-            baseDados.commit(baseDados.getConexao());
-
             return encomendas;
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
-            baseDados.rollback(baseDados.getConexao());
             return null; // Retorna null apenas se houver exceção
         } finally {
             baseDados.Desligar();
@@ -186,7 +177,7 @@ public class LerEncomenda {
 
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+
 
             String query = """
                     SELECT * FROM Encomenda WHERE Id_Estado = 1
@@ -202,13 +193,11 @@ public class LerEncomenda {
                 }
             }
 
-            baseDados.commit(baseDados.getConexao());
 
             return encomendas;
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
-            baseDados.rollback(baseDados.getConexao());
             return null; // Retorna null apenas se houver exceção
         } finally {
             baseDados.Desligar();
@@ -294,7 +283,7 @@ public class LerEncomenda {
         if (!produtoExisteNaTabela(baseDados, produto.getId())) {
             // Construa a string da consulta SQL, escapando os valores
             String queryProduto = """
-                    INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado) +
+                    INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado)
                     VALUES (?, ?, ?, ?, ?, 0)
                     """;
 
@@ -339,7 +328,6 @@ public class LerEncomenda {
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro","Erro ao verificar produto existente!");
-            baseDados.rollback(baseDados.getConexao());
             throw new RuntimeException(e);
         }
     }
@@ -386,7 +374,6 @@ public class LerEncomenda {
      * @return Uma string contendo a consulta SQL para inserção da encomenda.
      * @throws IOException Se ocorrer um erro durante a obtenção do ID do país.
      */
-    @NotNull
     private int getQueryEncomenda(Encomenda encomenda) throws IOException {
         Pais idPais = lerPaises.obterPaisPorId(baseDados, encomenda.getPais().getId());
 
@@ -439,7 +426,6 @@ public class LerEncomenda {
         Encomenda encomenda = null;
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
 
             String query = """
                     SELECT * FROM Encomenda WHERE Id = ?"
@@ -456,10 +442,9 @@ public class LerEncomenda {
 
             }
 
-            baseDados.commit(baseDados.getConexao());
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            baseDados.rollback(baseDados.getConexao());
+
         } finally {
             baseDados.Desligar();
         }
@@ -480,7 +465,6 @@ public class LerEncomenda {
 
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
 
             // Utilizando JOIN para obter todas as informações necessárias em uma única consulta
             String query = "SELECT " +
@@ -504,10 +488,8 @@ public class LerEncomenda {
                     linhasEncomenda.add(linhaEncomenda);
                 }
 
-                baseDados.commit(baseDados.getConexao());
 
             } catch (SQLException e) {
-                baseDados.rollback(baseDados.getConexao());
                 Mensagens.Erro("Erro!", "Erro ao ler linhas da encomenda");
                 throw new RuntimeException(e);
             }
@@ -601,7 +583,7 @@ public class LerEncomenda {
      * @throws SQLException Se ocorrer um erro durante a verificação na base de dados.
      */
     private boolean produtoExiste(BaseDados baseDados, String idProduto) throws SQLException {
-        String query = "SELECT * FROM Stock WHERE Id_Produto = ?";
+        String query = "SELECT * FROM Produto WHERE Id = ?";
 
         try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
             preparedStatement.setString(1, idProduto);
@@ -713,8 +695,8 @@ public class LerEncomenda {
                 }
 
                 try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
-                    updateStatement.setDouble(1, valorEncomenda);
-                    updateStatement.setString(2, idFornecedor);
+                    updateStatement.setString(1, idFornecedor);
+                    updateStatement.setDouble(2, valorEncomenda);
 
                     // Execute o script
                     updateStatement.executeUpdate();
@@ -745,7 +727,6 @@ public class LerEncomenda {
     public boolean podeEliminarFornecedor(BaseDados baseDados, Utilizador fornecedor) throws IOException {
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
 
             String queryEncomendas = "SELECT Id_Fornecedor FROM Encomenda";
             String queryFornecedores = "SELECT Id_Externo FROM Fornecedor WHERE Id_Utilizador = ?";
@@ -780,7 +761,6 @@ public class LerEncomenda {
 
         } catch (SQLException | IOException e) {
             Mensagens.Erro("Erro!", "Erro ao eliminar fornecedor");
-            baseDados.rollback(baseDados.getConexao());
             throw new RuntimeException(e);
         } finally {
             baseDados.Desligar();
