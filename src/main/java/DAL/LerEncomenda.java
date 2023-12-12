@@ -554,9 +554,9 @@ public class LerEncomenda {
             }
 
             try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(script)) {
-                preparedStatement.setInt(1, idUnidade);
-                preparedStatement.setDouble(2, quantidade);
-                preparedStatement.setString(3, idProduto);
+                preparedStatement.setString(1, idProduto);
+                preparedStatement.setInt(2, idUnidade);
+                preparedStatement.setDouble(3, quantidade);
 
                 // Execute o script
                 preparedStatement.executeUpdate();
@@ -583,7 +583,7 @@ public class LerEncomenda {
      * @throws SQLException Se ocorrer um erro durante a verificação na base de dados.
      */
     private boolean produtoExiste(BaseDados baseDados, String idProduto) throws SQLException {
-        String query = "SELECT * FROM Produto WHERE Id = ?";
+        String query = "SELECT * FROM Stock WHERE Id_Produto = ?";
 
         try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
             preparedStatement.setString(1, idProduto);
@@ -689,19 +689,28 @@ public class LerEncomenda {
                 if (resultSet.next()) {
                     // Se existir, faz o UPDATE
                     script = "UPDATE Conta_Corrente SET Saldo = Saldo + ? WHERE Id_Fornecedor = ?";
+
+                    try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
+                        updateStatement.setDouble(1, valorEncomenda);
+                        updateStatement.setString(2, idFornecedor);
+                        // Execute o script
+                        updateStatement.executeUpdate();
+                    }
+
                 } else {
-                    // Se não existir, faz a inserção
-                    script = "INSERT INTO Conta_Corrente (Id_Fornecedor, Saldo) VALUES (?, ?)";
-                }
+                        // Se não existir, faz a inserção
+                        script = "INSERT INTO Conta_Corrente (Id_Fornecedor, Saldo) VALUES (?, ?)";
 
-                try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
-                    updateStatement.setString(1, idFornecedor);
-                    updateStatement.setDouble(2, valorEncomenda);
+                        try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
+                            updateStatement.setString(1, idFornecedor);
+                            updateStatement.setDouble(2, valorEncomenda);
 
-                    // Execute o script
-                    updateStatement.executeUpdate();
+                            // Execute o script
+                            updateStatement.executeUpdate();
+                        }
+                    }
+
                 }
-            }
 
             baseDados.commit(baseDados.getConexao());
 
