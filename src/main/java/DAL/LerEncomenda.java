@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -55,9 +56,11 @@ public class LerEncomenda {
                 linhasEncomenda.add(linhaEncomenda);
             }
 
-            baseDados.Desligar();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            baseDados.Desligar();
         }
 
         return linhasEncomenda;
@@ -123,7 +126,6 @@ public class LerEncomenda {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-
             baseDados.Ligar();
             ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda");
 
@@ -132,15 +134,16 @@ public class LerEncomenda {
                 encomendas.add(encomenda);
             }
 
-            baseDados.Desligar();
-
             return encomendas;
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
-            return null; // ou lançar uma exceção, dependendo do comportamento desejado
+            return null; // Retorna null apenas se houver exceção
+        } finally {
+            baseDados.Desligar();
         }
     }
+
 
     /**
      * Lê as encomendas da base de dados que estão no estado indicado.
@@ -153,24 +156,24 @@ public class LerEncomenda {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Estado = 0");
+            ResultSet resultado = baseDados.Selecao("SELECT * FROM Encomenda WHERE Id_Estado = 1");
 
             while (resultado.next()) {
                 Encomenda encomenda = criarObjetoEncomenda(resultado);
                 encomendas.add(encomenda);
             }
 
-            baseDados.Desligar();
-
             return encomendas;
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
-            return null; // ou lançar uma exceção, dependendo do comportamento desejado
+            return null; // Retorna null apenas se houver exceção
+        } finally {
+            baseDados.Desligar();
         }
     }
+
 
     /**
      * Cria um objeto Encomenda a partir dos dados de um ResultSet.
@@ -184,6 +187,7 @@ public class LerEncomenda {
 
         Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados, dados.getString("Id_fornecedor"));
         Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais"));
+        Estado estado = Estado.valueOfId(dados.getInt("Id_Estado"));
 
         return new Encomenda(
                 dados.getInt("Id"),
@@ -194,7 +198,7 @@ public class LerEncomenda {
                 dados.getDouble("Total_Taxa"),
                 dados.getDouble("Total_Incidencia"),
                 dados.getDouble("Total"),
-                dados.getInt("Estado")
+                estado
         );
     }
 
@@ -227,11 +231,11 @@ public class LerEncomenda {
                 inserirLinhaEncomenda(baseDados, Id_Encomenda, linha);
             }
 
-            baseDados.Desligar();
-
             return Id_Encomenda;
         } catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na adição da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
 
         return 0;
@@ -321,9 +325,10 @@ public class LerEncomenda {
         String data = "'" + encomenda.getData() + "'";
         String idFornecedor = "'" + encomenda.getFornecedor().getIdExterno() + "'";
         int idPaisInt = idPais.getId();
+        int idEstado = encomenda.getEstado().getValue();
 
         // Construa a string da consulta SQL, escapando os valores
-        return "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Estado) " +
+        return "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Id_Estado) " +
                 "VALUES (" +
                 referencia + "," +
                 data + "," +
@@ -331,7 +336,8 @@ public class LerEncomenda {
                 idPaisInt + "," +
                 encomenda.getTotalTaxa() + "," +
                 encomenda.getTotalIncidencia() + "," +
-                encomenda.getTotal() + ", 0)";
+                encomenda.getTotal() + "," +
+                idEstado + ")";
     }
 
     /**
@@ -351,9 +357,10 @@ public class LerEncomenda {
             if (resultado.next()) {
                 encomenda = criarObjetoEncomenda(resultado);
             }
-            baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
         return encomenda;
     }
@@ -391,9 +398,10 @@ public class LerEncomenda {
                 linhasEncomenda.add(linhaEncomenda);
             }
 
-            baseDados.Desligar();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            baseDados.Desligar();
         }
 
         return linhasEncomenda;
@@ -489,7 +497,7 @@ public class LerEncomenda {
         try {
             baseDados.Ligar();
 
-            String query = "UPDATE Encomenda SET Estado = 1 WHERE Id = " + idEncomenda;
+            String query = "UPDATE Encomenda SET Id_Estado = 2 WHERE Id = " + idEncomenda;
 
             baseDados.Executar(query);
 
@@ -517,12 +525,13 @@ public class LerEncomenda {
         try {
             baseDados.Ligar();
 
-            String query = "UPDATE Encomenda Set Estado = 2 WHERE Id = " + idEncomenda;
+            String query = "UPDATE Encomenda Set Id_Estado = 3 WHERE Id = " + idEncomenda;
 
             baseDados.Executar(query);
             return true;
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao atualizar encomenda!");
+        } finally {
             baseDados.Desligar();
         }
         return false;
@@ -602,7 +611,79 @@ public class LerEncomenda {
             baseDados.Desligar();
         }
     }
+
+    /**
+     * Lê as encomendas associadas a um fornecedor específico com base no ID externo do fornecedor.
+     *
+     * @param baseDados A instância da classe {@code BaseDados} para realizar operações no banco de dados.
+     * @param idFornecedorExterno O ID externo do fornecedor para o qual deseja recuperar as encomendas.
+     * @return Uma lista observável de encomendas associadas ao fornecedor específico.
+     * @throws IOException Se ocorrer um erro durante a leitura das encomendas.
+     */
+    public ObservableList<Encomenda> lerEncomendasPorFornecedor(BaseDados baseDados, String idFornecedorExterno) throws IOException {
+        ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
+
+        try {
+            baseDados.Ligar();
+
+            String query = """
+                SELECT 
+                    Encomenda.Id as id_encomenda, 
+                    Fornecedor.Id_Externo as id_fornecedor,
+                    Encomenda.Referencia as referencia, 
+                    Encomenda.Data as data_encomenda,
+                    Encomenda.Total as total, 
+                    Estado.Id as estado
+                FROM Encomenda 
+                    INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
+                    INNER JOIN Estado ON Estado.Id = Encomenda.Id_Estado
+                    WHERE Fornecedor.Id_Externo = ? 
+                    AND Estado.Id = 2
+                """;
+
+            // Preparar a declaração SQL com o fornecedor externo como parâmetro
+            PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
+            preparedStatement.setString(1, idFornecedorExterno);
+
+            ResultSet resultado = preparedStatement.executeQuery();
+
+            while (resultado.next()) {
+                Encomenda encomenda = criarObjetoEncomendaContaCorrente(resultado);
+                encomendas.add(encomenda);
+            }
+
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao carregar encomendas");
+        } finally {
+            baseDados.Desligar();
+        }
+
+        return encomendas;
+    }
+
+    /**
+     * Cria um objeto Encomenda com base nos dados do ResultSet, considerando a associação com Conta Corrente.
+     *
+     * @param dados O conjunto de dados resultante de uma consulta SQL.
+     * @return Um objeto Encomenda populado com os dados do ResultSet.
+     * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
+     */
+    private Encomenda criarObjetoEncomendaContaCorrente(ResultSet dados) throws SQLException, IOException {
+
+        Fornecedor fornecedor = new Fornecedor(
+                dados.getString("id_fornecedor")
+        );
+
+        Estado estado = Estado.valueOfId(dados.getInt("estado"));
+
+        return new Encomenda(
+                dados.getInt("Id_encomenda"),
+                fornecedor,
+                dados.getString("referencia"),
+                dados.getDate("data_encomenda").toLocalDate(),
+                dados.getDouble("total"),
+                estado
+        );
+    }
+
 }
-
-
-

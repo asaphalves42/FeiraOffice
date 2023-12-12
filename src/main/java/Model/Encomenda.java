@@ -27,13 +27,13 @@ public class Encomenda {
     private double valorImposto;
     private double valorTotal;
 
-    private int estado;
+    private Estado estado;
 
     public Encomenda(int id){
         this.id = id;
     }
 
-    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, ArrayList<LinhaEncomenda> linhas, int estado) {
+    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, ArrayList<LinhaEncomenda> linhas, Estado estado) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
@@ -47,7 +47,7 @@ public class Encomenda {
 
     }
 
-    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais,double totalTaxa, double totalIncidencia, double total, int estado) {
+    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais,double totalTaxa, double totalIncidencia, double total, Estado estado) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
@@ -58,6 +58,15 @@ public class Encomenda {
         this.valorTotal = total;
         this.estado = estado;
 
+    }
+
+    public Encomenda(int idEncomenda, Fornecedor fornecedor,  String referencia, LocalDate dataEncomenda, double total, Estado estado) {
+        this.id = idEncomenda;
+        this.fornecedor = fornecedor;
+        this.referencia = referencia;
+        this.data = dataEncomenda;
+        this.valorTotal = total;
+        this.estado = estado;
     }
 
     public double getValorIncidencia() {
@@ -84,11 +93,11 @@ public class Encomenda {
         this.valorTotal = valorTotal;
     }
 
-    public int getEstado() {
+    public Estado getEstado() {
         return estado;
     }
 
-    public void setEstado(int estado) {
+    public void setEstado(Estado estado) {
         this.estado = estado;
     }
 

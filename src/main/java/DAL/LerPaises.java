@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -24,25 +25,34 @@ public class LerPaises {
     public ObservableList<Pais> getListaDePaises(BaseDados baseDados) throws IOException {
         ObservableList<Pais> listaDePaises = FXCollections.observableArrayList();
         try {
-
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Pais");
+            baseDados.iniciarTransacao(baseDados.getConexao());
 
-            while (resultado.next()) {
-                Pais pais = new Pais(
-                        resultado.getInt("Id"),
-                        resultado.getString("Nome")
-                );
+            String query = "SELECT * FROM Pais";
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+                ResultSet resultado = preparedStatement.executeQuery();
 
-                listaDePaises.add(pais);
+                while (resultado.next()) {
+                    Pais pais = new Pais(
+                            resultado.getInt("Id"),
+                            resultado.getString("Nome")
+                    );
+
+                    listaDePaises.add(pais);
+                }
+
+                baseDados.commit(baseDados.getConexao());
             }
-            baseDados.Desligar();
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            baseDados.rollback(baseDados.getConexao());
+        } finally {
+            baseDados.Desligar();
         }
         return listaDePaises;
     }
+
 
     /**
      * Obtém um país a partir da base de dados com base no seu ID e retorna o país encontrado.
@@ -54,16 +64,28 @@ public class LerPaises {
     public Pais obterPaisPorId(BaseDados baseDados, int id) throws IOException {
         Pais pais = null;
         try {
-
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Pais WHERE id = " + id);
+            baseDados.iniciarTransacao(baseDados.getConexao());
 
-            if (resultado.next()) {
-                pais = criarObjeto(resultado);
+            String query = "SELECT * FROM Pais WHERE id = ?";
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+                preparedStatement.setInt(1, id);
+
+                try (ResultSet resultado = preparedStatement.executeQuery()) {
+                    if (resultado.next()) {
+                        pais = criarObjeto(resultado);
+                    }
+                }
+
+
+                baseDados.commit(baseDados.getConexao());
             }
-            baseDados.Desligar();
+
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            baseDados.rollback(baseDados.getConexao());
+        } finally {
+            baseDados.Desligar();
         }
         return pais;
     }
@@ -79,19 +101,31 @@ public class LerPaises {
     public Pais obterPaisPorISO(BaseDados baseDados, String ISO) throws IOException {
         Pais pais = null;
         try {
-
             baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Pais WHERE ISO = '" + ISO + "'");
+            baseDados.iniciarTransacao(baseDados.getConexao());
 
-            if (resultado.next()) {
-                pais = criarObjeto(resultado);
+            String query = "SELECT * FROM Pais WHERE ISO = ?";
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+                preparedStatement.setString(1, ISO);
+
+                try (ResultSet resultado = preparedStatement.executeQuery()) {
+                    if (resultado.next()) {
+                        pais = criarObjeto(resultado);
+                    }
+                }
+
+                baseDados.commit(baseDados.getConexao());
             }
-            baseDados.Desligar();
+
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            baseDados.rollback(baseDados.getConexao());
+        } finally {
+            baseDados.Desligar();
         }
         return pais;
     }
+
 
     /**
      * Cria um objeto Pais a partir dos dados de um ResultSet representando um país.

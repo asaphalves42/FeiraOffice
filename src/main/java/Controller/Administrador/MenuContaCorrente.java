@@ -1,11 +1,16 @@
 package Controller.Administrador;
 
+import DAL.LerEncomenda;
 import DAL.LerFornecedores;
 import Model.ContaCorrente;
+import Model.Encomenda;
 import Model.Fornecedor;
+import Model.Pais;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,12 +21,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 
 /**
- *  Menu com as funções da conta corrente, ler saldo em dívida.
+ * Menu com as funções da conta corrente, ler saldo em dívida.
  */
 public class MenuContaCorrente {
 
     BaseDados baseDados = new BaseDados();
     LerFornecedores lerFornecedores = new LerFornecedores();
+
+    LerEncomenda lerEncomenda = new LerEncomenda();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -66,12 +73,14 @@ public class MenuContaCorrente {
     private Label labelSaldo;
 
     @FXML
-    private TableView<Fornecedor> tableViewEncomendaFornc;
+    private TableView<Encomenda> tableViewEncomendaFornc;
 
     @FXML
     private TableView<ContaCorrente> tableViewDividas;
 
     ObservableList<ContaCorrente> dividasFornecedores = FXCollections.observableArrayList();
+
+    ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
     /**
      * Inicializa a aplicação carregando a tabela de dívidas dos fornecedores.
@@ -80,9 +89,21 @@ public class MenuContaCorrente {
      */
     public void initialize() throws IOException {
         tabelaDividas();
-        //carregarLabels();
 
+        tableViewDividas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ContaCorrente>() {
+            @Override
+            public void changed(ObservableValue<? extends ContaCorrente> observable, ContaCorrente oldValue, ContaCorrente newValue) {
+                // Chamado quando a seleção da tabela muda
+                carregarLabels();
+                try {
+                    carregarEncomendas();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+             }
+        });
     }
+
 
     /**
      * Popula a tabela de dívidas dos fornecedores com os dados provenientes do arquivo de base de dados.
@@ -99,18 +120,22 @@ public class MenuContaCorrente {
                 TableColumn<ContaCorrente, String> colunaIdExterno = new TableColumn<>("ID do fornecedor");
                 TableColumn<ContaCorrente, String> colunaNome = new TableColumn<>("Nome");
                 TableColumn<ContaCorrente, String> colunaDivida = new TableColumn<>("Saldo devedor");
+                TableColumn<ContaCorrente, String> colunaMoeda = new TableColumn<>("Moeda de pagamento");
 
                 // Associe as colunas às propriedades da classe Fornecedor
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-                colunaIdExterno.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdFornecedor().getNome()));
-                colunaNome.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdFornecedor().getIdExterno()));
+                colunaIdExterno.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdFornecedor().getIdExterno()));
+                colunaNome.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdFornecedor().getNome()));
                 colunaDivida.setCellValueFactory(new PropertyValueFactory<>("saldo"));
+                colunaMoeda.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdFornecedor().getIdPais().getMoeda()));
+
 
                 // Adicione as colunas à tabela
                 tableViewDividas.getColumns().add(colunaId);
                 tableViewDividas.getColumns().add(colunaIdExterno);
                 tableViewDividas.getColumns().add(colunaNome);
                 tableViewDividas.getColumns().add(colunaDivida);
+                tableViewDividas.getColumns().add(colunaMoeda);
 
                 // Configure a fonte de dados da tabela
                 tableViewDividas.setItems(dividasFornecedores);
@@ -123,10 +148,90 @@ public class MenuContaCorrente {
     /**
      * Carrega as labels com informações do fornecedor selecionado na tabela de encomendas.
      */
-    public void carregarLabels(){
-        Fornecedor fornecedor = tableViewEncomendaFornc.getSelectionModel().getSelectedItem();
+    public void carregarLabels() {
+        ContaCorrente contaCorrenteSelecionada = tableViewDividas.getSelectionModel().getSelectedItem();
 
-        labelNome.setText(fornecedor.getNome());
+        if (contaCorrenteSelecionada != null) {
+
+            Double saldo = contaCorrenteSelecionada.getSaldo();
+            labelSaldo.setText(String.valueOf(saldo));
+
+            Fornecedor fornecedor = contaCorrenteSelecionada.getIdFornecedor();
+
+            if (fornecedor != null) {
+                String idFornecedorExterno = fornecedor.getIdExterno();
+                labelIdExterno.setText(idFornecedorExterno);
+
+                int idFornecedorInterno = fornecedor.getId();
+                labelIdInterno.setText(String.valueOf(idFornecedorInterno));
+
+                String nomeFornecedor = fornecedor.getNome();
+                labelNome.setText(nomeFornecedor);
+
+                String morada1 = fornecedor.getMorada1();
+                labelMorada1.setText(morada1);
+
+                String morada2 = fornecedor.getMorada2();
+                labelMorada2.setText(morada2);
+
+                String localidade = fornecedor.getLocalidade();
+                labelLocalidade.setText(localidade);
+
+                String codPostal = fornecedor.getCodigoPostal();
+                labelCodigoPostal.setText(codPostal);
+
+                String pais = fornecedor.getIdPais().getNome();
+                labelPais.setText(pais);
+
+                //adicionar mais dados ao fornecedor
+            }
+        }
+
+
+    }
+
+    /**
+     * Carrega as encomendas referentes ao fornecedor selecionado
+     */
+    public void carregarEncomendas() throws IOException {
+
+        tableViewEncomendaFornc.getItems().clear();
+
+        ContaCorrente contaCorrenteSelecionada = tableViewDividas.getSelectionModel().getSelectedItem();
+
+        if (contaCorrenteSelecionada != null) {
+            Fornecedor fornecedor = contaCorrenteSelecionada.getIdFornecedor();
+            encomendas.addAll(lerEncomenda.lerEncomendasPorFornecedor(baseDados, fornecedor.getIdExterno()));
+
+            if(!encomendas.isEmpty()){
+                if(tableViewEncomendaFornc.getColumns().isEmpty()) {
+
+                    TableColumn<Encomenda, Integer> colunaId = new TableColumn<>("Id da encomenda");
+                    TableColumn<Encomenda, String> colunaIdFornecedor = new TableColumn<>("ID do fornecedor");
+                    TableColumn<Encomenda, String> colunaReferencia = new TableColumn<>("Referência");
+                    TableColumn<Encomenda, String> colunaData = new TableColumn<>("Data");
+                    TableColumn<Encomenda, String> colunaTotal = new TableColumn<>("Total");
+
+                    // Associe as colunas às propriedades da classe Fornecedor
+                    colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
+                    colunaIdFornecedor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFornecedor().getIdExterno()));
+                    colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
+                    colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
+                    colunaTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
+
+                    tableViewEncomendaFornc.getColumns().add(colunaId);
+                    tableViewEncomendaFornc.getColumns().add(colunaIdFornecedor);
+                    tableViewEncomendaFornc.getColumns().add(colunaReferencia);
+                    tableViewEncomendaFornc.getColumns().add(colunaData);
+                    tableViewEncomendaFornc.getColumns().add(colunaTotal);
+
+                    tableViewEncomendaFornc.setItems(encomendas);
+                }
+
+            } else {
+                Mensagens.Erro("Erro!","Erro ao ler tabela ou tabela vazia!");
+            }
+        }
 
     }
 

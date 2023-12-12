@@ -81,42 +81,42 @@
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="labelIdInterno" text="Label" GridPane.columnIndex="1">
+                              <Label fx:id="labelIdInterno" GridPane.columnIndex="1">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="labelIdExterno" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Label fx:id="labelIdExterno" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="labelNome" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <Label fx:id="labelNome" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="labelMorada1" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              <Label fx:id="labelMorada1" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="labelMorada2" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                              <Label fx:id="labelMorada2" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="labelLocalidade" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                              <Label fx:id="labelLocalidade" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="labelCodigoPostal" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                              <Label fx:id="labelCodigoPostal" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="labelPais" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                              <Label fx:id="labelPais" GridPane.columnIndex="1" GridPane.rowIndex="7">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
@@ -150,9 +150,9 @@
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="labelIban" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label fx:id="labelBIC" prefHeight="17.0" prefWidth="33.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label fx:id="labelConta" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="labelIban" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label fx:id="labelBIC" prefHeight="17.0" prefWidth="33.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="labelConta" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                         <Text layoutX="32.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DADOS DO FORNECEDOR:">
@@ -170,7 +170,7 @@
                               <Font name="System Bold" size="18.0" />
                            </font>
                         </Text>
-                        <Label fx:id="labelSaldo" layoutX="618.0" layoutY="295.0" prefHeight="45.0" prefWidth="84.0" text="Label">
+                        <Label fx:id="labelSaldo" layoutX="611.0" layoutY="284.0" prefHeight="45.0" prefWidth="215.0">
                            <font>
                               <Font name="System Bold Italic" size="30.0" />
                            </font>

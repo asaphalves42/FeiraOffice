@@ -62,11 +62,12 @@ public class LerUtilizadores {
                     utilizador.add(aux);
                 }
             }
-            baseDados.Desligar();
             return utilizador; // A leitura retorna o utilizador
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
             return null; // A leitura falhou
+        } finally {
+            baseDados.Desligar();
         }
     }
 
@@ -103,11 +104,12 @@ public class LerUtilizadores {
                 }
             }
 
-            baseDados.Desligar();
             return utilizadores; // A leitura retorna a lista de utilizadores
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
             return null; // A leitura falhou
+        } finally {
+            baseDados.Desligar();
         }
     }
 
@@ -187,7 +189,6 @@ public class LerUtilizadores {
 
         }
             return utilizador;
-
     }
 
     /**
@@ -216,12 +217,12 @@ public class LerUtilizadores {
                 );
             }
 
-            // Desconecta-se da base de dados.
-            baseDados.Desligar();
 
         } catch (SQLException e) {
             // Em caso de erro SQL, exibe uma mensagem de erro.
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
 
         return util; // Retorna o utilizador fornecedor encontrado ou null em caso de erro ou se não for encontrado.
@@ -243,8 +244,6 @@ public class LerUtilizadores {
             String query = "DELETE FROM Utilizador WHERE id_util = '" + utilizadorID + "'";
             boolean linhasAfetadas = baseDados.Executar(query);
 
-            baseDados.Desligar();
-
             if (linhasAfetadas) {
                 return true; // Retorna true se alguma linha foi afetada (remoção bem-sucedida)
             }
@@ -254,6 +253,8 @@ public class LerUtilizadores {
                 Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados! ");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
+            } finally {
+                baseDados.Desligar();
             }
             return false; // Retorna false se alguma linha não foi afetada (remoção falhou)
         }
@@ -278,13 +279,12 @@ public class LerUtilizadores {
 
             baseDados.Executar(query);
 
-            baseDados.Desligar();
-
-
             return utilizador;
 
         }catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
         return null;
     }
@@ -305,12 +305,12 @@ public class LerUtilizadores {
 
             baseDados.Executar(query);
 
-            baseDados.Desligar();
-
             return true;
 
         }catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na remoção na base de dados ou utilizador tem encomendas!");
+        } finally {
+            baseDados.Desligar();
         }
         return false;
     }
@@ -336,20 +336,19 @@ public class LerUtilizadores {
 
             boolean linhasAfetadasInsert = baseDados.Executar(query);
 
-            // Desconectar
-            baseDados.Desligar();
             return linhasAfetadasInsert;
         } catch (Exception e) {
             try {
                 Mensagens.Erro("Erro na atualização!", "Erro na atualização da base de dados!");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
+            } finally {
+                baseDados.Desligar();
             }
             return false; // Retorna false se a atualização falhou
         }
     }
-
-    }
+}
 
 
 

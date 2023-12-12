@@ -155,7 +155,7 @@ public class MenuFuncoesFornecedor {
 
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    if (lerEncomenda.podeEliminarFornecedor(baseDados, fornecedorSelecionado.getIdUtilizador()) == true) {
+                    if (lerEncomenda.podeEliminarFornecedor(baseDados, fornecedorSelecionado.getIdUtilizador())) {
                         try {
 
                             boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados, fornecedorSelecionado.getId());
@@ -177,8 +177,6 @@ public class MenuFuncoesFornecedor {
                                 }
                             }
 
-                        } catch (SQLException e) {
-                            e.printStackTrace();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }

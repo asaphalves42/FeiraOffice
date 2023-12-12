@@ -160,8 +160,8 @@ public class DialogEditarFornecedor {
                 Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 currentStage.close();
                 Mensagens.Informacao("Fornecedor editado", "As informações do fornecedor foram editadas com sucesso!");
-                ControllerEmail controllerEmail = new ControllerEmail();
-                controllerEmail.enviarEmail(email, password);
+               // ControllerEmail controllerEmail = new ControllerEmail();
+                //controllerEmail.enviarEmail(email, password);
             }
 
         } catch (IOException e) {

@@ -1,5 +1,6 @@
 package Utilidades;
 
+import java.io.IOException;
 import java.sql.*;
 
 /**
@@ -11,6 +12,67 @@ public class BaseDados {
     String username = "2023_LP3_G2_FEIRA";
     String password = "LP32023g2*123";
     Connection connection; // a ligação ao SQL
+
+    /**
+     * Retorna uma instância da classe {@code Connection} que representa a conexão com o banco de dados.
+     *
+     * @return Uma instância da classe {@code Connection} que representa a conexão com o banco de dados.
+     */
+    public Connection getConexao() {
+        Connection conexao = null;
+
+        try {
+            conexao = DriverManager.getConnection(url, username, password);
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Tratamento de exceção adequado ao seu código
+        }
+
+        return conexao;
+    }
+
+    /**
+     * Inicia uma transação na conexão.
+     *
+     * @param conexao A conexão com o banco de dados.
+     */
+    public void iniciarTransacao(Connection conexao) throws IOException {
+        try {
+            conexao.setAutoCommit(false);
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro!","Erro ao iniciar transação!");
+        }
+    }
+
+    /**
+     * Realiza o commit da transação na conexão.
+     *
+     * @param conexao A conexão com o banco de dados.
+     */
+    public void commit(Connection conexao) throws IOException {
+        try {
+            conexao.commit();
+            conexao.setAutoCommit(true);
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro!","Erro ao realizar commit!");
+            rollback(conexao); // Em caso de falha, realiza rollback
+        }
+    }
+
+    /**
+     * Realiza o rollback da transação na conexão.
+     *
+     * @param conexao A conexão com o banco de dados.
+     */
+    public void rollback(Connection conexao) throws IOException {
+        try {
+            conexao.rollback();
+            conexao.setAutoCommit(true);
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro!","Erro ao realizar rollback!");
+        }
+    }
+
 
 
     /**
@@ -108,6 +170,21 @@ public class BaseDados {
         // Retorna -1 para indicar que nenhuma chave foi gerada
         return -1;
     }
+
+    /*
+    public PreparedStatement PreparedStatement(String query) {
+        try {
+            // Verifica se a conexão está aberta
+            if (connection != null && !connection.isClosed()) {
+                return connection.prepareStatement(query);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+     */
 
 }
 

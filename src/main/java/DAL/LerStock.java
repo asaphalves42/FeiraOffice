@@ -35,13 +35,12 @@ public class LerStock {
                 quantidade = resultado.getInt("Quantidade");
             }
 
-            // Desconecta da base de dados
-            baseDados.Desligar();
         } catch (SQLException e) {
             // Em caso de erro, exibe uma mensagem de erro
             Mensagens.Erro("Erro na leitura do Stock!", "Erro na leitura da tabela Stock na base de dados!");
+        } finally {
+            baseDados.Desligar();
         }
-
         // Retorna a quantidade do produto no estoque
         return quantidade;
     }
