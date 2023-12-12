@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe com funções de acesso à base de dados e leitura, referentes aos fornecedores.
@@ -388,5 +390,33 @@ public class LerFornecedores {
                 dados.getDouble("saldo")
         );
     }
+    public List<Fornecedor> obterFornecedoresPorProduto(BaseDados baseDados, int idProduto) throws IOException {
+        List<Fornecedor> fornecedores = new ArrayList<>();
 
+        try {
+            baseDados.Ligar();
+
+            // Complete a string da query SQL
+            String query = "SELECT Fornecedor.* FROM Fornecedor " +
+                    "INNER JOIN ProdutoFornecedor ON Fornecedor.Id = ProdutoFornecedor.Id_Fornecedor " +
+                    "WHERE ProdutoFornecedor.Id_Produto = ?";
+
+            PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
+            preparedStatement.setInt(1, idProduto);
+
+            ResultSet resultado = preparedStatement.executeQuery();
+
+            while (resultado.next()) {
+                Fornecedor fornecedor = criarObjetoFornecedor(resultado);
+                fornecedores.add(fornecedor);
+            }
+
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            baseDados.Desligar();
+        }
+
+        return fornecedores;
+    }
 }

@@ -5,6 +5,7 @@ import DAL.LerProdutos;
 
 import DAL.LerStock;
 
+import Model.Fornecedor;
 import Model.Produto;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
@@ -18,6 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Classe que mostra os produtos disponíveis e o stock da empresa.
@@ -120,32 +122,18 @@ public class MenuProdutos {
                 TableColumn<Produto, Integer> colunaId = new TableColumn<>("ID Produto");
                 TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descrição");
                 TableColumn<Produto, String> colunaIdFornecedor = new TableColumn<>("Id no Fornecedor");
-                TableColumn<Produto, String> colunaNomeFornecedor = new TableColumn<>("Fornecedor");
+
                 TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
 
                 // Associe as colunas às propriedades da classe Produto
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
                 colunaIdFornecedor.setCellValueFactory(new PropertyValueFactory<>("idFornecedorAsString"));
-                colunaNomeFornecedor.setCellValueFactory(cellData -> {
-                    Produto produto = cellData.getValue();
-                    if (produto != null) {
-                        try {
-                            String idFornecedor = produto.getIdFornecedorAsString();
-                            String nomeFornecedor = lerFornecedor.obterNomeFornecedorPorIdExterno(baseDados, idFornecedor);
-                            return new SimpleStringProperty(nomeFornecedor != null ? nomeFornecedor : "");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            return new SimpleStringProperty("");
-                        }
-                    } else {
-                        return new SimpleStringProperty("");
-                    }
-                });
+
 
 
                 // Adicione as colunas à tabela
-                tableView2.getColumns().addAll(colunaId, colunaDescricao, colunaIdFornecedor,colunaNomeFornecedor, colunaIdUnidade);
+                tableView2.getColumns().addAll(colunaId, colunaDescricao, colunaIdFornecedor, colunaIdUnidade);
 
                 // Configure a fonte de dados da tabela
                 tableView2.setItems(produtos2);
@@ -165,6 +153,19 @@ public class MenuProdutos {
             }
         } else {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
+        }
+    }
+    private void exibirFornecedoresParaProdutoSelecionado() throws IOException {
+        // Obtém o produto selecionado na tabela
+        Produto produtoSelecionado = tableView2.getSelectionModel().getSelectedItem();
+        int idProduto = Integer.parseInt(produtoSelecionado.getId());
+
+        if (produtoSelecionado != null) {
+            // Aqui você deve implementar a lógica para obter os fornecedores para o produto selecionado
+            List<Fornecedor> fornecedores = lerFornecedor.obterFornecedoresPorProduto(baseDados,idProduto);
+
+            // Exibe os fornecedores em uma janela ou caixa de diálogo
+            exibirDialogoFornecedores(fornecedores);
         }
     }
 
