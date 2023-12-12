@@ -394,7 +394,7 @@ public class LerFornecedores {
         ObservableList<ContaCorrente> contas = FXCollections.observableArrayList();
         try {
             baseDados.Ligar();
-
+            //"Select * from view_conta_coorente;"
 
             // Complete a string da query SQL
             String query = "SELECT Conta_Corrente.Id as id, " +
