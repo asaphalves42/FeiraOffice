@@ -112,6 +112,37 @@ public class LerFornecedores {
     }
 
     /**
+     * Cria um objeto Fornecedor a partir dos dados de um ResultSet.
+     *
+     * @param dados Resultado da consulta que contém os dados do fornecedor.
+     * @return Um objeto Fornecedor com as informações obtidas do ResultSet.
+     * @throws IOException  Se ocorrer um erro durante a obtenção de informações adicionais.
+     * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
+     */
+    private Fornecedor criarObjetoFornecedor1(ResultSet dados) throws IOException, SQLException {
+        int idPais = dados.getInt("Id_Pais");
+        int idUtilizador = dados.getInt("Id_Utilizador");
+
+
+        Pais pais = lerPaises.obterPaisPorId(baseDados, idPais);
+        UtilizadorFornecedor utilizador = lerUtilizadores.obterUtilizadorPorIdFornecedor(baseDados, idUtilizador);
+
+        return new Fornecedor(
+                dados.getInt("id"),
+                dados.getString("Nome"),
+                dados.getString("Id_Externo"),
+                dados.getString("Morada1"),
+                dados.getString("Morada2"),
+                dados.getString("Localidade"),
+                dados.getString("CodigoPostal"),
+                pais,
+                utilizador
+        );
+    }
+
+
+
+    /**
      * Obtém um fornecedor da base de dados com base no seu identificador externo.
      *
      * @param baseDados    A instância da classe BaseDados para conexão com o banco de dados.
@@ -135,10 +166,11 @@ public class LerFornecedores {
             ResultSet resultado = preparedStatement.executeQuery();
 
             if (resultado.next()) {
-                fornecedor = criarObjetoFornecedor(resultado);
+                fornecedor = criarObjetoFornecedor1(resultado);
             }
 
             baseDados.commit(baseDados.getConexao());
+
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");

@@ -143,48 +143,6 @@ public class BaseDados {
         }
         return false;
     }
-    /**
-     * Executa uma consulta preparada (PreparedStatement) e retorna a chave gerada (se houver).
-     *
-     * @param query A consulta preparada a ser executada.
-     * @return A chave gerada pela consulta, ou -1 se nenhuma chave foi gerada.
-     */
-    public int ExecutarPreparementStatement(String query) {
-        try {
-            // Se já foi invocado o ligar e a ligação está válida, então envia o comando da query
-            if (connection != null && !connection.isClosed()) {
-                try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-                    int linhasAfetadas = statement.executeUpdate();
-
-                    if (linhasAfetadas > 0) {
-                        ResultSet rs = statement.getGeneratedKeys();
-                        if (rs.next()) {
-                            return rs.getInt(1);
-                        }
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao executar a consulta SQL", e);
-        }
-        // Retorna -1 para indicar que nenhuma chave foi gerada
-        return -1;
-    }
-
-    /*
-    public PreparedStatement PreparedStatement(String query) {
-        try {
-            // Verifica se a conexão está aberta
-            if (connection != null && !connection.isClosed()) {
-                return connection.prepareStatement(query);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
-    }
-
-     */
 
 }
 

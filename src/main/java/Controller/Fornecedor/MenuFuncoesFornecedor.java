@@ -156,39 +156,43 @@ public class MenuFuncoesFornecedor {
 
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    if (lerEncomenda.podeEliminarFornecedor(baseDados, fornecedorSelecionado.getIdUtilizador())) {
-                        try {
+                    try {
+                        if (lerEncomenda.podeEliminarFornecedor(baseDados, fornecedorSelecionado.getIdUtilizador())) {
+                            try {
 
-                            boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados, fornecedorSelecionado.getId());
+                                boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados, fornecedorSelecionado.getId());
 
-                            if (sucesso) {
-                                // Remover o fornecedor da lista
-                                fornecedores.remove(fornecedorSelecionado);
+                                if (sucesso) {
+                                    // Remover o fornecedor da lista
+                                    fornecedores.remove(fornecedorSelecionado);
 
-                                // Remover o utilizador associado ao fornecedor
-                                LerUtilizadores lerUtilizadores = new LerUtilizadores();
-                                boolean remover = lerUtilizadores.removerUtilizador(baseDados, fornecedorSelecionado.getIdUtilizador());
+                                    // Remover o utilizador associado ao fornecedor
+                                    LerUtilizadores lerUtilizadores = new LerUtilizadores();
+                                    boolean remover = lerUtilizadores.removerUtilizador(baseDados, fornecedorSelecionado.getIdUtilizador());
 
-                                if (remover) {
-                                    // Remover o utilizador da lista
-                                    fornecedores.remove(fornecedorSelecionado.getIdUtilizador());
-                                } else {
-                                    // Se a remoção do utilizador falhar, adicione o fornecedor de volta à lista
-                                    fornecedores.add(fornecedorSelecionado);
+                                    if (remover) {
+                                        // Remover o utilizador da lista
+                                        fornecedores.remove(fornecedorSelecionado.getIdUtilizador());
+                                    } else {
+                                        // Se a remoção do utilizador falhar, adicione o fornecedor de volta à lista
+                                        fornecedores.add(fornecedorSelecionado);
+                                    }
                                 }
+
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
                             }
 
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
 
-
-                    } else {
-                        try {
-                            Mensagens.Erro("Erro!", "Fornecedor não pode ser eliminado por ter encomendas");
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        } else {
+                            try {
+                                Mensagens.Erro("Erro!", "Fornecedor não pode ser eliminado por ter encomendas");
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             });
