@@ -209,7 +209,10 @@ public class LerFornecedores {
                     "', @morada2 = '" + fornecedor.getMorada2() +
                     "', @localidade = '" + fornecedor.getLocalidade() +
                     "', @codigo_postal = '" + fornecedor.getCodigoPostal() +
-                    "', @id_pais = '" + pais.getId() + "'";
+                    "', @id_pais = '" + pais.getId() +
+                    "', @bic = '" + fornecedor.getBic() +
+                    "', @conta = '" + fornecedor.getConta() +
+                    "', @iban = '" + fornecedor.getIban() + "'";
 
             baseDados.Executar(query);
             baseDados.commit(baseDados.getConexao());
@@ -397,21 +400,26 @@ public class LerFornecedores {
             //"Select * from view_conta_coorente;"
 
             // Complete a string da query SQL
-            String query = "SELECT Conta_Corrente.Id as id, " +
-                    "Fornecedor.Id as id_interno, " +
-                    "Fornecedor.Nome as nome_fornecedor, " +
-                    "Fornecedor.Id_Externo as id_externo, " +
-                    "Fornecedor.Morada1 as morada1, " +
-                    "Fornecedor.Morada2 as morada2, " +
-                    "Fornecedor.Localidade as localidade, " +
-                    "Fornecedor.CodigoPostal as codigo_postal, " +
-                    "Conta_Corrente.Saldo as saldo, " +
-                    "Pais.Nome as nome_pais, " +
-                    "Pais.Moeda as moeda_pais " +
-                    "FROM Conta_Corrente " +
-                    "INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Conta_Corrente.Id_Fornecedor " +
-                    "INNER JOIN Pais ON Fornecedor.Id_Pais = Pais.Id";
-
+            String query = """
+                    SELECT Conta_Corrente.Id as id,
+                                        Fornecedor.Id as id_interno,
+                                        Fornecedor.Nome as nome_fornecedor,
+                                        Fornecedor.Id_Externo as id_externo,
+                                        Fornecedor.Morada1 as morada1,
+                                        Fornecedor.Morada2 as morada2,
+                                        Fornecedor.Localidade as localidade,
+                                        Fornecedor.CodigoPostal as codigo_postal,
+                    					Fornecedor.Bic as bic,
+                    					Fornecedor.Conta as conta,
+                    					Fornecedor.Iban as Iban,
+                                        Conta_Corrente.Saldo as saldo,
+                                        Pais.Nome as nome_pais,
+                                        Pais.Moeda as moeda_pais
+                                        FROM Conta_Corrente
+                                        INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Conta_Corrente.Id_Fornecedor
+                                        INNER JOIN Pais ON Fornecedor.Id_Pais = Pais.Id;
+                    
+                    """;
             PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
             ResultSet resultado = preparedStatement.executeQuery();
 
@@ -454,7 +462,10 @@ public class LerFornecedores {
                 dados.getString("morada2"),
                 dados.getString("localidade"),
                 dados.getString("codigo_postal"),
-                pais
+                pais,
+                dados.getString("bic"),
+                dados.getString("conta"),
+                dados.getString("iban")
         );
 
         return new ContaCorrente(

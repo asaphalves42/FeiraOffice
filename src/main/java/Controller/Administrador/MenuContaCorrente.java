@@ -183,6 +183,15 @@ public class MenuContaCorrente {
                 String pais = fornecedor.getIdPais().getNome();
                 labelPais.setText(pais);
 
+                String iban = fornecedor.getIban();
+                labelIban.setText(iban);
+
+                String bic = fornecedor.getBic();
+                labelBIC.setText(bic);
+
+                String conta = fornecedor.getConta();
+                labelConta.setText(conta);
+
                 //adicionar mais dados ao fornecedor
             }
         }

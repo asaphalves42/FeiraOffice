@@ -41,6 +41,16 @@ public class DialogAdicionarFornecedor {
     private ComboBox<Pais> comboBoxPais;
 
     @FXML
+    private TextField labelBic;
+
+    @FXML
+    private TextField labelConta;
+
+    @FXML
+    private TextField labelIban;
+
+
+    @FXML
     private TextField textoCodigoPostal;
     @FXML
     private TextField textoIdExterno;
@@ -91,10 +101,14 @@ public class DialogAdicionarFornecedor {
             String morada2 = textoMorada2.getText();
             String localidade = textoLocalidade.getText();
             String codigoPostal = textoCodigoPostal.getText();
+            String conta = labelConta.getText();
+            String bic = labelBic.getText();
+            String iban = labelIban.getText();
             Pais pais = comboBoxPais.getSelectionModel().getSelectedItem();
 
             // Verificar se algum campo obrigatório está vazio
-            if (nome.isEmpty() || email.isEmpty() || idExterno.isEmpty() ||password.isEmpty() || morada1.isEmpty() || localidade.isEmpty() || codigoPostal.isEmpty() || pais == null) {
+            if (nome.isEmpty() || email.isEmpty() || idExterno.isEmpty() ||password.isEmpty() || morada1.isEmpty() || localidade.isEmpty()
+                    || codigoPostal.isEmpty() || conta.isEmpty() || bic.isEmpty() ||iban.isEmpty() || pais == null) {
                 // Exibir uma mensagem de erro ao utilizador
                 Mensagens.Erro("Campos obrigatórios!", "Por favor, preencha todos os campos obrigatórios.");
                 return;
@@ -125,7 +139,11 @@ public class DialogAdicionarFornecedor {
                     localidade,
                     codigoPostal,
                     pais,
-                    utilizador);
+                    utilizador,
+                    bic,
+                    conta,
+                    iban
+                    );
 
             //chamar a DAL para adicionar o fornecedor
             Fornecedor fornecedorInserido = adicionarFornecedor.adicionarFornecedorBaseDeDados(baseDados,fornecedor, pais, utilizador);
