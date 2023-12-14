@@ -33,25 +33,24 @@ public class LerFornecedores {
             baseDados.Ligar();
 
             String query = """
-                    SELECT
-                                        
+                     SELECT
                     Fornecedor.Id AS id,
                     Fornecedor.Nome AS nome,
-                    Fornecedor.Id_Externo AS id_externo,
+                     Fornecedor.Id_Externo AS id_externo,
                     Fornecedor.Morada1 AS morada1,
                     Fornecedor.Morada2 AS morada2,
                     Fornecedor.Localidade AS localidade,
                     Fornecedor.CodigoPostal AS codigo_postal,
+                    Fornecedor.Bic as bic,
+                    Fornecedor.Conta as conta,
+                    Fornecedor.Iban as iban,
                     Pais.Nome AS nome_pais,
                     Pais.id AS id_pais,
                     Utilizador.id_util AS id_utilizador,
                     Utilizador.id_role AS tipo_utilizador
-                                        
-                    FROM Fornecedor
-                                        
+                     FROM Fornecedor
                     INNER JOIN Pais ON Pais.id = Fornecedor.Id_Pais
                     INNER JOIN Utilizador ON Utilizador.id_util = Fornecedor.Id_Utilizador
-                                        
                     """;
 
             PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
@@ -104,7 +103,10 @@ public class LerFornecedores {
                 dados.getString("localidade"),
                 dados.getString("codigo_postal"),
                 pais,
-                utilizador
+                utilizador,
+                dados.getString("bic"),
+                dados.getString("conta"),
+                dados.getString("iban")
         );
     }
 
@@ -164,8 +166,6 @@ public class LerFornecedores {
             if (resultado.next()) {
                 fornecedor = criarObjetoFornecedor1(resultado);
             }
-
-
 
 
         } catch (SQLException e) {
@@ -286,7 +286,10 @@ public class LerFornecedores {
                        morada2 = ?, 
                        localidade = ?, 
                        codigopostal = ?, 
-                       id_pais = ? 
+                       id_pais = ?,
+                       Bic = ?,
+                       Conta = ?,
+                       Iban = ?
                     WHERE id_Utilizador = ?
                     """;
 
@@ -301,7 +304,10 @@ public class LerFornecedores {
             preparedStatementFornecedor.setString(5, fornecedor.getLocalidade());
             preparedStatementFornecedor.setString(6, fornecedor.getCodigoPostal());
             preparedStatementFornecedor.setInt(7, pais.getId());
-            preparedStatementFornecedor.setInt(8, fornecedor.getIdUtilizador().getId());
+            preparedStatementFornecedor.setString(8, fornecedor.getBic());
+            preparedStatementFornecedor.setString(9, fornecedor.getConta());
+            preparedStatementFornecedor.setString(10, fornecedor.getIban());
+            preparedStatementFornecedor.setInt(11, fornecedor.getIdUtilizador().getId());
 
             // Executar a atualização do Fornecedor
             int linhasAfetadasFornecedor = preparedStatementFornecedor.executeUpdate();
@@ -373,7 +379,6 @@ public class LerFornecedores {
             }
 
 
-
             baseDados.Desligar();
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
@@ -418,7 +423,7 @@ public class LerFornecedores {
                                         FROM Conta_Corrente
                                         INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Conta_Corrente.Id_Fornecedor
                                         INNER JOIN Pais ON Fornecedor.Id_Pais = Pais.Id;
-                    
+                                        
                     """;
             PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
             ResultSet resultado = preparedStatement.executeQuery();
