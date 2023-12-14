@@ -27,7 +27,6 @@ public class LerUnidade {
         Unidade unidade = null;
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
 
             String query = "SELECT * FROM Unidade WHERE Descricao = ?";
             try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
@@ -38,13 +37,10 @@ public class LerUnidade {
                         unidade = criarObjeto(resultado);
                     }
                 }
-
-                baseDados.commit(baseDados.getConexao());
             }
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            baseDados.rollback(baseDados.getConexao());
         } finally {
             baseDados.Desligar();
         }
@@ -63,7 +59,6 @@ public class LerUnidade {
         Unidade unidade = null;
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
 
             String query = "SELECT * FROM Unidade WHERE id = ?";
             try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
@@ -80,7 +75,6 @@ public class LerUnidade {
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            baseDados.rollback(baseDados.getConexao());
         } finally {
             baseDados.Desligar();
         }

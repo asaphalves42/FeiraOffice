@@ -26,7 +26,7 @@ public class LerPaises {
         ObservableList<Pais> listaDePaises = FXCollections.observableArrayList();
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+
 
             String query = "SELECT * FROM Pais";
             try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
@@ -41,12 +41,12 @@ public class LerPaises {
                     listaDePaises.add(pais);
                 }
 
-                baseDados.commit(baseDados.getConexao());
+
             }
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            baseDados.rollback(baseDados.getConexao());
+
         } finally {
             baseDados.Desligar();
         }
@@ -65,7 +65,6 @@ public class LerPaises {
         Pais pais = null;
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
 
             String query = "SELECT * FROM Pais WHERE id = ?";
             try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
@@ -76,14 +75,11 @@ public class LerPaises {
                         pais = criarObjeto(resultado);
                     }
                 }
-
-
-                baseDados.commit(baseDados.getConexao());
             }
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            baseDados.rollback(baseDados.getConexao());
+
         } finally {
             baseDados.Desligar();
         }
@@ -102,7 +98,6 @@ public class LerPaises {
         Pais pais = null;
         try {
             baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
 
             String query = "SELECT * FROM Pais WHERE ISO = ?";
             try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
@@ -114,12 +109,10 @@ public class LerPaises {
                     }
                 }
 
-                baseDados.commit(baseDados.getConexao());
             }
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            baseDados.rollback(baseDados.getConexao());
         } finally {
             baseDados.Desligar();
         }
