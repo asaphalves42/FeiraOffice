@@ -217,7 +217,7 @@ public class LerEncomenda {
 
         Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados, dados.getString("Id_fornecedor"));
         Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais"));
-        Estado estado = Estado.valueOfId(dados.getInt("Id_Estado"));
+        EstadoEncomenda estado = EstadoEncomenda.valueOfId(dados.getInt("Id_Estado"));
 
         return new Encomenda(
                 dados.getInt("Id"),
@@ -378,8 +378,8 @@ public class LerEncomenda {
         Pais idPais = lerPaises.obterPaisPorId(baseDados, encomenda.getPais().getId());
 
         // Construir a string da consulta SQL, escapando os valores com PreparedStatement
-        String query = "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Id_Estado) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Id_Estado, Id_estado_pagamento) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -391,6 +391,7 @@ public class LerEncomenda {
             preparedStatement.setDouble(6, encomenda.getTotalIncidencia());
             preparedStatement.setDouble(7, encomenda.getTotal());
             preparedStatement.setInt(8, encomenda.getEstado().getValue());
+            preparedStatement.setInt(9, encomenda.getEstadoPagamento().getValue());
 
             // Retornar a string da consulta SQL
             //return preparedStatement.toString();
@@ -406,7 +407,6 @@ public class LerEncomenda {
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro!","Erro ao inserir encomenda!");
-            baseDados.rollback(baseDados.getConexao());
             throw new RuntimeException(e);
         }
 
@@ -642,7 +642,12 @@ public class LerEncomenda {
             baseDados.Ligar();
             baseDados.iniciarTransacao(baseDados.getConexao());
 
-            String query = "UPDATE Encomenda SET Id_Estado = 3 WHERE Id = ?";
+            String query = """
+                    UPDATE Encomenda
+                    SET Id_Estado = 3, Id_estado_pagamento = 3
+                    WHERE Id = ?;
+                                        
+                    """;
 
             try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
                 preparedStatement.setInt(1, idEncomenda);
@@ -798,10 +803,12 @@ public class LerEncomenda {
                         Encomenda.Referencia as referencia, 
                         Encomenda.Data as data_encomenda,
                         Encomenda.Total as total, 
-                        Estado.Id as estado
+                        Estado.Id as estado,
+                        Estado_Pagamento.id as estado_pagamento
                     FROM Encomenda 
                         INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
                         INNER JOIN Estado ON Estado.Id = Encomenda.Id_Estado
+                        INNER JOIN Estado_Pagamento ON Estado_Pagamento.id = Encomenda.Id_estado_pagamento
                         WHERE Fornecedor.Id_Externo = ? 
                         AND Estado.Id = 2
                     """;
@@ -839,7 +846,8 @@ public class LerEncomenda {
                 dados.getString("id_fornecedor")
         );
 
-        Estado estado = Estado.valueOfId(dados.getInt("estado"));
+        EstadoEncomenda estado = EstadoEncomenda.valueOfId(dados.getInt("estado"));
+        EstadoPagamento estadoPagamento = EstadoPagamento.valueOfId(dados.getInt("estado_pagamento"));
 
         return new Encomenda(
                 dados.getInt("Id_encomenda"),
@@ -847,7 +855,8 @@ public class LerEncomenda {
                 dados.getString("referencia"),
                 dados.getDate("data_encomenda").toLocalDate(),
                 dados.getDouble("total"),
-                estado
+                estado,
+                estadoPagamento
         );
     }
 

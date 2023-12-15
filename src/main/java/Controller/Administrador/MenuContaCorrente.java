@@ -1,5 +1,6 @@
 package Controller.Administrador;
 
+import BL.LerSepa;
 import DAL.LerEncomenda;
 import DAL.LerFornecedores;
 import Model.ContaCorrente;
@@ -19,6 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 /**
  * Menu com as funções da conta corrente, ler saldo em dívida.
@@ -220,6 +222,7 @@ public class MenuContaCorrente {
                     TableColumn<Encomenda, String> colunaReferencia = new TableColumn<>("Referência");
                     TableColumn<Encomenda, String> colunaData = new TableColumn<>("Data");
                     TableColumn<Encomenda, String> colunaTotal = new TableColumn<>("Total");
+                    TableColumn<Encomenda, String> colunaEstadoPagamento = new TableColumn<>("Estado do pagamento");
 
                     // Associe as colunas às propriedades da classe Fornecedor
                     colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -227,12 +230,14 @@ public class MenuContaCorrente {
                     colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
                     colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
                     colunaTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
+                    colunaEstadoPagamento.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEstadoPagamento().getDescricao()));
 
                     tableViewEncomendaFornc.getColumns().add(colunaId);
                     tableViewEncomendaFornc.getColumns().add(colunaIdFornecedor);
                     tableViewEncomendaFornc.getColumns().add(colunaReferencia);
                     tableViewEncomendaFornc.getColumns().add(colunaData);
                     tableViewEncomendaFornc.getColumns().add(colunaTotal);
+                    tableViewEncomendaFornc.getColumns().add(colunaEstadoPagamento);
 
                     tableViewEncomendaFornc.setItems(encomendas);
                 }
@@ -250,7 +255,26 @@ public class MenuContaCorrente {
      * @param event O evento associado ao clique no botão "Pagar".
      */
     @FXML
-    void clickPagar(ActionEvent event) {
+    void clickPagar(ActionEvent event) throws Exception {
+
+      LerSepa.gerarSEPATransferencia(
+              "FAC 01/20231",
+              LocalDate.now(),
+              200.00,
+              "Empresa origem",
+              "Morada empresa origem",
+              "Localidade",
+              "4500-001",
+              "PT",
+              "PT500000000000000",
+              "ACTVPTPL",
+              "Empresa destino",
+              "Rua das flores",
+              "4500-321",
+              "PT500000000000000",
+              "ACTVPTPL",
+              "C:\\a\\SEPA.xml"
+      );
 
     }
 

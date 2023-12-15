@@ -49,6 +49,7 @@ public class LerFicheiro {
 
     /**
      * Constructor que obtem o utilizador que está logado no sistema.
+     *
      * @param utilizador utilizador logado
      */
     public void iniciaData(Utilizador utilizador) {
@@ -75,7 +76,7 @@ public class LerFicheiro {
      * @param arquivoXml O arquivo XML a ser processado.
      * @param utilizador O utilizador associado à confirmação de pedido.
      * @return Um objeto OrderConfirmation contendo as informações extraídas do arquivo XML.
-     * @throws IOException Se ocorrer um erro durante a leitura do arquivo ou acesso à base de dados.
+     * @throws IOException      Se ocorrer um erro durante a leitura do arquivo ou acesso à base de dados.
      * @throws RuntimeException Se ocorrer um erro durante o processamento do arquivo XML.
      */
     // Função para processar um arquivo XML e extrair informações de uma confirmação de pedido (OrderConfirmation)
@@ -190,7 +191,8 @@ public class LerFicheiro {
                 // Define os valores do fornecedor antes de usá-lo
                 fornecedorLogado.setIdExterno(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier());
 
-                Estado estado = Estado.valueOfId(1); //pendente
+                EstadoEncomenda estado = EstadoEncomenda.valueOfId(1); //pendente
+                EstadoPagamento estadoPagamento = EstadoPagamento.valueOfId(1);// não pago
 
                 encomenda = new Encomenda(0,
                         referencia,
@@ -198,7 +200,8 @@ public class LerFicheiro {
                         fornecedorLogado,
                         lerPais,
                         new ArrayList<>(),
-                        estado
+                        estado,
+                        estadoPagamento
                 );
 
 
@@ -412,6 +415,7 @@ public class LerFicheiro {
         return orderConfirmation;
 
     }
+
 }
 
 
