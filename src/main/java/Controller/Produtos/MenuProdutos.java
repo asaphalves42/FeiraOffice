@@ -163,7 +163,7 @@ public class MenuProdutos {
 
         if (produtoSelecionado != null) {
             try {
-                int idProduto = Integer.parseInt(produtoSelecionado.getId());
+                String idProduto = produtoSelecionado.getId();
                 List<Fornecedor> fornecedores = lerFornecedor.obterFornecedoresPorProduto(baseDados, idProduto);
 
                 if (fornecedores != null) {

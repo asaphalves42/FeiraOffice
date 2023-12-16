@@ -390,7 +390,7 @@ public class LerFornecedores {
                 dados.getDouble("saldo")
         );
     }
-    public List<Fornecedor> obterFornecedoresPorProduto(BaseDados baseDados, int idProduto) throws IOException {
+    public List<Fornecedor> obterFornecedoresPorProduto(BaseDados baseDados, String idProduto) throws IOException {
         List<Fornecedor> fornecedores = new ArrayList<>();
 
         try {
@@ -398,11 +398,11 @@ public class LerFornecedores {
 
             String query = "SELECT Fornecedor.* " +
                     "FROM Fornecedor " +
-                    "INNER JOIN Produtos ON Fornecedor.id = Produto.id_fornecedor " +
-                    "WHERE Produtos.id = ?";
+                    "INNER JOIN Produto ON Fornecedor.id = Produto.id_fornecedor " +
+                    "WHERE Produto.id = ?";
 
             try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
-                preparedStatement.setInt(1, idProduto); // Bind do parâmetro de forma segura
+                preparedStatement.setString(1, idProduto); // Bind do parâmetro de forma segura
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {
                     while (resultado.next()) {
