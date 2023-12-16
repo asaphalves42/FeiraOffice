@@ -150,8 +150,8 @@ public class MenuFuncOperador{
                             utilizador.remove(operadorSelecionado);
                         }
 
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             });
