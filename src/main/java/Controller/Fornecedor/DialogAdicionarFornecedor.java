@@ -140,8 +140,8 @@ public class DialogAdicionarFornecedor {
             currentStage.close();
 
             Mensagens.Informacao("Novo fornecedor", "Novo fornecedor inserido com sucesso!");
-            ControllerEmail controllerEmail = new ControllerEmail();
-            controllerEmail.enviarEmail(email, password);
+            //ControllerEmail controllerEmail = new ControllerEmail();
+            //controllerEmail.enviarEmail(email, password);
 
 
 

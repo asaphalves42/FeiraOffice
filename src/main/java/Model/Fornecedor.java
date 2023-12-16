@@ -112,13 +112,8 @@ public class Fornecedor {
         this.codigoPostal = codigoPostal;
     }
 
-
     public Pais getIdPais() {
         return idPais;
-    }
-
-    public String getIdPaisString(){
-        return getIdPais().getNome();
     }
 
     public void setIdPais(Pais idPais) {
@@ -131,10 +126,6 @@ public class Fornecedor {
 
     public void setIdUtilizador(UtilizadorFornecedor idUtilizador) {
         this.idUtilizador = idUtilizador;
-    }
-    public String getIdUtilizadorString() {
-        return getIdUtilizador().getTipo().name();
-
     }
 
     public UtilizadorFornecedor getUtilizador() {
