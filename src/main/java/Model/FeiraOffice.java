@@ -10,6 +10,9 @@ public class FeiraOffice {
     private String iban;
     private String bic;
 
+    public FeiraOffice() {
+
+    }
     public FeiraOffice(int id, String nome, String morada, String localidade, String codPostal, Pais pais, String iban, String bic) {
         this.id = id;
         this.nome = nome;

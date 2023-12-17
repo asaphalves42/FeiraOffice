@@ -62,6 +62,11 @@ public class Fornecedor {
         this.idPais = idPais;
     }
 
+    public Fornecedor(String nome, String idExterno){
+        this.nome = nome;
+        this.idExterno = idExterno;
+    }
+
     public Fornecedor(int idInterno, String nomeFornecedor, String idExterno, String morada1, String morada2, String localidade, String codigoPostal, Pais pais,
                       String conta, String bic, String iban) {
         this.id = idInterno;

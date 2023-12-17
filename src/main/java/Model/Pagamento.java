@@ -2,6 +2,7 @@ package Model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Pagamento {
     private int id;
@@ -10,12 +11,50 @@ public class Pagamento {
     private ContaCorrente contaCorrente;
     private ArrayList<Encomenda> encomendas;
 
+    public Pagamento(){
+
+    }
+
     public Pagamento(int id, String referencia, LocalDate data, ContaCorrente valor, ArrayList<Encomenda> encomendas) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
         this.contaCorrente = valor;
         this.encomendas = encomendas;
+    }
+
+    public static String gerarReferencia() {
+        // Gera 6 números aleatórios
+        String numeros = gerarNumerosAleatorios(6);
+
+        // Gera 3 letras aleatórias
+        String letras = gerarLetrasAleatorias(3);
+
+        // Combina os números e letras para formar a referência
+        return numeros + letras;
+    }
+
+    private static String gerarNumerosAleatorios(int quantidade) {
+        Random random = new Random();
+        StringBuilder numeros = new StringBuilder();
+
+        for (int i = 0; i < quantidade; i++) {
+            numeros.append(random.nextInt(10)); // Gera números de 0 a 9
+        }
+
+        return numeros.toString();
+    }
+
+    private static String gerarLetrasAleatorias(int quantidade) {
+        Random random = new Random();
+        StringBuilder letras = new StringBuilder();
+
+        for (int i = 0; i < quantidade; i++) {
+            char letra = (char) ('A' + random.nextInt(26)); // Gera letras de A a Z
+            letras.append(letra);
+        }
+
+        return letras.toString();
     }
 
     public int getId() {
@@ -27,7 +66,7 @@ public class Pagamento {
     }
 
     public String getReferencia() {
-        return referencia;
+        return referencia = gerarReferencia();
     }
 
     public void setReferencia(String referencia) {
