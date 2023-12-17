@@ -16,8 +16,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -256,8 +259,8 @@ public class MenuContaCorrente {
      */
     @FXML
     void clickPagar(ActionEvent event) throws Exception {
-
-      LerSepa.gerarSEPATransferencia(
+/*
+LerSepa.gerarSEPATransferencia(
               "FAC 01/20231",
               LocalDate.now(),
               200.00,
@@ -275,6 +278,13 @@ public class MenuContaCorrente {
               "ACTVPTPL",
               "C:\\a\\SEPA.xml"
       );
+ */
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Admin/pagamentoSEPA.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("PAGAMENTO!");
+        stage.setScene(scene);
+        stage.showAndWait();
 
     }
 
