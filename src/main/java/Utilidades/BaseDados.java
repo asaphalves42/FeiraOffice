@@ -52,7 +52,7 @@ public class BaseDados {
     public void commit(Connection conexao) throws IOException {
         try {
             conexao.commit();
-            conexao.setAutoCommit(true);
+            conexao.setAutoCommit(false);
         } catch (SQLException e) {
             Mensagens.Erro("Erro!","Erro ao realizar commit!");
             rollback(conexao); // Em caso de falha, realiza rollback
@@ -69,7 +69,7 @@ public class BaseDados {
             conexao.rollback();
             conexao.setAutoCommit(true);
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!","Erro ao realizar rollback!");
+            Mensagens.Erro("Erro!","Erro ao realizar rollback!" + e.getMessage());
         }
     }
 

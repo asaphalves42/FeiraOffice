@@ -65,60 +65,7 @@ public class LerContaCorrente {
         );
     }
 
-    public FeiraOffice lerDadosDaEmpresa(BaseDados baseDados) throws SQLException, IOException {
-        FeiraOffice feiraOffice = null;
-        try {
-            baseDados.Ligar();
 
-            String query = """
-                    SELECT
-                        Feira_Office.id AS id,
-                    	Feira_Office.nome AS nome,
-                    	Feira_Office.morada AS morada,
-                    	Feira_Office.localidade AS localidade,
-                    	Feira_Office.codigo_postal AS codigo_postal,
-                    	Pais.id AS id_pais,
-                    	Pais.Nome AS nome_pais,
-                    	Feira_Office.iban AS iban,
-                    	Feira_Office.bic AS bic
-                                        
-                    FROM Feira_Office
-                    	INNER JOIN Pais ON Pais.id = Feira_Office.id_pais
-                    """;
-            try (PreparedStatement statement = baseDados.getConexao().prepareStatement(query)) {
-
-                ResultSet resultado = statement.executeQuery();
-
-                if (resultado.next()) {
-                    feiraOffice = criarObjetoFeiraOffice(resultado);
-                }
-
-            }
-
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro!", "Erro ao carregar dados bancários da Feira & Office");
-        }finally {
-            baseDados.Desligar();
-        }
-        return feiraOffice;
-    }
-
-    private FeiraOffice criarObjetoFeiraOffice(ResultSet dados) throws SQLException {
-        Pais pais = new Pais(
-                dados.getInt("id_pais"),
-                dados.getString("nome_pais")
-        );
-        return new FeiraOffice(
-                dados.getInt("id"),
-                dados.getString("nome"),
-                dados.getString("morada"),
-                dados.getString("localidade"),
-                dados.getString("codigo_postal"),
-                pais,
-                dados.getString("iban"),
-                dados.getString("bic")
-        );
-    }
 
 
 }

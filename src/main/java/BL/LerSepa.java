@@ -68,7 +68,7 @@ public class LerSepa {
             throw new Exception("Dados do cliente incompletos");
         }
 
-        if ("".equals(clienteIBAN) || "".equals(clienteBIC)){
+        if ("".equals(clienteIBAN) || "".equals(clienteBIC)) {
             throw new Exception("Dados bancários do cliente errados");
         }
 

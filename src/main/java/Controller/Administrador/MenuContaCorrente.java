@@ -1,8 +1,10 @@
 package Controller.Administrador;
 
 import BL.LerSepa;
+import DAL.LerContaCorrente;
 import DAL.LerEncomenda;
 import DAL.LerFornecedores;
+import DAL.LerPagamento;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
@@ -21,6 +23,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ public class MenuContaCorrente {
 
     BaseDados baseDados = new BaseDados();
     LerFornecedores lerFornecedores = new LerFornecedores();
+    LerPagamento lerPagamento = new LerPagamento();
 
     LerEncomenda lerEncomenda = new LerEncomenda();
 
@@ -256,20 +260,20 @@ public class MenuContaCorrente {
      * Método associado ao clique no botão "Pagar".
      */
     @FXML
-    void clickPagar() throws IOException {
+    void clickPagar() throws Exception {
 
         ContaCorrente contaCorrente = tableViewDividas.getSelectionModel().getSelectedItem();
 
-        FeiraOffice feiraOffice = new FeiraOffice();
+        FeiraOffice feiraOffice = lerPagamento.lerDadosDaEmpresa(baseDados);
 
-       // String referencia = pagamento.getReferencia();
-        //LocalDate data = pagamento.getData();
+        LocalDate data = LocalDate.now();
         double valor = contaCorrente.getSaldo();
-        String nomeEmpresaLocal = feiraOffice.getNome();
+        int id = feiraOffice.getId();
+        String nome = feiraOffice.getNome();
         String moradaLocal = feiraOffice.getMorada();
         String localidade = feiraOffice.getLocalidade();
         String codigoPostalLocal = feiraOffice.getCodPostal();
-        Pais pais = feiraOffice.getPais();
+        String pais = feiraOffice.getPais().getISO();
         String iban = feiraOffice.getIban();
         String bic = feiraOffice.getBic();
 
@@ -281,31 +285,54 @@ public class MenuContaCorrente {
         String ibanFornecedor = contaCorrente.getIdFornecedor().getIban();
         String bicFornecedor = contaCorrente.getIdFornecedor().getBic();
 
-        //Obter as encomendas do fornecedor
-        List<Encomenda> encomendasDoFornecedor = new ArrayList<>();
-        for (Encomenda encomenda : lerEncomenda.lerEncomendasPorFornecedor(baseDados,contaCorrente.getIdFornecedor().getIdExterno())){
-            encomendasDoFornecedor.add(encomenda);
+        List<Encomenda> listaDeEncomendas = obterEncomendaFornecedor(contaCorrente);
 
-        }
-
-        Pagamento pagamento = new Pagamento (
-
+        Pagamento pagamento = new Pagamento (0,
+                Pagamento.gerarReferencia(),
+                data,
+                valor,
+                contaCorrente,
+                listaDeEncomendas,
+                id
         );
 
+        if(lerPagamento.inserirPagamentoNaBaseDados(baseDados,pagamento)){
+            //Gerar SEPA
+           LerSepa.gerarSEPATransferencia(
+                   pagamento.getReferencia(),
+                   data,
+                   valor,
+                   nome,
+                   moradaLocal,
+                   localidade,
+                   codigoPostalLocal,
+                   pais,
+                   iban,
+                   bic,
+                   //Fornecedor
+                   nomeFornecedor,
+                   moradaFornecedor,
+                   codPostalFornecedor,
+                   ibanFornecedor,
+                   bicFornecedor,
+                   "C:\\a\\SEPAS\\SEPA.xml"
+           );
 
+           //Falta validar o xsd,
+            // verificar a referencia antes de realizar uma nova, pra ver se nao repete
+            // atualizar o estado da encomenda para pago
 
-
-
-
-
-
-
-
-
+            Mensagens.Informacao("Sucesso!", "Pagamento realizado com sucesso!");
+            Mensagens.Informacao("SEPA!","Ficheiro SEPA gerado com sucesso!");
+        } else {
+            Mensagens.Erro("Erro!","Erro ao realizar pagamento!");
+        }
     }
 
-
-
+    public List<Encomenda> obterEncomendaFornecedor(ContaCorrente contaCorrente) throws IOException {
+        //Obter as encomendas do fornecedor
+        return new ArrayList<>(lerEncomenda.lerEncomendasPorFornecedor(baseDados, contaCorrente.getIdFornecedor().getIdExterno()));
+    }
 
 
     /*

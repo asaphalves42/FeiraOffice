@@ -393,8 +393,7 @@ public class LerEncomenda {
             preparedStatement.setInt(8, encomenda.getEstado().getValue());
             preparedStatement.setInt(9, encomenda.getEstadoPagamento().getValue());
 
-            // Retornar a string da consulta SQL
-            //return preparedStatement.toString();
+
             int idEncomenda = preparedStatement.executeUpdate();
 
             if (idEncomenda > 0) {

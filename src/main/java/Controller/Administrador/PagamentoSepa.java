@@ -2,6 +2,7 @@ package Controller.Administrador;
 
 import BL.LerSepa;
 import DAL.LerContaCorrente;
+import DAL.LerPagamento;
 import Model.ContaCorrente;
 import Model.FeiraOffice;
 import Model.Fornecedor;
@@ -74,6 +75,7 @@ public class PagamentoSepa {
 
     }
     LerContaCorrente lerContaCorrente = new LerContaCorrente();
+    LerPagamento lerPagamento = new LerPagamento();
     BaseDados baseDados = new BaseDados();
 
     public void initialize() throws SQLException, IOException {
@@ -82,7 +84,7 @@ public class PagamentoSepa {
     }
 
     public void carregarLabelsFeira() throws SQLException, IOException {
-        dadosFeira = lerContaCorrente.lerDadosDaEmpresa(baseDados);
+        dadosFeira = lerPagamento.lerDadosDaEmpresa(baseDados);
 
         if(dadosFeira!=null){
             labelNome.setText(dadosFeira.getNome());

@@ -14,6 +14,11 @@ public class Pais {
         this.id = id;
         this.nome = nome;
     }
+    public Pais(int id, String nome,String ISO) {
+        this.id = id;
+        this.nome = nome;
+        this.ISO = ISO;
+    }
 
     public Pais(int id, String nome, String ISO, double taxa, String moeda) {
         this.id = id;

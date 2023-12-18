@@ -2,26 +2,44 @@ package Model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Pagamento {
     private int id;
     private String referencia;
     private LocalDate data;
+    private double valor;
     private ContaCorrente contaCorrente;
-    private ArrayList<Encomenda> encomendas;
+    private List<Encomenda> encomendas;
+    private int feiraOffice;
 
-    public Pagamento(){
-
-    }
-
-    public Pagamento(int id, String referencia, LocalDate data, ContaCorrente valor, ArrayList<Encomenda> encomendas) {
+    public Pagamento(int id, String referencia, LocalDate data, double valor, ContaCorrente contaCorrente, List<Encomenda> encomendas, int feiraOffice) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
-        this.contaCorrente = valor;
+        this.valor = valor;
+        this.contaCorrente = contaCorrente;
         this.encomendas = encomendas;
+        this.feiraOffice = feiraOffice;
     }
+
+    public ContaCorrente getContaCorrente() {
+        return contaCorrente;
+    }
+
+    public void setContaCorrente(ContaCorrente contaCorrente) {
+        this.contaCorrente = contaCorrente;
+    }
+
+    public int getFeiraOffice() {
+        return feiraOffice;
+    }
+
+    public void setFeiraOffice(int feiraOffice) {
+        this.feiraOffice = feiraOffice;
+    }
+
 
     public static String gerarReferencia() {
         // Gera 6 números aleatórios
@@ -57,6 +75,14 @@ public class Pagamento {
         return letras.toString();
     }
 
+    public double getValor() {
+        return valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
+    }
+
     public int getId() {
         return id;
     }
@@ -81,19 +107,12 @@ public class Pagamento {
         this.data = data;
     }
 
-    public ContaCorrente getValor() {
-        return contaCorrente;
-    }
 
-    public void setValor(ContaCorrente valor) {
-        this.contaCorrente = valor;
-    }
-
-    public ArrayList<Encomenda> getEncomendas() {
+    public List<Encomenda> getEncomendas() {
         return encomendas;
     }
 
-    public void setEncomendas(ArrayList<Encomenda> encomendas) {
+    public void setEncomendas(List<Encomenda> encomendas) {
         this.encomendas = encomendas;
     }
 }
