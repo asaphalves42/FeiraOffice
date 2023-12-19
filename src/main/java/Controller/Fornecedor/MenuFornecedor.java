@@ -171,6 +171,8 @@ public class MenuFornecedor {
                 Mensagens.Erro("Erro!", "ID do fornecedor não coincide com o do ficheiro. Não foi possível fazer upload da encomenda");
             }
 
+
+
         } else {
             Mensagens.Erro("Erro!", "Erro ao ler o ficheiro!");
         }
