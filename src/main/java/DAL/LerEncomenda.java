@@ -254,8 +254,14 @@ public class LerEncomenda {
             }
 
             // Inserir na tabela Linha_Encomenda
-            for (LinhaEncomenda linha : encomenda.getLinhas()) {
-                inserirLinhaEncomenda(baseDados, Id_Encomenda, linha);
+            try {
+                for (LinhaEncomenda linha : encomenda.getLinhas()) {
+                    inserirLinhaEncomenda(baseDados, Id_Encomenda, linha);
+                }
+            } catch (RuntimeException e) {
+                baseDados.rollback(baseDados.getConexao());
+                System.out.println(e.getMessage());
+                return 0;
             }
 
             baseDados.commit(baseDados.getConexao());
@@ -263,7 +269,6 @@ public class LerEncomenda {
             return Id_Encomenda;
         } catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na adição da base de dados!");
-            baseDados.rollback(baseDados.getConexao());
         } finally {
             baseDados.Desligar();
         }
@@ -338,7 +343,7 @@ public class LerEncomenda {
      * @param Id_Encomenda O ID da encomenda à qual a linha pertence.
      * @param linha        A linha de encomenda a ser inserida.
      */
-    private void inserirLinhaEncomenda(BaseDados baseDados, int Id_Encomenda, LinhaEncomenda linha) throws IOException {
+    private void inserirLinhaEncomenda(BaseDados baseDados, int Id_Encomenda, LinhaEncomenda linha) throws IOException{
         // Construir a string da consulta SQL, escapando os valores com PreparedStatement
         String queryLinha = "INSERT INTO Linha_Encomenda (Id_Encomenda, Sequencia, Id_Produto, Preco_Unitario, Quantidade, Id_Unidade," +
                 " Id_Pais_Taxa, Total_Taxa, Total_Incidencia, Total_Linha) " +
@@ -359,9 +364,10 @@ public class LerEncomenda {
             // Executar a instrução preparada
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!", "Erro ao inserir linha da encomenda");
+            Mensagens.Erro("Erro!", "Erro ao inserir linha da encomenda!");
             baseDados.rollback(baseDados.getConexao());
-            e.printStackTrace();
+            throw new RuntimeException("Erro");
+
         }
     }
 
@@ -374,6 +380,7 @@ public class LerEncomenda {
      * @throws IOException Se ocorrer um erro durante a obtenção do ID do país.
      */
     private int getQueryEncomenda(Encomenda encomenda) throws IOException {
+
         Pais idPais = lerPaises.obterPaisPorId(baseDados, encomenda.getPais().getId());
 
         // Construir a string da consulta SQL, escapando os valores com PreparedStatement
@@ -405,6 +412,7 @@ public class LerEncomenda {
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao inserir encomenda!");
+            baseDados.rollback(baseDados.getConexao());
             throw new RuntimeException(e);
         }
 
