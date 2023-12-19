@@ -110,6 +110,25 @@ public class LerFornecedores {
         );
     }
 
+
+    private Fornecedor criarObjetoFornecedorParaProduto(ResultSet dados) throws IOException, SQLException {
+
+
+
+
+
+        return new Fornecedor(
+                dados.getInt("id"),
+                dados.getString("nome"),
+                dados.getString("id_Externo"),
+                dados.getString("morada1"),
+                dados.getString("morada2")
+
+
+
+        );
+    }
+
     /**
      * Cria um objeto Fornecedor a partir dos dados de um ResultSet.
      *
@@ -359,7 +378,7 @@ public class LerFornecedores {
 
 
             String query = """
-                    SELECT Nome FROM Fornecedor WHERE Id_Externo = ?
+SELECT Nome FROM Fornecedor WHERE Id_Externo = ?
                     """;
 
             PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
@@ -473,15 +492,17 @@ public class LerFornecedores {
 
             String query = "SELECT Fornecedor.* " +
                     "FROM Fornecedor " +
-                    "INNER JOIN Produto ON Fornecedor.id = Produto.id_fornecedor " +
-                    "WHERE Produto.id = ?";
+                    "INNER JOIN Produto ON Fornecedor.id_Externo = Produto.id_fornecedor " +
+                    "WHERE Produto.id_Fornecedor = ?";
+
+            System.out.println("Query: " + query);  // Log para depuração
 
             try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
-                preparedStatement.setString(1, idProduto); // Bind do parâmetro de forma segura
+                preparedStatement.setString(1, idProduto);
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {
                     while (resultado.next()) {
-                        Fornecedor fornecedor = criarObjetoFornecedor(resultado);
+                        Fornecedor fornecedor = criarObjetoFornecedorParaProduto(resultado);
                         fornecedores.add(fornecedor);
                     }
                 }
@@ -496,5 +517,8 @@ public class LerFornecedores {
 
         return fornecedores;
     }
+
+
+
 
 }

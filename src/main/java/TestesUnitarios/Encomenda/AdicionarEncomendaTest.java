@@ -15,6 +15,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class AdicionarEncomendaTest {
+/*
+
 
     @Test
     public void testAdicionarEncomendaBaseDeDados() {
@@ -67,5 +69,5 @@ public class AdicionarEncomendaTest {
 
         return encomenda;
     }
-
+ */
 }

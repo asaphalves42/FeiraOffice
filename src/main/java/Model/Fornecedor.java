@@ -55,6 +55,9 @@ public class Fornecedor {
         this.idPais = pais;
     }
 
+    public Fornecedor(int id, String nome, String idExterno, String morada1, String morada2) {
+    }
+
 
     public String getIdExterno() {
         return idExterno;

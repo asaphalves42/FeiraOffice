@@ -36,6 +36,9 @@ public class Produto {
         return fornecedor != null ? fornecedor.getIdExterno() : "";
     }
 
+    public String getNomeFornecedor() {
+        return fornecedor != null ? fornecedor.getNome() : "";
+    }
     public int getEstado() {
         return estado;
     }
