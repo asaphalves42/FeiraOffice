@@ -1,9 +1,5 @@
 package Model;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -27,13 +23,15 @@ public class Encomenda {
     private double valorImposto;
     private double valorTotal;
 
-    private Estado estado;
+    private EstadoEncomenda estado;
+    private EstadoPagamento estadoPagamento;
 
     public Encomenda(int id){
         this.id = id;
     }
 
-    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, ArrayList<LinhaEncomenda> linhas, Estado estado) {
+    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, ArrayList<LinhaEncomenda> linhas, EstadoEncomenda estado,
+                     EstadoPagamento estadoPagamento) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
@@ -41,13 +39,14 @@ public class Encomenda {
         this.pais = pais;
         this.linhas = linhas;
         this.estado = estado;
+        this.estadoPagamento = estadoPagamento;
         this.valorImposto = valorImposto;
         this.valorTotal = valorTotal;
         this.valorIncidencia = valorIncidencia;
 
     }
 
-    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais,double totalTaxa, double totalIncidencia, double total, Estado estado) {
+    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais,double totalTaxa, double totalIncidencia, double total, EstadoEncomenda estado) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
@@ -60,13 +59,23 @@ public class Encomenda {
 
     }
 
-    public Encomenda(int idEncomenda, Fornecedor fornecedor,  String referencia, LocalDate dataEncomenda, double total, Estado estado) {
+    public Encomenda(int idEncomenda, Fornecedor fornecedor,  String referencia, LocalDate dataEncomenda, double total, EstadoEncomenda estado,
+                     EstadoPagamento estadoPagamento) {
         this.id = idEncomenda;
         this.fornecedor = fornecedor;
         this.referencia = referencia;
         this.data = dataEncomenda;
         this.valorTotal = total;
         this.estado = estado;
+        this.estadoPagamento = estadoPagamento;
+    }
+
+    public EstadoPagamento getEstadoPagamento() {
+        return estadoPagamento;
+    }
+
+    public void setEstadoPagamento(EstadoPagamento estadoPagamento) {
+        this.estadoPagamento = estadoPagamento;
     }
 
     public double getValorIncidencia() {
@@ -93,11 +102,11 @@ public class Encomenda {
         this.valorTotal = valorTotal;
     }
 
-    public Estado getEstado() {
+    public EstadoEncomenda getEstado() {
         return estado;
     }
 
-    public void setEstado(Estado estado) {
+    public void setEstado(EstadoEncomenda estado) {
         this.estado = estado;
     }
 

@@ -78,6 +78,7 @@ public class MenuFuncoesFornecedor {
                 TableColumn<Fornecedor, String> colunaIdUtilizador = new TableColumn<>("Tipo de utilizador");
                 TableColumn<Fornecedor, String> colunaIdExterno = new TableColumn<>("ID Externo");
 
+
                 // Associe as colunas às propriedades da classe Fornecedor
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));

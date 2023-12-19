@@ -1,11 +1,11 @@
 package Controller.Administrador;
 
+import BL.LerSepa;
+import DAL.LerContaCorrente;
 import DAL.LerEncomenda;
 import DAL.LerFornecedores;
-import Model.ContaCorrente;
-import Model.Encomenda;
-import Model.Fornecedor;
-import Model.Pais;
+import DAL.LerPagamento;
+import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,10 +15,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Menu com as funções da conta corrente, ler saldo em dívida.
@@ -27,8 +35,9 @@ public class MenuContaCorrente {
 
     BaseDados baseDados = new BaseDados();
     LerFornecedores lerFornecedores = new LerFornecedores();
-
+    LerPagamento lerPagamento = new LerPagamento();
     LerEncomenda lerEncomenda = new LerEncomenda();
+    LerContaCorrente lerContaCorrente = new LerContaCorrente();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -100,7 +109,7 @@ public class MenuContaCorrente {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-             }
+            }
         });
     }
 
@@ -183,6 +192,15 @@ public class MenuContaCorrente {
                 String pais = fornecedor.getIdPais().getNome();
                 labelPais.setText(pais);
 
+                String iban = fornecedor.getIban();
+                labelIban.setText(iban);
+
+                String bic = fornecedor.getBic();
+                labelBIC.setText(bic);
+
+                String conta = fornecedor.getConta();
+                labelConta.setText(conta);
+
                 //adicionar mais dados ao fornecedor
             }
         }
@@ -203,14 +221,15 @@ public class MenuContaCorrente {
             Fornecedor fornecedor = contaCorrenteSelecionada.getIdFornecedor();
             encomendas.addAll(lerEncomenda.lerEncomendasPorFornecedor(baseDados, fornecedor.getIdExterno()));
 
-            if(!encomendas.isEmpty()){
-                if(tableViewEncomendaFornc.getColumns().isEmpty()) {
+            if (!encomendas.isEmpty()) {
+                if (tableViewEncomendaFornc.getColumns().isEmpty()) {
 
                     TableColumn<Encomenda, Integer> colunaId = new TableColumn<>("Id da encomenda");
                     TableColumn<Encomenda, String> colunaIdFornecedor = new TableColumn<>("ID do fornecedor");
                     TableColumn<Encomenda, String> colunaReferencia = new TableColumn<>("Referência");
                     TableColumn<Encomenda, String> colunaData = new TableColumn<>("Data");
                     TableColumn<Encomenda, String> colunaTotal = new TableColumn<>("Total");
+                    TableColumn<Encomenda, String> colunaEstadoPagamento = new TableColumn<>("Estado do pagamento");
 
                     // Associe as colunas às propriedades da classe Fornecedor
                     colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -218,18 +237,20 @@ public class MenuContaCorrente {
                     colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
                     colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
                     colunaTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
+                    colunaEstadoPagamento.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEstadoPagamento().getDescricao()));
 
                     tableViewEncomendaFornc.getColumns().add(colunaId);
                     tableViewEncomendaFornc.getColumns().add(colunaIdFornecedor);
                     tableViewEncomendaFornc.getColumns().add(colunaReferencia);
                     tableViewEncomendaFornc.getColumns().add(colunaData);
                     tableViewEncomendaFornc.getColumns().add(colunaTotal);
+                    tableViewEncomendaFornc.getColumns().add(colunaEstadoPagamento);
 
                     tableViewEncomendaFornc.setItems(encomendas);
                 }
 
             } else {
-                Mensagens.Erro("Erro!","Erro ao ler tabela ou tabela vazia!");
+                Mensagens.Erro("Erro!", "Erro ao ler tabela ou tabela vazia!");
             }
         }
 
@@ -237,12 +258,132 @@ public class MenuContaCorrente {
 
     /**
      * Método associado ao clique no botão "Pagar".
-     *
-     * @param event O evento associado ao clique no botão "Pagar".
      */
     @FXML
-    void clickPagar(ActionEvent event) {
+    void clickPagar() throws Exception {
+
+        ContaCorrente contaCorrente = tableViewDividas.getSelectionModel().getSelectedItem();
+
+        FeiraOffice feiraOffice = lerPagamento.lerDadosDaEmpresa(baseDados);
+
+        LocalDate data = LocalDate.now();
+        double valor = contaCorrente.getSaldo();
+        int id = feiraOffice.getId();
+        String nome = feiraOffice.getNome();
+        String moradaLocal = feiraOffice.getMorada();
+        String localidade = feiraOffice.getLocalidade();
+        String codigoPostalLocal = feiraOffice.getCodPostal();
+        String pais = feiraOffice.getPais().getISO();
+        String iban = feiraOffice.getIban();
+        String bic = feiraOffice.getBic();
+
+        //Dados do fornecedor
+
+        String nomeFornecedor = contaCorrente.getIdFornecedor().getNome();
+        String moradaFornecedor = contaCorrente.getIdFornecedor().getMorada1();
+        String codPostalFornecedor = contaCorrente.getIdFornecedor().getCodigoPostal();
+        String ibanFornecedor = contaCorrente.getIdFornecedor().getIban();
+        String bicFornecedor = contaCorrente.getIdFornecedor().getBic();
+
+        List<Encomenda> listaDeEncomendas = obterEncomendaFornecedor(contaCorrente);
+
+        Pagamento pagamento = new Pagamento (0,
+                Pagamento.gerarReferencia(),
+                data,
+                valor,
+                contaCorrente,
+                listaDeEncomendas,
+                id
+        );
+
+        if(lerPagamento.inserirPagamentoNaBaseDados(baseDados,pagamento) && lerEncomenda.atualizarEstadoPagamentoEncomenda(baseDados,pagamento)
+                && lerContaCorrente.atualizarSaldoAposPagamento(baseDados,pagamento)){
+            if (lerPagamento.verificarReferencia(baseDados,pagamento)){
+                Mensagens.Erro("Erro!","Ocorreu um erro ao gerar a referencia de pagamento, tente novamente!");
+                return;
+            }
+            //Gerar SEPA
+           LerSepa.gerarSEPATransferencia(
+                   pagamento.getReferencia(),
+                   data,
+                   valor,
+                   nome,
+                   moradaLocal,
+                   localidade,
+                   codigoPostalLocal,
+                   pais,
+                   iban,
+                   bic,
+                   //Fornecedor
+                   nomeFornecedor,
+                   moradaFornecedor,
+                   codPostalFornecedor,
+                   ibanFornecedor,
+                   bicFornecedor,
+                   "C:\\a\\SEPAS\\SEPA.xml"
+           );
+
+           //Falta validar o xsd,
+
+            Mensagens.Informacao("Sucesso!", "Pagamento realizado com sucesso!");
+            Mensagens.Informacao("SEPA!","Ficheiro SEPA gerado com sucesso!");
+
+            tableViewEncomendaFornc.getItems().clear();
+            tableViewDividas.getItems().remove(contaCorrente);
+
+        } else {
+            Mensagens.Erro("Erro!","Erro ao realizar pagamento!");
+        }
+    }
+
+    public List<Encomenda> obterEncomendaFornecedor(ContaCorrente contaCorrente) throws IOException {
+        //Obter as encomendas do fornecedor
+        return new ArrayList<>(lerEncomenda.lerEncomendasPorFornecedor(baseDados, contaCorrente.getIdFornecedor().getIdExterno()));
+    }
+
+
+    /*
+    public void carregarDivida(ContaCorrente contaCorrente) throws IOException {
+
+        if (contaCorrente != null) {
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lp3/Views/Admin/pagamentoSEPA.fxml"));
+
+            Parent root = fxmlLoader.load();
+
+            PagamentoSepa pagamentoSepa = fxmlLoader.getController();
+            pagamentoSepa.getDados(contaCorrente);
+
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setTitle("PAGAMENTO!");
+            stage.setScene(scene);
+            stage.showAndWait();
+        }
 
     }
+     */
+
+
+    /*
+LerSepa.gerarSEPATransferencia(
+              "FAC 01/20231",
+              LocalDate.now(),
+              200.00,
+              "Empresa origem",
+              "Morada empresa origem",
+              "Localidade",
+              "4500-001",
+              "PT",
+              "PT500000000000000",
+              "ACTVPTPL",
+              "Empresa destino",
+              "Rua das flores",
+              "4500-321",
+              "PT500000000000000",
+              "ACTVPTPL",
+              "C:\\a\\SEPA.xml"
+      );
+ */
 
 }

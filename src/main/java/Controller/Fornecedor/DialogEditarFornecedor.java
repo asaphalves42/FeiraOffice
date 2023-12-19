@@ -52,6 +52,15 @@ public class DialogEditarFornecedor {
     @FXML
     private PasswordField textoPassword;
 
+    @FXML
+    private TextField labelBic;
+
+    @FXML
+    private TextField labelConta;
+
+    @FXML
+    private TextField labelIban;
+
     private Fornecedor fornecedorEmEdicao;
 
 
@@ -86,6 +95,9 @@ public class DialogEditarFornecedor {
         textoMorada2.setText(fornecedor.getMorada2());
         textoLocalidade.setText(fornecedor.getLocalidade());
         textoCodigoPostal.setText(fornecedor.getCodigoPostal());
+        labelIban.setText(fornecedor.getIban());
+        labelConta.setText(fornecedor.getConta());
+        labelBic.setText(fornecedor.getBic());
 
     }
 
@@ -125,6 +137,9 @@ public class DialogEditarFornecedor {
             String localidade = textoLocalidade.getText();
             String codigoPostal = textoCodigoPostal.getText();
             Pais pais = comboBoxPais.getSelectionModel().getSelectedItem();
+            String iban = labelIban.getText();
+            String conta = labelConta.getText();
+            String bic = labelBic.getText();
 
 
             // Verificar campos obrigatórios
@@ -146,7 +161,7 @@ public class DialogEditarFornecedor {
             UtilizadorFornecedor utilizador = new UtilizadorFornecedor(fornecedorEmEdicao.getIdUtilizador().getId(), email, senhaEncriptada);
 
             // Criar um objeto Fornecedor
-            Fornecedor fornecedor = new Fornecedor(fornecedorEmEdicao.getId(), nome, idExterno, morada1, morada2, localidade, codigoPostal, pais, utilizador);
+            Fornecedor fornecedor = new Fornecedor(fornecedorEmEdicao.getId(), nome, idExterno, morada1, morada2, localidade, codigoPostal, pais, utilizador, conta, bic, iban);
 
             // Chamar a DAL para editar o fornecedor
             LerFornecedores editarFornecedor = new LerFornecedores();
@@ -172,7 +187,7 @@ public class DialogEditarFornecedor {
     /**
      * Função para obter todos os campos obrigatórios para edição do fornecedor.
      * @param campos obtém os campos
-     * @return
+     * @return falso
      */
     private boolean camposObrigatoriosVazios(String... campos) {
         for (String campo : campos) {

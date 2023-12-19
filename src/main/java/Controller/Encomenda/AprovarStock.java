@@ -1,5 +1,6 @@
 package Controller.Encomenda;
 
+import DAL.LerContaCorrente;
 import DAL.LerEncomenda;
 import Model.*;
 import Utilidades.BaseDados;
@@ -23,6 +24,7 @@ public class AprovarStock {
 
     BaseDados baseDados = new BaseDados();
     LerEncomenda lerEncomenda = new LerEncomenda();
+    LerContaCorrente lerContaCorrente = new LerContaCorrente();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -261,7 +263,7 @@ public class AprovarStock {
             }
 
             //atualizar saldo em divida
-            atualizado = lerEncomenda.atualizarSaldoDevedores(baseDados, total, encomenda.getFornecedor().getIdExterno());
+            atualizado = lerContaCorrente.atualizarSaldoDevedores(baseDados, total, encomenda.getFornecedor().getIdExterno());
 
             // Listener para seleção de encomendas
             tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {

@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe com funções de acesso à base de dados e leitura, referentes aos fornecedores.
@@ -33,25 +35,24 @@ public class LerFornecedores {
             baseDados.Ligar();
 
             String query = """
-                    SELECT
-                                        
+                     SELECT
                     Fornecedor.Id AS id,
                     Fornecedor.Nome AS nome,
-                    Fornecedor.Id_Externo AS id_externo,
+                     Fornecedor.Id_Externo AS id_externo,
                     Fornecedor.Morada1 AS morada1,
                     Fornecedor.Morada2 AS morada2,
                     Fornecedor.Localidade AS localidade,
                     Fornecedor.CodigoPostal AS codigo_postal,
+                    Fornecedor.Bic as bic,
+                    Fornecedor.Conta as conta,
+                    Fornecedor.Iban as iban,
                     Pais.Nome AS nome_pais,
                     Pais.id AS id_pais,
                     Utilizador.id_util AS id_utilizador,
                     Utilizador.id_role AS tipo_utilizador
-                                        
-                    FROM Fornecedor
-                                        
+                     FROM Fornecedor
                     INNER JOIN Pais ON Pais.id = Fornecedor.Id_Pais
                     INNER JOIN Utilizador ON Utilizador.id_util = Fornecedor.Id_Utilizador
-                                        
                     """;
 
             PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
@@ -104,7 +105,22 @@ public class LerFornecedores {
                 dados.getString("localidade"),
                 dados.getString("codigo_postal"),
                 pais,
-                utilizador
+                utilizador,
+                dados.getString("bic"),
+                dados.getString("conta"),
+                dados.getString("iban")
+        );
+    }
+
+
+    private Fornecedor criarObjetoFornecedorParaProduto(ResultSet dados) throws IOException, SQLException {
+
+        return new Fornecedor(
+                dados.getInt("id"),
+                dados.getString("nome"),
+                dados.getString("id_Externo"),
+                dados.getString("morada1"),
+                dados.getString("morada2")
         );
     }
 
@@ -166,8 +182,6 @@ public class LerFornecedores {
             }
 
 
-
-
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
 
@@ -209,7 +223,10 @@ public class LerFornecedores {
                     "', @morada2 = '" + fornecedor.getMorada2() +
                     "', @localidade = '" + fornecedor.getLocalidade() +
                     "', @codigo_postal = '" + fornecedor.getCodigoPostal() +
-                    "', @id_pais = '" + pais.getId() + "'";
+                    "', @id_pais = '" + pais.getId() +
+                    "', @bic = '" + fornecedor.getBic() +
+                    "', @conta = '" + fornecedor.getConta() +
+                    "', @iban = '" + fornecedor.getIban() + "'";
 
             baseDados.Executar(query);
             baseDados.commit(baseDados.getConexao());
@@ -283,7 +300,10 @@ public class LerFornecedores {
                        morada2 = ?, 
                        localidade = ?, 
                        codigopostal = ?, 
-                       id_pais = ? 
+                       id_pais = ?,
+                       Bic = ?,
+                       Conta = ?,
+                       Iban = ?
                     WHERE id_Utilizador = ?
                     """;
 
@@ -298,7 +318,10 @@ public class LerFornecedores {
             preparedStatementFornecedor.setString(5, fornecedor.getLocalidade());
             preparedStatementFornecedor.setString(6, fornecedor.getCodigoPostal());
             preparedStatementFornecedor.setInt(7, pais.getId());
-            preparedStatementFornecedor.setInt(8, fornecedor.getIdUtilizador().getId());
+            preparedStatementFornecedor.setString(8, fornecedor.getBic());
+            preparedStatementFornecedor.setString(9, fornecedor.getConta());
+            preparedStatementFornecedor.setString(10, fornecedor.getIban());
+            preparedStatementFornecedor.setInt(11, fornecedor.getIdUtilizador().getId());
 
             // Executar a atualização do Fornecedor
             int linhasAfetadasFornecedor = preparedStatementFornecedor.executeUpdate();
@@ -357,7 +380,7 @@ public class LerFornecedores {
 
 
             String query = """
-                    SELECT Nome FROM Fornecedor WHERE Id_Externo = ?
+SELECT Nome FROM Fornecedor WHERE Id_Externo = ?
                     """;
 
             PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
@@ -368,7 +391,6 @@ public class LerFornecedores {
             if (resultado.next()) {
                 return resultado.getString("Nome");
             }
-
 
 
             baseDados.Desligar();
@@ -397,21 +419,27 @@ public class LerFornecedores {
             //"Select * from view_conta_coorente;"
 
             // Complete a string da query SQL
-            String query = "SELECT Conta_Corrente.Id as id, " +
-                    "Fornecedor.Id as id_interno, " +
-                    "Fornecedor.Nome as nome_fornecedor, " +
-                    "Fornecedor.Id_Externo as id_externo, " +
-                    "Fornecedor.Morada1 as morada1, " +
-                    "Fornecedor.Morada2 as morada2, " +
-                    "Fornecedor.Localidade as localidade, " +
-                    "Fornecedor.CodigoPostal as codigo_postal, " +
-                    "Conta_Corrente.Saldo as saldo, " +
-                    "Pais.Nome as nome_pais, " +
-                    "Pais.Moeda as moeda_pais " +
-                    "FROM Conta_Corrente " +
-                    "INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Conta_Corrente.Id_Fornecedor " +
-                    "INNER JOIN Pais ON Fornecedor.Id_Pais = Pais.Id";
-
+            String query = """
+                    SELECT Conta_Corrente.Id as id,
+                                        Fornecedor.Id as id_interno,
+                                        Fornecedor.Nome as nome_fornecedor,
+                                        Fornecedor.Id_Externo as id_externo,
+                                        Fornecedor.Morada1 as morada1,
+                                        Fornecedor.Morada2 as morada2,
+                                        Fornecedor.Localidade as localidade,
+                                        Fornecedor.CodigoPostal as codigo_postal,
+                    					Fornecedor.Bic as bic,
+                    					Fornecedor.Conta as conta,
+                    					Fornecedor.Iban as Iban,
+                                        Conta_Corrente.Saldo as saldo,
+                                        Pais.Nome as nome_pais,
+                                        Pais.Moeda as moeda_pais
+                                        FROM Conta_Corrente
+                                        INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Conta_Corrente.Id_Fornecedor
+                                        INNER JOIN Pais ON Fornecedor.Id_Pais = Pais.Id
+                                        WHERE Conta_Corrente.Saldo > 0;
+                                        
+                    """;
             PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
             ResultSet resultado = preparedStatement.executeQuery();
 
@@ -454,7 +482,10 @@ public class LerFornecedores {
                 dados.getString("morada2"),
                 dados.getString("localidade"),
                 dados.getString("codigo_postal"),
-                pais
+                pais,
+                dados.getString("bic"),
+                dados.getString("conta"),
+                dados.getString("iban")
         );
 
         return new ContaCorrente(
@@ -463,5 +494,41 @@ public class LerFornecedores {
                 dados.getDouble("saldo")
         );
     }
+    public List<Fornecedor> obterFornecedoresPorProduto(BaseDados baseDados, String idProduto) throws IOException {
+        List<Fornecedor> fornecedores = new ArrayList<>();
+
+        try {
+            baseDados.Ligar();
+
+            String query = "SELECT Fornecedor.* " +
+                    "FROM Fornecedor " +
+                    "INNER JOIN Produto ON Fornecedor.id_Externo = Produto.id_fornecedor " +
+                    "WHERE Produto.id_Fornecedor = ?";
+
+            System.out.println("Query: " + query);  // Log para depuração
+
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+                preparedStatement.setString(1, idProduto);
+
+                try (ResultSet resultado = preparedStatement.executeQuery()) {
+                    while (resultado.next()) {
+                        Fornecedor fornecedor = criarObjetoFornecedorParaProduto(resultado);
+                        fornecedores.add(fornecedor);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            baseDados.Desligar();
+        }
+
+        return fornecedores;
+    }
+
+
+
 
 }

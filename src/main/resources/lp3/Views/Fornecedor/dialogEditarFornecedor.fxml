@@ -29,6 +29,9 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
             <Label text="NOME:">
@@ -43,12 +46,12 @@
             </Label>
             <TextField fx:id="textoNome" GridPane.columnIndex="1" />
             <TextField fx:id="textoMorada1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Label text="PAÍS:" GridPane.rowIndex="8">
+            <Label text="PAÍS:" GridPane.rowIndex="11">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <ComboBox fx:id="comboBoxPais" onAction="#clickComboPais" prefWidth="150.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <ComboBox fx:id="comboBoxPais" onAction="#clickComboPais" prefWidth="150.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" GridPane.columnIndex="1" GridPane.rowIndex="11" />
             <Label text="E-MAIL:" GridPane.rowIndex="2">
                <font>
                   <Font name="System Bold" size="14.0" />
@@ -85,6 +88,24 @@
                </font>
             </Label>
             <TextField fx:id="textoIdExterno" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="CONTA:" GridPane.rowIndex="9">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label text="IBAN:" GridPane.rowIndex="8">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label text="BIC:" GridPane.rowIndex="10">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="labelIban" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <TextField fx:id="labelConta" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <TextField fx:id="labelBic" GridPane.columnIndex="1" GridPane.rowIndex="10" />
          </children>
       </GridPane>
       <Button fx:id="btnConfirmar" layoutX="141.0" layoutY="366.0" mnemonicParsing="false" onAction="#clickConfirmar" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="CONFIRMAR">

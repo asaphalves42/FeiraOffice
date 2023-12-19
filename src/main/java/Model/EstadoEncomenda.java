@@ -4,7 +4,7 @@ import Utilidades.Mensagens;
 
 import java.io.IOException;
 
-public enum Estado {
+public enum EstadoEncomenda {
     Aprovado(2),
     Recusado(3),
     Pendente(1),
@@ -16,12 +16,12 @@ public enum Estado {
         return value;
     }
 
-    Estado(int i) {
+    EstadoEncomenda(int i) {
         this.value = i;
     }
 
-    public static Estado valueOfId(int id) throws IOException {
-        for (Estado estado : values()) {
+    public static EstadoEncomenda valueOfId(int id) throws IOException {
+        for (EstadoEncomenda estado : values()) {
             if (estado.value == id) {
                 return estado;
             }
@@ -29,4 +29,6 @@ public enum Estado {
         Mensagens.Erro("Inválido!", "Estado inválido!");
         return null;
     }
+
+
 }

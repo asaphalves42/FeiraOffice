@@ -150,9 +150,19 @@
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="labelIban" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label fx:id="labelBIC" prefHeight="17.0" prefWidth="33.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label fx:id="labelConta" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="labelIban" prefHeight="17.0" prefWidth="319.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font></Label>
+                              <Label fx:id="labelBIC" prefHeight="19.0" prefWidth="325.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font></Label>
+                              <Label fx:id="labelConta" prefHeight="17.0" prefWidth="325.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </GridPane>
                         <Text layoutX="32.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DADOS DO FORNECEDOR:">

@@ -67,7 +67,6 @@ public class LerEncomenda {
             }
 
 
-
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao ler linhas da encomenda!");
 
@@ -217,7 +216,7 @@ public class LerEncomenda {
 
         Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados, dados.getString("Id_fornecedor"));
         Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais"));
-        Estado estado = Estado.valueOfId(dados.getInt("Id_Estado"));
+        EstadoEncomenda estado = EstadoEncomenda.valueOfId(dados.getInt("Id_Estado"));
 
         return new Encomenda(
                 dados.getInt("Id"),
@@ -327,7 +326,7 @@ public class LerEncomenda {
             }
 
         } catch (SQLException e) {
-            Mensagens.Erro("Erro","Erro ao verificar produto existente!");
+            Mensagens.Erro("Erro", "Erro ao verificar produto existente!");
             throw new RuntimeException(e);
         }
     }
@@ -360,7 +359,7 @@ public class LerEncomenda {
             // Executar a instrução preparada
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!","Erro ao inserir linha da encomenda");
+            Mensagens.Erro("Erro!", "Erro ao inserir linha da encomenda");
             baseDados.rollback(baseDados.getConexao());
             e.printStackTrace();
         }
@@ -378,8 +377,8 @@ public class LerEncomenda {
         Pais idPais = lerPaises.obterPaisPorId(baseDados, encomenda.getPais().getId());
 
         // Construir a string da consulta SQL, escapando os valores com PreparedStatement
-        String query = "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Id_Estado) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Id_Estado, Id_estado_pagamento) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -391,9 +390,9 @@ public class LerEncomenda {
             preparedStatement.setDouble(6, encomenda.getTotalIncidencia());
             preparedStatement.setDouble(7, encomenda.getTotal());
             preparedStatement.setInt(8, encomenda.getEstado().getValue());
+            preparedStatement.setInt(9, encomenda.getEstadoPagamento().getValue());
 
-            // Retornar a string da consulta SQL
-            //return preparedStatement.toString();
+
             int idEncomenda = preparedStatement.executeUpdate();
 
             if (idEncomenda > 0) {
@@ -405,8 +404,7 @@ public class LerEncomenda {
             }
 
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!","Erro ao inserir encomenda!");
-            baseDados.rollback(baseDados.getConexao());
+            Mensagens.Erro("Erro!", "Erro ao inserir encomenda!");
             throw new RuntimeException(e);
         }
 
@@ -431,7 +429,7 @@ public class LerEncomenda {
                     SELECT * FROM Encomenda WHERE Id = ?"
                     """;
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)){
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
                 preparedStatement.setString(1, id);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -628,7 +626,6 @@ public class LerEncomenda {
     }
 
 
-
     /**
      * Atualiza o estado de uma encomenda para "Recusada" na base de dados.
      *
@@ -642,7 +639,12 @@ public class LerEncomenda {
             baseDados.Ligar();
             baseDados.iniciarTransacao(baseDados.getConexao());
 
-            String query = "UPDATE Encomenda SET Id_Estado = 3 WHERE Id = ?";
+            String query = """
+                    UPDATE Encomenda
+                    SET Id_Estado = 3, Id_estado_pagamento = 3
+                    WHERE Id = ?;
+                                        
+                    """;
 
             try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
                 preparedStatement.setInt(1, idEncomenda);
@@ -662,69 +664,6 @@ public class LerEncomenda {
 
         return false;
     }
-
-
-    /**
-     * Atualiza o saldo devedor na conta corrente de um fornecedor na base de dados.
-     *
-     * @param baseDados      A instância da classe BaseDados para conexão com o banco de dados.
-     * @param valorEncomenda O valor da encomenda a ser adicionado ao saldo devedor.
-     * @param idFornecedor   O ID do fornecedor cuja conta corrente será atualizada.
-     * @return True se a atualização for bem-sucedida, false caso contrário.
-     * @throws IOException Se ocorrer um erro durante a atualização.
-     */
-    public boolean atualizarSaldoDevedores(BaseDados baseDados, double valorEncomenda, String idFornecedor) throws IOException {
-        try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
-
-            // Verificar se já existe um registro para o fornecedor
-            String verificaExistencia = "SELECT * FROM Conta_Corrente WHERE Id_Fornecedor = ?";
-
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(verificaExistencia)) {
-                preparedStatement.setString(1, idFornecedor);
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                String script;
-                if (resultSet.next()) {
-                    // Se existir, faz o UPDATE
-                    script = "UPDATE Conta_Corrente SET Saldo = Saldo + ? WHERE Id_Fornecedor = ?";
-
-                    try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
-                        updateStatement.setDouble(1, valorEncomenda);
-                        updateStatement.setString(2, idFornecedor);
-                        // Execute o script
-                        updateStatement.executeUpdate();
-                    }
-
-                } else {
-                        // Se não existir, faz a inserção
-                        script = "INSERT INTO Conta_Corrente (Id_Fornecedor, Saldo) VALUES (?, ?)";
-
-                        try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
-                            updateStatement.setString(1, idFornecedor);
-                            updateStatement.setDouble(2, valorEncomenda);
-
-                            // Execute o script
-                            updateStatement.executeUpdate();
-                        }
-                    }
-
-                }
-
-            baseDados.commit(baseDados.getConexao());
-
-            return true;
-
-        } catch (Exception e) {
-            Mensagens.Erro("Error", "Ocorreu um erro ao atualizar o saldo devedor");
-            baseDados.rollback(baseDados.getConexao());
-            return false; // Retorna false em caso de erro
-        } finally {
-            baseDados.Desligar();
-        }
-    }
-
 
     /**
      * Verifica se é possível eliminar um fornecedor com base nas encomendas associadas.
@@ -798,12 +737,14 @@ public class LerEncomenda {
                         Encomenda.Referencia as referencia, 
                         Encomenda.Data as data_encomenda,
                         Encomenda.Total as total, 
-                        Estado.Id as estado
+                        Estado.Id as estado,
+                        Estado_Pagamento.id as estado_pagamento
                     FROM Encomenda 
                         INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
                         INNER JOIN Estado ON Estado.Id = Encomenda.Id_Estado
+                        INNER JOIN Estado_Pagamento ON Estado_Pagamento.id = Encomenda.Id_estado_pagamento
                         WHERE Fornecedor.Id_Externo = ? 
-                        AND Estado.Id = 2
+                        AND Estado.Id = 2 AND Estado_Pagamento.id = 1
                     """;
 
             // Preparar a declaração SQL com o fornecedor externo como parâmetro
@@ -839,7 +780,8 @@ public class LerEncomenda {
                 dados.getString("id_fornecedor")
         );
 
-        Estado estado = Estado.valueOfId(dados.getInt("estado"));
+        EstadoEncomenda estado = EstadoEncomenda.valueOfId(dados.getInt("estado"));
+        EstadoPagamento estadoPagamento = EstadoPagamento.valueOfId(dados.getInt("estado_pagamento"));
 
         return new Encomenda(
                 dados.getInt("Id_encomenda"),
@@ -847,8 +789,37 @@ public class LerEncomenda {
                 dados.getString("referencia"),
                 dados.getDate("data_encomenda").toLocalDate(),
                 dados.getDouble("total"),
-                estado
+                estado,
+                estadoPagamento
         );
+    }
+
+    public boolean atualizarEstadoPagamentoEncomenda(BaseDados baseDados, Pagamento pagamento) throws IOException, SQLException {
+        try {
+            baseDados.Ligar();
+            baseDados.iniciarTransacao(baseDados.getConexao());
+
+            String query = """
+                UPDATE Encomenda SET id_estado_pagamento = 2
+                WHERE Encomenda.Id = ?
+                """;
+
+            try (PreparedStatement ps = baseDados.getConexao().prepareStatement(query)) {
+                for (Encomenda encomenda : pagamento.getEncomendas()) {
+                    ps.setInt(1, encomenda.getId());
+                    ps.executeUpdate();
+                }
+
+                baseDados.commit(baseDados.getConexao());
+                return true;
+            } catch (SQLException e) {
+                baseDados.rollback(baseDados.getConexao());
+                Mensagens.Erro("Erro!", "Erro ao atualizar o estado de pagamento das encomendas!");
+                throw e; // Lança a exceção novamente para que a chamada externa possa lidar com ela
+            }
+        } finally {
+            baseDados.Desligar();
+        }
     }
 
 }
