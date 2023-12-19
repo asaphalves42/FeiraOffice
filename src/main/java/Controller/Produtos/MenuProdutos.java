@@ -2,9 +2,8 @@ package Controller.Produtos;
 
 import DAL.LerFornecedores;
 import DAL.LerProdutos;
-
 import DAL.LerStock;
-
+import Model.Fornecedor;
 import Model.Produto;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
@@ -18,11 +17,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
+import java.util.List;
 
-/**
- * Classe que mostra os produtos disponíveis e o stock da empresa.
- */
 public class MenuProdutos {
+
     BaseDados baseDados = new BaseDados();
     LerStock lerStock = new LerStock();
     LerProdutos lerProdutos = new LerProdutos();
@@ -37,47 +35,27 @@ public class MenuProdutos {
     ObservableList<Produto> produtos = FXCollections.observableArrayList();
     ObservableList<Produto> produtos2 = FXCollections.observableArrayList();
 
-    /**
-     * Inicializa o controller e configura as tabelas de produtos.
-     *
-     * @throws IOException Se houver um erro ao ler os dados.
-     */
-
     public void initialize() throws IOException {
-
         tableViewProdutos.getColumns().clear();
         tableViewProdutos.getItems().clear();
-
         tabelaProdutos();
         tableView2.getColumns().clear();
         tableView2.getItems().clear();
         tabela2();
-
     }
-    /**
-     * Configura a tabela de produtos na interface do utilizador.
-     *
-     * @throws IOException Se houver um erro ao ler os dados.
-     */
+
     public void tabelaProdutos() throws IOException {
-
-
         produtos.addAll(lerProdutos.lerProdutosBaseDados(baseDados));
-
 
         if (!produtos.isEmpty()) {
             if (tableViewProdutos.getColumns().isEmpty()) {
-                // Defina as colunas da tabela
                 TableColumn<Produto, Integer> colunaId = new TableColumn<>("ID Produto");
-                TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descriçao");
+                TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descrição");
                 TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
                 TableColumn<Produto, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
 
-
-                // Associe as colunas às propriedades da classe Produto
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-
                 colunaIdUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescricaoUnidade()));
                 colunaQuantidade.setCellValueFactory(cellData -> {
                     int quantidade = 0;
@@ -89,41 +67,25 @@ public class MenuProdutos {
                     return new SimpleIntegerProperty(quantidade).asObject();
                 });
 
-
-                // Adicione as colunas à tabela
-                tableViewProdutos.getColumns().add(colunaId);
-
-                tableViewProdutos.getColumns().add(colunaDescricao);
-                tableViewProdutos.getColumns().add(colunaIdUnidade);
-                tableViewProdutos.getColumns().add(colunaQuantidade);
-
-
-                // Configure a fonte de dados da tabela
+                tableViewProdutos.getColumns().addAll(colunaId, colunaDescricao, colunaIdUnidade, colunaQuantidade);
                 tableViewProdutos.setItems(produtos);
             }
         } else {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
         }
     }
-    /**
-     * Configura a segunda tabela de produtos na interface do utilizador, incluindo informações de fornecedores.
-     *
-     * @throws IOException Se houver um erro ao ler os dados.
-     */
-    public void tabela2() throws IOException {
 
+    public void tabela2() throws IOException {
         produtos2.addAll(lerProdutos.lerProdutosBaseDados(baseDados));
 
         if (!produtos2.isEmpty()) {
             if (tableView2.getColumns().isEmpty()) {
-                // Defina as colunas da tabela
                 TableColumn<Produto, Integer> colunaId = new TableColumn<>("ID Produto");
                 TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descrição");
                 TableColumn<Produto, String> colunaIdFornecedor = new TableColumn<>("Id no Fornecedor");
                 TableColumn<Produto, String> colunaNomeFornecedor = new TableColumn<>("Fornecedor");
                 TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
 
-                // Associe as colunas às propriedades da classe Produto
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
                 colunaIdFornecedor.setCellValueFactory(new PropertyValueFactory<>("idFornecedorAsString"));
@@ -143,20 +105,12 @@ public class MenuProdutos {
                     }
                 });
 
-
-                // Adicione as colunas à tabela
-                tableView2.getColumns().addAll(colunaId, colunaDescricao, colunaIdFornecedor,colunaNomeFornecedor, colunaIdUnidade);
-
-                // Configure a fonte de dados da tabela
+                tableView2.getColumns().addAll(colunaId, colunaDescricao, colunaIdFornecedor, colunaNomeFornecedor, colunaIdUnidade);
                 tableView2.setItems(produtos2);
 
-                // Configurar a cellValueFactory para a coluna de Unidade na tabela2
                 colunaIdUnidade.setCellValueFactory(cellData -> {
-                    // Obtém a linha selecionada na tabela1
                     Produto produtoTabela1 = cellData.getValue();
-                    // Usar cellData.getValue() em vez de tableViewProdutos.getSelectionModel().getSelectedItem()
                     if (produtoTabela1 != null) {
-                        // Retorna a Unidade da linha correspondente na tabela1
                         return new SimpleStringProperty(produtoTabela1.getDescricaoUnidade());
                     } else {
                         return new SimpleStringProperty("");
@@ -165,6 +119,44 @@ public class MenuProdutos {
             }
         } else {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
+        }
+
+        // Adicione um listener para detectar cliques na tableView2
+        tableView2.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                try {
+                    mostrarFornecedoresDoProduto(newSelection);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void mostrarFornecedoresDoProduto(Produto produto) throws IOException {
+        try {
+            String idProduto = produto.getIdFornecedorAsString();
+            List<Fornecedor> fornecedores = lerFornecedor.obterFornecedoresPorProduto(baseDados, idProduto);
+
+            if (!fornecedores.isEmpty()) {
+                StringBuilder mensagem = new StringBuilder("Fornecedores do Produto:\n\n");
+
+                for (Fornecedor fornecedor : fornecedores) {
+                    if (fornecedor != null) {
+                        mensagem.append("Nome: ").append(produto.getNomeFornecedor()).append("\n");
+                        mensagem.append("ID no Fornecedor: ").append(produto.getIdFornecedorAsString()).append("\n\n");
+                    } else {
+                        mensagem.append("Fornecedor nulo encontrado.\n\n");
+                    }
+                }
+
+                Mensagens.Informacao("Fornecedores do Produto", mensagem.toString());
+            } else {
+                Mensagens.Informacao("Fornecedores do Produto", "Não há fornecedores associados a este produto.");
+            }
+        } catch (IOException e) {
+            Mensagens.Erro("Erro!", "Erro ao obter informações dos fornecedores.");
+            e.printStackTrace();
         }
     }
 

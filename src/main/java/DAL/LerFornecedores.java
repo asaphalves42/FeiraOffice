@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe com funções de acesso à base de dados e leitura, referentes aos fornecedores.
@@ -107,6 +109,25 @@ public class LerFornecedores {
                 dados.getString("bic"),
                 dados.getString("conta"),
                 dados.getString("iban")
+        );
+    }
+
+
+    private Fornecedor criarObjetoFornecedorParaProduto(ResultSet dados) throws IOException, SQLException {
+
+
+
+
+
+        return new Fornecedor(
+                dados.getInt("id"),
+                dados.getString("nome"),
+                dados.getString("id_Externo"),
+                dados.getString("morada1"),
+                dados.getString("morada2")
+
+
+
         );
     }
 
@@ -366,7 +387,7 @@ public class LerFornecedores {
 
 
             String query = """
-                    SELECT Nome FROM Fornecedor WHERE Id_Externo = ?
+SELECT Nome FROM Fornecedor WHERE Id_Externo = ?
                     """;
 
             PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
@@ -480,5 +501,41 @@ public class LerFornecedores {
                 dados.getDouble("saldo")
         );
     }
+    public List<Fornecedor> obterFornecedoresPorProduto(BaseDados baseDados, String idProduto) throws IOException {
+        List<Fornecedor> fornecedores = new ArrayList<>();
+
+        try {
+            baseDados.Ligar();
+
+            String query = "SELECT Fornecedor.* " +
+                    "FROM Fornecedor " +
+                    "INNER JOIN Produto ON Fornecedor.id_Externo = Produto.id_fornecedor " +
+                    "WHERE Produto.id_Fornecedor = ?";
+
+            System.out.println("Query: " + query);  // Log para depuração
+
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+                preparedStatement.setString(1, idProduto);
+
+                try (ResultSet resultado = preparedStatement.executeQuery()) {
+                    while (resultado.next()) {
+                        Fornecedor fornecedor = criarObjetoFornecedorParaProduto(resultado);
+                        fornecedores.add(fornecedor);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            baseDados.Desligar();
+        }
+
+        return fornecedores;
+    }
+
+
+
 
 }
