@@ -75,7 +75,6 @@ public class BaseDados {
     public void rollback(Connection conexao) throws IOException {
         try {
             conexao.rollback();
-            conexao.setAutoCommit(true);
         } catch (SQLException e) {
             Mensagens.Erro("Erro!","Erro ao realizar rollback!" + e.getMessage());
         }

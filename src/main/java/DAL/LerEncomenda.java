@@ -244,7 +244,7 @@ public class LerEncomenda {
             baseDados.Ligar();
             baseDados.iniciarTransacao(baseDados.getConexao());
 
-            int Id_Encomenda = getQueryEncomenda(encomenda);
+            int Id_Encomenda = getQueryEncomenda(baseDados,encomenda);
 
             // Inserir produtos associados à encomenda na tabela Produto
             for (LinhaEncomenda linha : encomenda.getLinhas()) {
@@ -343,7 +343,8 @@ public class LerEncomenda {
      * @param Id_Encomenda O ID da encomenda à qual a linha pertence.
      * @param linha        A linha de encomenda a ser inserida.
      */
-    private void inserirLinhaEncomenda(BaseDados baseDados, int Id_Encomenda, LinhaEncomenda linha) throws IOException{
+    private void inserirLinhaEncomenda(BaseDados baseDados, int Id_Encomenda, LinhaEncomenda linha) throws IOException, SQLException {
+
         // Construir a string da consulta SQL, escapando os valores com PreparedStatement
         String queryLinha = "INSERT INTO Linha_Encomenda (Id_Encomenda, Sequencia, Id_Produto, Preco_Unitario, Quantidade, Id_Unidade," +
                 " Id_Pais_Taxa, Total_Taxa, Total_Incidencia, Total_Linha) " +
@@ -379,7 +380,7 @@ public class LerEncomenda {
      * @return Uma string contendo a consulta SQL para inserção da encomenda.
      * @throws IOException Se ocorrer um erro durante a obtenção do ID do país.
      */
-    private int getQueryEncomenda(Encomenda encomenda) throws IOException {
+    private int getQueryEncomenda(BaseDados baseDados,Encomenda encomenda) throws IOException {
 
         Pais idPais = lerPaises.obterPaisPorId(baseDados, encomenda.getPais().getId());
 
