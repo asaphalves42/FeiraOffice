@@ -28,7 +28,7 @@ public class LoginTest {
     private String emailoperador = "teste@operador.pt";
     private String passwordoperador = "123";
 
-    private String emailfornecedor = "f1@f1.pt";
+    private String emailfornecedor = "f2@f2.pt";
     private String passwordfornecedor = "123";
 
     private Encriptacao encript = new Encriptacao();
