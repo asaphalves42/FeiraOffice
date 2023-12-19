@@ -115,19 +115,12 @@ public class LerFornecedores {
 
     private Fornecedor criarObjetoFornecedorParaProduto(ResultSet dados) throws IOException, SQLException {
 
-
-
-
-
         return new Fornecedor(
                 dados.getInt("id"),
                 dados.getString("nome"),
                 dados.getString("id_Externo"),
                 dados.getString("morada1"),
                 dados.getString("morada2")
-
-
-
         );
     }
 

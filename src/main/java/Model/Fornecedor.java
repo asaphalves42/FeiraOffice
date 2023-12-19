@@ -81,6 +81,8 @@ public class Fornecedor {
         this.bic = bic;
         this.iban = iban;
     }
+    public Fornecedor(int id, String nome, String idExterno, String morada1, String morada2) {
+    }
 
     public String getBic() {
         return bic;
