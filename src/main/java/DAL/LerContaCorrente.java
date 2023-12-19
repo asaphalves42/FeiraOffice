@@ -1,9 +1,6 @@
 package DAL;
 
-import Model.ContaCorrente;
-import Model.FeiraOffice;
-import Model.Fornecedor;
-import Model.Pais;
+import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 
@@ -65,7 +62,92 @@ public class LerContaCorrente {
         );
     }
 
+    /**
+     * Atualiza o saldo devedor na conta corrente de um fornecedor na base de dados.
+     *
+     * @param baseDados      A instância da classe BaseDados para conexão com o banco de dados.
+     * @param valorEncomenda O valor da encomenda a ser adicionado ao saldo devedor.
+     * @param idFornecedor   O ID do fornecedor cuja conta corrente será atualizada.
+     * @return True se a atualização for bem-sucedida, false caso contrário.
+     * @throws IOException Se ocorrer um erro durante a atualização.
+     */
+    public boolean atualizarSaldoDevedores(BaseDados baseDados, double valorEncomenda, String idFornecedor) throws IOException {
+        try {
+            baseDados.Ligar();
+            baseDados.iniciarTransacao(baseDados.getConexao());
 
+            // Verificar se já existe um registro para o fornecedor
+            String verificaExistencia = "SELECT * FROM Conta_Corrente WHERE Id_Fornecedor = ?";
 
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(verificaExistencia)) {
+                preparedStatement.setString(1, idFornecedor);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                String script;
+                if (resultSet.next()) {
+                    // Se existir, faz o UPDATE
+                    script = "UPDATE Conta_Corrente SET Saldo = Saldo + ? WHERE Id_Fornecedor = ?";
+
+                    try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
+                        updateStatement.setDouble(1, valorEncomenda);
+                        updateStatement.setString(2, idFornecedor);
+                        // Execute o script
+                        updateStatement.executeUpdate();
+                    }
+
+                } else {
+                    // Se não existir, faz a inserção
+                    script = "INSERT INTO Conta_Corrente (Id_Fornecedor, Saldo) VALUES (?, ?)";
+
+                    try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
+                        updateStatement.setString(1, idFornecedor);
+                        updateStatement.setDouble(2, valorEncomenda);
+
+                        // Execute o script
+                        updateStatement.executeUpdate();
+                    }
+                }
+
+            }
+
+            baseDados.commit(baseDados.getConexao());
+
+            return true;
+
+        } catch (Exception e) {
+            Mensagens.Erro("Error", "Ocorreu um erro ao atualizar o saldo devedor");
+            baseDados.rollback(baseDados.getConexao());
+            return false; // Retorna false em caso de erro
+        } finally {
+            baseDados.Desligar();
+        }
+    }
+
+    public boolean atualizarSaldoAposPagamento(BaseDados baseDados, Pagamento pagamento) throws IOException {
+        try {
+            baseDados.Ligar();
+            baseDados.iniciarTransacao(baseDados.getConexao());
+
+            String query = """
+                UPDATE Conta_Corrente SET Saldo = Saldo - ? WHERE Id_Fornecedor = ?
+                """;
+            try (PreparedStatement ps = baseDados.getConexao().prepareStatement(query)) {
+                ps.setDouble(1, pagamento.getValor());
+                ps.setString(2, pagamento.getContaCorrente().getIdFornecedor().getIdExterno());
+                ps.executeUpdate();
+            }
+
+            baseDados.commit(baseDados.getConexao());
+            return true;
+
+        } catch (SQLException | IOException e) {
+            baseDados.rollback(baseDados.getConexao());
+           Mensagens.Erro("Erro!","Erro ao atualizar o saldo!");
+        } finally {
+            baseDados.Desligar();
+        }
+
+        return false;
+    }
 
 }

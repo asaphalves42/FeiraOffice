@@ -49,13 +49,21 @@ public class BaseDados {
      *
      * @param conexao A conexão com o banco de dados.
      */
-    public void commit(Connection conexao) throws IOException {
+    public void commit(Connection conexao) throws IOException, SQLException {
         try {
             conexao.commit();
-            conexao.setAutoCommit(false);
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!","Erro ao realizar commit!");
-            rollback(conexao); // Em caso de falha, realiza rollback
+            Mensagens.Erro("Erro!", "Erro ao realizar commit!");
+            System.out.println(e.getMessage());
+            conexao.rollback(); // Em caso de falha, realiza rollback
+        } finally {
+            try {
+                conexao.setAutoCommit(true);
+            } catch (SQLException e) {
+                Mensagens.Erro("Erro!", "Erro ao restaurar o estado AutoCommit!");
+                System.out.println(e.getMessage());
+                // Considere logar a exceção ou tratar de forma mais apropriada
+            }
         }
     }
 

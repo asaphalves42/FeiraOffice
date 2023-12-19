@@ -36,8 +36,8 @@ public class MenuContaCorrente {
     BaseDados baseDados = new BaseDados();
     LerFornecedores lerFornecedores = new LerFornecedores();
     LerPagamento lerPagamento = new LerPagamento();
-
     LerEncomenda lerEncomenda = new LerEncomenda();
+    LerContaCorrente lerContaCorrente = new LerContaCorrente();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -296,7 +296,12 @@ public class MenuContaCorrente {
                 id
         );
 
-        if(lerPagamento.inserirPagamentoNaBaseDados(baseDados,pagamento)){
+        if(lerPagamento.inserirPagamentoNaBaseDados(baseDados,pagamento) && lerEncomenda.atualizarEstadoPagamentoEncomenda(baseDados,pagamento)
+                && lerContaCorrente.atualizarSaldoAposPagamento(baseDados,pagamento)){
+            if (lerPagamento.verificarReferencia(baseDados,pagamento)){
+                Mensagens.Erro("Erro!","Ocorreu um erro ao gerar a referencia de pagamento, tente novamente!");
+                return;
+            }
             //Gerar SEPA
            LerSepa.gerarSEPATransferencia(
                    pagamento.getReferencia(),
@@ -319,11 +324,13 @@ public class MenuContaCorrente {
            );
 
            //Falta validar o xsd,
-            // verificar a referencia antes de realizar uma nova, pra ver se nao repete
-            // atualizar o estado da encomenda para pago
 
             Mensagens.Informacao("Sucesso!", "Pagamento realizado com sucesso!");
             Mensagens.Informacao("SEPA!","Ficheiro SEPA gerado com sucesso!");
+
+            tableViewEncomendaFornc.getItems().clear();
+            tableViewDividas.getItems().remove(contaCorrente);
+
         } else {
             Mensagens.Erro("Erro!","Erro ao realizar pagamento!");
         }

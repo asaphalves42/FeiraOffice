@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import Utilidades.Mensagens;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -45,30 +47,37 @@ public class LerSepa {
 
         //validações
         if ("".equals(referencia)){
+            Mensagens.Erro("Erro!", "Referência inválida");
             throw new Exception("Referência inválida");
         }
 
         if (valor <= 0){
+            Mensagens.Erro("Erro!", "Valor inválido");
             throw new Exception("Valor inválido");
         }
 
         if ("".equals(empresaNome) || "".equals(empresaMorada) || "".equals(empresaLocalidade) || "".equals(empresaCPostal)){
+            Mensagens.Erro("Erro!", "Dados da empresa incompletos");
             throw new Exception("Dados da empresa incompletos");
         }
 
         if (empresaPais.length() != 2){
+            Mensagens.Erro("Erro!", "País da empresa errado");
             throw new Exception("País da empresa errado");
         }
 
         if ("".equals(empresaIBAN) || "".equals(empresaBIC)){
+            Mensagens.Erro("Erro!", "Dados bancários empresa errados");
             throw new Exception("Dados bancários empresa errados");
         }
 
         if ("".equals(clienteNome) || "".equals(clienteMorada) || "".equals(clienteCPostal)){
+            Mensagens.Erro("Erro!", "Dados do cliente incompletos");
             throw new Exception("Dados do cliente incompletos");
         }
 
         if ("".equals(clienteIBAN) || "".equals(clienteBIC)) {
+            Mensagens.Erro("Erro!", "Dados bancários do cliente errados");
             throw new Exception("Dados bancários do cliente errados");
         }
 
@@ -217,7 +226,7 @@ public class LerSepa {
 
             resultado = true;
         } catch (ParserConfigurationException | javax.xml.transform.TransformerException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());;
         }
         return resultado;
     }

@@ -52,6 +52,7 @@ public class LerPagamento {
                         }
                     }
 
+
                 } else {
                     throw new SQLException("Falha ao obter o ID gerado para Pagamento.");
                 }
@@ -125,6 +126,35 @@ public class LerPagamento {
                 dados.getString("iban"),
                 dados.getString("bic")
         );
+    }
+
+    public boolean verificarReferencia(BaseDados baseDados, Pagamento pagamento) throws IOException {
+        try {
+            baseDados.Ligar();
+
+            String query = """
+                SELECT TOP 1 *
+                FROM Pagamento WHERE referencia = ?
+                """;
+            try (PreparedStatement ps = baseDados.getConexao().prepareStatement(query)) {
+                ps.setString(1, pagamento.getReferencia());
+
+                // ExecuteQuery para obter resultados de SELECT
+                try (ResultSet rs = ps.executeQuery()) {
+                    // Se houver resultados, a referência existe
+                    if (rs.next()) {
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro!", "Erro ao verificar referência!");
+            System.out.println(e.getMessage());
+        } finally {
+            baseDados.Desligar();
+        }
+
+        return false;
     }
 
 }

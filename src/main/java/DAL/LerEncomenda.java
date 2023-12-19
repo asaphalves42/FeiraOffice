@@ -67,7 +67,6 @@ public class LerEncomenda {
             }
 
 
-
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao ler linhas da encomenda!");
 
@@ -327,7 +326,7 @@ public class LerEncomenda {
             }
 
         } catch (SQLException e) {
-            Mensagens.Erro("Erro","Erro ao verificar produto existente!");
+            Mensagens.Erro("Erro", "Erro ao verificar produto existente!");
             throw new RuntimeException(e);
         }
     }
@@ -360,7 +359,7 @@ public class LerEncomenda {
             // Executar a instrução preparada
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!","Erro ao inserir linha da encomenda");
+            Mensagens.Erro("Erro!", "Erro ao inserir linha da encomenda");
             baseDados.rollback(baseDados.getConexao());
             e.printStackTrace();
         }
@@ -405,7 +404,7 @@ public class LerEncomenda {
             }
 
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!","Erro ao inserir encomenda!");
+            Mensagens.Erro("Erro!", "Erro ao inserir encomenda!");
             throw new RuntimeException(e);
         }
 
@@ -430,7 +429,7 @@ public class LerEncomenda {
                     SELECT * FROM Encomenda WHERE Id = ?"
                     """;
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)){
+            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
                 preparedStatement.setString(1, id);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -627,7 +626,6 @@ public class LerEncomenda {
     }
 
 
-
     /**
      * Atualiza o estado de uma encomenda para "Recusada" na base de dados.
      *
@@ -666,69 +664,6 @@ public class LerEncomenda {
 
         return false;
     }
-
-
-    /**
-     * Atualiza o saldo devedor na conta corrente de um fornecedor na base de dados.
-     *
-     * @param baseDados      A instância da classe BaseDados para conexão com o banco de dados.
-     * @param valorEncomenda O valor da encomenda a ser adicionado ao saldo devedor.
-     * @param idFornecedor   O ID do fornecedor cuja conta corrente será atualizada.
-     * @return True se a atualização for bem-sucedida, false caso contrário.
-     * @throws IOException Se ocorrer um erro durante a atualização.
-     */
-    public boolean atualizarSaldoDevedores(BaseDados baseDados, double valorEncomenda, String idFornecedor) throws IOException {
-        try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
-
-            // Verificar se já existe um registro para o fornecedor
-            String verificaExistencia = "SELECT * FROM Conta_Corrente WHERE Id_Fornecedor = ?";
-
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(verificaExistencia)) {
-                preparedStatement.setString(1, idFornecedor);
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                String script;
-                if (resultSet.next()) {
-                    // Se existir, faz o UPDATE
-                    script = "UPDATE Conta_Corrente SET Saldo = Saldo + ? WHERE Id_Fornecedor = ?";
-
-                    try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
-                        updateStatement.setDouble(1, valorEncomenda);
-                        updateStatement.setString(2, idFornecedor);
-                        // Execute o script
-                        updateStatement.executeUpdate();
-                    }
-
-                } else {
-                        // Se não existir, faz a inserção
-                        script = "INSERT INTO Conta_Corrente (Id_Fornecedor, Saldo) VALUES (?, ?)";
-
-                        try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
-                            updateStatement.setString(1, idFornecedor);
-                            updateStatement.setDouble(2, valorEncomenda);
-
-                            // Execute o script
-                            updateStatement.executeUpdate();
-                        }
-                    }
-
-                }
-
-            baseDados.commit(baseDados.getConexao());
-
-            return true;
-
-        } catch (Exception e) {
-            Mensagens.Erro("Error", "Ocorreu um erro ao atualizar o saldo devedor");
-            baseDados.rollback(baseDados.getConexao());
-            return false; // Retorna false em caso de erro
-        } finally {
-            baseDados.Desligar();
-        }
-    }
-
 
     /**
      * Verifica se é possível eliminar um fornecedor com base nas encomendas associadas.
@@ -809,7 +744,7 @@ public class LerEncomenda {
                         INNER JOIN Estado ON Estado.Id = Encomenda.Id_Estado
                         INNER JOIN Estado_Pagamento ON Estado_Pagamento.id = Encomenda.Id_estado_pagamento
                         WHERE Fornecedor.Id_Externo = ? 
-                        AND Estado.Id = 2
+                        AND Estado.Id = 2 AND Estado_Pagamento.id = 1
                     """;
 
             // Preparar a declaração SQL com o fornecedor externo como parâmetro
@@ -857,6 +792,34 @@ public class LerEncomenda {
                 estado,
                 estadoPagamento
         );
+    }
+
+    public boolean atualizarEstadoPagamentoEncomenda(BaseDados baseDados, Pagamento pagamento) throws IOException, SQLException {
+        try {
+            baseDados.Ligar();
+            baseDados.iniciarTransacao(baseDados.getConexao());
+
+            String query = """
+                UPDATE Encomenda SET id_estado_pagamento = 2
+                WHERE Encomenda.Id = ?
+                """;
+
+            try (PreparedStatement ps = baseDados.getConexao().prepareStatement(query)) {
+                for (Encomenda encomenda : pagamento.getEncomendas()) {
+                    ps.setInt(1, encomenda.getId());
+                    ps.executeUpdate();
+                }
+
+                baseDados.commit(baseDados.getConexao());
+                return true;
+            } catch (SQLException e) {
+                baseDados.rollback(baseDados.getConexao());
+                Mensagens.Erro("Erro!", "Erro ao atualizar o estado de pagamento das encomendas!");
+                throw e; // Lança a exceção novamente para que a chamada externa possa lidar com ela
+            }
+        } finally {
+            baseDados.Desligar();
+        }
     }
 
 }

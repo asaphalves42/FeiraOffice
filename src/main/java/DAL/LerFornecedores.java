@@ -422,7 +422,8 @@ public class LerFornecedores {
                                         Pais.Moeda as moeda_pais
                                         FROM Conta_Corrente
                                         INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Conta_Corrente.Id_Fornecedor
-                                        INNER JOIN Pais ON Fornecedor.Id_Pais = Pais.Id;
+                                        INNER JOIN Pais ON Fornecedor.Id_Pais = Pais.Id
+                                        WHERE Conta_Corrente.Saldo > 0;
                                         
                     """;
             PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
