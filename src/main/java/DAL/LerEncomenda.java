@@ -276,6 +276,38 @@ public class LerEncomenda {
         return 0;
     }
 
+    public int adicionarMapeamento(BaseDados baseDados, Encomenda encomenda) {
+        try {
+            baseDados.Ligar();
+            baseDados.iniciarTransacao(baseDados.getConexao());
+
+            String query = """
+                    INSERT INTO FornecedorProdutos (id_Fornecedor, id_Produto, Preco_Unitario)
+                    VALUES (?,?,?)
+                    """;
+
+            try (PreparedStatement ps = baseDados.getConexao().prepareStatement(query)){
+                ps.setString(1, encomenda.getFornecedor().getIdExterno());
+
+                for(LinhaEncomenda produto : encomenda.getLinhas()) {
+                    ps.setInt(2, produto.getId());
+                    ps.setDouble(3, produto.getPreco());
+                }
+
+
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+
+
+
     /**
      * Insere um produto na tabela Produto, verificando se já existe antes de realizar a inserção.
      *

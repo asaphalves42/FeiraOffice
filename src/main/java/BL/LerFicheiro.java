@@ -391,12 +391,13 @@ public class LerFicheiro {
                 }
 
 
-                int sucesso =  lerEncomenda.adicionarEncomendaBaseDeDados(baseDados,encomenda);
+                int sucesso = lerEncomenda.adicionarEncomendaBaseDeDados(baseDados, encomenda);
+                int sucesso2 = lerEncomenda.adicionarMapeamento(baseDados, encomenda);
 
-                if(sucesso == 0) {
+                if (sucesso == 0 && sucesso2 == 0) {
                     Mensagens.Erro("Erro!", "Não foi possível adicionar a encomenda!");
-                }else{
-                    Mensagens.Informacao("Sucesso!","Encomenda enviada com sucesso, aguarda aprovação!");
+                } else {
+                    Mensagens.Informacao("Sucesso!", "Encomenda enviada com sucesso, aguarda aprovação!");
                 }
 
                 System.out.println("-------------------------------------------------------");
