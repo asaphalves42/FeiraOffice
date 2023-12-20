@@ -342,7 +342,7 @@ public class LerEncomenda {
         // Construir a string da consulta SQL, escapando os valores com PreparedStatement
         String queryLinha = "INSERT INTO Linha_Encomenda (Id_Encomenda, Sequencia, Id_Produto, Preco_Unitario, Quantidade, Id_Unidade," +
                 " Id_Pais_Taxa, Total_Taxa, Total_Incidencia, Total_Linha) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?.)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = getConexao().prepareStatement(queryLinha)) {
             preparedStatement.setInt(1, Id_Encomenda);
