@@ -5,6 +5,7 @@ import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -73,14 +74,16 @@ public class LerContaCorrente {
      * @throws IOException Se ocorrer um erro durante a atualização.
      */
     public boolean atualizarSaldoDevedores(double valorEncomenda, String idFornecedor) throws IOException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
 
             // Verificar se já existe um registro para o fornecedor
             String verificaExistencia = "SELECT * FROM Conta_Corrente WHERE Id_Fornecedor = ?";
 
-            try (PreparedStatement preparedStatement = BaseDados.getConexao().prepareStatement(verificaExistencia)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(verificaExistencia)) {
                 preparedStatement.setString(1, idFornecedor);
                 ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -89,7 +92,7 @@ public class LerContaCorrente {
                     // Se existir, faz o UPDATE
                     script = "UPDATE Conta_Corrente SET Saldo = Saldo + ? WHERE Id_Fornecedor = ?";
 
-                    try (PreparedStatement updateStatement = BaseDados.getConexao().prepareStatement(script)) {
+                    try (PreparedStatement updateStatement = conn.prepareStatement(script)) {
                         updateStatement.setDouble(1, valorEncomenda);
                         updateStatement.setString(2, idFornecedor);
                         // Execute o script
@@ -100,7 +103,7 @@ public class LerContaCorrente {
                     // Se não existir, faz a inserção
                     script = "INSERT INTO Conta_Corrente (Id_Fornecedor, Saldo) VALUES (?, ?)";
 
-                    try (PreparedStatement updateStatement = BaseDados.getConexao().prepareStatement(script)) {
+                    try (PreparedStatement updateStatement = conn.prepareStatement(script)) {
                         updateStatement.setString(1, idFornecedor);
                         updateStatement.setDouble(2, valorEncomenda);
 
@@ -111,13 +114,14 @@ public class LerContaCorrente {
 
             }
 
-            BaseDados.commit(getConexao());
+            BaseDados.commit(conn);
 
             return true;
 
         } catch (Exception e) {
             Mensagens.Erro("Error", "Ocorreu um erro ao atualizar o saldo devedor");
-            BaseDados.rollback(getConexao());
+            assert conn != null;
+            BaseDados.rollback(conn);
             return false; // Retorna false em caso de erro
         } finally {
             BaseDados.Desligar();
@@ -125,24 +129,26 @@ public class LerContaCorrente {
     }
 
     public boolean atualizarSaldoAposPagamento(Pagamento pagamento) throws IOException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
 
             String query = """
                 UPDATE Conta_Corrente SET Saldo = Saldo - ? WHERE Id_Fornecedor = ?
                 """;
-            try (PreparedStatement ps = getConexao().prepareStatement(query)) {
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
                 ps.setDouble(1, pagamento.getValor());
                 ps.setString(2, pagamento.getContaCorrente().getIdFornecedor().getIdExterno());
                 ps.executeUpdate();
             }
 
-            BaseDados.commit(getConexao());
+            BaseDados.commit(conn);
             return true;
 
         } catch (SQLException | IOException e) {
-            BaseDados.rollback(getConexao());
+            BaseDados.rollback(conn);
            Mensagens.Erro("Erro!","Erro ao atualizar o saldo!");
         } finally {
             BaseDados.Desligar();

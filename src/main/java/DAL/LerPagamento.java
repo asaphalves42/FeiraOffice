@@ -8,18 +8,17 @@ import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import static Utilidades.BaseDados.getConexao;
 
 public class LerPagamento {
     public boolean inserirPagamentoNaBaseDados(Pagamento pagamento) throws IOException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
 
             // Inserir na tabela Pagamento
             String query = """
@@ -27,7 +26,7 @@ public class LerPagamento {
                     VALUES (?,?,?,?)
                 """;
 
-            try (PreparedStatement ps = BaseDados.getConexao().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, pagamento.getReferencia());
                 ps.setDate(2, java.sql.Date.valueOf(pagamento.getData()));
                 ps.setInt(3, pagamento.getContaCorrente().getId());
@@ -46,7 +45,7 @@ public class LerPagamento {
                         VALUES (?, ?)
                     """;
 
-                    try (PreparedStatement ps2 = BaseDados.getConexao().prepareStatement(query2)) {
+                    try (PreparedStatement ps2 = conn.prepareStatement(query2)) {
                         for (Encomenda encomenda : pagamento.getEncomendas()) {
                             ps2.setInt(1, encomenda.getId());
                             ps2.setInt(2, idPagamento);
@@ -60,12 +59,13 @@ public class LerPagamento {
                 }
             }
 
-            BaseDados.commit(BaseDados.getConexao());
+            BaseDados.commit(conn);
             return true;
 
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao adicionar pagamento à base de dados!");
-            BaseDados.rollback(BaseDados.getConexao());
+            assert conn != null;
+            BaseDados.rollback(conn);
         } finally {
             BaseDados.Desligar();
         }
