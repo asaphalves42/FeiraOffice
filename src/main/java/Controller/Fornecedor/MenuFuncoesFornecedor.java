@@ -63,7 +63,7 @@ public class MenuFuncoesFornecedor {
     public void tabelaFornecedores() throws IOException {
 
 
-        fornecedores.addAll(lerFornecedores.lerFornecedoresDaBaseDeDados(baseDados));
+        fornecedores.addAll(lerFornecedores.lerFornecedoresDaBaseDeDados());
 
         if (!fornecedores.isEmpty()) {
             if (tableViewFornecedores.getColumns().isEmpty()) {
@@ -158,10 +158,10 @@ public class MenuFuncoesFornecedor {
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     try {
-                        if (lerEncomenda.podeEliminarFornecedor(baseDados, fornecedorSelecionado.getIdUtilizador())) {
+                        if (lerEncomenda.podeEliminarFornecedor(fornecedorSelecionado.getIdUtilizador())) {
                             try {
 
-                                boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados, fornecedorSelecionado.getId());
+                                boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(fornecedorSelecionado.getId());
 
                                 if (sucesso) {
                                     // Remover o fornecedor da lista
@@ -169,7 +169,7 @@ public class MenuFuncoesFornecedor {
 
                                     // Remover o utilizador associado ao fornecedor
                                     LerUtilizadores lerUtilizadores = new LerUtilizadores();
-                                    boolean remover = lerUtilizadores.removerUtilizador(baseDados, fornecedorSelecionado.getIdUtilizador());
+                                    boolean remover = lerUtilizadores.removerUtilizador(fornecedorSelecionado.getIdUtilizador());
 
                                     if (remover) {
                                         // Remover o utilizador da lista

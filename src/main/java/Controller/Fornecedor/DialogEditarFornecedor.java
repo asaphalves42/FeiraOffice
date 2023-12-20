@@ -66,7 +66,7 @@ public class DialogEditarFornecedor {
 
     public void initialize() throws IOException {
 
-        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises(baseDados);
+        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises();
         comboBoxPais.setItems(listaDePaises);
     }
 
@@ -165,7 +165,7 @@ public class DialogEditarFornecedor {
 
             // Chamar a DAL para editar o fornecedor
             LerFornecedores editarFornecedor = new LerFornecedores();
-            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(baseDados, fornecedor, pais, utilizador);
+            Fornecedor fornecedorEditado = editarFornecedor.atualizarFornecedorNaBaseDeDados(fornecedor, pais, utilizador);
 
             dadosCompartilhados.setDataFornecedor(fornecedor);
 

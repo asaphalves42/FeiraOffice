@@ -84,7 +84,7 @@ public class PagamentoSepa {
     }
 
     public void carregarLabelsFeira() throws SQLException, IOException {
-        dadosFeira = lerPagamento.lerDadosDaEmpresa(baseDados);
+        dadosFeira = lerPagamento.lerDadosDaEmpresa();
 
         if(dadosFeira!=null){
             labelNome.setText(dadosFeira.getNome());
@@ -100,7 +100,7 @@ public class PagamentoSepa {
     }
 
     public void carregarLabelsFornecedor() throws SQLException, IOException {
-        dadosConta = lerContaCorrente.lerContaCorrente(baseDados, dadosConta.getId());
+        dadosConta = lerContaCorrente.lerContaCorrente(dadosConta.getId());
         labelValor.setText(String.valueOf(dadosConta.getSaldo()));
 
         if (dadosConta != null && dadosConta.getIdFornecedor() != null) {

@@ -9,11 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static Utilidades.BaseDados.getConexao;
+
 public class LerContaCorrente {
-    public ContaCorrente lerContaCorrente(BaseDados baseDados, int idConta) throws SQLException, IOException {
+    public ContaCorrente lerContaCorrente(int idConta) throws SQLException, IOException {
         ContaCorrente conta = null;
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String query = """
                                         
@@ -29,7 +31,7 @@ public class LerContaCorrente {
                     	
                     """;
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = BaseDados.getConexao().prepareStatement(query)) {
                 preparedStatement.setInt(1, idConta);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -42,7 +44,7 @@ public class LerContaCorrente {
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao ler dados da conta corrente!");
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
 
         return conta;
@@ -65,21 +67,20 @@ public class LerContaCorrente {
     /**
      * Atualiza o saldo devedor na conta corrente de um fornecedor na base de dados.
      *
-     * @param baseDados      A instância da classe BaseDados para conexão com o banco de dados.
      * @param valorEncomenda O valor da encomenda a ser adicionado ao saldo devedor.
      * @param idFornecedor   O ID do fornecedor cuja conta corrente será atualizada.
      * @return True se a atualização for bem-sucedida, false caso contrário.
      * @throws IOException Se ocorrer um erro durante a atualização.
      */
-    public boolean atualizarSaldoDevedores(BaseDados baseDados, double valorEncomenda, String idFornecedor) throws IOException {
+    public boolean atualizarSaldoDevedores(double valorEncomenda, String idFornecedor) throws IOException {
         try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+            BaseDados.Ligar();
+            BaseDados.iniciarTransacao(getConexao());
 
             // Verificar se já existe um registro para o fornecedor
             String verificaExistencia = "SELECT * FROM Conta_Corrente WHERE Id_Fornecedor = ?";
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(verificaExistencia)) {
+            try (PreparedStatement preparedStatement = BaseDados.getConexao().prepareStatement(verificaExistencia)) {
                 preparedStatement.setString(1, idFornecedor);
                 ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -88,7 +89,7 @@ public class LerContaCorrente {
                     // Se existir, faz o UPDATE
                     script = "UPDATE Conta_Corrente SET Saldo = Saldo + ? WHERE Id_Fornecedor = ?";
 
-                    try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
+                    try (PreparedStatement updateStatement = BaseDados.getConexao().prepareStatement(script)) {
                         updateStatement.setDouble(1, valorEncomenda);
                         updateStatement.setString(2, idFornecedor);
                         // Execute o script
@@ -99,7 +100,7 @@ public class LerContaCorrente {
                     // Se não existir, faz a inserção
                     script = "INSERT INTO Conta_Corrente (Id_Fornecedor, Saldo) VALUES (?, ?)";
 
-                    try (PreparedStatement updateStatement = baseDados.getConexao().prepareStatement(script)) {
+                    try (PreparedStatement updateStatement = BaseDados.getConexao().prepareStatement(script)) {
                         updateStatement.setString(1, idFornecedor);
                         updateStatement.setDouble(2, valorEncomenda);
 
@@ -110,41 +111,41 @@ public class LerContaCorrente {
 
             }
 
-            baseDados.commit(baseDados.getConexao());
+            BaseDados.commit(getConexao());
 
             return true;
 
         } catch (Exception e) {
             Mensagens.Erro("Error", "Ocorreu um erro ao atualizar o saldo devedor");
-            baseDados.rollback(baseDados.getConexao());
+            BaseDados.rollback(getConexao());
             return false; // Retorna false em caso de erro
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
     }
 
-    public boolean atualizarSaldoAposPagamento(BaseDados baseDados, Pagamento pagamento) throws IOException {
+    public boolean atualizarSaldoAposPagamento(Pagamento pagamento) throws IOException {
         try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+            BaseDados.Ligar();
+            BaseDados.iniciarTransacao(getConexao());
 
             String query = """
                 UPDATE Conta_Corrente SET Saldo = Saldo - ? WHERE Id_Fornecedor = ?
                 """;
-            try (PreparedStatement ps = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement ps = getConexao().prepareStatement(query)) {
                 ps.setDouble(1, pagamento.getValor());
                 ps.setString(2, pagamento.getContaCorrente().getIdFornecedor().getIdExterno());
                 ps.executeUpdate();
             }
 
-            baseDados.commit(baseDados.getConexao());
+            BaseDados.commit(getConexao());
             return true;
 
         } catch (SQLException | IOException e) {
-            baseDados.rollback(baseDados.getConexao());
+            BaseDados.rollback(getConexao());
            Mensagens.Erro("Erro!","Erro ao atualizar o saldo!");
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
 
         return false;

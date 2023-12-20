@@ -87,7 +87,7 @@ public class MenuFornecedor {
     public void carregarFornecedor() throws IOException {
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
-        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados(baseDados)){
+        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
             if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
                 fornecedorLogado = fornec;
             }
@@ -144,7 +144,7 @@ public class MenuFornecedor {
 
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
-        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados(baseDados)){
+        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
             if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
                 fornecedorLogado = fornec;
             }

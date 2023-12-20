@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static Utilidades.BaseDados.getConexao;
+
 /**
  * Classe com funções de leitura e acesso de dados referentes aos países.
  */
@@ -22,14 +24,14 @@ public class LerPaises {
      * @return Uma ObservableList contendo a lista de países lidos da base de dados, ou uma lista vazia se ocorrer um erro na leitura.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public ObservableList<Pais> getListaDePaises(BaseDados baseDados) throws IOException {
+    public ObservableList<Pais> getListaDePaises() throws IOException {
         ObservableList<Pais> listaDePaises = FXCollections.observableArrayList();
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
 
             String query = "SELECT * FROM Pais";
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
                 ResultSet resultado = preparedStatement.executeQuery();
 
                 while (resultado.next()) {
@@ -48,7 +50,7 @@ public class LerPaises {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
 
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
         return listaDePaises;
     }
@@ -61,13 +63,13 @@ public class LerPaises {
      * @return O país correspondente ao ID fornecido, ou null se o país não for encontrado na base de dados ou se ocorrer um erro na leitura.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public Pais obterPaisPorId(BaseDados baseDados, int id) throws IOException {
+    public Pais obterPaisPorId(int id) throws IOException {
         Pais pais = null;
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String query = "SELECT * FROM Pais WHERE id = ?";
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
                 preparedStatement.setInt(1, id);
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {
@@ -81,7 +83,7 @@ public class LerPaises {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
 
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
         return pais;
     }
@@ -94,13 +96,13 @@ public class LerPaises {
      * @return Um objeto Pais contendo as informações do país encontrado ou null se não for encontrado.
      * @throws IOException Se ocorrer um erro durante a leitura da base de dados.
      */
-    public Pais obterPaisPorISO(BaseDados baseDados, String ISO) throws IOException {
+    public Pais obterPaisPorISO(String ISO) throws IOException {
         Pais pais = null;
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String query = "SELECT * FROM Pais WHERE ISO = ?";
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
                 preparedStatement.setString(1, ISO);
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {
@@ -114,7 +116,7 @@ public class LerPaises {
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
         return pais;
     }

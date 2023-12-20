@@ -25,20 +25,21 @@ public class LerProdutos {
     /**
      * Lê os produtos da base de dados e os retorna como uma lista observável.
      *
-     * @param baseDados A instância da base de dados.
      * @return Uma lista observável de produtos lidos da base de dados.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public ObservableList<Produto> lerProdutosBaseDados(BaseDados baseDados) throws IOException {
+    public ObservableList<Produto> lerProdutosBaseDados() throws IOException {
         ObservableList<Produto> produtos = FXCollections.observableArrayList();
         Produto produto = null;
 
         try {
 
-            baseDados.Ligar();
-            ResultSet resultado = baseDados.Selecao("SELECT * FROM Produto");
+            BaseDados.Ligar();
+            ResultSet resultado = BaseDados.Selecao("SELECT * FROM Produto");
 
-            while (resultado.next()) {
+            while (true) {
+                assert resultado != null;
+                if (!resultado.next()) break;
                 produto = criarObjeto(resultado);
                 produtos.add(produto);
             }
@@ -46,7 +47,7 @@ public class LerProdutos {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
             return null; // A leitura falhou, retorna false.
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
         return produtos;
     }
@@ -60,8 +61,8 @@ public class LerProdutos {
      * @throws SQLException Se ocorrer um erro ao acessar os dados no ResultSet.
      */
     private Produto criarObjeto(ResultSet dados) throws IOException, SQLException {
-        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados, dados.getString("Id_Fornecedor"));
-        Unidade unidade = lerUnidade.obterUnidadePorIdBaseDados(baseDados, dados.getInt("Id_Unidade"));
+        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_Fornecedor"));
+        Unidade unidade = lerUnidade.obterUnidadePorIdBaseDados(dados.getInt("Id_Unidade"));
 
         return new Produto(
                 dados.getString("Id"),

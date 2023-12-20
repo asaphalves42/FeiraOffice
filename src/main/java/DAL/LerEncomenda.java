@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import static Utilidades.BaseDados.getConexao;
+
 /**
  * A classe LerEncomenda é responsável por ler e manipular dados relacionados a encomendas,
  * linhas de encomendas e operações associadas à base de dados.
@@ -25,16 +27,15 @@ public class LerEncomenda {
     /**
      * Lê as linhas de uma encomenda específica a partir da base de dados.
      *
-     * @param baseDados   A instância da classe BaseDados para conexão com o banco de dados.
      * @param idEncomenda O ID da encomenda para a qual as linhas serão lidas.
      * @return Uma lista observável de LinhaEncomenda.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public ObservableList<LinhaEncomenda> lerLinhaEncomenda(BaseDados baseDados, int idEncomenda) throws IOException {
+    public ObservableList<LinhaEncomenda> lerLinhaEncomenda(int idEncomenda) throws IOException {
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             // Utilizando JOIN para obter todas as informações necessárias em uma única consulta
             String query = """
@@ -54,7 +55,7 @@ public class LerEncomenda {
                         WHERE LE.Id_Encomenda = ?
                     """;
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
                 preparedStatement.setInt(1, idEncomenda);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -71,7 +72,7 @@ public class LerEncomenda {
             Mensagens.Erro("Erro!", "Erro ao ler linhas da encomenda!");
 
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
 
         return linhasEncomenda;
@@ -129,21 +130,20 @@ public class LerEncomenda {
     /**
      * Lê todas as encomendas da base de dados.
      *
-     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
      * @return Uma lista observável de objetos Encomenda .
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public ObservableList<Encomenda> lerEncomendaDaBaseDeDados(BaseDados baseDados) throws IOException {
+    public ObservableList<Encomenda> lerEncomendaDaBaseDeDados() throws IOException {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String query = """
                     SELECT * FROM Encomenda
                     """;
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
 
                 ResultSet resultado = preparedStatement.executeQuery();
 
@@ -159,7 +159,7 @@ public class LerEncomenda {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
             return null; // Retorna null apenas se houver exceção
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
     }
 
@@ -167,22 +167,21 @@ public class LerEncomenda {
     /**
      * Lê as encomendas da base de dados que estão no estado indicado.
      *
-     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
      * @return Uma lista observável de objetos Encomenda correspondentes ao estado indicado.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public ObservableList<Encomenda> lerEncomendaDaBaseDeDadosPendentes(BaseDados baseDados) throws IOException {
+    public ObservableList<Encomenda> lerEncomendaDaBaseDeDadosPendentes() throws IOException {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
 
             String query = """
                     SELECT * FROM Encomenda WHERE Id_Estado = 1
                     """;
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
 
                 ResultSet resultado = preparedStatement.executeQuery();
 
@@ -199,7 +198,7 @@ public class LerEncomenda {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
             return null; // Retorna null apenas se houver exceção
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
     }
 
@@ -214,8 +213,8 @@ public class LerEncomenda {
      */
     private Encomenda criarObjetoEncomenda(ResultSet dados) throws IOException, SQLException {
 
-        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(baseDados, dados.getString("Id_fornecedor"));
-        Pais pais = lerPaises.obterPaisPorId(baseDados, dados.getInt("Id_Pais"));
+        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_fornecedor"));
+        Pais pais = lerPaises.obterPaisPorId(dados.getInt("Id_Pais"));
         EstadoEncomenda estado = EstadoEncomenda.valueOfId(dados.getInt("Id_Estado"));
 
         return new Encomenda(
@@ -234,43 +233,42 @@ public class LerEncomenda {
     /**
      * Adiciona uma encomenda à base de dados, incluindo a inserção de produtos associados e suas linhas.
      *
-     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
      * @param encomenda A encomenda a ser adicionada à base de dados.
      * @return O ID da encomenda adicionada, ou 0 se ocorrer um erro.
      * @throws IOException Se ocorrer um erro durante a adição à base de dados.
      */
-    public int adicionarEncomendaBaseDeDados(BaseDados baseDados, Encomenda encomenda) throws IOException {
+    public int adicionarEncomendaBaseDeDados(Encomenda encomenda) throws IOException {
         try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+            BaseDados.Ligar();
+            BaseDados.iniciarTransacao(getConexao());
 
-            int Id_Encomenda = getQueryEncomenda(baseDados,encomenda);
+            int Id_Encomenda = getQueryEncomenda(encomenda);
 
             // Inserir produtos associados à encomenda na tabela Produto
             for (LinhaEncomenda linha : encomenda.getLinhas()) {
 
                 //lerProdutos.lerProdutoPorId ja existe, nao grava
-                inserirProdutoNaTabelaProduto(baseDados, linha.getProduto());
+                inserirProdutoNaTabelaProduto(linha.getProduto());
             }
 
             // Inserir na tabela Linha_Encomenda
             try {
                 for (LinhaEncomenda linha : encomenda.getLinhas()) {
-                    inserirLinhaEncomenda(baseDados, Id_Encomenda, linha);
+                    inserirLinhaEncomenda(Id_Encomenda, linha);
                 }
             } catch (RuntimeException e) {
-                baseDados.rollback(baseDados.getConexao());
+                BaseDados.rollback(getConexao());
                 System.out.println(e.getMessage());
                 return 0;
             }
 
-            baseDados.commit(baseDados.getConexao());
+            BaseDados.commit(getConexao());
 
             return Id_Encomenda;
         } catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na adição da base de dados!");
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
 
         return 0;
@@ -311,19 +309,18 @@ public class LerEncomenda {
     /**
      * Insere um produto na tabela Produto, verificando se já existe antes de realizar a inserção.
      *
-     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
      * @param produto   O produto a ser inserido na tabela.
      */
-    private void inserirProdutoNaTabelaProduto(BaseDados baseDados, Produto produto) throws IOException {
+    private void inserirProdutoNaTabelaProduto(Produto produto) throws IOException {
         //Verificar se o produto já eiste na tabela antes de o inserir
-        if (!produtoExisteNaTabela(baseDados, produto.getId())) {
+        if (!produtoExisteNaTabela(produto.getId())) {
             // Construa a string da consulta SQL, escapando os valores
             String queryProduto = """
                     INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado)
                     VALUES (?, ?, ?, ?, ?, 0)
                     """;
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(queryProduto)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(queryProduto)) {
 
                 preparedStatement.setString(1, produto.getId());
                 preparedStatement.setString(2, produto.getFornecedor().getIdExterno());
@@ -335,7 +332,7 @@ public class LerEncomenda {
 
             } catch (SQLException e) {
                 Mensagens.Erro("Erro", "Erro ao adicionar produto!");
-                baseDados.rollback(baseDados.getConexao());
+                BaseDados.rollback(getConexao());
                 e.getMessage();
 
             }
@@ -345,17 +342,16 @@ public class LerEncomenda {
     /**
      * Verifica se um produto com o ID especificado já existe na tabela Produto.
      *
-     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
      * @param Id        O ID do produto a ser verificado.
      * @return True se o produto já existir na tabela, false caso contrário.
      * @throws RuntimeException Se ocorrer um erro durante a verificação.
      */
-    private boolean produtoExisteNaTabela(BaseDados baseDados, String Id) throws IOException {
+    private boolean produtoExisteNaTabela(String Id) throws IOException {
         try {
 
             String query = "SELECT Id FROM Produto WHERE Id = ?";
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
                 preparedStatement.setString(1, Id);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -371,18 +367,17 @@ public class LerEncomenda {
     /**
      * Insere uma linha de encomenda na base de dados.
      *
-     * @param baseDados    A instância da classe BaseDados para conexão com o banco de dados.
      * @param Id_Encomenda O ID da encomenda à qual a linha pertence.
      * @param linha        A linha de encomenda a ser inserida.
      */
-    private void inserirLinhaEncomenda(BaseDados baseDados, int Id_Encomenda, LinhaEncomenda linha) throws IOException, SQLException {
+    private void inserirLinhaEncomenda(int Id_Encomenda, LinhaEncomenda linha) throws IOException, SQLException {
 
         // Construir a string da consulta SQL, escapando os valores com PreparedStatement
         String queryLinha = "INSERT INTO Linha_Encomenda (Id_Encomenda, Sequencia, Id_Produto, Preco_Unitario, Quantidade, Id_Unidade," +
                 " Id_Pais_Taxa, Total_Taxa, Total_Incidencia, Total_Linha) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(queryLinha)) {
+        try (PreparedStatement preparedStatement = getConexao().prepareStatement(queryLinha)) {
             preparedStatement.setInt(1, Id_Encomenda);
             preparedStatement.setInt(2, linha.getSequencia());
             preparedStatement.setString(3, linha.getProduto().getId());
@@ -398,7 +393,7 @@ public class LerEncomenda {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao inserir linha da encomenda!");
-            baseDados.rollback(baseDados.getConexao());
+            BaseDados.rollback(getConexao());
             throw new RuntimeException("Erro");
 
         }
@@ -412,15 +407,15 @@ public class LerEncomenda {
      * @return Uma string contendo a consulta SQL para inserção da encomenda.
      * @throws IOException Se ocorrer um erro durante a obtenção do ID do país.
      */
-    private int getQueryEncomenda(BaseDados baseDados,Encomenda encomenda) throws IOException {
+    private int getQueryEncomenda(Encomenda encomenda) throws IOException {
 
-        Pais idPais = lerPaises.obterPaisPorId(baseDados, encomenda.getPais().getId());
+        Pais idPais = lerPaises.obterPaisPorId(encomenda.getPais().getId());
 
         // Construir a string da consulta SQL, escapando os valores com PreparedStatement
         String query = "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Id_Estado, Id_estado_pagamento) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = getConexao().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, encomenda.getReferencia());
             preparedStatement.setString(2, encomenda.getData().toString());
@@ -445,7 +440,7 @@ public class LerEncomenda {
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao inserir encomenda!");
-            baseDados.rollback(baseDados.getConexao());
+            BaseDados.rollback(getConexao());
             throw new RuntimeException(e);
         }
 
@@ -461,16 +456,16 @@ public class LerEncomenda {
      * @return Um objeto Encomenda contendo as informações da encomenda correspondente ao ID.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public Encomenda obterEncomendaPorId(BaseDados baseDados, String id) throws IOException {
+    public Encomenda obterEncomendaPorId(String id) throws IOException {
         Encomenda encomenda = null;
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String query = """
                     SELECT * FROM Encomenda WHERE Id = ?"
                     """;
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
                 preparedStatement.setString(1, id);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -485,7 +480,7 @@ public class LerEncomenda {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
 
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
         return encomenda;
     }
@@ -499,11 +494,11 @@ public class LerEncomenda {
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
 
-    public List<LinhaEncomenda> lerLinhasParaAprovacao(BaseDados baseDados, int idEncomenda) throws IOException {
+    public List<LinhaEncomenda> lerLinhasParaAprovacao(int idEncomenda) throws IOException {
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             // Utilizando JOIN para obter todas as informações necessárias em uma única consulta
             String query = "SELECT " +
@@ -517,7 +512,7 @@ public class LerEncomenda {
                     "INNER JOIN Unidade ON Unidade.Id = Produto.Id_Unidade " +
                     "WHERE Linha_Encomenda.Id_Encomenda = ?";
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
                 preparedStatement.setInt(1, idEncomenda);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -534,7 +529,7 @@ public class LerEncomenda {
             }
 
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
 
         return linhasEncomenda;
@@ -578,21 +573,21 @@ public class LerEncomenda {
      * @return True se a atualização do estoque for bem-sucedida, false caso contrário.
      * @throws IOException Se ocorrer um erro durante a atualização.
      */
-    public boolean atualizarStock(BaseDados baseDados, String idProduto, int idUnidade, double quantidade) throws IOException {
+    public boolean atualizarStock(String idProduto, int idUnidade, double quantidade) throws IOException {
         try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+            BaseDados.Ligar();
+            BaseDados.iniciarTransacao(getConexao());
 
             // Se existir, dá um update apenas na quantidade, soma a que tem na tabela mais a nova quantidade
             String script;
-            if (produtoExiste(baseDados, idProduto)) {
+            if (produtoExiste(idProduto)) {
                 script = "UPDATE Stock SET Id_Unidade = ?, Quantidade = Quantidade + ? WHERE Id_Produto = ?";
             } else {
                 // Senão, insere o produto
                 script = "INSERT INTO Stock (Id_Produto, Id_Unidade, Quantidade) VALUES (?, ?, ?)";
             }
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(script)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(script)) {
                 preparedStatement.setString(1, idProduto);
                 preparedStatement.setInt(2, idUnidade);
                 preparedStatement.setDouble(3, quantidade);
@@ -600,14 +595,14 @@ public class LerEncomenda {
                 // Execute o script
                 preparedStatement.executeUpdate();
             }
-            baseDados.commit(baseDados.getConexao());
+            BaseDados.commit(getConexao());
 
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao adicionar/atualizar stock!");
-            baseDados.rollback(baseDados.getConexao());
+            BaseDados.rollback(getConexao());
             return false;
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
         return true;
     }
@@ -616,15 +611,14 @@ public class LerEncomenda {
     /**
      * Verifica se um produto já existe na tabela de produtos da base de dados.
      *
-     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
      * @param idProduto O ID do produto a ser verificado.
      * @return True se o produto existir, false caso contrário.
      * @throws SQLException Se ocorrer um erro durante a verificação na base de dados.
      */
-    private boolean produtoExiste(BaseDados baseDados, String idProduto) throws SQLException {
+    private boolean produtoExiste(String idProduto) throws SQLException {
         String query = "SELECT * FROM Stock WHERE Id_Produto = ?";
 
-        try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
             preparedStatement.setString(1, idProduto);
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
@@ -635,32 +629,31 @@ public class LerEncomenda {
     /**
      * Atualiza o estado de uma encomenda para "Aprovada" na base de dados.
      *
-     * @param baseDados   A instância da classe BaseDados para conexão com o banco de dados.
      * @param idEncomenda O ID da encomenda a ser atualizada.
      * @return True se a atualização for bem-sucedida, false caso contrário.
      * @throws IOException Se ocorrer um erro durante a atualização.
      */
-    public boolean atualizarEstadoEncomenda(BaseDados baseDados, int idEncomenda) throws IOException {
+    public boolean atualizarEstadoEncomenda(int idEncomenda) throws IOException {
         try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+            BaseDados.Ligar();
+            BaseDados.iniciarTransacao(getConexao());
 
             String query = "UPDATE Encomenda SET Id_Estado = 2 WHERE Id = ?";
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
                 preparedStatement.setInt(1, idEncomenda);
 
                 preparedStatement.executeUpdate();
             }
-            baseDados.commit(baseDados.getConexao());
+            BaseDados.commit(getConexao());
 
             return true;
 
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao atualizar a encomenda!");
-            baseDados.rollback(baseDados.getConexao());
+            BaseDados.rollback(getConexao());
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
 
         return false;
@@ -670,15 +663,14 @@ public class LerEncomenda {
     /**
      * Atualiza o estado de uma encomenda para "Recusada" na base de dados.
      *
-     * @param baseDados   A instância da classe BaseDados para conexão com o banco de dados.
      * @param idEncomenda O ID da encomenda a ser atualizada.
      * @return True se a atualização for bem-sucedida, false caso contrário.
      * @throws IOException Se ocorrer um erro durante a atualização.
      */
-    public boolean actualizarEstadoEncomendaRecusada(BaseDados baseDados, int idEncomenda) throws IOException {
+    public boolean actualizarEstadoEncomendaRecusada(int idEncomenda) throws IOException {
         try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+            BaseDados.Ligar();
+            BaseDados.iniciarTransacao(getConexao());
 
             String query = """
                     UPDATE Encomenda
@@ -687,20 +679,20 @@ public class LerEncomenda {
                                         
                     """;
 
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
                 preparedStatement.setInt(1, idEncomenda);
 
                 preparedStatement.executeUpdate();
             }
 
-            baseDados.commit(baseDados.getConexao());
+            BaseDados.commit(getConexao());
 
             return true;
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao atualizar encomenda!");
-            baseDados.rollback(baseDados.getConexao());
+            BaseDados.rollback(getConexao());
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
 
         return false;
@@ -709,19 +701,18 @@ public class LerEncomenda {
     /**
      * Verifica se é possível eliminar um fornecedor com base nas encomendas associadas.
      *
-     * @param baseDados  A instância da classe BaseDados para conexão com o banco de dados.
      * @param fornecedor O utilizador (fornecedor) a ser verificado para eliminação.
      * @return True se a eliminação for possível, false caso contrário.
      */
-    public boolean podeEliminarFornecedor(BaseDados baseDados, Utilizador fornecedor) throws IOException {
+    public boolean podeEliminarFornecedor(Utilizador fornecedor) throws IOException {
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String queryEncomendas = "SELECT Id_Fornecedor FROM Encomenda";
             String queryFornecedores = "SELECT Id_Externo FROM Fornecedor WHERE Id_Utilizador = ?";
 
-            try (PreparedStatement preparedStatementEncomendas = baseDados.getConexao().prepareStatement(queryEncomendas);
-                 PreparedStatement preparedStatementFornecedores = baseDados.getConexao().prepareStatement(queryFornecedores)) {
+            try (PreparedStatement preparedStatementEncomendas = getConexao().prepareStatement(queryEncomendas);
+                 PreparedStatement preparedStatementFornecedores = getConexao().prepareStatement(queryFornecedores)) {
 
                 preparedStatementFornecedores.setInt(1, fornecedor.getId());
 
@@ -741,7 +732,7 @@ public class LerEncomenda {
                         }
                     }
 
-                    baseDados.commit(baseDados.getConexao());
+                    BaseDados.commit(getConexao());
                     // Se não encontra igual, a eliminação pode proceder
                     return true;
                 }
@@ -752,7 +743,7 @@ public class LerEncomenda {
             Mensagens.Erro("Erro!", "Erro ao eliminar fornecedor");
             throw new RuntimeException(e);
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
     }
 
@@ -760,16 +751,15 @@ public class LerEncomenda {
     /**
      * Lê as encomendas associadas a um fornecedor específico com base no ID externo do fornecedor.
      *
-     * @param baseDados           A instância da classe {@code BaseDados} para realizar operações no banco de dados.
      * @param idFornecedorExterno O ID externo do fornecedor para o qual deseja recuperar as encomendas.
      * @return Uma lista observável de encomendas associadas ao fornecedor específico.
      * @throws IOException Se ocorrer um erro durante a leitura das encomendas.
      */
-    public ObservableList<Encomenda> lerEncomendasPorFornecedor(BaseDados baseDados, String idFornecedorExterno) throws IOException {
+    public ObservableList<Encomenda> lerEncomendasPorFornecedor(String idFornecedorExterno) throws IOException {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String query = """
                     SELECT 
@@ -789,7 +779,7 @@ public class LerEncomenda {
                     """;
 
             // Preparar a declaração SQL com o fornecedor externo como parâmetro
-            PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query);
+            PreparedStatement preparedStatement = getConexao().prepareStatement(query);
             preparedStatement.setString(1, idFornecedorExterno);
 
             ResultSet resultado = preparedStatement.executeQuery();
@@ -802,7 +792,7 @@ public class LerEncomenda {
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao carregar encomendas");
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
 
         return encomendas;
@@ -835,31 +825,31 @@ public class LerEncomenda {
         );
     }
 
-    public boolean atualizarEstadoPagamentoEncomenda(BaseDados baseDados, Pagamento pagamento) throws IOException, SQLException {
+    public boolean atualizarEstadoPagamentoEncomenda(Pagamento pagamento) throws IOException, SQLException {
         try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+            BaseDados.Ligar();
+            BaseDados.iniciarTransacao(getConexao());
 
             String query = """
                 UPDATE Encomenda SET id_estado_pagamento = 2
                 WHERE Encomenda.Id = ?
                 """;
 
-            try (PreparedStatement ps = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement ps = getConexao().prepareStatement(query)) {
                 for (Encomenda encomenda : pagamento.getEncomendas()) {
                     ps.setInt(1, encomenda.getId());
                     ps.executeUpdate();
                 }
 
-                baseDados.commit(baseDados.getConexao());
+                BaseDados.commit(getConexao());
                 return true;
             } catch (SQLException e) {
-                baseDados.rollback(baseDados.getConexao());
+                BaseDados.rollback(getConexao());
                 Mensagens.Erro("Erro!", "Erro ao atualizar o estado de pagamento das encomendas!");
                 throw e; // Lança a exceção novamente para que a chamada externa possa lidar com ela
             }
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
     }
 

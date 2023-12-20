@@ -50,7 +50,7 @@ public class LoginTest {
     @Test
     public void testVerificarLoginUtilizadorAdm() throws SQLException {
         // Executar o método a ser testado
-        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados, emailadmin, passwordadmin);
+        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(emailadmin, passwordadmin);
 
         // Verificar se o método retornou o utilizador esperado
         assertEquals(UtilizadorAdm.class, utilizador.getClass());
@@ -64,7 +64,7 @@ public class LoginTest {
     @Test
     public void testVerificarLoginUtilizadorFornecedor() throws SQLException {
         // Executar o método a ser testado
-        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados, emailfornecedor, passwordfornecedor);
+        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(emailfornecedor, passwordfornecedor);
 
         // Verificar se o método retornou o utilizador esperado
         assertEquals(UtilizadorFornecedor.class, utilizador.getClass());
@@ -78,7 +78,7 @@ public class LoginTest {
     @Test
     public void testVerificarLoginOperador() throws SQLException {
         // Executar o método a ser testado
-        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(baseDados, emailoperador, passwordoperador);
+        Utilizador utilizador = lerUtilizadores.verificarLoginUtilizador(emailoperador, passwordoperador);
 
         // Verificar se o método retornou o utilizador esperado
         assertEquals(UtilizadorOperador.class, utilizador.getClass());

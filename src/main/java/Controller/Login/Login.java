@@ -135,7 +135,7 @@ public class Login {
         String password = labelPassword.getText(); // Senha
 
         // Verifica as credenciais de 'login' e determina o tipo de utilizador.
-        return lerUtilizadores.verificarLoginUtilizador(baseDados,username, password);
+        return lerUtilizadores.verificarLoginUtilizador(username, password);
     }
 
 

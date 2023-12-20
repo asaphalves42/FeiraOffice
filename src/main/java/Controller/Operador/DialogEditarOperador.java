@@ -89,7 +89,7 @@ public class DialogEditarOperador {
 
             // Chamar a DAL para atualizar o utilizador na tabela "Utilizador"
 
-            if (lerUtilizadores.atualizarOperadorBaseDados(baseDados, operador.getId(), novoEmail, encryptedNovaPassword)) {
+            if (lerUtilizadores.atualizarOperadorBaseDados(operador.getId(), novoEmail, encryptedNovaPassword)) {
                 Mensagens.Informacao("Operador atualizado!", "Operador atualizado com sucesso!");
             }
 

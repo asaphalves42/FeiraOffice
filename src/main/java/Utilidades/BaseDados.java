@@ -8,22 +8,26 @@ import java.sql.*;
  */
 public class BaseDados {
     // credenciais de acesso ao SQL SERVER
-    String url = "jdbc:sqlserver://CTESPBD.DEI.ISEP.IPP.PT;databasename=2023_LP3_G2_FEIRA;encrypt=true;trustServerCertificate=true;";
-    String username = "2023_LP3_G2_FEIRA";
-    String password = "LP32023g2*123";
-    Connection connection; // a ligação ao SQL
+    public static final String url = "jdbc:sqlserver://CTESPBD.DEI.ISEP.IPP.PT;databasename=2023_LP3_G2_FEIRA;encrypt=true;trustServerCertificate=true;";
+    public static final String username = "2023_LP3_G2_FEIRA";
+    public static final String password = "LP32023g2*123";
+
+    private static Connection connection; // a ligação ao SQL
 
     /**
      * Retorna uma instância da classe {@code Connection} que representa a conexão com o banco de dados.
      *
      * @return Uma instância da classe {@code Connection} que representa a conexão com o banco de dados.
      */
-    public Connection getConexao() {
+    /**
+     * Obtém uma conexão com o banco de dados.
+     *
+     * @return A conexão com o banco de dados.
+     */
+    public static Connection getConexao() {
         Connection conexao = null;
-
         try {
             conexao = DriverManager.getConnection(url, username, password);
-
         } catch (SQLException e) {
             e.printStackTrace(); // Tratamento de exceção adequado ao seu código
         }
@@ -36,7 +40,7 @@ public class BaseDados {
      *
      * @param conexao A conexão com o banco de dados.
      */
-    public void iniciarTransacao(Connection conexao) throws IOException {
+    public static void iniciarTransacao(Connection conexao) throws IOException {
         try {
             conexao.setAutoCommit(false);
         } catch (SQLException e) {
@@ -49,7 +53,7 @@ public class BaseDados {
      *
      * @param conexao A conexão com o banco de dados.
      */
-    public void commit(Connection conexao) throws IOException, SQLException {
+    public static void commit(Connection conexao) throws IOException, SQLException {
         try {
             conexao.commit();
         } catch (SQLException e) {
@@ -72,7 +76,7 @@ public class BaseDados {
      *
      * @param conexao A conexão com o banco de dados.
      */
-    public void rollback(Connection conexao) throws IOException {
+    public static void rollback(Connection conexao) throws IOException {
         try {
             conexao.rollback();
         } catch (SQLException e) {
@@ -85,13 +89,12 @@ public class BaseDados {
     /**
      * Estabelece uma ligação com o SQL Server.
      *
-     * @return true se a ligação for bem-sucedida, false caso contrário.
      */
 
-    public boolean Ligar() {
+    public static void Ligar() {
         try {
-            this.connection = DriverManager.getConnection(url, username, password);
-            return true;
+            DriverManager.getConnection(url, username, password);
+            //return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -100,18 +103,21 @@ public class BaseDados {
     /**
      * Termina a ligação com o SQL Server.
      *
-     * @return true se a desligação for bem-sucedida, false caso contrário.
      */
-    public boolean Desligar() {
+    public static void Desligar() {
         try {
-            if (!connection.isClosed()) {
+            if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
-            return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public static void setConnection(Connection connection) {
+        BaseDados.connection = connection;
+    }
+
     /**
      * Executa uma consulta de seleção SQL e retorna o resultado como um conjunto de resultados (ResultSet).
      *
@@ -119,7 +125,7 @@ public class BaseDados {
      * @return O conjunto de resultados (ResultSet) da consulta.
      */
 
-    public ResultSet Selecao(String query) {
+    public static ResultSet Selecao(String query) {
         try {
             //se já foi invocado o ligar e a ligação está valida então envia o comando da query
             if (connection != null && !connection.isClosed()) {
@@ -137,7 +143,7 @@ public class BaseDados {
      * @param query A consulta SQL a ser executada.
      * @return true se a consulta for bem-sucedida, false caso contrário.
      */
-    public boolean Executar(String query) {
+    public static boolean Executar(String query) {
         try {
             //se já foi invocado o ligar e a ligação está valida então envia o comando da query
             if (connection != null && !connection.isClosed()) {
