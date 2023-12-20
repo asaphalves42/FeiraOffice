@@ -392,9 +392,8 @@ public class LerFicheiro {
 
 
                 int sucesso =  lerEncomenda.adicionarEncomendaBaseDeDados(encomenda);
-                int sucesso2 = lerEncomenda.adicionarMapeamento(encomenda);
 
-                if(sucesso == 0 && sucesso2 == 0) {
+                if(sucesso == 0) {
                     Mensagens.Erro("Erro!", "Não foi possível adicionar a encomenda!");
                 }else{
                     Mensagens.Informacao("Sucesso!","Encomenda enviada com sucesso, aguarda aprovação!");

@@ -274,36 +274,46 @@ public class LerEncomenda {
         return 0;
     }
 
-    public int adicionarMapeamento(BaseDados baseDados, Encomenda encomenda) {
+    public int adicionarMapeamento(Encomenda encomenda) throws IOException {
         try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+            BaseDados.Ligar();
+            BaseDados.iniciarTransacao(getConexao());
 
             String query = """
-                    INSERT INTO FornecedorProdutos (id_Fornecedor, id_Produto, Preco_Unitario)
-                    VALUES (?,?,?)
-                    """;
+                INSERT INTO FornecedorProdutos (id_Fornecedor, id_Produto, Preco_Unitario)
+                VALUES (?,?,?)
+                """;
 
-            try (PreparedStatement ps = baseDados.getConexao().prepareStatement(query)){
+            try (PreparedStatement ps = getConexao().prepareStatement(query)) {
                 ps.setString(1, encomenda.getFornecedor().getIdExterno());
 
-                for(LinhaEncomenda produto : encomenda.getLinhas()) {
+                for (LinhaEncomenda produto : encomenda.getLinhas()) {
+                    // Define os valores para cada produto
                     ps.setInt(2, produto.getId());
                     ps.setDouble(3, produto.getPreco());
+
+                    // Executa a atualização para cada produto
+                    ps.executeUpdate();
+                    System.out.println(" id produto " + produto.getId());
                 }
-
-
-
             }
+            System.out.println(query);
+            // Confirma a transação
+            BaseDados.commit(getConexao());
 
         } catch (Exception e) {
+            // Lidar com exceções (registre ou imprima o erro)
             e.printStackTrace();
+            // Reverte a transação em caso de exceção
+            BaseDados.rollback(getConexao());
+            return 0; // ou retorne um código de erro
+        } finally {
+            // Fecha a conexão com o banco de dados
+            BaseDados.Desligar();
         }
 
-        return 0;
+        return 1; // ou retorne um código de sucesso
     }
-
-
 
 
     /**
