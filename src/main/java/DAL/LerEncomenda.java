@@ -289,7 +289,7 @@ public class LerEncomenda {
 
                 for (LinhaEncomenda produto : encomenda.getLinhas()) {
                     // Define os valores para cada produto
-                    ps.setInt(2, produto.getId());
+                    ps.setString(2, produto.getIdProdutoString());
                     ps.setDouble(3, produto.getPreco());
 
                     // Executa a atualização para cada produto
