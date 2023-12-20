@@ -14,11 +14,7 @@ public class BaseDados {
 
     private static Connection connection; // a ligação ao SQL
 
-    /**
-     * Retorna uma instância da classe {@code Connection} que representa a conexão com o banco de dados.
-     *
-     * @return Uma instância da classe {@code Connection} que representa a conexão com o banco de dados.
-     */
+
     /**
      * Obtém uma conexão com o banco de dados.
      *
@@ -78,12 +74,13 @@ public class BaseDados {
      */
     public static void rollback(Connection conexao) throws IOException {
         try {
-            conexao.rollback();
+            if (!conexao.getAutoCommit()) {
+                conexao.rollback();
+            }
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!","Erro ao realizar rollback!" + e.getMessage());
+            Mensagens.Erro("Erro!", "Erro ao realizar rollback!" + e.getMessage());
         }
     }
-
 
 
     /**

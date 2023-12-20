@@ -7,13 +7,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
-import static Utilidades.BaseDados.getConexao;
+import static Utilidades.BaseDados.*;
 
 /**
  * A classe LerEncomenda é responsável por ler e manipular dados relacionados a encomendas,
@@ -22,7 +19,7 @@ import static Utilidades.BaseDados.getConexao;
 public class LerEncomenda {
     LerFornecedores lerFornecedores = new LerFornecedores();
     LerPaises lerPaises = new LerPaises();
-    BaseDados baseDados = new BaseDados();
+
 
     /**
      * Lê as linhas de uma encomenda específica a partir da base de dados.
@@ -238,11 +235,13 @@ public class LerEncomenda {
      * @throws IOException Se ocorrer um erro durante a adição à base de dados.
      */
     public int adicionarEncomendaBaseDeDados(Encomenda encomenda) throws IOException {
+        Connection conexao = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conexao = getConexao();
+            BaseDados.iniciarTransacao(conexao);
 
-            int Id_Encomenda = getQueryEncomenda(encomenda);
+            int Id_Encomenda = getQueryEncomenda(conexao, encomenda);
 
             // Inserir produtos associados à encomenda na tabela Produto
             for (LinhaEncomenda linha : encomenda.getLinhas()) {
@@ -385,7 +384,7 @@ public class LerEncomenda {
         // Construir a string da consulta SQL, escapando os valores com PreparedStatement
         String queryLinha = "INSERT INTO Linha_Encomenda (Id_Encomenda, Sequencia, Id_Produto, Preco_Unitario, Quantidade, Id_Unidade," +
                 " Id_Pais_Taxa, Total_Taxa, Total_Incidencia, Total_Linha) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?.)";
 
         try (PreparedStatement preparedStatement = getConexao().prepareStatement(queryLinha)) {
             preparedStatement.setInt(1, Id_Encomenda);
@@ -413,11 +412,12 @@ public class LerEncomenda {
     /**
      * Obtém a consulta SQL para inserir uma encomenda na base de dados.
      *
+     * @param conexao Obtém a conexão daquela query
      * @param encomenda A encomenda a ser inserida na base de dados.
      * @return Uma string contendo a consulta SQL para inserção da encomenda.
      * @throws IOException Se ocorrer um erro durante a obtenção do ID do país.
      */
-    private int getQueryEncomenda(Encomenda encomenda) throws IOException {
+    private int getQueryEncomenda(Connection conexao, Encomenda encomenda) throws IOException, SQLException {
 
         Pais idPais = lerPaises.obterPaisPorId(encomenda.getPais().getId());
 
@@ -425,7 +425,7 @@ public class LerEncomenda {
         String query = "INSERT INTO Encomenda (Referencia, Data, Id_Fornecedor, Id_Pais, Total_Taxa, Total_Incidencia, Total, Id_Estado, Id_estado_pagamento) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement preparedStatement = getConexao().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = conexao.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, encomenda.getReferencia());
             preparedStatement.setString(2, encomenda.getData().toString());
@@ -447,10 +447,9 @@ public class LerEncomenda {
                     return rs.getInt(1);
                 }
             }
-
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao inserir encomenda!");
-            BaseDados.rollback(getConexao());
+            BaseDados.rollback(conexao);
             throw new RuntimeException(e);
         }
 
@@ -461,7 +460,6 @@ public class LerEncomenda {
     /**
      * Obtém uma encomenda da base de dados com base no ID fornecido.
      *
-     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
      * @param id        O ID da encomenda a ser obtida.
      * @return Um objeto Encomenda contendo as informações da encomenda correspondente ao ID.
      * @throws IOException Se ocorrer um erro durante a leitura.
@@ -498,7 +496,6 @@ public class LerEncomenda {
     /**
      * Lê as linhas de encomenda para aprovação da base de dados com base no ID da encomenda.
      *
-     * @param baseDados   A instância da classe BaseDados para conexão com o banco de dados.
      * @param idEncomenda O ID da encomenda para a qual as linhas devem ser lidas.
      * @return Uma lista de objetos LinhaEncomenda contendo as informações para aprovação.
      * @throws IOException Se ocorrer um erro durante a leitura.
@@ -576,7 +573,6 @@ public class LerEncomenda {
     /**
      * Atualiza o estoque de um produto na base de dados.
      *
-     * @param baseDados  A instância da classe BaseDados para conexão com o banco de dados.
      * @param idProduto  O ID do produto cujo estoque será atualizado.
      * @param idUnidade  O ID da unidade associada ao produto.
      * @param quantidade A quantidade a ser adicionada ao estoque.
@@ -584,9 +580,11 @@ public class LerEncomenda {
      * @throws IOException Se ocorrer um erro durante a atualização.
      */
     public boolean atualizarStock(String idProduto, int idUnidade, double quantidade) throws IOException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            iniciarTransacao(conn);
 
             // Se existir, dá um update apenas na quantidade, soma a que tem na tabela mais a nova quantidade
             String script;
@@ -605,11 +603,12 @@ public class LerEncomenda {
                 // Execute o script
                 preparedStatement.executeUpdate();
             }
-            BaseDados.commit(getConexao());
+            BaseDados.commit(conn);
 
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao adicionar/atualizar stock!");
-            BaseDados.rollback(getConexao());
+            assert conn != null;
+            BaseDados.rollback(conn);
             return false;
         } finally {
             BaseDados.Desligar();
@@ -644,13 +643,15 @@ public class LerEncomenda {
      * @throws IOException Se ocorrer um erro durante a atualização.
      */
     public boolean atualizarEstadoEncomenda(int idEncomenda) throws IOException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            iniciarTransacao(conn);
 
             String query = "UPDATE Encomenda SET Id_Estado = 2 WHERE Id = ?";
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setInt(1, idEncomenda);
 
                 preparedStatement.executeUpdate();
@@ -661,7 +662,8 @@ public class LerEncomenda {
 
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao atualizar a encomenda!");
-            BaseDados.rollback(getConexao());
+            assert conn != null;
+            BaseDados.rollback(conn);
         } finally {
             BaseDados.Desligar();
         }
@@ -678,9 +680,11 @@ public class LerEncomenda {
      * @throws IOException Se ocorrer um erro durante a atualização.
      */
     public boolean actualizarEstadoEncomendaRecusada(int idEncomenda) throws IOException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            iniciarTransacao(conn);
 
             String query = """
                     UPDATE Encomenda
@@ -689,18 +693,19 @@ public class LerEncomenda {
                                         
                     """;
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setInt(1, idEncomenda);
 
                 preparedStatement.executeUpdate();
             }
 
-            BaseDados.commit(getConexao());
+            BaseDados.commit(conn);
 
             return true;
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao atualizar encomenda!");
-            BaseDados.rollback(getConexao());
+            assert conn != null;
+            BaseDados.rollback(conn);
         } finally {
             BaseDados.Desligar();
         }
@@ -836,25 +841,27 @@ public class LerEncomenda {
     }
 
     public boolean atualizarEstadoPagamentoEncomenda(Pagamento pagamento) throws IOException, SQLException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            iniciarTransacao(conn);
 
             String query = """
                 UPDATE Encomenda SET id_estado_pagamento = 2
                 WHERE Encomenda.Id = ?
                 """;
 
-            try (PreparedStatement ps = getConexao().prepareStatement(query)) {
+            try (PreparedStatement ps =conn.prepareStatement(query)) {
                 for (Encomenda encomenda : pagamento.getEncomendas()) {
                     ps.setInt(1, encomenda.getId());
                     ps.executeUpdate();
                 }
 
-                BaseDados.commit(getConexao());
+                BaseDados.commit(conn);
                 return true;
             } catch (SQLException e) {
-                BaseDados.rollback(getConexao());
+                BaseDados.rollback(conn);
                 Mensagens.Erro("Erro!", "Erro ao atualizar o estado de pagamento das encomendas!");
                 throw e; // Lança a exceção novamente para que a chamada externa possa lidar com ela
             }

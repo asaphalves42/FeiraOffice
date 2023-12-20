@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,12 +28,14 @@ public class LerUtilizadores {
      */
     public ObservableList<Utilizador> lerUtilizadoresDaBaseDeDados() throws IOException {
         ObservableList<Utilizador> utilizadores = FXCollections.observableArrayList();
+        Connection conn = null;
 
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
             String query = "SELECT * FROM Utilizador";
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query);
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query);
                  ResultSet resultado = preparedStatement.executeQuery()) {
 
                 while (resultado.next()) {
@@ -52,12 +55,12 @@ public class LerUtilizadores {
 
                     utilizadores.add(aux);
                 }
-                BaseDados.commit(getConexao());
+                BaseDados.commit(conn);
             }
             return utilizadores; // A leitura retorna a lista de utilizadores
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            BaseDados.rollback(getConexao());
+            BaseDados.rollback(conn);
             return null; // A leitura falhou
         } finally {
             BaseDados.Desligar();
@@ -236,19 +239,21 @@ public class LerUtilizadores {
      * @return True se a remoção foi bem-sucedida, false caso contrário.
      */
     public boolean removerOperadorDaBaseDeDados(int utilizadorID) throws IOException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
 
             // Utilizando PreparedStatement para evitar injeção de SQL
             String query = "DELETE FROM Utilizador WHERE id_util = ?";
-            try (PreparedStatement preparedStatement = BaseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setInt(1, utilizadorID);
 
                 int linhasAfetadas = preparedStatement.executeUpdate();
 
                 if (linhasAfetadas > 0) {
-                    BaseDados.commit(BaseDados.getConexao());
+                    BaseDados.commit(conn);
                     return true; // Retorna true se alguma linha foi afetada (remoção bem-sucedida)
                 }
             }
@@ -257,7 +262,7 @@ public class LerUtilizadores {
             try {
                 Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
             } finally {
-                BaseDados.rollback(BaseDados.getConexao());
+                BaseDados.rollback(conn);
                 BaseDados.Desligar();
             }
             return false; // Retorna false se alguma linha não foi afetada (remoção falhou)
@@ -280,20 +285,22 @@ public class LerUtilizadores {
      * @throws IOException se ocorrer um erro de entrada/saída durante a execução.
      */
     public Utilizador adicionarOperadorBaseDados(String username, String password, Utilizador utilizador) throws IOException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
 
             // Utilizando PreparedStatement para evitar injeção de SQL
             String query = "INSERT INTO Utilizador (username, password, id_role) VALUES (?, ?, 2)";
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password);
 
                 preparedStatement.executeUpdate();
 
-                BaseDados.commit(getConexao());
+                BaseDados.commit(conn);
                 return utilizador;
             }
 
@@ -301,7 +308,7 @@ public class LerUtilizadores {
             try {
                 Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
             } finally {
-                BaseDados.rollback(getConexao());
+                BaseDados.rollback(conn);
                 BaseDados.Desligar();
             }
             return null;
@@ -319,27 +326,30 @@ public class LerUtilizadores {
      * @throws IOException se acontecer uma exceção de IO
      */
     public boolean removerUtilizador(UtilizadorFornecedor fornecedor) throws IOException {
+        Connection conn = null;
         try {
 
             BaseDados.Ligar();
+            conn = getConexao();
             BaseDados.iniciarTransacao(getConexao());
 
             String query = "DELETE FROM Utilizador WHERE id_util = ?";
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setInt(1, fornecedor.getId());
 
                 int linhasAfetadas = preparedStatement.executeUpdate();
 
                 if (linhasAfetadas > 0) {
-                    BaseDados.commit(getConexao());
+                    BaseDados.commit(conn);
                     return true; // Remoção bem-sucedida
                 }
             }
 
         }catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na remoção na base de dados ou utilizador tem encomendas!");
-            BaseDados.rollback(getConexao());
+            assert conn != null;
+            BaseDados.rollback(conn);
         } finally {
             BaseDados.Desligar();
         }
@@ -355,13 +365,15 @@ public class LerUtilizadores {
      * @return True se a atualização foi bem-sucedida, false caso contrário.
      */
     public boolean atualizarOperadorBaseDados(int id, String novoEmail, String encryptedNovaPassword) throws IOException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
 
             // Construir a query UPDATE com PreparedStatement
             String query = "UPDATE Utilizador SET username = ?, password = ? WHERE id_util = ? AND id_role = 2";
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, novoEmail);
                 preparedStatement.setString(2, encryptedNovaPassword);
                 preparedStatement.setInt(3, id);
@@ -370,7 +382,7 @@ public class LerUtilizadores {
                 int linhasAfetadas = preparedStatement.executeUpdate();
 
                 if (linhasAfetadas > 0) {
-                    BaseDados.commit(getConexao());
+                    BaseDados.commit(conn);
                     return true; // Atualização bem-sucedida
                 }
             }
@@ -378,7 +390,7 @@ public class LerUtilizadores {
             try {
                 Mensagens.Erro("Erro na atualização!", "Erro na atualização da base de dados!");
             } finally {
-                BaseDados.rollback(getConexao());
+                BaseDados.rollback(conn);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

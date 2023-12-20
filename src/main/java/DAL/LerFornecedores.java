@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -205,11 +206,12 @@ public class LerFornecedores {
      * @throws IOException Se ocorrer um erro durante a operação.
      */
     public Fornecedor adicionarFornecedorBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
-
+        Connection conn = null;
         try {
 
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
 
             /*
             Procedure com as variáveis que preciso inserir nas tabelas, Fornecedor e Utilizador. Quando insere o utilizador, vou buscar o ultimo id que acabei de inserir através
@@ -230,13 +232,14 @@ public class LerFornecedores {
                     "', @iban = '" + fornecedor.getIban() + "'";
 
             BaseDados.Executar(query);
-            BaseDados.commit(getConexao());
+            BaseDados.commit(conn);
 
             return fornecedor; // retorna o fornecedor
 
         } catch (Exception e) {
             Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
-            BaseDados.rollback(getConexao());
+            assert conn != null;
+            BaseDados.rollback(conn);
         } finally {
             BaseDados.Desligar();
         }
@@ -250,17 +253,19 @@ public class LerFornecedores {
      * @return true se a remoção for bem-sucedida, false caso contrário.
      */
     public boolean removerFornecedorDaBaseDeDados(int fornecedorId) throws IOException {
+        Connection conn = null;
         try {
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
 
             String query = "DELETE FROM Fornecedor WHERE id = ?";
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setInt(1, fornecedorId);
 
                 int linhasAfetadas = preparedStatement.executeUpdate();
 
-                BaseDados.commit(getConexao());
+                BaseDados.commit(conn);
 
                 if (linhasAfetadas > 0) {
                     return true; // Retorna true se alguma linha foi afetada (remoção bem-sucedida)
@@ -269,10 +274,10 @@ public class LerFornecedores {
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados! Ou fornecedor tem encomendas");
-            BaseDados.rollback(getConexao());
+            BaseDados.rollback(conn);
 
         } catch (IOException e) {
-            BaseDados.rollback(getConexao());
+            BaseDados.rollback(conn);
         } finally {
             BaseDados.Desligar();
         }
@@ -288,10 +293,12 @@ public class LerFornecedores {
      * @throws IOException Se ocorrer um erro durante a operação.
      */
     public Fornecedor atualizarFornecedorNaBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
+        Connection conn = null;
         try {
 
             BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
 
             String queryFornecedor = """
                     UPDATE Fornecedor SET 
@@ -311,7 +318,7 @@ public class LerFornecedores {
             // Atualizar Fornecedor
 
 
-            PreparedStatement preparedStatementFornecedor = getConexao().prepareStatement(queryFornecedor);
+            PreparedStatement preparedStatementFornecedor = conn.prepareStatement(queryFornecedor);
             preparedStatementFornecedor.setString(1, fornecedor.getNome());
             preparedStatementFornecedor.setString(2, fornecedor.getIdExterno());
             preparedStatementFornecedor.setString(3, fornecedor.getMorada1());
@@ -326,7 +333,7 @@ public class LerFornecedores {
 
             // Executar a atualização do Fornecedor
             int linhasAfetadasFornecedor = preparedStatementFornecedor.executeUpdate();
-            BaseDados.commit(getConexao());
+            BaseDados.commit(conn);
 
             // Atualizar Utilizador
             String queryUtilizador = """
@@ -337,7 +344,7 @@ public class LerFornecedores {
                     WHERE id_util = ?               
                     """;
 
-            PreparedStatement preparedStatementUtilizador = getConexao().prepareStatement(queryUtilizador);
+            PreparedStatement preparedStatementUtilizador = conn.prepareStatement(queryUtilizador);
             preparedStatementUtilizador.setInt(1, utilizador.getTipo().getValue());
             preparedStatementUtilizador.setString(2, fornecedor.getIdUtilizador().getEmail());
             preparedStatementUtilizador.setString(3, fornecedor.getIdUtilizador().getPassword());
@@ -345,7 +352,7 @@ public class LerFornecedores {
 
             // Executar a atualização do Utilizador
             int linhasAfetadasUtilizador = preparedStatementUtilizador.executeUpdate();
-            BaseDados.commit(getConexao());
+            BaseDados.commit(conn);
 
             BaseDados.Desligar();
 
@@ -354,11 +361,11 @@ public class LerFornecedores {
                 return fornecedor; // Retorna o fornecedor atualizado
             } else {
                 Mensagens.Erro("Erro!", "Erro ao atualizar fornecedor!");
-                BaseDados.rollback(getConexao());
+                BaseDados.rollback(conn);
             }
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao atualizar fornecedor!");
-            BaseDados.rollback(getConexao());
+            BaseDados.rollback(conn);
         } finally {
             BaseDados.Desligar();
         }
