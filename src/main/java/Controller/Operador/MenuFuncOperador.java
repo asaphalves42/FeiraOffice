@@ -53,7 +53,7 @@ public class MenuFuncOperador{
     public void tabelaUtilizadoresOperador() throws IOException {
 
 
-        utilizador.addAll(lerUtilizadoresOperador.lerOperadoresDaBaseDados(baseDados));
+        utilizador.addAll(lerUtilizadoresOperador.lerOperadoresDaBaseDados());
 
 
 
@@ -144,7 +144,7 @@ public class MenuFuncOperador{
                 if (response == ButtonType.OK) {
                     try {
 
-                        boolean sucesso = lerUtilizadoresOperador.removerOperadorDaBaseDeDados(baseDados, operadorSelecionado.getId());
+                        boolean sucesso = lerUtilizadoresOperador.removerOperadorDaBaseDeDados(operadorSelecionado.getId());
 
                         if (sucesso) {
                             utilizador.remove(operadorSelecionado);

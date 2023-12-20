@@ -77,7 +77,7 @@ public class DialogAdicionarFornecedor {
      * @throws IOException lança uma exception caso um erro aconteça.
      */
     public void initialize() throws IOException {
-        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises(baseDados);
+        ObservableList<Pais> listaDePaises = lerPaises.getListaDePaises();
         comboBoxPais.setItems(listaDePaises);
     }
 
@@ -146,7 +146,7 @@ public class DialogAdicionarFornecedor {
                     );
 
             //chamar a DAL para adicionar o fornecedor
-            Fornecedor fornecedorInserido = adicionarFornecedor.adicionarFornecedorBaseDeDados(baseDados,fornecedor, pais, utilizador);
+            Fornecedor fornecedorInserido = adicionarFornecedor.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
 
             dadosCompartilhados.setDataFornecedor(fornecedor);
 

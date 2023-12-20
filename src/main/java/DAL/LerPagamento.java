@@ -13,11 +13,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static Utilidades.BaseDados.getConexao;
+
 public class LerPagamento {
-    public boolean inserirPagamentoNaBaseDados(BaseDados baseDados, Pagamento pagamento) throws IOException {
+    public boolean inserirPagamentoNaBaseDados(Pagamento pagamento) throws IOException {
         try {
-            baseDados.Ligar();
-            baseDados.iniciarTransacao(baseDados.getConexao());
+            BaseDados.Ligar();
+            BaseDados.iniciarTransacao(getConexao());
 
             // Inserir na tabela Pagamento
             String query = """
@@ -25,7 +27,7 @@ public class LerPagamento {
                     VALUES (?,?,?,?)
                 """;
 
-            try (PreparedStatement ps = baseDados.getConexao().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement ps = BaseDados.getConexao().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, pagamento.getReferencia());
                 ps.setDate(2, java.sql.Date.valueOf(pagamento.getData()));
                 ps.setInt(3, pagamento.getContaCorrente().getId());
@@ -44,7 +46,7 @@ public class LerPagamento {
                         VALUES (?, ?)
                     """;
 
-                    try (PreparedStatement ps2 = baseDados.getConexao().prepareStatement(query2)) {
+                    try (PreparedStatement ps2 = BaseDados.getConexao().prepareStatement(query2)) {
                         for (Encomenda encomenda : pagamento.getEncomendas()) {
                             ps2.setInt(1, encomenda.getId());
                             ps2.setInt(2, idPagamento);
@@ -58,23 +60,23 @@ public class LerPagamento {
                 }
             }
 
-            baseDados.commit(baseDados.getConexao());
+            BaseDados.commit(BaseDados.getConexao());
             return true;
 
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao adicionar pagamento à base de dados!");
-            baseDados.rollback(baseDados.getConexao());
+            BaseDados.rollback(BaseDados.getConexao());
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
         return false;
     }
 
 
-    public FeiraOffice lerDadosDaEmpresa(BaseDados baseDados) throws SQLException, IOException {
+    public FeiraOffice lerDadosDaEmpresa() throws SQLException, IOException {
         FeiraOffice feiraOffice = null;
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String query = """
                     SELECT
@@ -92,7 +94,7 @@ public class LerPagamento {
                     FROM Feira_Office
                     	INNER JOIN Pais ON Pais.id = Feira_Office.id_pais
                     """;
-            try (PreparedStatement statement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement statement = getConexao().prepareStatement(query)) {
 
                 ResultSet resultado = statement.executeQuery();
 
@@ -105,7 +107,7 @@ public class LerPagamento {
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao carregar dados bancários da Feira & Office");
         }finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
         return feiraOffice;
     }
@@ -128,15 +130,15 @@ public class LerPagamento {
         );
     }
 
-    public boolean verificarReferencia(BaseDados baseDados, Pagamento pagamento) throws IOException {
+    public boolean verificarReferencia(Pagamento pagamento) throws IOException {
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String query = """
                 SELECT TOP 1 *
                 FROM Pagamento WHERE referencia = ?
                 """;
-            try (PreparedStatement ps = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement ps = getConexao().prepareStatement(query)) {
                 ps.setString(1, pagamento.getReferencia());
 
                 // ExecuteQuery para obter resultados de SELECT
@@ -151,7 +153,7 @@ public class LerPagamento {
             Mensagens.Erro("Erro!", "Erro ao verificar referência!");
             System.out.println(e.getMessage());
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
 
         return false;

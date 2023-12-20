@@ -56,7 +56,7 @@ public class LerOperadoresTest {
         UtilizadorOperador operador = new UtilizadorOperador(2, email, encryptedPassword);
 
         // Tentativa de adicionar um operador ao banco de dados
-        Utilizador operadorInserido = lerUtilizadores.adicionarOperadorBaseDados(baseDados, email, encryptedPassword, operador);
+        Utilizador operadorInserido = lerUtilizadores.adicionarOperadorBaseDados(email, encryptedPassword, operador);
         // Verifica se a inserção foi bem-sucedida
         assertEquals(operador, operadorInserido);
     }
@@ -81,7 +81,7 @@ public class LerOperadoresTest {
 
 
         // Tentativa de adicionar um operador ao banco de dados
-        Utilizador operadorInserido = lerUtilizadores.adicionarOperadorBaseDados(baseDados, email, password, operador);
+        Utilizador operadorInserido = lerUtilizadores.adicionarOperadorBaseDados(email, password, operador);
 
         // Verifier se a inserção falhou
         assertEquals(operador, operadorInserido);
@@ -102,14 +102,14 @@ public class LerOperadoresTest {
 
 
         // Tentativa de adicionar um fornecedor ao banco de dados
-        Utilizador operadorInserido = lerUtilizadores.adicionarOperadorBaseDados(baseDados,email,password,operador );
+        Utilizador operadorInserido = lerUtilizadores.adicionarOperadorBaseDados(email,password,operador );
 
         // Verifica se a inserção foi bem-sucedida
         assertEquals(operador, operadorInserido);
 
         // Agora, tentamos excluir o operador
 
-        boolean exclusaoutilizadoroperador = lerUtilizadores.removerOperadorDaBaseDeDados(baseDados, utilizador.getId());
+        boolean exclusaoutilizadoroperador = lerUtilizadores.removerOperadorDaBaseDeDados(utilizador.getId());
         // Verifica se a exclusão foi bem-sucedida
         //boolean (exclusaoBemSucedida) = false;
         assertTrue(exclusaoutilizadoroperador);

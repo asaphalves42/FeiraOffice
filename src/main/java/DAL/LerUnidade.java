@@ -18,18 +18,17 @@ public class LerUnidade {
     /**
      * Obtém uma unidade da base de dados com base na descrição.
      *
-     * @param baseDados A instância da base de dados.
      * @param UOM A descrição da unidade.
      * @return A unidade obtida da base de dados, ou null se não encontrada.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public Unidade obterUnidadePorDescricaoBaseDados(BaseDados baseDados, String UOM) throws IOException {
+    public Unidade obterUnidadePorDescricaoBaseDados(String UOM) throws IOException {
         Unidade unidade = null;
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String query = "SELECT * FROM Unidade WHERE Descricao = ?";
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = BaseDados.getConexao().prepareStatement(query)) {
                 preparedStatement.setString(1, UOM);
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {
@@ -42,7 +41,7 @@ public class LerUnidade {
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
         return unidade;
     }
@@ -50,18 +49,17 @@ public class LerUnidade {
     /**
      * Obtém uma unidade da base de dados com base no ID.
      *
-     * @param baseDados A instância da base de dados.
      * @param id O ID da unidade.
      * @return A unidade obtida da base de dados, ou null se não encontrada.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public Unidade obterUnidadePorIdBaseDados(BaseDados baseDados, int id) throws IOException {
+    public Unidade obterUnidadePorIdBaseDados(int id) throws IOException {
         Unidade unidade = null;
         try {
-            baseDados.Ligar();
+            BaseDados.Ligar();
 
             String query = "SELECT * FROM Unidade WHERE id = ?";
-            try (PreparedStatement preparedStatement = baseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = BaseDados.getConexao().prepareStatement(query)) {
                 preparedStatement.setInt(1, id);
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {
@@ -70,13 +68,13 @@ public class LerUnidade {
                     }
                 }
 
-                baseDados.commit(baseDados.getConexao());
+                BaseDados.commit(BaseDados.getConexao());
             }
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
         } finally {
-            baseDados.Desligar();
+            BaseDados.Desligar();
         }
         return unidade;
     }

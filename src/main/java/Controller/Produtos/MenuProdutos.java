@@ -45,7 +45,7 @@ public class MenuProdutos {
     }
 
     public void tabelaProdutos() throws IOException {
-        produtos.addAll(lerProdutos.lerProdutosBaseDados(baseDados));
+        produtos.addAll(lerProdutos.lerProdutosBaseDados());
 
         if (!produtos.isEmpty()) {
             if (tableViewProdutos.getColumns().isEmpty()) {
@@ -60,7 +60,7 @@ public class MenuProdutos {
                 colunaQuantidade.setCellValueFactory(cellData -> {
                     int quantidade = 0;
                     try {
-                        quantidade = lerStock.obterQuantidadePorIdProduto(baseDados, cellData.getValue().getId());
+                        quantidade = lerStock.obterQuantidadePorIdProduto(cellData.getValue().getId());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -76,7 +76,7 @@ public class MenuProdutos {
     }
 
     public void tabela2() throws IOException {
-        produtos2.addAll(lerProdutos.lerProdutosBaseDados(baseDados));
+        produtos2.addAll(lerProdutos.lerProdutosBaseDados());
 
         if (!produtos2.isEmpty()) {
             if (tableView2.getColumns().isEmpty()) {
@@ -94,7 +94,7 @@ public class MenuProdutos {
                     if (produto != null) {
                         try {
                             String idFornecedor = produto.getIdFornecedorAsString();
-                            String nomeFornecedor = lerFornecedor.obterNomeFornecedorPorIdExterno(baseDados, idFornecedor);
+                            String nomeFornecedor = lerFornecedor.obterNomeFornecedorPorIdExterno(idFornecedor);
                             return new SimpleStringProperty(nomeFornecedor != null ? nomeFornecedor : "");
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -136,7 +136,7 @@ public class MenuProdutos {
     private void mostrarFornecedoresDoProduto(Produto produto) throws IOException {
         try {
             String idProduto = produto.getIdFornecedorAsString();
-            List<Fornecedor> fornecedores = lerFornecedor.obterFornecedoresPorProduto(baseDados, idProduto);
+            List<Fornecedor> fornecedores = lerFornecedor.obterFornecedoresPorProduto(idProduto);
 
             if (!fornecedores.isEmpty()) {
                 StringBuilder mensagem = new StringBuilder("Fornecedores do Produto:\n\n");

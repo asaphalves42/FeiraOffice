@@ -35,14 +35,16 @@ public class LerFornecedoresTest {
         // Inicializar a instância da BaseDados
         baseDados = mock(BaseDados.class);
         // Ligar ao banco de dados antes de cada teste
-        doReturn(true).when(baseDados).Ligar();
+        doReturn(true).when(baseDados);
+        BaseDados.Ligar();
     }
     Encriptacao encript = new Encriptacao();
 
     @After
     public void tearDown() {
         // Desligar a conexão após cada teste
-        doReturn(true).when(baseDados).Desligar();
+        doReturn(true).when(baseDados);
+        BaseDados.Desligar();
     }
 
     /**
@@ -66,7 +68,7 @@ public class LerFornecedoresTest {
         Fornecedor fornecedor = new Fornecedor(1, "NomeFornecedor", "Externo123", "Rua Principal", "Rua Secundária", "Feira", "3885-261", pais, utilizador);
 
         // Tentativa de adicionar um fornecedor ao banco de dados
-        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(baseDados,fornecedor, pais, utilizador);
+        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
 
         // Verifica se a inserção foi bem-sucedida
         assertEquals(fornecedor, fornecedorInserido);
@@ -92,7 +94,7 @@ public class LerFornecedoresTest {
         Fornecedor fornecedor = new Fornecedor(1, "TesteFornecedor", "Externo123", "Rua Principal", "Rua Secundária", "Feira", "3885-261", pais, utilizador);
 
         // Tentativa de adicionar um fornecedor ao banco de dados
-        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(baseDados,fornecedor, pais, utilizador);
+        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
 
         // Verifica se a inserção falhou
         assertEquals(fornecedor, fornecedorInserido);
@@ -115,14 +117,14 @@ public class LerFornecedoresTest {
 
 
         // Tentativa de adicionar um fornecedor ao banco de dados
-        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(baseDados,fornecedor, pais, utilizador);
+        Fornecedor fornecedorInserido = lerFornecedores.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
 
         // Verifica se a inserção foi bem-sucedida
         assertEquals(fornecedor, fornecedorInserido);
 
         // Agora, tentamos excluir o fornecedor
        // boolean exclusaoBemSucedida = lerFornecedores.removerFornecedorDaBaseDeDados(baseDados,fornecedorInserido.getId());
-       boolean exclusaoutilizadorfornecedor= lerUtilizadores.removerUtilizador(baseDados, utilizador);
+       boolean exclusaoutilizadorfornecedor= lerUtilizadores.removerUtilizador(utilizador);
         // Verifica se a exclusão foi bem-sucedida
        //boolean (exclusaoBemSucedida) = false;
         assertTrue(exclusaoutilizadorfornecedor);

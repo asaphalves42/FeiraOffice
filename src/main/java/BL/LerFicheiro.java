@@ -108,7 +108,7 @@ public class LerFicheiro {
             System.out.println("OrderConfirmationReference: " + orderConfirmationReference);
 
             //verificar se encomenda ja foi inserida
-            for (Encomenda enc : lerEncomenda.lerEncomendaDaBaseDeDados(baseDados)) {
+            for (Encomenda enc : lerEncomenda.lerEncomendaDaBaseDeDados()) {
                 if (enc.getReferencia().equals(orderConfirmationReference)) {
 
                     // Encomenda já inserida, exibir mensagem de erro e retornar
@@ -163,7 +163,7 @@ public class LerFicheiro {
 
 
             Fornecedor fornecedorLogado = null;
-            for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados(baseDados)){
+            for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
                 if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
                     fornecedorLogado = fornec;
                 }
@@ -186,7 +186,7 @@ public class LerFicheiro {
                 LocalDate data = LocalDate.of(yearValue, monthValue, dayValue);
 
                 //País
-                Pais lerPais = pais.obterPaisPorISO(baseDados, orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getNameAddress().getCountry().getISOCountryCode().value());
+                Pais lerPais = pais.obterPaisPorISO(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getNameAddress().getCountry().getISOCountryCode().value());
 
                 // Define os valores do fornecedor antes de usá-lo
                 fornecedorLogado.setIdExterno(orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier());
@@ -321,11 +321,11 @@ public class LerFicheiro {
                             String tipoMoeda = monetaryAdjustmentObj.getTaxAdjustment().getTaxType();
                             String paisTaxa = monetaryAdjustmentObj.getTaxAdjustment().getTaxLocation();
 
-                            if(lerPaises.obterPaisPorISO(baseDados, paisTaxa) == null){
+                            if(lerPaises.obterPaisPorISO(paisTaxa) == null){
                                 Mensagens.Erro("País", "País (" + paisTaxa + ") existente na linha número " + sequencia + " não é válida.");
                                 return null;
                             }
-                            paisLinha = lerPaises.obterPaisPorISO(baseDados, paisTaxa);
+                            paisLinha = lerPaises.obterPaisPorISO(paisTaxa);
 
                             System.out.println("Total de juros: " + totalJuros
                                     + ", Em: " + tipoMoeda);
@@ -342,12 +342,12 @@ public class LerFicheiro {
                             BigDecimal quantidade = quantity.getValue().getValue();
                             String tipoQuantidade = quantity.getValue().getUOM().value();
 
-                            if(lerUnidade.obterUnidadePorDescricaoBaseDados(baseDados,tipoQuantidade) == null){
+                            if(lerUnidade.obterUnidadePorDescricaoBaseDados(tipoQuantidade) == null){
                                 Mensagens.Erro("Unidade", "Unidade (" + tipoQuantidade + ") existente na linha número " + sequencia + " não é válida.");
                                 return null;
                             }
 
-                            produto.setUnidade(lerUnidade.obterUnidadePorDescricaoBaseDados(baseDados,tipoQuantidade));
+                            produto.setUnidade(lerUnidade.obterUnidadePorDescricaoBaseDados(tipoQuantidade));
 
                             System.out.println("Quantidade: " + quantidade + ", Tipo: " + tipoQuantidade);
                             quantidadeLinha = Double.parseDouble(quantidade.toString());
@@ -391,7 +391,7 @@ public class LerFicheiro {
                 }
 
 
-                int sucesso =  lerEncomenda.adicionarEncomendaBaseDeDados(baseDados,encomenda);
+                int sucesso =  lerEncomenda.adicionarEncomendaBaseDeDados(encomenda);
 
                 if(sucesso == 0) {
                     Mensagens.Erro("Erro!", "Não foi possível adicionar a encomenda!");

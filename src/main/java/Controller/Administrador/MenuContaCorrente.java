@@ -120,7 +120,7 @@ public class MenuContaCorrente {
      * @throws IOException Se ocorrer um erro durante a leitura dos dados.
      */
     public void tabelaDividas() throws IOException {
-        dividasFornecedores.addAll(lerFornecedores.lerDividaFornecedores(baseDados));
+        dividasFornecedores.addAll(lerFornecedores.lerDividaFornecedores());
 
         if (!dividasFornecedores.isEmpty()) {
             if (tableViewDividas.getColumns().isEmpty()) {
@@ -219,7 +219,7 @@ public class MenuContaCorrente {
 
         if (contaCorrenteSelecionada != null) {
             Fornecedor fornecedor = contaCorrenteSelecionada.getIdFornecedor();
-            encomendas.addAll(lerEncomenda.lerEncomendasPorFornecedor(baseDados, fornecedor.getIdExterno()));
+            encomendas.addAll(lerEncomenda.lerEncomendasPorFornecedor(fornecedor.getIdExterno()));
 
             if (!encomendas.isEmpty()) {
                 if (tableViewEncomendaFornc.getColumns().isEmpty()) {
@@ -264,7 +264,7 @@ public class MenuContaCorrente {
 
         ContaCorrente contaCorrente = tableViewDividas.getSelectionModel().getSelectedItem();
 
-        FeiraOffice feiraOffice = lerPagamento.lerDadosDaEmpresa(baseDados);
+        FeiraOffice feiraOffice = lerPagamento.lerDadosDaEmpresa();
 
         LocalDate data = LocalDate.now();
         double valor = contaCorrente.getSaldo();
@@ -296,9 +296,9 @@ public class MenuContaCorrente {
                 id
         );
 
-        if(lerPagamento.inserirPagamentoNaBaseDados(baseDados,pagamento) && lerEncomenda.atualizarEstadoPagamentoEncomenda(baseDados,pagamento)
-                && lerContaCorrente.atualizarSaldoAposPagamento(baseDados,pagamento)){
-            if (lerPagamento.verificarReferencia(baseDados,pagamento)){
+        if(lerPagamento.inserirPagamentoNaBaseDados(pagamento) && lerEncomenda.atualizarEstadoPagamentoEncomenda(pagamento)
+                && lerContaCorrente.atualizarSaldoAposPagamento(pagamento)){
+            if (lerPagamento.verificarReferencia(pagamento)){
                 Mensagens.Erro("Erro!","Ocorreu um erro ao gerar a referencia de pagamento, tente novamente!");
                 return;
             }
@@ -338,7 +338,7 @@ public class MenuContaCorrente {
 
     public List<Encomenda> obterEncomendaFornecedor(ContaCorrente contaCorrente) throws IOException {
         //Obter as encomendas do fornecedor
-        return new ArrayList<>(lerEncomenda.lerEncomendasPorFornecedor(baseDados, contaCorrente.getIdFornecedor().getIdExterno()));
+        return new ArrayList<>(lerEncomenda.lerEncomendasPorFornecedor(contaCorrente.getIdFornecedor().getIdExterno()));
     }
 
 
