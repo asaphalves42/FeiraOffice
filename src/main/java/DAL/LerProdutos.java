@@ -1,76 +1,61 @@
 package DAL;
 
-import DAL.LerFornecedores;
-import DAL.LerUnidade;
-import Model.Fornecedor;
-import Model.Produto;
-import Model.Unidade;
+
+import Model.FornecedorProdutoData;
 import Utilidades.BaseDados;
-import Utilidades.Mensagens;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import eu.hansolo.toolbox.observables.ObservableList;
+import javafx.beans.Observable;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Classe com funções de leitura e acesso de dados referentes aos produtos.
- */
+import static Utilidades.BaseDados.getConexao;
+
 public class LerProdutos {
-    BaseDados baseDados = new BaseDados();
-    LerFornecedores lerFornecedores = new LerFornecedores();
-    LerUnidade lerUnidade = new LerUnidade();
 
-    /**
-     * Lê os produtos da base de dados e os retorna como uma lista observável.
-     *
-     * @return Uma lista observável de produtos lidos da base de dados.
-     * @throws IOException Se ocorrer um erro durante a leitura.
-     */
-    public ObservableList<Produto> lerProdutosBaseDados() throws IOException {
-        ObservableList<Produto> produtos = FXCollections.observableArrayList();
-        Produto produto = null;
+    public ObservableList<FornecedorProdutoData> lerProdutosFornecedores() throws IOException {
+        ObservableList<FornecedorProdutoData> produtosFornecedores = new ObservableList<>();
 
-        try {
+        try (Connection conn = BaseDados.getConexao()) {
+            BaseDados.iniciarTransacao(conn);
 
-            BaseDados.Ligar();
-            ResultSet resultado = BaseDados.Selecao("SELECT * FROM Produto");
+            String query = """
+                    SELECT produto.id as id , produto.descricao as descricao , fornecedor.nome AS nomeFornecedor, produto.Id_Unidade as Id_Unidade, 
+                    FornecedorProdutos.preco_unitario as preco_unitario
+                    FROM produto
+                    INNER JOIN FornecedorProdutos ON produto.id = FornecedorProdutos.id_produto
+                    INNER JOIN Fornecedor ON FornecedorProdutos.id_fornecedor = Fornecedor.id_externo
+                    """;
 
-            while (true) {
-                assert resultado != null;
-                if (!resultado.next()) break;
-                produto = criarObjeto(resultado);
-                produtos.add(produto);
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                System.out.println(query);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        FornecedorProdutoData produtoFornecedor = new FornecedorProdutoData(
+                                resultSet.getInt("id"),
+                                resultSet.getString("descricao"),
+                                resultSet.getString("nomeFornecedor"),
+                                resultSet.getInt("Id_Unidade"),
+                                resultSet.getDouble("preco_unitario")
+                        );
+                        produtosFornecedores.add(produtoFornecedor);
+                    }
+                }
             }
+
+            BaseDados.commit(conn);
         } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-            return null; // A leitura falhou, retorna false.
+            e.printStackTrace();
         } finally {
             BaseDados.Desligar();
         }
-        return produtos;
+
+        return produtosFornecedores;
     }
 
-    /**
-     * Cria um objeto Produto a partir dos dados do ResultSet.
-     *
-     * @param dados O ResultSet contendo os dados do produto.
-     * @return Um objeto Produto criado a partir dos dados do ResultSet.
-     * @throws IOException Se ocorrer um erro durante a leitura.
-     * @throws SQLException Se ocorrer um erro ao acessar os dados no ResultSet.
-     */
-    private Produto criarObjeto(ResultSet dados) throws IOException, SQLException {
-        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_Fornecedor"));
-        Unidade unidade = lerUnidade.obterUnidadePorIdBaseDados(dados.getInt("Id_Unidade"));
-
-        return new Produto(
-                dados.getString("Id"),
-                fornecedor,
-                dados.getString("IdExterno"),
-                dados.getString("Descricao"),
-                unidade,
-                dados.getInt("estado")
-        );
-    }
 }
