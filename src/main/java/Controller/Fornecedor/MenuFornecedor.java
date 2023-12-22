@@ -36,6 +36,8 @@ public class MenuFornecedor {
     private Button btnUpload;
 
     @FXML
+    private Button btnHistEncomendas;
+    @FXML
     private Label labelCodigoPostal;
 
     @FXML
@@ -176,6 +178,10 @@ public class MenuFornecedor {
         } else {
             Mensagens.Erro("Erro!", "Erro ao ler o ficheiro!");
         }
+
+    }
+    @FXML
+    void clickHistEncomendas(){
 
     }
 }
