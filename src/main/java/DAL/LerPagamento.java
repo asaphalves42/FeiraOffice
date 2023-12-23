@@ -1,11 +1,10 @@
 package DAL;
 
-import Model.Encomenda;
-import Model.FeiraOffice;
-import Model.Pagamento;
-import Model.Pais;
+import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.sql.*;
@@ -157,6 +156,44 @@ public class LerPagamento {
         }
 
         return false;
+    }
+
+    public ObservableList<MetodoPagamento> getMetodos() throws IOException {
+        ObservableList<MetodoPagamento> listaDeMetodos = FXCollections.observableArrayList();
+
+        try {
+            String query = "SELECT * FROM Preferencia_Pagamento";
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+                ResultSet resultado = preparedStatement.executeQuery();
+
+                while (resultado.next()) {
+                    int id = resultado.getInt("Id");
+                    String nome = resultado.getString("Nome");
+
+                    // Mapear valores do banco de dados para a enumeração
+                    MetodoPagamento metodoPagamento = mapearMetodoPagamento(id, nome);
+
+                    listaDeMetodos.add(metodoPagamento);
+                }
+            }
+
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+        } finally {
+            BaseDados.Desligar();
+        }
+
+        return listaDeMetodos;
+    }
+
+    private MetodoPagamento mapearMetodoPagamento(int id, String nome) {
+
+        return switch (id) {
+            case 1 -> MetodoPagamento.DebitoDireto;
+            case 2 -> MetodoPagamento.Transferencia;
+
+            default -> throw new IllegalArgumentException("Método de pagamento não reconhecido: " + id);
+        };
     }
 
 }

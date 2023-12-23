@@ -1,6 +1,7 @@
 package Controller.Administrador;
 
-import BL.LerSepa;
+import BL.LerSepaDebito;
+import BL.LerSepaTransferencia;
 import DAL.LerContaCorrente;
 import DAL.LerEncomenda;
 import DAL.LerFornecedores;
@@ -15,15 +16,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +83,9 @@ public class MenuContaCorrente {
     @FXML
     private TableView<ContaCorrente> tableViewDividas;
 
+    @FXML
+    private ComboBox<MetodoPagamento> comboBoxMetodo;
+
     ObservableList<ContaCorrente> dividasFornecedores = FXCollections.observableArrayList();
 
     ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
@@ -97,6 +96,8 @@ public class MenuContaCorrente {
      * @throws IOException Se ocorrer um erro durante a leitura ou inicialização.
      */
     public void initialize() throws IOException {
+        ObservableList<MetodoPagamento> metodos = lerPagamento.getMetodos();
+        comboBoxMetodo.setItems(metodos);
         tabelaDividas();
 
         tableViewDividas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ContaCorrente>() {
@@ -111,6 +112,12 @@ public class MenuContaCorrente {
                 }
             }
         });
+    }
+
+    @FXML
+    void clickMetodo() {
+        comboBoxMetodo.getSelectionModel().getSelectedItem();
+
     }
 
 
@@ -284,10 +291,12 @@ public class MenuContaCorrente {
         String codPostalFornecedor = contaCorrente.getIdFornecedor().getCodigoPostal();
         String ibanFornecedor = contaCorrente.getIdFornecedor().getIban();
         String bicFornecedor = contaCorrente.getIdFornecedor().getBic();
+        String paisFornecedor = contaCorrente.getIdFornecedor().getIdPais().getNome();
+        String localidadeFornecedor = contaCorrente.getIdFornecedor().getLocalidade();
 
         List<Encomenda> listaDeEncomendas = obterEncomendaFornecedor(contaCorrente);
 
-        Pagamento pagamento = new Pagamento (0,
+        Pagamento pagamento = new Pagamento(0,
                 Pagamento.gerarReferencia(),
                 data,
                 valor,
@@ -296,45 +305,80 @@ public class MenuContaCorrente {
                 id
         );
 
-        if(lerPagamento.inserirPagamentoNaBaseDados(pagamento) && lerEncomenda.atualizarEstadoPagamentoEncomenda(pagamento)
-                && lerContaCorrente.atualizarSaldoAposPagamento(pagamento)){
-            if (lerPagamento.verificarReferencia(pagamento)){
-                Mensagens.Erro("Erro!","Ocorreu um erro ao gerar a referencia de pagamento, tente novamente!");
+        if (lerPagamento.inserirPagamentoNaBaseDados(pagamento) && lerEncomenda.atualizarEstadoPagamentoEncomenda(pagamento)
+                && lerContaCorrente.atualizarSaldoAposPagamento(pagamento)) {
+            if (lerPagamento.verificarReferencia(pagamento)) {
+                Mensagens.Erro("Erro!", "Ocorreu um erro ao gerar a referencia de pagamento, tente novamente!");
                 return;
             }
-            //Gerar SEPA
-           LerSepa.gerarSEPATransferencia(
-                   pagamento.getReferencia(),
-                   data,
-                   valor,
-                   nome,
-                   moradaLocal,
-                   localidade,
-                   codigoPostalLocal,
-                   pais,
-                   iban,
-                   bic,
-                   //Fornecedor
-                   nomeFornecedor,
-                   moradaFornecedor,
-                   codPostalFornecedor,
-                   ibanFornecedor,
-                   bicFornecedor,
-                   "C:\\a\\SEPAS\\SEPA.xml"
-           );
 
-           //Falta validar o xsd,
+            MetodoPagamento metodoSelecionado = comboBoxMetodo.getSelectionModel().getSelectedItem();
 
-            Mensagens.Informacao("Sucesso!", "Pagamento realizado com sucesso!");
-            Mensagens.Informacao("SEPA!","Ficheiro SEPA gerado com sucesso!");
+            if (metodoSelecionado.getDescricao().equals("Débito direto")) {
+                try {
+                    LerSepaDebito.gerarSEPADebito(
+                            pagamento.getReferencia(),
+                            data,
+                            valor,
+                            nome,
+                            moradaLocal,
+                            localidade,
+                            codigoPostalLocal,
+                            pais,
+                            iban,
+                            bic,
+                            // Fornecedor
+                            nomeFornecedor,
+                            moradaFornecedor,
+                            codPostalFornecedor,
+                            paisFornecedor,
+                            localidadeFornecedor,
+                            ibanFornecedor,
+                            bicFornecedor,
+                            "C:\\a\\SEPAS\\SEPA_DebitoDireto.xml"
+                    );
+                } catch (Exception e) {
+                    Mensagens.Erro("Erro!", "Erro ao gerar ficheiro SEPA de débito direto");
+                }
+            } else if (metodoSelecionado.getDescricao().equals("Transferência bancária")) {
+                try {
+                    //Gerar SEPA
+                    LerSepaTransferencia.gerarSEPATransferencia(
+                            pagamento.getReferencia(),
+                            data,
+                            valor,
+                            nome,
+                            moradaLocal,
+                            localidade,
+                            codigoPostalLocal,
+                            pais,
+                            iban,
+                            bic,
+                            //Fornecedor
+                            nomeFornecedor,
+                            moradaFornecedor,
+                            codPostalFornecedor,
+                            ibanFornecedor,
+                            bicFornecedor,
+                            "C:\\a\\SEPAS\\SEPATransferencia.xml"
+                    );
 
-            tableViewEncomendaFornc.getItems().clear();
-            tableViewDividas.getItems().remove(contaCorrente);
+                    Mensagens.Informacao("Sucesso!", "Pagamento realizado com sucesso!");
+                    Mensagens.Informacao("SEPA!", "Ficheiro SEPA gerado com sucesso!");
+
+                } catch (Exception e) {
+                    Mensagens.Erro("Erro!", "Erro ao gerar ficheiro SEPA de transferência bancária");
+                }
+            }
 
         } else {
-            Mensagens.Erro("Erro!","Erro ao realizar pagamento!");
+            Mensagens.Erro("Erro!", "Erro ao realizar pagamento");
         }
+
+        tableViewEncomendaFornc.getItems().clear();
+        tableViewDividas.getItems().remove(contaCorrente);
     }
+
 
     public List<Encomenda> obterEncomendaFornecedor(ContaCorrente contaCorrente) throws IOException {
         //Obter as encomendas do fornecedor

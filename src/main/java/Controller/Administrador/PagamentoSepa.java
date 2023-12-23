@@ -1,6 +1,5 @@
 package Controller.Administrador;
 
-import BL.LerSepa;
 import DAL.LerContaCorrente;
 import DAL.LerPagamento;
 import Model.ContaCorrente;
@@ -16,7 +15,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 
 public class PagamentoSepa {

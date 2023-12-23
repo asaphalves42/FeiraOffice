@@ -1,22 +1,27 @@
 package BL;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import Utilidades.Mensagens;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
-public class LerSepa {
+public class LerSepaTransferencia {
 
-    //Criar classe com os dados da feira e office, uma tabela para ler esses dados e uma tabela com o id da encomenda e a referencia de pagamento quando pagar
-    //Criar uma tabela na bd de pagamento com todos esses dados
 
     public static Boolean gerarSEPATransferencia(
 
@@ -216,19 +221,44 @@ public class LerSepa {
             criarElemento(doc, rfrdDocInf, "RltdDt", "2009-09-08");*/
 
             //gravar o ficheiro
+            String caminhoSchema = "src/main/xsd/schemaTransferencia.xsd";
             File file = new File(destinoFicheiro);
-            javax.xml.transform.TransformerFactory transformerFactory = javax.xml.transform.TransformerFactory.newInstance();
-            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
-            javax.xml.transform.dom.DOMSource source = new javax.xml.transform.dom.DOMSource(doc);
-            javax.xml.transform.stream.StreamResult result = new javax.xml.transform.stream.StreamResult(file);
-            transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-            transformer.transform(source, result);
+            if(validateXmlAgainstXsd(file,caminhoSchema)){
+
+                javax.xml.transform.TransformerFactory transformerFactory = javax.xml.transform.TransformerFactory.newInstance();
+                javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+                javax.xml.transform.dom.DOMSource source = new javax.xml.transform.dom.DOMSource(doc);
+                javax.xml.transform.stream.StreamResult result = new javax.xml.transform.stream.StreamResult(file);
+                transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+                transformer.transform(source, result);
+            }
 
             resultado = true;
         } catch (ParserConfigurationException | javax.xml.transform.TransformerException e) {
             System.out.println(e.getMessage());;
         }
         return resultado;
+    }
+
+
+
+    private static boolean validateXmlAgainstXsd(File xmlFilePath, String xsdFilePath) throws IOException {
+        try {
+            // Carregar esquema XSD
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = factory.newSchema(new File(xsdFilePath));
+
+            // Criar validador
+            Validator validator = schema.newValidator();
+
+            // Validar o XML
+            validator.validate(new StreamSource(new File(String.valueOf(xmlFilePath))));
+
+            return true; // XML é válido em relação ao XSD
+        } catch (SAXException | IOException e) {
+           Mensagens.Erro("Erro!","Erro na construção do XML!");
+            return false; // XML não é válido em relação ao XSD
+        }
     }
 
     private static Element criarElemento(Document doc, Element pai, String nomeElemento, String valor) {
