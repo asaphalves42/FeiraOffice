@@ -53,7 +53,7 @@ public class LerUnidade {
      * @return A unidade obtida da base de dados, ou null se não encontrada.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public Unidade obterUnidadePorIdBaseDados(int id) throws IOException {
+    public static Unidade obterUnidadePorIdBaseDados(int id) throws IOException {
         Unidade unidade = null;
         try {
             BaseDados.Ligar();
@@ -79,7 +79,7 @@ public class LerUnidade {
         return unidade;
     }
 
-    private Unidade criarObjeto(ResultSet dados) throws SQLException {
+    private static Unidade criarObjeto(ResultSet dados) throws SQLException {
         return new Unidade(
                 dados.getInt("Id"),
                 dados.getString("Descricao")
