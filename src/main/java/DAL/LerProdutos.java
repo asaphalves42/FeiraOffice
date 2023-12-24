@@ -33,7 +33,7 @@ public class LerProdutos {
                     """;
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-                
+
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet.next()) {
                         FornecedorProdutoData produtoFornecedor = new FornecedorProdutoData(
@@ -65,24 +65,25 @@ public class LerProdutos {
             BaseDados.iniciarTransacao(conn);
 
             String query = """
-            SELECT
-                produto.id_fornecedor as produtoidfornec,
-                produto.Id as produtoid,
-                produto.descricao as produtodescricao,
-                unidade.Descricao AS unidade,
-                Stock.Quantidade as stock
-            FROM produto
-            INNER JOIN unidade ON produto.id_unidade = unidade.Id
-            INNER JOIN fornecedor ON produto.id_fornecedor = fornecedor.id_externo
-            INNER JOIN Stock ON Produto.Id = Stock.Id_Produto
-            """;
+                                
+                    SELECT
+                    produto.IdExterno as idexterno,  
+                    produto.Id as produtoid,
+                    produto.descricao as produtodescricao,
+                    unidade.Descricao AS unidade,
+                    Stock.Quantidade as stock
+                    FROM produto
+                    INNER JOIN unidade ON produto.id_unidade = unidade.Id
+                    INNER JOIN Stock ON Produto.Id = Stock.Id_Produto
+                                     
+                    """;
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet.next()) {
                         Map<String, Object> produtoFornecedor = new HashMap<>();
-                        produtoFornecedor.put("produtoidfornec", resultSet.getString("produtoidfornec"));
+                        produtoFornecedor.put("produtoidfornec", resultSet.getString("idexterno"));
                         produtoFornecedor.put("produtoid", resultSet.getString("produtoid"));
                         produtoFornecedor.put("produtodescricao", resultSet.getString("produtodescricao"));
                         produtoFornecedor.put("unidade", resultSet.getString("unidade"));
