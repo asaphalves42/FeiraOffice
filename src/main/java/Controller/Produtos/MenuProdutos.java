@@ -93,18 +93,18 @@ public class MenuProdutos {
         if (!produtosList.isEmpty()) {
             if (tableView2.getColumns().isEmpty()) {
                 TableColumn<Map<String, Object>, String> colunaProdutoId = new TableColumn<>("ID Produto");
-                TableColumn<Map<String, Object>, String> colunaIdFornec = new TableColumn<>("ID Externo");
-
+                TableColumn<Map<String, Object>, String> colunaIdProdutoFornec = new TableColumn<>("ID Produto no Fornecedor");
                 TableColumn<Map<String, Object>, String> colunaProdutoDescricao = new TableColumn<>("Descricao");
                 TableColumn<Map<String, Object>, String> colunaUnidade = new TableColumn<>("Unidade");
                 TableColumn<Map<String, Object>, Double> colunaStock = new TableColumn<>("Stock");
+
                 colunaProdutoId.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("produtoid")));
-                colunaIdFornec.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("produtoidfornec")));
+                colunaIdProdutoFornec.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("produtoidfornec")));
                 colunaProdutoDescricao.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("produtodescricao")));
                 colunaUnidade.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("unidade")));
                 colunaStock.setCellValueFactory(cellData -> new SimpleDoubleProperty((double) cellData.getValue().get("stock")).asObject());
 
-                tableView2.getColumns().addAll(colunaProdutoId,colunaIdFornec, colunaProdutoDescricao, colunaUnidade, colunaStock);
+                tableView2.getColumns().addAll(colunaProdutoId,colunaIdProdutoFornec, colunaProdutoDescricao, colunaUnidade, colunaStock);
             }
 
             tableView2.getItems().addAll(produtosList);
