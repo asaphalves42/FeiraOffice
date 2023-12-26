@@ -273,6 +273,48 @@ public class LerEncomenda {
         return 0;
     }
 
+    public int adicionarMapeamento(Encomenda encomenda) throws IOException {
+        try {
+            BaseDados.Ligar();
+            BaseDados.iniciarTransacao(getConexao());
+
+            String query = """
+                INSERT INTO FornecedorProdutos (id_Fornecedor, id_Produto, Preco_Unitario)
+                VALUES (?,?,?)
+                """;
+
+            try (PreparedStatement ps = getConexao().prepareStatement(query)) {
+                ps.setString(1, encomenda.getFornecedor().getIdExterno());
+
+                for (LinhaEncomenda produto : encomenda.getLinhas()) {
+                    // Define os valores para cada produto
+                    ps.setString(2, produto.getIdProdutoString());
+                    ps.setDouble(3, produto.getPreco());
+
+                    // Executa a atualização para cada produto
+                    ps.executeUpdate();
+                    System.out.println(" id produto " + produto.getId());
+                }
+            }
+            System.out.println(query);
+            // Confirma a transação
+            BaseDados.commit(getConexao());
+
+        } catch (Exception e) {
+            // Lidar com exceções (registre ou imprima o erro)
+            e.printStackTrace();
+            // Reverte a transação em caso de exceção
+            BaseDados.rollback(getConexao());
+            return 0; // ou retorne um código de erro
+        } finally {
+            // Fecha a conexão com o banco de dados
+            BaseDados.Desligar();
+        }
+
+        return 1; // ou retorne um código de sucesso
+    }
+
+
     /**
      * Insere um produto na tabela Produto, verificando se já existe antes de realizar a inserção.
      *

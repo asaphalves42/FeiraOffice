@@ -3,10 +3,13 @@ package Controller.Produtos;
 import DAL.LerFornecedores;
 import DAL.LerProdutos;
 import DAL.LerStock;
-import Model.Fornecedor;
+import DAL.LerUnidade;
+import Model.FornecedorProdutoData;
 import Model.Produto;
+import Model.Unidade;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -17,7 +20,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MenuProdutos {
 
@@ -27,13 +32,15 @@ public class MenuProdutos {
     LerFornecedores lerFornecedor = new LerFornecedores();
 
     @FXML
-    private TableView<Produto> tableViewProdutos;
+    private TableView<FornecedorProdutoData> tableViewProdutos;
 
     @FXML
-    private TableView<Produto> tableView2;
+    private TableView<Map<String, Object>> tableView2;
 
-    ObservableList<Produto> produtos = FXCollections.observableArrayList();
-    ObservableList<Produto> produtos2 = FXCollections.observableArrayList();
+    ObservableList<FornecedorProdutoData> produtos = FXCollections.observableArrayList();
+    ObservableList<Map<String, Object>> stock = FXCollections.observableArrayList();
+
+
 
     public void initialize() throws IOException {
         tableViewProdutos.getColumns().clear();
@@ -41,123 +48,71 @@ public class MenuProdutos {
         tabelaProdutos();
         tableView2.getColumns().clear();
         tableView2.getItems().clear();
-        tabela2();
+        tabelastock();
     }
 
     public void tabelaProdutos() throws IOException {
-        produtos.addAll(lerProdutos.lerProdutosBaseDados());
+        produtos.addAll(lerProdutos.lerProdutosFornecedores());
 
         if (!produtos.isEmpty()) {
             if (tableViewProdutos.getColumns().isEmpty()) {
-                TableColumn<Produto, Integer> colunaId = new TableColumn<>("ID Produto");
-                TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descrição");
-                TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
-                TableColumn<Produto, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
+                TableColumn<FornecedorProdutoData, Integer> colunaId = new TableColumn<>("ID Produto");
+                TableColumn<FornecedorProdutoData, String> colunaDescricao = new TableColumn<>("Descrição");
+                TableColumn<FornecedorProdutoData, String> colunaNomeFornecedor = new TableColumn<>("Nome do Fornecedor");
+                TableColumn<FornecedorProdutoData, String> colunaIdUnidade = new TableColumn<>("Unidade");
+                TableColumn<FornecedorProdutoData, Double> colunaPrecoUnitario = new TableColumn<>("Preço Unitário");
 
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-                colunaIdUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescricaoUnidade()));
-                colunaQuantidade.setCellValueFactory(cellData -> {
-                    int quantidade = 0;
-                    try {
-                        quantidade = lerStock.obterQuantidadePorIdProduto(cellData.getValue().getId());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    return new SimpleIntegerProperty(quantidade).asObject();
-                });
-
-                tableViewProdutos.getColumns().addAll(colunaId, colunaDescricao, colunaIdUnidade, colunaQuantidade);
-                tableViewProdutos.setItems(produtos);
-            }
-        } else {
-            Mensagens.Erro("Erro!", "Erro ao ler tabela");
-        }
-    }
-
-    public void tabela2() throws IOException {
-        produtos2.addAll(lerProdutos.lerProdutosBaseDados());
-
-        if (!produtos2.isEmpty()) {
-            if (tableView2.getColumns().isEmpty()) {
-                TableColumn<Produto, Integer> colunaId = new TableColumn<>("ID Produto");
-                TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descrição");
-                TableColumn<Produto, String> colunaIdFornecedor = new TableColumn<>("Id no Fornecedor");
-                TableColumn<Produto, String> colunaNomeFornecedor = new TableColumn<>("Fornecedor");
-                TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
-
-                colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-                colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-                colunaIdFornecedor.setCellValueFactory(new PropertyValueFactory<>("idFornecedorAsString"));
-                colunaNomeFornecedor.setCellValueFactory(cellData -> {
-                    Produto produto = cellData.getValue();
-                    if (produto != null) {
-                        try {
-                            String idFornecedor = produto.getIdFornecedorAsString();
-                            String nomeFornecedor = lerFornecedor.obterNomeFornecedorPorIdExterno(idFornecedor);
-                            return new SimpleStringProperty(nomeFornecedor != null ? nomeFornecedor : "");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            return new SimpleStringProperty("");
-                        }
-                    } else {
-                        return new SimpleStringProperty("");
-                    }
-                });
-
-                tableView2.getColumns().addAll(colunaId, colunaDescricao, colunaIdFornecedor, colunaNomeFornecedor, colunaIdUnidade);
-                tableView2.setItems(produtos2);
-
+                colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("nomeFornecedor"));
                 colunaIdUnidade.setCellValueFactory(cellData -> {
-                    Produto produtoTabela1 = cellData.getValue();
-                    if (produtoTabela1 != null) {
-                        return new SimpleStringProperty(produtoTabela1.getDescricaoUnidade());
-                    } else {
-                        return new SimpleStringProperty("");
+                    int id = cellData.getValue().getIdUnidade(); // Supondo que você tenha um método getIdUnidade() na classe FornecedorProdutoData
+                    try {
+
+                        Unidade unidade = LerUnidade.obterUnidadePorIdBaseDados(id);
+                        return new SimpleStringProperty(unidade.getDescricao()); // Supondo que Unidade tenha um método getDescricao()
+                    } catch (IOException e) {
+                        e.printStackTrace(); // Trate a exceção de acordo com a sua lógica de erro
+                        return new SimpleStringProperty("Erro ao obter unidade");
                     }
                 });
+
+                colunaPrecoUnitario.setCellValueFactory(new PropertyValueFactory<>("precoUnitario"));
+
+                tableViewProdutos.getColumns().addAll(colunaId, colunaDescricao, colunaNomeFornecedor, colunaIdUnidade, colunaPrecoUnitario);
             }
+
+            tableViewProdutos.setItems(produtos);
         } else {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
         }
-
-        // Adicione um listener para detectar cliques na tableView2
-        tableView2.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                try {
-                    mostrarFornecedoresDoProduto(newSelection);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
+    public void tabelastock() throws IOException {
+        List<Map<String, Object>> produtosList = LerProdutos.lerProdutos();
 
-    private void mostrarFornecedoresDoProduto(Produto produto) throws IOException {
-        try {
-            String idProduto = produto.getIdFornecedorAsString();
-            List<Fornecedor> fornecedores = lerFornecedor.obterFornecedoresPorProduto(idProduto);
+        if (!produtosList.isEmpty()) {
+            if (tableView2.getColumns().isEmpty()) {
+                TableColumn<Map<String, Object>, String> colunaProdutoId = new TableColumn<>("ID Produto");
+                TableColumn<Map<String, Object>, String> colunaIdProdutoFornec = new TableColumn<>("ID Produto no Fornecedor");
+                TableColumn<Map<String, Object>, String> colunaProdutoDescricao = new TableColumn<>("Descricao");
+                TableColumn<Map<String, Object>, String> colunaUnidade = new TableColumn<>("Unidade");
+                TableColumn<Map<String, Object>, Double> colunaStock = new TableColumn<>("Stock");
 
-            if (!fornecedores.isEmpty()) {
-                StringBuilder mensagem = new StringBuilder("Fornecedores do Produto:\n\n");
+                colunaProdutoId.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("produtoid")));
+                colunaIdProdutoFornec.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("produtoidfornec")));
+                colunaProdutoDescricao.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("produtodescricao")));
+                colunaUnidade.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("unidade")));
+                colunaStock.setCellValueFactory(cellData -> new SimpleDoubleProperty((double) cellData.getValue().get("stock")).asObject());
 
-                for (Fornecedor fornecedor : fornecedores) {
-                    if (fornecedor != null) {
-                        mensagem.append("Nome: ").append(produto.getNomeFornecedor()).append("\n");
-                        mensagem.append("ID no Fornecedor: ").append(produto.getIdFornecedorAsString()).append("\n\n");
-                    } else {
-                        mensagem.append("Fornecedor nulo encontrado.\n\n");
-                    }
-                }
-
-                Mensagens.Informacao("Fornecedores do Produto", mensagem.toString());
-            } else {
-                Mensagens.Informacao("Fornecedores do Produto", "Não há fornecedores associados a este produto.");
+                tableView2.getColumns().addAll(colunaProdutoId,colunaIdProdutoFornec, colunaProdutoDescricao, colunaUnidade, colunaStock);
             }
-        } catch (IOException e) {
-            Mensagens.Erro("Erro!", "Erro ao obter informações dos fornecedores.");
-            e.printStackTrace();
+
+            tableView2.getItems().addAll(produtosList);
+        } else {
+            Mensagens.Erro("Erro!", "Erro ao ler tabela");
         }
     }
+
+
 
 }

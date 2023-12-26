@@ -58,6 +58,9 @@ public class LinhaEncomenda {
     public int getId() {
         return id;
     }
+    public String getIdProdutoString(){
+        return produto.getId();
+    }
 
     public void setId(int id) {
         this.id = id;
