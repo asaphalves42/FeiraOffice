@@ -8,9 +8,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="900.0" prefWidth="911.0" style="-fx-background-color: #d4d6d5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Produtos.MenuProdutos">
+<AnchorPane prefHeight="900.0" prefWidth="911.0" style="-fx-background-color: #d4d6d5;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Produtos.MenuProdutos">
     <children>
-        <SplitPane dividerPositions="0.5330609212481426, 0.5" layoutX="353.0" layoutY="228.0" orientation="VERTICAL" prefHeight="787.0" prefWidth="911.0" AnchorPane.bottomAnchor="113.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <SplitPane dividerPositions="0.5414012738853503, 0.5490445859872611" layoutX="353.0" layoutY="228.0" orientation="VERTICAL" prefHeight="787.0" prefWidth="911.0" AnchorPane.bottomAnchor="113.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="428.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
                     <children>
@@ -46,6 +46,9 @@
                   </TableView>
             </items>
         </SplitPane>
-      <Button layoutX="54.0" layoutY="809.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="233.0" text="APROVAR" />
+      <Button fx:id="btnAprovar" layoutX="332.0" layoutY="805.0" mnemonicParsing="false" onAction="#clickAprovar" prefHeight="65.0" prefWidth="233.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="APROVAR">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font></Button>
     </children>
 </AnchorPane>

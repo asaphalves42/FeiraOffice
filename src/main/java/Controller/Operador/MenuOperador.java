@@ -111,6 +111,10 @@ public class MenuOperador {
 
     }
 
+    /**
+     * Manipula o evento de clique no botão "Clientes".
+     * Carrega a interface gráfica para gestão de clientes e substitui o conteúdo do painel principal.
+     */
     @FXML
     void clickClientes() {
         try {

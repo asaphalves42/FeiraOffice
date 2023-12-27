@@ -15,6 +15,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -26,16 +27,16 @@ import java.util.Map;
 
 public class MenuProdutos {
 
-    BaseDados baseDados = new BaseDados();
-    LerStock lerStock = new LerStock();
     LerProdutos lerProdutos = new LerProdutos();
-    LerFornecedores lerFornecedor = new LerFornecedores();
 
     @FXML
     private TableView<FornecedorProdutoData> tableViewProdutos;
 
     @FXML
     private TableView<Map<String, Object>> tableView2;
+
+    @FXML
+    private Button btnAprovar;
 
     ObservableList<FornecedorProdutoData> produtos = FXCollections.observableArrayList();
     ObservableList<Map<String, Object>> stock = FXCollections.observableArrayList();
@@ -111,6 +112,10 @@ public class MenuProdutos {
         } else {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
         }
+    }
+    @FXML
+    void clickAprovar() {
+
     }
 
 
