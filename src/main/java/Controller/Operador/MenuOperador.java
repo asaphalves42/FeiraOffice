@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 /**
@@ -33,6 +34,9 @@ public class MenuOperador {
 
     @FXML
     private Button btnLogout;
+    @FXML
+    private Button btnClientes;
+
     /**
      * Manipula o evento de clique no botão "Aprovar".
      * Carrega a interface gráfica para aprovação de stock e substitui o conteúdo do painel principal.
@@ -106,6 +110,20 @@ public class MenuOperador {
         }
 
     }
+
+    @FXML
+    void clickClientes() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Clientes/menuClientes.fxml"));
+            AnchorPane root = loader.load();
+
+            anchorPaneOperador.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * Inicializa os dados da interface com o utilizador logado.
      *

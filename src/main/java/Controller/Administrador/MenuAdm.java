@@ -17,6 +17,8 @@ public class MenuAdm {
 
     @FXML
     private AnchorPane anchorPaneMenuAdm;
+    @FXML
+    private Button btnClientes;
 
     @FXML
     private Button btnAprovar;
@@ -126,6 +128,8 @@ public class MenuAdm {
 
     }
 
+
+
     /**
      * Encerra a aplicação quando o botão "Logout" é clicado.
      */
@@ -146,6 +150,19 @@ public class MenuAdm {
         System.out.println(utilizador.getEmail());
 
         System.out.println(utilizador.getTipo());
+    }
+
+    @FXML
+    void clickClientes() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Clientes/menuClientes.fxml"));
+            AnchorPane root = loader.load();
+
+            anchorPaneMenuAdm.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
 
