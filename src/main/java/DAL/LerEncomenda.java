@@ -199,6 +199,38 @@ public class LerEncomenda {
         }
     }
 
+    public ObservableList<Encomenda> lerEncomendaDaBaseDeDadosFornecedor(String idFornecedorExterno) throws IOException {
+        ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
+
+        try {
+            BaseDados.Ligar();
+
+
+            String query = """
+                    SELECT * FROM Encomenda WHERE Fornecedor.Id_Externo = ? 
+                    """;
+
+            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+
+                ResultSet resultado = preparedStatement.executeQuery();
+
+                while (resultado.next()) {
+                    Encomenda encomenda = criarObjetoEncomenda(resultado);
+                    encomendas.add(encomenda);
+                }
+            }
+
+
+            return encomendas;
+
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados");
+            return null; // Retorna null apenas se houver exceção
+        } finally {
+            BaseDados.Desligar();
+        }
+    }
+
 
     /**
      * Cria um objeto Encomenda a partir dos dados de um ResultSet.

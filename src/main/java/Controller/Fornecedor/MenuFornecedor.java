@@ -8,10 +8,17 @@ import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import com.example.lp3_g2_feira_office_2023.OrderConfirmation;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import Model.Utilizador;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +30,8 @@ public class MenuFornecedor {
 
     private Utilizador utilizador;
     private File arquivoSelecionado;
+    @FXML
+    private AnchorPane anchorPaneMenuFornecedor;
 
     BaseDados baseDados = new BaseDados();
 
@@ -37,6 +46,7 @@ public class MenuFornecedor {
 
     @FXML
     private Button btnHistEncomendas;
+
     @FXML
     private Label labelCodigoPostal;
 
@@ -183,8 +193,19 @@ public class MenuFornecedor {
     @FXML
     void clickHistEncomendas(){
 
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/VerEncomendasFornecedor.fxml"));
+                AnchorPane root = loader.load();
+
+                anchorPaneMenuFornecedor.getChildren().setAll(root);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
-}
+
 
 
 

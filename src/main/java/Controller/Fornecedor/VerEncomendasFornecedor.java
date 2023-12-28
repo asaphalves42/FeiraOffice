@@ -1,8 +1,11 @@
-package Controller.Encomenda;
-
-import DAL.LerContaCorrente;
+package Controller.Fornecedor;
+import Model.Utilizador;
 import DAL.LerEncomenda;
-import Model.*;
+import DAL.LerFornecedores;
+import Model.Encomenda;
+import Model.Fornecedor;
+import Model.LinhaEncomenda;
+import Model.Pais;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,46 +14,32 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.TableColumn;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
-
-/**
- * Classe com funções que leem tabelas de encomendas, linhas das encomendas e aprovam ou recusam as encomendas.
- */
-public class AprovarStock {
-
+public class VerEncomendasFornecedor {
     BaseDados baseDados = new BaseDados();
     LerEncomenda lerEncomenda = new LerEncomenda();
-    LerContaCorrente lerContaCorrente = new LerContaCorrente();
+    LerFornecedores lerFornecedores = new LerFornecedores();
+
+    private Utilizador utilizador;
 
     @FXML
-    private SplitPane anchorPaneFuncoesFornc;
-
-    @FXML
-    private Button btnAprovar;
-
-    @FXML
-    private Button btnRecusar;
+    private SplitPane anchorPaneMenuFornecedor;
 
     @FXML
     private TableView<Encomenda> tableViewEncomendas;
 
     @FXML
     private TableView<LinhaEncomenda> tableViewLinhasEncomenda;
+
     ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
     ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
-    /**
-     * Inicializa a interface do usuário e configura a tabela de encomendas pendentes.
-     * Adiciona um ouvinte para a seleção de itens na tabela de encomendas para atualizar a tabela de linhas de encomenda.
-     *
-     * @throws IOException Se ocorrer um erro durante a inicialização.
-     */
-    public void initialize() throws IOException {
+
+    public void initialize(Utilizador utilizador) throws IOException {
+        this.utilizador = utilizador;
         tabelaEncomendasPendentes();
 
         tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -65,6 +54,7 @@ public class AprovarStock {
 
     }
 
+
     /**
      * Preenche a tabela de encomendas pendentes com dados da base de dados.
      * Configura as colunas da tabela e associa-as às propriedades da classe Encomenda.
@@ -72,10 +62,20 @@ public class AprovarStock {
      *
      * @throws IOException Se ocorrer um erro ao ler a tabela.
      */
+
     public void tabelaEncomendasPendentes() throws IOException {
+        LerFornecedores fornecedor = new LerFornecedores();
+        Fornecedor fornecedorLogado = null;
+        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()) {
+            if (this.utilizador.getId() == fornec.getIdUtilizador().getId()) {
+                fornecedorLogado = fornec;
+
+            }
+        }
+
 
         try {
-            encomendas.addAll(lerEncomenda.lerEncomendaDaBaseDeDadosPendentes());
+            encomendas.addAll(lerEncomenda.lerEncomendaDaBaseDeDadosFornecedor(String.valueOf(fornecedorLogado.getIdExterno())));
 
             if (!encomendas.isEmpty()) {
                 // Defina as colunas da tabela
@@ -167,6 +167,7 @@ public class AprovarStock {
      * @param encomenda A encomenda selecionada.
      * @throws IOException Se ocorrer um erro ao ler a tabela.
      */
+
     public void tabelaLinhasEncomenda(Encomenda encomenda) throws IOException {
         try {
 
@@ -229,107 +230,6 @@ public class AprovarStock {
         }
     }
 
-    /**
-     * Manipula o evento de clique no botão "Aprovar".
-     * Aprova a encomenda, atualiza o estoque na base de dados e atualiza o saldo em dívida do fornecedor.
-     *
-     * @throws IOException Se ocorrer um erro durante o processo de aprovação.
-     */
-    @FXML
-    void clickAprovar() throws IOException {
-        // Aceder a encomenda
-        Encomenda encomenda = tableViewEncomendas.getSelectionModel().getSelectedItem();
-
-        if (encomenda != null) {  // Verificar se a encomenda não é nula
-            // Aceder as linhas
-            List<LinhaEncomenda> linhasEncomenda = lerEncomenda.lerLinhasParaAprovacao(encomenda.getId());
-
-            boolean sucesso = false;
-            boolean sucessoEncomenda = false;
-            boolean atualizado = false;
-
-            double total = encomenda.getValorTotal();
-
-            for (LinhaEncomenda linhas : linhasEncomenda) {
-                Produto produto = linhas.getProduto();
-                double quantidade = linhas.getQuantidade();
-
-                // Lógica para atualizar o estoque na base de dados
-                sucesso = lerEncomenda.atualizarStock(produto.getId(), produto.getUnidade().getId(), quantidade);
-
-                //atualizar estado da encomenda
-                sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(encomenda.getId());
-
-                tableViewEncomendas.getItems().remove(encomenda);
-            }
-
-            //atualizar saldo em divida
-            atualizado = lerContaCorrente.atualizarSaldoDevedores(total, encomenda.getFornecedor().getIdExterno());
-
-            // Listener para seleção de encomendas
-            tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-                if (newSelection != null) {
-                    try {
-                        // Quando uma nova encomenda é selecionada, atualize a tabela de linhas
-                        tabelaLinhasEncomenda(newSelection);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-
-            if (tableViewEncomendas.getItems().isEmpty()) {
-                tableViewLinhasEncomenda.getItems().clear();
-            }
-
-            if (sucesso && sucessoEncomenda && atualizado) {
-                Mensagens.Informacao("Sucesso", "Stock aprovado com sucesso!");
-            } else {
-                Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
-            }
-        }
-    }
-
-    /**
-     * Manipula o evento de clique no botão "Recusar".
-     * Recusa a encomenda e atualiza o estado da encomenda na base de dados.
-     *
-     * @throws IOException Se ocorrer um erro durante o processo de recusa.
-     */
-    @FXML
-    void clickRecusar() throws IOException {
-        // Aceder a encomenda
-        Encomenda encomenda = tableViewEncomendas.getSelectionModel().getSelectedItem();
-
-        //atualizar estado da encomenda para recusada (Estado 2)
-        boolean sucessoEncomenda = lerEncomenda.actualizarEstadoEncomendaRecusada(encomenda.getId());
-
-        // Remover encomenda da tabela apresentada
-        tableViewEncomendas.getItems().remove(encomenda);
-
-        // Listener para seleção de encomendas
-        tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                try {
-                    // Quando uma nova encomenda é selecionada, atualize a tabela de linhas
-                    tabelaLinhasEncomenda(newSelection);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-
-        if(tableViewEncomendas.getItems().isEmpty()) {
-            tableViewLinhasEncomenda.getItems().clear();
-        }
-
-
-        if (sucessoEncomenda) {
-            Mensagens.Informacao("Sucesso", "Encomenda recusada com sucesso!");
-        } else {
-            Mensagens.Erro("Erro!", "Erro ao recusar encomenda!");
-        }
-
-    }
-
 }
+
+

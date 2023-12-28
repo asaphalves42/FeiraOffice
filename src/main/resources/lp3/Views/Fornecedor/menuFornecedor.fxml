@@ -40,18 +40,18 @@
                   <Font name="System Bold" size="36.0" />
                </font>
             </Label>
-            <Button fx:id="btnHistEncomendas" layoutX="73.0" layoutY="610.0" mnemonicParsing="false" onAction="#clickHistEncomendas" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="Histórico de Encomendas">
+            <Button fx:id="btnHistEncomendas" layoutX="53.0" layoutY="613.0" mnemonicParsing="false" onAction="#clickHistEncomendas" prefHeight="110.0" prefWidth="290.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="HISTÓRICO DE ENCOMENDAS">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="289.0" layoutY="-2.0" prefHeight="900.0" prefWidth="911.0">
+      <AnchorPane fx:id="anchorPaneMenuFornecedor" layoutX="289.0" layoutY="-2.0" prefHeight="900.0" prefWidth="911.0">
          <children>
             <SplitPane dividerPositions="0.49443207126948774" layoutX="92.0" layoutY="468.0" orientation="VERTICAL" prefHeight="900.0" prefWidth="819.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="92.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
+                <AnchorPane fx:id="anchorPaneMenuFornecedo" minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
                      <children>
                         <GridPane layoutX="83.0" layoutY="109.0" prefHeight="275.0" prefWidth="700.0">
                           <columnConstraints>
