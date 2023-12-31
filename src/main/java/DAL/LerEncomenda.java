@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.List;
 
 import static Utilidades.BaseDados.*;
@@ -869,5 +870,53 @@ public class LerEncomenda {
             BaseDados.Desligar();
         }
     }
+    public ObservableList<EncomendaFornecedor> lerEncomendaAprovada() throws IOException {
+        ObservableList<EncomendaFornecedor> encomendasAprovadas = FXCollections.observableArrayList();
+
+        try {
+            BaseDados.Ligar();
+
+            String query = """
+                    SELECT\s
+                        Encomenda.Id AS Id_Encomenda,
+                        Encomenda.Referencia AS Referencia_Encomenda,
+                        Encomenda.Data AS Data_Encomenda,
+                        Fornecedor.Nome AS Nome_Fornecedor,
+                        Encomenda.Total AS Total_Encomenda,
+                        Tipo_Utilizador.nome AS Nome_Tipo_Utilizador
+                    FROM Encomenda\s
+                        INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
+                        INNER JOIN Tipo_Utilizador ON Tipo_Utilizador.id = Encomenda.Id_Tipo_Utilizador
+                    WHERE\s
+                        Estado.Id = 2
+                    """;
+
+            // Preparar a declaração SQL com o fornecedor externo como parâmetro
+            PreparedStatement preparedStatement = getConexao().prepareStatement(query);
+
+            ResultSet resultado = preparedStatement.executeQuery();
+
+            while (resultado.next()) {
+                EncomendaFornecedor encomendaFornecedor = new EncomendaFornecedor(
+                        resultado.getInt("encomenda_id"),
+                        resultado.getString("encomenda_referencia"),
+                        LocalDate.parse(resultado.getString("encomenda_data")),
+                        resultado.getString("fornecedor_nome"),
+                        resultado.getDouble("encomenda_total"),
+                        resultado.getString("tipo_utilizador_nome")
+                );
+
+                encomendasAprovadas.add(encomendaFornecedor);
+            }
+
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao carregar encomendas");
+        } finally {
+            BaseDados.Desligar();
+        }
+
+        return encomendasAprovadas;
+    }
 
 }
+
