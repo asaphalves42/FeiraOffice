@@ -2,7 +2,6 @@ package Controller.Administrador;
 
 import DAL.LerEncomenda;
 import Model.EncomendaFornecedor;
-import Model.FornecedorProdutoData;
 import Utilidades.Mensagens;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -44,16 +43,16 @@ public class MenuEstatisticas {
             TableColumn<EncomendaFornecedor, Double> colunaValorTotal = new TableColumn<>("Valor Total");
             TableColumn<EncomendaFornecedor, String> colunaNomeUtilizador = new TableColumn<>("Utilizador");
 
-            // Configurar como cada coluna obtém seus valores do modelo de dados (EncomendaFornecedor)
-            colunaId.setCellValueFactory(new PropertyValueFactory<>("id")); // Substitua "id" pelo nome do atributo correspondente na classe EncomendaFornecedor
-            colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia")); // Substitua "referencia" pelo nome do atributo correspondente na classe EncomendaFornecedor
-            colunaData.setCellValueFactory(new PropertyValueFactory<>("data")); // Substitua "data" pelo nome do atributo correspondente na classe EncomendaFornecedor
-            colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("nomeFornecedor")); // Substitua "nomeFornecedor" pelo nome do atributo correspondente na classe EncomendaFornecedor
+
+            colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
+            colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
+            colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
+            colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("nomeFornecedor"));
             colunaValorTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
-            colunaNomeUtilizador.setCellValueFactory(new PropertyValueFactory<>("nomeUtilizador")); // Substitua "nomeUtilizador" pelo nome do atributo correspondente na classe EncomendaFornecedor
+            colunaNomeUtilizador.setCellValueFactory(new PropertyValueFactory<>("nomeUtilizador"));
 
 
-            // Adicionar as colunas à tabela (suponho que tableViewEncomendas seja o nome da sua TableView)
+
             tableViewAprovadas.getColumns().addAll(colunaId, colunaReferencia, colunaData, colunaNomeFornecedor, colunaValorTotal, colunaNomeUtilizador);
 
             // Definir os dados na tabela

@@ -888,10 +888,10 @@ public class LerEncomenda {
                         INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
                         INNER JOIN Tipo_Utilizador ON Tipo_Utilizador.id = Encomenda.Id_Tipo_Utilizador
                     WHERE\s
-                        Estado.Id = 2
+                        Encomenda.Id_Estado = 2
                     """;
 
-            // Preparar a declaração SQL com o fornecedor externo como parâmetro
+
             PreparedStatement preparedStatement = getConexao().prepareStatement(query);
 
             ResultSet resultado = preparedStatement.executeQuery();
