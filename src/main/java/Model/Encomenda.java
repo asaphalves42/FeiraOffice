@@ -10,7 +10,6 @@ public class Encomenda {
     private int id;
 
     private String referencia;
-
     private LocalDate data;
 
     private Fornecedor fornecedor;

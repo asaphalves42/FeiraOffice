@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="900.0" prefWidth="895.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Administrador.MenuEstatisticas">
+    <children>
+        <AnchorPane prefHeight="900.0" prefWidth="911.0">
+            <children>
+                <SplitPane fx:id="anchorPaneFuncoesFornc" dividerPositions="0.6358574610244989" layoutX="417.0" layoutY="394.0" orientation="VERTICAL" prefHeight="900.0" prefWidth="889.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="291.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
+                            <children>
+                                <Text layoutX="303.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FEIRA &amp; OFFICE" wrappingWidth="284.26171875">
+                                    <font>
+                                        <Font name="System Bold Italic" size="34.0" />
+                                    </font>
+                                </Text>
+                                <TableView fx:id="tableViewAprovadas" layoutY="90.0" prefHeight="427.0" prefWidth="909.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0" />
+                        <Text layoutX="20.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Encomendas Aprovadas:">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="20.0" layoutY="546.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Encomendas Recusadas:">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Text>
+                            </children>
+                        </AnchorPane>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="419.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
+                     <children>
+                        <TableView fx:id="tableViewRecusadas" layoutX="-2.0" layoutY="-34.0" prefHeight="353.0" prefWidth="911.0" />
+                     </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

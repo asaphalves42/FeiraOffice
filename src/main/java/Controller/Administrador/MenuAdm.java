@@ -61,6 +61,15 @@ public class MenuAdm {
      */
     @FXML
     void clickEstatisticas() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Admin/menuEstatisticas.fxml"));
+            AnchorPane root = loader.load();
+
+            anchorPaneMenuAdm.getChildren().setAll(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
