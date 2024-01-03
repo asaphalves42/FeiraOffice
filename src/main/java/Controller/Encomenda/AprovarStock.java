@@ -318,6 +318,7 @@ public class AprovarStock {
      */
     @FXML
     void clickRecusar() throws IOException {
+        iniciaData(utilizador);
         // Aceder a encomenda
         Encomenda encomenda = tableViewEncomendas.getSelectionModel().getSelectedItem();
 
@@ -325,7 +326,11 @@ public class AprovarStock {
         boolean sucessoEncomenda = lerEncomenda.actualizarEstadoEncomendaRecusada(encomenda.getId());
 
 
-       // boolean quemAprovou = lerEncomenda.quemAprovouEncomenda(encomenda.getId(), util.getId());
+        //Guarda informação de quem aprovou a encomenda
+        boolean quemAprovou = false;
+        if(utilizador!=null) {
+             quemAprovou = lerEncomenda.quemAprovouEncomenda(encomenda.getId(), utilizador.getId());
+        }
 
         // Remover encomenda da tabela apresentada
         tableViewEncomendas.getItems().remove(encomenda);
@@ -347,7 +352,7 @@ public class AprovarStock {
         }
 
 
-        if (sucessoEncomenda) {
+        if (sucessoEncomenda && quemAprovou) {
             Mensagens.Informacao("Sucesso", "Encomenda recusada com sucesso!");
         } else {
             Mensagens.Erro("Erro!", "Erro ao recusar encomenda!");
