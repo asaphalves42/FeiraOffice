@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
+import java.nio.channels.SelectableChannel;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -396,6 +397,33 @@ public class LerFornecedores {
 
             if (resultado.next()) {
                 return resultado.getString("Nome");
+            }
+
+
+            BaseDados.Desligar();
+        } catch (SQLException e) {
+            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+
+        } finally {
+            BaseDados.Desligar();
+        }
+
+        return null; // Retorna null se não encontrado
+    }
+    public String obterIdexternoFornecedorPorEmailLogin(String email) throws IOException {
+        try {
+            BaseDados.Ligar();
+            String query = """
+                    SELECT Fornecedor.Id_Externo FROM Fornecedor
+                    INNER JOIN Utilizador ON Fornecedor.Id_Utilizador = Utilizador.id_util
+                    WHERE Utilizador.username = ?""";
+            PreparedStatement preparedStatement = getConexao().prepareStatement(query);
+            preparedStatement.setString(1, email);
+
+            ResultSet resultado = preparedStatement.executeQuery();
+
+            if (resultado.next()) {
+                return resultado.getString("Id_Externo");
             }
 
 

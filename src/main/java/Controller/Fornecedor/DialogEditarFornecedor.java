@@ -23,6 +23,7 @@ import java.io.IOException;
  */
 public class DialogEditarFornecedor {
 
+
     @FXML
     private ComboBox<Pais> comboBoxPais; // Corrigido para usar o tipo apropriado
     private final DataSingleton dadosCompartilhados = DataSingleton.getInstance();
