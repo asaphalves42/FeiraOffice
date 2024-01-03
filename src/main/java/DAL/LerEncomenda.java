@@ -269,7 +269,6 @@ public class LerEncomenda {
     public int adicionarEncomendaBaseDeDados(Encomenda encomenda) throws IOException {
         Connection conexao = null;
         try {
-            BaseDados.Ligar();
             conexao = getConexao();
             BaseDados.iniciarTransacao(conexao);
 
@@ -285,15 +284,15 @@ public class LerEncomenda {
             // Inserir na tabela Linha_Encomenda
             try {
                 for (LinhaEncomenda linha : encomenda.getLinhas()) {
-                    inserirLinhaEncomenda(Id_Encomenda, linha);
+                    inserirLinhaEncomenda(Id_Encomenda, linha, conexao);
                 }
             } catch (RuntimeException e) {
-                BaseDados.rollback(getConexao());
+                BaseDados.rollback(conexao);
                 System.out.println(e.getMessage());
                 return 0;
             }
 
-            BaseDados.commit(getConexao());
+            BaseDados.commit(conexao);
 
             return Id_Encomenda;
         } catch (Exception e) {
@@ -306,16 +305,17 @@ public class LerEncomenda {
     }
 
     public int adicionarMapeamento(Encomenda encomenda) throws IOException {
+        Connection conn = null;
         try {
-            BaseDados.Ligar();
-            BaseDados.iniciarTransacao(getConexao());
+            conn = BaseDados.getConexao();
+            BaseDados.iniciarTransacao(conn);
 
             String query = """
                 INSERT INTO FornecedorProdutos (id_Fornecedor, id_Produto, Preco_Unitario)
                 VALUES (?,?,?)
                 """;
 
-            try (PreparedStatement ps = getConexao().prepareStatement(query)) {
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
                 ps.setString(1, encomenda.getFornecedor().getIdExterno());
 
                 for (LinhaEncomenda produto : encomenda.getLinhas()) {
@@ -330,13 +330,14 @@ public class LerEncomenda {
             }
             System.out.println(query);
             // Confirma a transação
-            BaseDados.commit(getConexao());
+            BaseDados.commit(conn);
 
         } catch (Exception e) {
             // Lidar com exceções (registre ou imprima o erro)
             e.printStackTrace();
             // Reverte a transação em caso de exceção
-            BaseDados.rollback(getConexao());
+            assert conn != null;
+            BaseDados.rollback(conn);
             return 0; // ou retorne um código de erro
         } finally {
             // Fecha a conexão com o banco de dados
@@ -411,14 +412,14 @@ public class LerEncomenda {
      * @param Id_Encomenda O ID da encomenda à qual a linha pertence.
      * @param linha        A linha de encomenda a ser inserida.
      */
-    private void inserirLinhaEncomenda(int Id_Encomenda, LinhaEncomenda linha) throws IOException, SQLException {
+    private void inserirLinhaEncomenda(int Id_Encomenda, LinhaEncomenda linha, Connection connection) throws IOException{
 
         // Construir a string da consulta SQL, escapando os valores com PreparedStatement
         String queryLinha = "INSERT INTO Linha_Encomenda (Id_Encomenda, Sequencia, Id_Produto, Preco_Unitario, Quantidade, Id_Unidade," +
                 " Id_Pais_Taxa, Total_Taxa, Total_Incidencia, Total_Linha) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
-        try (PreparedStatement preparedStatement = getConexao().prepareStatement(queryLinha)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(queryLinha)) {
             preparedStatement.setInt(1, Id_Encomenda);
             preparedStatement.setInt(2, linha.getSequencia());
             preparedStatement.setString(3, linha.getProduto().getId());
@@ -434,7 +435,7 @@ public class LerEncomenda {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao inserir linha da encomenda!");
-            BaseDados.rollback(getConexao());
+            BaseDados.rollback(connection);
             throw new RuntimeException("Erro");
 
         }
