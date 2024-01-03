@@ -2,6 +2,8 @@ package Controller.Encomenda;
 
 import DAL.LerContaCorrente;
 import DAL.LerEncomenda;
+import DAL.LerFornecedores;
+import DAL.LerUtilizadores;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
@@ -23,7 +25,7 @@ import java.util.List;
  */
 public class AprovarStock {
 
-    BaseDados baseDados = new BaseDados();
+    private Utilizador utilizador;
     LerEncomenda lerEncomenda = new LerEncomenda();
     LerContaCorrente lerContaCorrente = new LerContaCorrente();
 
@@ -44,6 +46,13 @@ public class AprovarStock {
     ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
     ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
+    public void iniciaData(Utilizador utilizador) {
+        this.utilizador = utilizador;
+        System.out.println(utilizador.getEmail());
+
+        System.out.println(utilizador.getTipo());
+    }
+
     /**
      * Inicializa a interface do usuário e configura a tabela de encomendas pendentes.
      * Adiciona um ouvinte para a seleção de itens na tabela de encomendas para atualizar a tabela de linhas de encomenda.
@@ -51,6 +60,7 @@ public class AprovarStock {
      * @throws IOException Se ocorrer um erro durante a inicialização.
      */
     public void initialize() throws IOException {
+
         tabelaEncomendasPendentes();
 
         tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -237,6 +247,8 @@ public class AprovarStock {
      */
     @FXML
     void clickAprovar() throws IOException {
+        iniciaData(utilizador);
+
         // Aceder a encomenda
         Encomenda encomenda = tableViewEncomendas.getSelectionModel().getSelectedItem();
 
@@ -247,6 +259,7 @@ public class AprovarStock {
             boolean sucesso = false;
             boolean sucessoEncomenda = false;
             boolean atualizado = false;
+            boolean quemAprovou = false;
 
             double total = encomenda.getValorTotal();
 
@@ -257,14 +270,21 @@ public class AprovarStock {
                 // Lógica para atualizar o estoque na base de dados
                 sucesso = lerEncomenda.atualizarStock(produto.getId(), produto.getUnidade().getId(), quantidade);
 
-                //atualizar estado da encomenda
-                sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(encomenda.getId());
+
 
                 tableViewEncomendas.getItems().remove(encomenda);
             }
 
+            //atualizar estado da encomenda
+            sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(encomenda.getId());
+
             //atualizar saldo em divida
             atualizado = lerContaCorrente.atualizarSaldoDevedores(total, encomenda.getFornecedor().getIdExterno());
+
+            //Guarda informação de quem aprovou a encomenda
+            if(utilizador!=null) {
+                quemAprovou = lerEncomenda.quemAprovouEncomenda(encomenda.getId(), utilizador.getId());
+            }
 
             // Listener para seleção de encomendas
             tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -282,7 +302,7 @@ public class AprovarStock {
                 tableViewLinhasEncomenda.getItems().clear();
             }
 
-            if (sucesso && sucessoEncomenda && atualizado) {
+            if (sucesso && sucessoEncomenda && atualizado && quemAprovou) {
                 Mensagens.Informacao("Sucesso", "Stock aprovado com sucesso!");
             } else {
                 Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
@@ -303,6 +323,9 @@ public class AprovarStock {
 
         //atualizar estado da encomenda para recusada (Estado 2)
         boolean sucessoEncomenda = lerEncomenda.actualizarEstadoEncomendaRecusada(encomenda.getId());
+
+
+       // boolean quemAprovou = lerEncomenda.quemAprovouEncomenda(encomenda.getId(), util.getId());
 
         // Remover encomenda da tabela apresentada
         tableViewEncomendas.getItems().remove(encomenda);

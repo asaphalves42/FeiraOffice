@@ -26,7 +26,7 @@ import java.sql.SQLException;
  */
 public class Login {
 
-    BaseDados baseDados = new BaseDados();
+
     @FXML
     private Button btnLogin;
 

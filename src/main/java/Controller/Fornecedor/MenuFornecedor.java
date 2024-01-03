@@ -33,8 +33,6 @@ public class MenuFornecedor {
     @FXML
     private AnchorPane anchorPaneMenuFornecedor;
 
-    BaseDados baseDados = new BaseDados();
-
     @FXML
     private Button btnEscolherFicheiro;
 

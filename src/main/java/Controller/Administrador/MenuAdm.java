@@ -1,10 +1,17 @@
 package Controller.Administrador;
 
+import Controller.Encomenda.AprovarStock;
+import Controller.Operador.MenuOperador;
+import Model.TipoUtilizador;
 import Model.Utilizador;
+import Utilidades.Mensagens;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -44,17 +51,39 @@ public class MenuAdm {
      * Carrega e exibe o menu para aprovação de estoque quando o botão "Aprovar" é clicado.
      */
     @FXML
-    void clickAprovar() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Encomenda/menuAprovarStock.fxml"));
-            AnchorPane root = loader.load();
+    void clickAprovar() throws IOException {
+        String resource = null;
 
-            anchorPaneMenuAdm.getChildren().setAll(root);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (utilizador != null) {
+            resource = "/lp3/Views/Encomenda/menuAprovarStock.fxml";
+            abrirMenuAprovar(resource, utilizador);
         }
     }
+
+    private void abrirMenuAprovar(String resource, Utilizador utilizador) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+        AnchorPane root = loader.load();
+
+        if (utilizador.getTipo() == TipoUtilizador.Administrador) {
+            AprovarStock aprovarStockController = loader.getController();
+            aprovarStockController.iniciaData(utilizador);
+            // Substitui o conteúdo de anchorPaneMenuAdm com o novo FXML
+            anchorPaneMenuAdm.getChildren().setAll(root);
+
+        } else if (utilizador.getTipo() == TipoUtilizador.Operador) {
+            AprovarStock aprovarStockController = loader.getController();
+            aprovarStockController.iniciaData(utilizador);
+
+            // Substitui o conteúdo de anchorPaneMenuAdm com o novo FXML
+            anchorPaneMenuAdm.getChildren().setAll(root);
+        }
+
+
+
+
+    }
+
+
 
     /**
      * Método de espaço reservado para lidar com o clique no botão "Estatísticas".

@@ -33,7 +33,7 @@ public class LerEncomenda {
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
         try {
-            BaseDados.Ligar();
+           Connection conn = getConexao();
 
             // Utilizando JOIN para obter todas as informações necessárias em uma única consulta
             String query = """
@@ -53,7 +53,7 @@ public class LerEncomenda {
                         WHERE LE.Id_Encomenda = ?
                     """;
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setInt(1, idEncomenda);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -135,13 +135,13 @@ public class LerEncomenda {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String query = """
                     SELECT * FROM Encomenda
                     """;
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
 
                 ResultSet resultado = preparedStatement.executeQuery();
 
@@ -172,14 +172,14 @@ public class LerEncomenda {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
 
             String query = """
                     SELECT * FROM Encomenda WHERE Id_Estado = 1
                     """;
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
 
                 ResultSet resultado = preparedStatement.executeQuery();
 
@@ -204,14 +204,14 @@ public class LerEncomenda {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
 
             String query = """
                     SELECT * FROM Encomenda WHERE Fornecedor.Id_Externo = ? 
                     """;
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
 
                 ResultSet resultado = preparedStatement.executeQuery();
 
@@ -279,7 +279,7 @@ public class LerEncomenda {
             for (LinhaEncomenda linha : encomenda.getLinhas()) {
 
                 //lerProdutos.lerProdutoPorId ja existe, nao grava
-                inserirProdutoNaTabelaProduto(linha.getProduto());
+                inserirProdutoNaTabelaProduto(conexao, linha.getProduto());
             }
 
             // Inserir na tabela Linha_Encomenda
@@ -354,16 +354,16 @@ public class LerEncomenda {
      *
      * @param produto   O produto a ser inserido na tabela.
      */
-    private void inserirProdutoNaTabelaProduto(Produto produto) throws IOException {
+    private void inserirProdutoNaTabelaProduto(Connection conexao, Produto produto) throws IOException {
         //Verificar se o produto já eiste na tabela antes de o inserir
-        if (!produtoExisteNaTabela(produto.getId())) {
+        if (!produtoExisteNaTabela(conexao, produto.getId())) {
             // Construa a string da consulta SQL, escapando os valores
             String queryProduto = """
                     INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado)
                     VALUES (?, ?, ?, ?, ?, 0)
                     """;
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(queryProduto)) {
+            try (PreparedStatement preparedStatement = conexao.prepareStatement(queryProduto)) {
 
                 preparedStatement.setString(1, produto.getId());
                 preparedStatement.setString(2, produto.getFornecedor().getIdExterno());
@@ -389,12 +389,12 @@ public class LerEncomenda {
      * @return True se o produto já existir na tabela, false caso contrário.
      * @throws RuntimeException Se ocorrer um erro durante a verificação.
      */
-    private boolean produtoExisteNaTabela(String Id) throws IOException {
+    private boolean produtoExisteNaTabela(Connection conexao, String Id) throws IOException {
         try {
 
             String query = "SELECT Id FROM Produto WHERE Id = ?";
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conexao.prepareStatement(query)) {
                 preparedStatement.setString(1, Id);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -539,7 +539,7 @@ public class LerEncomenda {
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             // Utilizando JOIN para obter todas as informações necessárias em uma única consulta
             String query = "SELECT " +
@@ -553,7 +553,7 @@ public class LerEncomenda {
                     "INNER JOIN Unidade ON Unidade.Id = Produto.Id_Unidade " +
                     "WHERE Linha_Encomenda.Id_Encomenda = ?";
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setInt(1, idEncomenda);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -616,20 +616,19 @@ public class LerEncomenda {
     public boolean atualizarStock(String idProduto, int idUnidade, double quantidade) throws IOException {
         Connection conn = null;
         try {
-            BaseDados.Ligar();
             conn = getConexao();
             iniciarTransacao(conn);
 
             // Se existir, dá um update apenas na quantidade, soma a que tem na tabela mais a nova quantidade
             String script;
-            if (produtoExiste(idProduto)) {
+            if (produtoExiste(conn, idProduto)) {
                 script = "UPDATE Stock SET Id_Unidade = ?, Quantidade = Quantidade + ? WHERE Id_Produto = ?";
             } else {
                 // Senão, insere o produto
                 script = "INSERT INTO Stock (Id_Produto, Id_Unidade, Quantidade) VALUES (?, ?, ?)";
             }
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(script)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(script)) {
                 preparedStatement.setString(1, idProduto);
                 preparedStatement.setInt(2, idUnidade);
                 preparedStatement.setDouble(3, quantidade);
@@ -658,10 +657,10 @@ public class LerEncomenda {
      * @return True se o produto existir, false caso contrário.
      * @throws SQLException Se ocorrer um erro durante a verificação na base de dados.
      */
-    private boolean produtoExiste(String idProduto) throws SQLException {
+    private boolean produtoExiste(Connection conn, String idProduto) throws SQLException {
         String query = "SELECT * FROM Stock WHERE Id_Produto = ?";
 
-        try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, idProduto);
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
@@ -755,13 +754,13 @@ public class LerEncomenda {
      */
     public boolean podeEliminarFornecedor(Utilizador fornecedor) throws IOException {
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String queryEncomendas = "SELECT Id_Fornecedor FROM Encomenda";
             String queryFornecedores = "SELECT Id_Externo FROM Fornecedor WHERE Id_Utilizador = ?";
 
-            try (PreparedStatement preparedStatementEncomendas = getConexao().prepareStatement(queryEncomendas);
-                 PreparedStatement preparedStatementFornecedores = getConexao().prepareStatement(queryFornecedores)) {
+            try (PreparedStatement preparedStatementEncomendas = conn.prepareStatement(queryEncomendas);
+                 PreparedStatement preparedStatementFornecedores = conn.prepareStatement(queryFornecedores)) {
 
                 preparedStatementFornecedores.setInt(1, fornecedor.getId());
 
@@ -781,7 +780,7 @@ public class LerEncomenda {
                         }
                     }
 
-                    BaseDados.commit(getConexao());
+                    BaseDados.commit(conn);
                     // Se não encontra igual, a eliminação pode proceder
                     return true;
                 }
@@ -808,7 +807,7 @@ public class LerEncomenda {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String query = """
                     SELECT 
@@ -828,7 +827,7 @@ public class LerEncomenda {
                     """;
 
             // Preparar a declaração SQL com o fornecedor externo como parâmetro
-            PreparedStatement preparedStatement = getConexao().prepareStatement(query);
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, idFornecedorExterno);
 
             ResultSet resultado = preparedStatement.executeQuery();
@@ -907,7 +906,7 @@ public class LerEncomenda {
         ObservableList<EncomendaFornecedor> encomendasAprovadas = FXCollections.observableArrayList();
 
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String query = """
                     SELECT\s
@@ -925,7 +924,7 @@ public class LerEncomenda {
                     """;
 
 
-            PreparedStatement preparedStatement = getConexao().prepareStatement(query);
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
 
             ResultSet resultado = preparedStatement.executeQuery();
 
@@ -955,7 +954,7 @@ public class LerEncomenda {
         ObservableList<EncomendaFornecedor> encomendasRecusadas = FXCollections.observableArrayList();
 
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String query = """
                     SELECT\s
@@ -973,7 +972,7 @@ public class LerEncomenda {
                     """;
 
 
-            PreparedStatement preparedStatement = getConexao().prepareStatement(query);
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
 
             ResultSet resultado = preparedStatement.executeQuery();
 
@@ -998,5 +997,33 @@ public class LerEncomenda {
 
         return encomendasRecusadas;
     }
+
+    public boolean quemAprovouEncomenda(int idEncomenda, int utilizador) throws IOException {
+
+        Connection con = getConexao();
+        BaseDados.iniciarTransacao(con);
+
+        String query = """
+                INSERT INTO Aprovacao_Encomenda (id_encomenda, id_utilizador)
+                VALUES (?, ?)
+                """;
+
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, idEncomenda);
+            ps.setInt(2, utilizador);
+
+            // Execute the SQL query
+            ps.executeUpdate();
+
+            BaseDados.commit(con);
+            return true;
+
+        } catch (Exception e){
+            BaseDados.rollback(con);
+            Mensagens.Erro("Erro!", "Erro ao atualizar dados de mapeamento de encomenda!");
+        }
+        return false;
+    }
+
 }
 
