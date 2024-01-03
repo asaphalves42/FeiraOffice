@@ -1,11 +1,7 @@
 package Controller.Fornecedor;
-import Model.Utilizador;
+import Model.*;
 import DAL.LerEncomenda;
 import DAL.LerFornecedores;
-import Model.Encomenda;
-import Model.Fornecedor;
-import Model.LinhaEncomenda;
-import Model.Pais;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
@@ -66,16 +62,6 @@ public class VerEncomendasFornecedor {
     public void tabelaEncomendasPendentes() throws IOException {
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
-        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()) {
-            if (this.utilizador.getId() == fornec.getIdUtilizador().getId()) {
-                fornecedorLogado = fornec;
-
-            }
-        }
-
-
-        try {
-            encomendas.addAll(lerEncomenda.lerEncomendaDaBaseDeDadosFornecedor(String.valueOf(fornecedorLogado.getIdExterno())));
 
             if (!encomendas.isEmpty()) {
                 // Defina as colunas da tabela
@@ -85,80 +71,87 @@ public class VerEncomendasFornecedor {
                 TableColumn<Encomenda, Fornecedor> colunaNomeFornecedor = new TableColumn<>("Fornecedor");
                 TableColumn<Encomenda, Fornecedor> colunaIdFornecedor = new TableColumn<>("Id do fornecedor");
                 TableColumn<Encomenda, Pais> colunaidPais = new TableColumn<>("País");
-                TableColumn<Encomenda, Double> colunaTotalTaxa = new TableColumn<>("Total dos impostos");
-                TableColumn<Encomenda, Double> colunaIncidencia = new TableColumn<>("Total sem impostos");
-                TableColumn<Encomenda, Double> colunaTotal = new TableColumn<>("Valor total");
 
 
-                // Associe as colunas às propriedades da classe Encomenda
-                colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-                colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
-                colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
 
-                colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("fornecedor"));
+                try {
+                    encomendas.addAll(lerEncomenda.lerEncomendaDaBaseDeDadosFornecedor(lerFornecedores.obterIdexternoFornecedorPorEmailLogin(UtilizadorManutencao.getEmail())));
 
-                colunaNomeFornecedor.setCellFactory(column -> {
-                    return new TableCell<Encomenda, Fornecedor>() {
-                        @Override
-                        protected void updateItem(Fornecedor fornecedor, boolean empty) {
-                            super.updateItem(fornecedor, empty);
+                    TableColumn<Encomenda, Double> colunaTotalTaxa = new TableColumn<>("Total dos impostos");
+                    TableColumn<Encomenda, Double> colunaIncidencia = new TableColumn<>("Total sem impostos");
+                    TableColumn<Encomenda, Double> colunaTotal = new TableColumn<>("Valor total");
 
-                            if (fornecedor == null || empty) {
-                                setText(null);
-                            } else {
-                                setText(String.valueOf(fornecedor.getNome())); // Nome do fornecedor
+
+                    // Associe as colunas às propriedades da classe Encomenda
+                    colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
+                    colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
+                    colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
+
+                    colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("fornecedor"));
+
+                    colunaNomeFornecedor.setCellFactory(column -> {
+                        return new TableCell<Encomenda, Fornecedor>() {
+                            @Override
+                            protected void updateItem(Fornecedor fornecedor, boolean empty) {
+                                super.updateItem(fornecedor, empty);
+
+                                if (fornecedor == null || empty) {
+                                    setText(null);
+                                } else {
+                                    setText(String.valueOf(fornecedor.getNome())); // Nome do fornecedor
+                                }
                             }
-                        }
-                    };
-                });
+                        };
+                    });
 
-                colunaIdFornecedor.setCellValueFactory(new PropertyValueFactory<>("fornecedor"));
+                    colunaIdFornecedor.setCellValueFactory(new PropertyValueFactory<>("fornecedor"));
 
-                colunaIdFornecedor.setCellFactory(column -> {
-                    return new TableCell<Encomenda, Fornecedor>() {
-                        @Override
-                        protected void updateItem(Fornecedor fornecedor, boolean empty) {
-                            super.updateItem(fornecedor, empty);
+                    colunaIdFornecedor.setCellFactory(column -> {
+                        return new TableCell<Encomenda, Fornecedor>() {
+                            @Override
+                            protected void updateItem(Fornecedor fornecedor, boolean empty) {
+                                super.updateItem(fornecedor, empty);
 
-                            if (fornecedor == null || empty) {
-                                setText(null);
-                            } else {
-                                setText(String.valueOf(fornecedor.getIdExterno())); // ID do fornecedor
+                                if (fornecedor == null || empty) {
+                                    setText(null);
+                                } else {
+                                    setText(String.valueOf(fornecedor.getIdExterno())); // ID do fornecedor
+                                }
                             }
-                        }
-                    };
-                });
+                        };
+                    });
 
-                colunaidPais.setCellValueFactory(new PropertyValueFactory<>("pais"));
-                colunaTotalTaxa.setCellValueFactory(new PropertyValueFactory<>("valorImposto"));
+                    colunaidPais.setCellValueFactory(new PropertyValueFactory<>("pais"));
+                    colunaTotalTaxa.setCellValueFactory(new PropertyValueFactory<>("valorImposto"));
 
-                colunaIncidencia.setCellValueFactory(new PropertyValueFactory<>("valorIncidencia"));
+                    colunaIncidencia.setCellValueFactory(new PropertyValueFactory<>("valorIncidencia"));
 
-                colunaTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
-
-
-                // Adicione as colunas à tabela
-                tableViewEncomendas.getColumns().add(colunaId);
-                tableViewEncomendas.getColumns().add(colunaReferencia);
-                tableViewEncomendas.getColumns().add(colunaData);
-                tableViewEncomendas.getColumns().add(colunaNomeFornecedor);
-                tableViewEncomendas.getColumns().add(colunaIdFornecedor);
-                tableViewEncomendas.getColumns().add(colunaidPais);
-                tableViewEncomendas.getColumns().add(colunaTotalTaxa);
-                tableViewEncomendas.getColumns().add(colunaIncidencia);
-                tableViewEncomendas.getColumns().add(colunaTotal);
+                    colunaTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
 
 
-                tableViewEncomendas.setItems(encomendas);
+                    // Adicione as colunas à tabela
+                    tableViewEncomendas.getColumns().add(colunaId);
+                    tableViewEncomendas.getColumns().add(colunaReferencia);
+                    tableViewEncomendas.getColumns().add(colunaData);
+                    tableViewEncomendas.getColumns().add(colunaNomeFornecedor);
+                    tableViewEncomendas.getColumns().add(colunaIdFornecedor);
+                    tableViewEncomendas.getColumns().add(colunaidPais);
+                    tableViewEncomendas.getColumns().add(colunaTotalTaxa);
+                    tableViewEncomendas.getColumns().add(colunaIncidencia);
+                    tableViewEncomendas.getColumns().add(colunaTotal);
 
 
+                    tableViewEncomendas.setItems(encomendas);
+
+
+                } catch (IOException e) {
+                    Mensagens.Erro("Erro!", "Erro ao ler tabela!");
+
+                }
             }
-
-        } catch (IOException e) {
-            Mensagens.Erro("Erro!", "Erro ao ler tabela!");
         }
 
-    }
+
 
     /**
      * Preenche a tabela de linhas de encomenda com base na encomenda selecionada.

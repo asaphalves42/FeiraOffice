@@ -6,6 +6,7 @@ import Controller.Fornecedor.MenuFornecedor;
 import Controller.Operador.MenuOperador;
 import Model.TipoUtilizador;
 import Model.Utilizador;
+import Model.UtilizadorManutencao;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.fxml.FXML;
@@ -40,6 +41,7 @@ public class Login {
     void clickLogin() throws IOException, SQLException {
         Utilizador utilizador = getUtilizador();
         abrirMenuCorrespondente(utilizador);
+        UtilizadorManutencao.setEmail(utilizador.getEmail());
     }
 
     /**
