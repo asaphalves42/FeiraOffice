@@ -689,7 +689,7 @@ public class LerEncomenda {
 
                 preparedStatement.executeUpdate();
             }
-            BaseDados.commit(getConexao());
+            BaseDados.commit(conn);
 
             return true;
 
@@ -999,29 +999,38 @@ public class LerEncomenda {
     }
 
     public boolean quemAprovouEncomenda(int idEncomenda, int utilizador) throws IOException {
+        Connection conn = null;
+        try{
 
-        Connection con = getConexao();
-        BaseDados.iniciarTransacao(con);
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
 
-        String query = """
+            String query = """
                 INSERT INTO Aprovacao_Encomenda (id_encomenda, id_utilizador)
                 VALUES (?, ?)
                 """;
 
-        try (PreparedStatement ps = con.prepareStatement(query)) {
-            ps.setInt(1, idEncomenda);
-            ps.setInt(2, utilizador);
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setInt(1, idEncomenda);
+                ps.setInt(2, utilizador);
 
-            // Execute the SQL query
-            ps.executeUpdate();
+                // Execute the SQL query
+                ps.executeUpdate();
 
-            BaseDados.commit(con);
-            return true;
+                BaseDados.commit(conn);
+                return true;
 
-        } catch (Exception e){
-            BaseDados.rollback(con);
+            } catch (Exception e){
+                BaseDados.rollback(conn);
+                Mensagens.Erro("Erro!", "Erro ao atualizar dados de mapeamento de encomenda!");
+            }
+            return false;
+        } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao atualizar dados de mapeamento de encomenda!");
+        } finally {
+            BaseDados.Desligar();
         }
+
         return false;
     }
 

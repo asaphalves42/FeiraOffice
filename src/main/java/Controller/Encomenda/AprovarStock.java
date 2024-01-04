@@ -270,8 +270,6 @@ public class AprovarStock {
                 // Lógica para atualizar o estoque na base de dados
                 sucesso = lerEncomenda.atualizarStock(produto.getId(), produto.getUnidade().getId(), quantidade);
 
-
-
                 tableViewEncomendas.getItems().remove(encomenda);
             }
 
