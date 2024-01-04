@@ -48,12 +48,12 @@ public class MenuEstatisticas {
             TableColumn<EncomendaFornecedor, String> colunaNomeUtilizador = new TableColumn<>("Utilizador");
 
 
-            colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-            colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
-            colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
-            colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("nomeFornecedor"));
-            colunaValorTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
-            colunaNomeUtilizador.setCellValueFactory(new PropertyValueFactory<>("nomeUtilizador"));
+            colunaId.setCellValueFactory(new PropertyValueFactory<>("Id_Encomenda"));
+            colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("Referencia_Encomenda"));
+            colunaData.setCellValueFactory(new PropertyValueFactory<>("Data_Encomenda"));
+            colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("Nome_Fornecedor"));
+            colunaValorTotal.setCellValueFactory(new PropertyValueFactory<>("Total_Encomenda"));
+            colunaNomeUtilizador.setCellValueFactory(new PropertyValueFactory<>("Email_Utilizador"));
 
 
 
@@ -91,6 +91,7 @@ public class MenuEstatisticas {
 
             // Definir os dados na tabela
             tableViewRecusadas.setItems(encomenda);
+
         } else {
             // Tratar caso a lista esteja vazia
             Mensagens.Erro("Erro!", "Erro ao ler tabela de encomendas recusadas");

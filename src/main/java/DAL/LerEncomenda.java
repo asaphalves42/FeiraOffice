@@ -909,18 +909,22 @@ public class LerEncomenda {
             Connection conn = getConexao();
 
             String query = """
-                    SELECT\s
-                        Encomenda.Id AS Id_Encomenda,
-                        Encomenda.Referencia AS Referencia_Encomenda,
-                        Encomenda.Data AS Data_Encomenda,
-                        Fornecedor.Nome AS Nome_Fornecedor,
-                        Encomenda.Total AS Total_Encomenda,
-                        Tipo_Utilizador.nome AS Nome_Tipo_Utilizador
-                    FROM Encomenda\s
-                        INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
-                        INNER JOIN Tipo_Utilizador ON Tipo_Utilizador.id = Encomenda.Id_Tipo_Utilizador
-                    WHERE\s
-                        Encomenda.Id_Estado = 2
+                    SELECT
+                     Encomenda.Id AS Id_Encomenda,
+                     Encomenda.Referencia AS Referencia_Encomenda,
+                     Encomenda.Data AS Data_Encomenda,
+                     Fornecedor.Nome AS Nome_Fornecedor,
+                     Encomenda.Total AS Total_Encomenda,
+                     Aprovacao_Encomenda.Id_Utilizador,
+                     Utilizador.username AS Email_Utilizador
+                     FROM
+                     Encomenda
+                      INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
+                      INNER JOIN Aprovacao_Encomenda ON Aprovacao_Encomenda.Id_Encomenda = Encomenda.Id
+                     INNER JOIN Utilizador ON Utilizador.id_util = Aprovacao_Encomenda.Id_Utilizador
+                     WHERE
+                     Encomenda.Id_Estado = 2;
+                                            
                     """;
 
 
