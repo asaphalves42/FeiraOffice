@@ -41,7 +41,7 @@ public class Login {
     void clickLogin() throws IOException, SQLException {
         Utilizador utilizador = getUtilizador();
         abrirMenuCorrespondente(utilizador);
-        UtilizadorManutencao.setEmail(utilizador.getEmail());
+        //UtilizadorManutencao.setEmail(utilizador.getEmail());
     }
 
     /**

@@ -1,6 +1,7 @@
 package Controller.Fornecedor;
 
 import BL.LerFicheiro;
+import Controller.Encomenda.AprovarStock;
 import DAL.LerFornecedores;
 import BL.LerPDF;
 import Model.*;
@@ -29,27 +30,23 @@ import java.io.IOException;
 public class MenuFornecedor {
 
     private Utilizador utilizador;
-    private File arquivoSelecionado;
+
     @FXML
     private AnchorPane anchorPaneMenuFornecedor;
 
     @FXML
-    private Button btnEscolherFicheiro;
-
-    @FXML
     private Button btnLogout;
 
+
     @FXML
-    private Button btnUpload;
+    private Button btnMenuUpload;
+
 
     @FXML
     private Button btnHistEncomendas;
 
     @FXML
     private Label labelCodigoPostal;
-
-    @FXML
-    private Label labelFicheiroEscolhido;
 
     @FXML
     private Label labelID;
@@ -86,6 +83,31 @@ public class MenuFornecedor {
 
     }
 
+    @FXML
+    void clickMenuUpload() throws IOException {
+        String resource = null;
+
+        if (utilizador != null) {
+            resource = "/lp3/Views/Fornecedor/MenuUploadEncomendas.fxml";
+            abrirMenuUpload(resource, utilizador);
+        }
+
+    }
+
+    private void abrirMenuUpload(String resource, Utilizador utilizador) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+        AnchorPane root = loader.load();
+
+        if (utilizador.getTipo() == TipoUtilizador.Fornecedor) {
+            MenuUploadEncomenda menuUploadEncomenda = loader.getController();
+            menuUploadEncomenda.iniciaData(utilizador);
+            // Substitui o conteúdo de anchorPaneMenuAdm com o novo FXML
+            anchorPaneMenuFornecedor.getChildren().setAll(root);
+
+        }
+
+    }
+
 
     /**
      * Carrega os dados do fornecedor associado ao utilizador atual e exibe as informações em labels.
@@ -97,8 +119,8 @@ public class MenuFornecedor {
     public void carregarFornecedor() throws IOException {
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
-        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
-            if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
+        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()) {
+            if (this.utilizador.getId() == fornec.getIdUtilizador().getId()) {
                 fornecedorLogado = fornec;
             }
         }
@@ -121,88 +143,36 @@ public class MenuFornecedor {
 
     }
 
-    /**
-     * Manipula o evento de clique no botão para escolher um arquivo. Abre um seletor de arquivo
-     * para escolher um documento XML, exibe o caminho do arquivo selecionado e lê o conteúdo do arquivo XML.
-     */
+
     @FXML
-    void clickEscolherFicheiro() {
+    void clickHistEncomendas() throws IOException {
         try {
-            FileChooser novoFicheiro = new FileChooser();
-            novoFicheiro.getExtensionFilters().add(new FileChooser.ExtensionFilter("Documento", "*.xml"));
-            arquivoSelecionado = novoFicheiro.showOpenDialog(new Stage());
-            labelFicheiroEscolhido.setText(arquivoSelecionado.getAbsolutePath());
-
-            //LerTXT verificaFicheiroDAL = new LerTXT();
-            LerPDF verificaFicheiroDAL = new LerPDF();
-            verificaFicheiroDAL.lerFicheiroXML(arquivoSelecionado);
-
-
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    /**
-     * Manipula o evento de clique no botão de upload. Lê o arquivo XML escolhido, valida o ID do fornecedor,
-     * e faz upload da encomenda se o ID do fornecedor no arquivo coincidir com o ID do fornecedor logado.
-     *
-     * @throws IOException Se ocorrer um erro durante o upload da encomenda.
-     */
-    @FXML
-    void clickUpload() throws IOException {
-
-        LerFornecedores fornecedor = new LerFornecedores();
-        Fornecedor fornecedorLogado = null;
-        for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()){
-            if(this.utilizador.getId() == fornec.getIdUtilizador().getId()){
-                fornecedorLogado = fornec;
+            String resource = null;
+            if (utilizador != null) {
+                resource = "/lp3/Views/Fornecedor/VerEncomendasFornecedor.fxml";
+                abrirMenuHistorico(resource, utilizador);
             }
-        }
-
-        //Validação do id do fornecedor
-        if (arquivoSelecionado != null) {
-            LerFicheiro lerFicheiro = new LerFicheiro();
-            OrderConfirmation orderConfirmation = lerFicheiro.orderConfirmation(arquivoSelecionado, utilizador);
-
-            if (orderConfirmation == null){
-                return;
-            }
-
-            // Obter o ID do fornecedor logado
-            assert fornecedorLogado != null;
-            String idFornecedor = fornecedorLogado.getIdExterno();
-
-            // Obter o ID do fornecedor do arquivo
-            String idFornecedorFicheiro = orderConfirmation.getOrderConfirmationHeader().getSupplierParty().getPartyIdentifier();
-
-            // Validar se o ID é o mesmo do fornecedor
-            if (!idFornecedor.equals(idFornecedorFicheiro)) {
-                Mensagens.Erro("Erro!", "ID do fornecedor não coincide com o do ficheiro. Não foi possível fazer upload da encomenda");
-            }
-
-
-
-        } else {
-            Mensagens.Erro("Erro!", "Erro ao ler o ficheiro!");
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao carregar encomendas! ");
         }
 
     }
-    @FXML
-    void clickHistEncomendas(){
 
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Fornecedor/VerEncomendasFornecedor.fxml"));
-                AnchorPane root = loader.load();
+    private void abrirMenuHistorico(String resource, Utilizador utilizador) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+        AnchorPane root = loader.load();
 
-                anchorPaneMenuFornecedor.getChildren().setAll(root);
+        if (utilizador.getTipo() == TipoUtilizador.Fornecedor) {
+            VerEncomendasFornecedor verEncomendasFornecedor = loader.getController();
+            verEncomendasFornecedor.iniciaData(utilizador);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // Substitui o conteúdo de anchorPaneMenuAdm com o novo FXML
+            anchorPaneMenuFornecedor.getChildren().setAll(root);
+
         }
 
     }
+}
 
 
 

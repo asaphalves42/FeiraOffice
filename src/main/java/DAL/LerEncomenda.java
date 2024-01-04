@@ -206,12 +206,12 @@ public class LerEncomenda {
         try {
             Connection conn = getConexao();
 
-
             String query = """
                     SELECT * FROM Encomenda WHERE Fornecedor.Id_Externo = ? 
                     """;
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1,idFornecedorExterno);
 
                 ResultSet resultado = preparedStatement.executeQuery();
 
