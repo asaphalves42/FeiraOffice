@@ -35,6 +35,7 @@ public class VerEncomendasFornecedor {
 
     public void iniciaData(Utilizador utilizador) throws IOException {
         this.utilizador = utilizador;
+        System.out.println(utilizador.getTipo());
         System.out.println(utilizador.getEmail());
 
     }
@@ -66,7 +67,7 @@ public class VerEncomendasFornecedor {
         LerFornecedores fornecedor = new LerFornecedores();
         Fornecedor fornecedorLogado = null;
         for (Fornecedor fornec : fornecedor.lerFornecedoresDaBaseDeDados()) {
-            if (this.utilizador.getId() == fornec.getIdUtilizador().getId()) {
+            if (utilizador.getId() == fornec.getIdUtilizador().getId()) {
                 fornecedorLogado = fornec;
             }
         }

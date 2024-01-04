@@ -79,8 +79,8 @@ public class MenuFornecedor {
      */
     public void iniciaData(Utilizador utilizador) throws IOException {
         this.utilizador = utilizador;
+        System.out.println(utilizador.getEmail());
         this.carregarFornecedor();
-
     }
 
     @FXML
@@ -94,18 +94,48 @@ public class MenuFornecedor {
 
     }
 
+    @FXML
+    void clickHistEncomendas() throws IOException {
+        try {
+            String resource = null;
+            if (utilizador != null) {
+                resource = "/lp3/Views/Fornecedor/VerEncomendasFornecedor.fxml";
+                abrirMenuHistorico(resource, utilizador);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagens.Erro("Erro!", "Erro ao carregar encomendas! ");
+        }
+    }
+
     private void abrirMenuUpload(String resource, Utilizador utilizador) throws IOException {
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
         AnchorPane root = loader.load();
 
         if (utilizador.getTipo() == TipoUtilizador.Fornecedor) {
             MenuUploadEncomenda menuUploadEncomenda = loader.getController();
             menuUploadEncomenda.iniciaData(utilizador);
+
             // Substitui o conteúdo de anchorPaneMenuAdm com o novo FXML
             anchorPaneMenuFornecedor.getChildren().setAll(root);
 
         }
 
+    }
+
+    private void abrirMenuHistorico(String resource, Utilizador utilizador) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+        AnchorPane root = loader.load();
+
+        if(utilizador.getTipo() == TipoUtilizador.Fornecedor){
+            VerEncomendasFornecedor verEncomendasFornecedor = loader.getController();
+            verEncomendasFornecedor.iniciaData(utilizador);
+
+            // Substitui o conteúdo de anchorPaneMenuAdm com o novo FXML
+            anchorPaneMenuFornecedor.getChildren().setAll(root);
+        }
     }
 
 
@@ -140,36 +170,6 @@ public class MenuFornecedor {
     @FXML
     void clickLogout() {
         System.exit(0);
-
-    }
-
-
-    @FXML
-    void clickHistEncomendas() throws IOException {
-        try {
-            String resource = null;
-            if (utilizador != null) {
-                resource = "/lp3/Views/Fornecedor/VerEncomendasFornecedor.fxml";
-                abrirMenuHistorico(resource, utilizador);
-            }
-        } catch (Exception e) {
-            Mensagens.Erro("Erro!", "Erro ao carregar encomendas! ");
-        }
-
-    }
-
-    private void abrirMenuHistorico(String resource, Utilizador utilizador) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-        AnchorPane root = loader.load();
-
-        if (utilizador.getTipo() == TipoUtilizador.Fornecedor) {
-            VerEncomendasFornecedor verEncomendasFornecedor = loader.getController();
-            verEncomendasFornecedor.iniciaData(utilizador);
-
-            // Substitui o conteúdo de anchorPaneMenuAdm com o novo FXML
-            anchorPaneMenuFornecedor.getChildren().setAll(root);
-
-        }
 
     }
 }
