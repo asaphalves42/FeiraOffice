@@ -27,6 +27,7 @@ public class MenuEstatisticas {
     private TableView<EncomendaFornecedor> tableViewRecusadas;
 
     ObservableList<EncomendaFornecedor> encomenda = FXCollections.observableArrayList();
+    ObservableList<EncomendaFornecedor> encomendarecusada = FXCollections.observableArrayList();
 
     public void initialize() throws IOException {
         tableViewAprovadas.getColumns().clear();
@@ -68,8 +69,8 @@ public class MenuEstatisticas {
     }
 
     public void tabelaEncomendasRecusadas() throws IOException {
-        encomenda.addAll(lerEncomenda.lerEncomendaRecusada());
-        if (!encomenda.isEmpty()) {
+        encomendarecusada.addAll(lerEncomenda.lerEncomendaRecusada());
+        if (!encomendarecusada.isEmpty()) {
             TableColumn<EncomendaFornecedor, Integer> colunaId = new TableColumn<>("ID Encomenda");
             TableColumn<EncomendaFornecedor, String> colunaReferencia = new TableColumn<>("Referência");
             TableColumn<EncomendaFornecedor, LocalDate> colunaData = new TableColumn<>("Data");
@@ -90,7 +91,7 @@ public class MenuEstatisticas {
             tableViewRecusadas.getColumns().addAll(colunaId, colunaReferencia, colunaData, colunaNomeFornecedor, colunaValorTotal, colunaNomeUtilizador);
 
             // Definir os dados na tabela
-            tableViewRecusadas.setItems(encomenda);
+            tableViewRecusadas.setItems(encomendarecusada);
 
         } else {
             // Tratar caso a lista esteja vazia
