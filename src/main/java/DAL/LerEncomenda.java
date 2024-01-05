@@ -9,8 +9,11 @@ import javafx.collections.ObservableList;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import static Utilidades.BaseDados.*;
 
 /**
@@ -20,7 +23,7 @@ import static Utilidades.BaseDados.*;
 public class LerEncomenda {
     LerFornecedores lerFornecedores = new LerFornecedores();
     LerPaises lerPaises = new LerPaises();
-
+    ObservableList<EncomendaFornecedor> encomendasAprovadas = FXCollections.observableArrayList();
 
     /**
      * Lê as linhas de uma encomenda específica a partir da base de dados.
@@ -905,102 +908,122 @@ public class LerEncomenda {
     public ObservableList<EncomendaFornecedor> lerEncomendaAprovada() throws IOException {
         ObservableList<EncomendaFornecedor> encomendasAprovadas = FXCollections.observableArrayList();
 
-        try {
-            Connection conn = getConexao();
+        try (Connection conn = BaseDados.getConexao()) {
+            BaseDados.iniciarTransacao(conn);
 
             String query = """
-                    SELECT
-                     Encomenda.Id AS Id_Encomenda,
-                     Encomenda.Referencia AS Referencia_Encomenda,
-                     Encomenda.Data AS Data_Encomenda,
-                     Fornecedor.Nome AS Nome_Fornecedor,
-                     Encomenda.Total AS Total_Encomenda,
-                     Aprovacao_Encomenda.Id_Utilizador,
-                     Utilizador.username AS Email_Utilizador
-                     FROM
-                     Encomenda
-                      INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
-                      INNER JOIN Aprovacao_Encomenda ON Aprovacao_Encomenda.Id_Encomenda = Encomenda.Id
-                     INNER JOIN Utilizador ON Utilizador.id_util = Aprovacao_Encomenda.Id_Utilizador
-                     WHERE
-                     Encomenda.Id_Estado = 2;
-                                            
-                    """;
+               SELECT
+                 Encomenda.Id AS id,
+                 Encomenda.Referencia AS referencia,
+                 Encomenda.Data AS data,
+                 Fornecedor.Nome AS nomeFornecedor,
+                 Encomenda.Total AS valortotal,
+                 Aprovacao_Encomenda.id_utilizador as idutilizador,
+                 Utilizador.username AS emailUtilizador
+                 FROM
+                 Encomenda
+                  INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
+                  INNER JOIN Aprovacao_Encomenda ON Aprovacao_Encomenda.Id_Encomenda = Encomenda.Id
+                 INNER JOIN Utilizador ON Utilizador.id_util = Aprovacao_Encomenda.id_utilizador
+                 WHERE
+                 Encomenda.Id_Estado = 2;
+                """;
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
 
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+                        LocalDateTime dataEncomenda = LocalDateTime.parse(resultSet.getString("data"), formatter);
 
-            ResultSet resultado = preparedStatement.executeQuery();
+                        EncomendaFornecedor encomendaFornecedor = new EncomendaFornecedor(
+                                resultSet.getInt("id"),
+                                resultSet.getString("referencia"),
+                                dataEncomenda.toLocalDate(),
+                                resultSet.getString("nomeFornecedor"),
+                                resultSet.getDouble("valortotal"),
+                                resultSet.getString("emailUtilizador"),
+                                resultSet.getInt("idutilizador") //
+                        );
 
-            while (resultado.next()) {
-                EncomendaFornecedor encomendaFornecedor = new EncomendaFornecedor(
-                        resultado.getInt("encomenda_id"),
-                        resultado.getString("encomenda_referencia"),
-                        LocalDate.parse(resultado.getString("encomenda_data")),
-                        resultado.getString("fornecedor_nome"),
-                        resultado.getDouble("encomenda_total"),
-                        resultado.getString("tipo_utilizador_nome")
-                );
 
-                encomendasAprovadas.add(encomendaFornecedor);
+                        encomendasAprovadas.add(encomendaFornecedor);
+                    }
+                }
             }
 
-        } catch (Exception e) {
-            Mensagens.Erro("Erro!", "Erro ao carregar encomendas");
+            BaseDados.commit(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
         } finally {
             BaseDados.Desligar();
         }
 
         return encomendasAprovadas;
     }
-
     public ObservableList<EncomendaFornecedor> lerEncomendaRecusada() throws IOException {
         ObservableList<EncomendaFornecedor> encomendasRecusadas = FXCollections.observableArrayList();
 
-        try {
-            Connection conn = getConexao();
+        try (Connection conn = BaseDados.getConexao()) {
+            BaseDados.iniciarTransacao(conn);
 
             String query = """
-                    SELECT\s
-                        Encomenda.Id AS Id_Encomenda,
-                        Encomenda.Referencia AS Referencia_Encomenda,
-                        Encomenda.Data AS Data_Encomenda,
-                        Fornecedor.Nome AS Nome_Fornecedor,
-                        Encomenda.Total AS Total_Encomenda,
-                        Tipo_Utilizador.nome AS Nome_Tipo_Utilizador
-                    FROM Encomenda\s
-                        INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
-                        INNER JOIN Tipo_Utilizador ON Tipo_Utilizador.id = Encomenda.Id_Tipo_Utilizador
-                    WHERE\s
-                        Encomenda.Id_Estado = 2
-                    """;
+               SELECT
+                 Encomenda.Id AS id,
+                 Encomenda.Referencia AS referencia,
+                 Encomenda.Data AS data,
+                 Fornecedor.Nome AS nomeFornecedor,
+                 Encomenda.Total AS valortotal,
+                 Aprovacao_Encomenda.id_utilizador as idutilizador,
+                 Utilizador.username AS emailUtilizador
+                 FROM
+                 Encomenda
+                  INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Encomenda.Id_Fornecedor
+                  INNER JOIN Aprovacao_Encomenda ON Aprovacao_Encomenda.Id_Encomenda = Encomenda.Id
+                 INNER JOIN Utilizador ON Utilizador.id_util = Aprovacao_Encomenda.id_utilizador
+                 WHERE
+                 Encomenda.Id_Estado = 3;
+                """;
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
 
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+                        LocalDateTime dataEncomenda = LocalDateTime.parse(resultSet.getString("data"), formatter);
 
-            ResultSet resultado = preparedStatement.executeQuery();
+                        EncomendaFornecedor encomendaFornecedor = new EncomendaFornecedor(
+                                resultSet.getInt("id"),
+                                resultSet.getString("referencia"),
+                                dataEncomenda.toLocalDate(),
+                                resultSet.getString("nomeFornecedor"),
+                                resultSet.getDouble("valortotal"),
+                                resultSet.getString("emailUtilizador"),
+                                resultSet.getInt("idutilizador") //
+                        );
 
-            while (resultado.next()) {
-                EncomendaFornecedor encomendaFornecedor = new EncomendaFornecedor(
-                        resultado.getInt("encomenda_id"),
-                        resultado.getString("encomenda_referencia"),
-                        LocalDate.parse(resultado.getString("encomenda_data")),
-                        resultado.getString("fornecedor_nome"),
-                        resultado.getDouble("encomenda_total"),
-                        resultado.getString("tipo_utilizador_nome")
-                );
 
-                encomendasRecusadas.add(encomendaFornecedor);
+                        encomendasRecusadas.add(encomendaFornecedor);
+                    }
+                }
             }
 
-        } catch (Exception e) {
-            Mensagens.Erro("Erro!", "Erro ao carregar encomendas");
+            BaseDados.commit(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
         } finally {
             BaseDados.Desligar();
         }
 
         return encomendasRecusadas;
     }
+
+
+
+
+
 
     public boolean quemAprovouEncomenda(int idEncomenda, int utilizador) throws IOException {
 
