@@ -69,14 +69,19 @@ public class MenuEstatisticas {
     }
     public void tabelaEncomendasRecusadas() throws IOException {
         encomendarecusada.addAll(lerEncomenda.lerEncomendaRecusada());
-        if (!encomendarecusada.isEmpty()) {
+        if (encomendarecusada.isEmpty()) {
+            // Tratar caso a lista esteja vazia
+            Mensagens.Erro("Erro!", "A lista de encomendas recusadas está vazia. Não há dados para exibir na tabela.");
+        } else if (encomendarecusada.get(0) == null) {
+            // Tratar erro ao ler a tabela
+            Mensagens.Erro("Erro!", "Erro ao ler a tabela de encomendas recusadas.");
+        } else {
             TableColumn<EncomendaFornecedor, Integer> colunaId = new TableColumn<>("ID Encomenda");
             TableColumn<EncomendaFornecedor, String> colunaReferencia = new TableColumn<>("Referência");
             TableColumn<EncomendaFornecedor, LocalDate> colunaData = new TableColumn<>("Data");
             TableColumn<EncomendaFornecedor, String> colunaNomeFornecedor = new TableColumn<>("Fornecedor");
             TableColumn<EncomendaFornecedor, Double> colunaValorTotal = new TableColumn<>("Valor Total");
             TableColumn<EncomendaFornecedor, String> colunaNomeUtilizador = new TableColumn<>("Utilizador");
-
 
             colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
             colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
@@ -85,15 +90,10 @@ public class MenuEstatisticas {
             colunaValorTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
             colunaNomeUtilizador.setCellValueFactory(new PropertyValueFactory<>("emailUtilizador"));
 
-
-
             tableViewRecusadas.getColumns().addAll(colunaId, colunaReferencia, colunaData, colunaNomeFornecedor, colunaValorTotal, colunaNomeUtilizador);
 
             // Definir os dados na tabela
             tableViewRecusadas.setItems(encomendarecusada);
-        } else {
-            // Tratar caso a lista esteja vazia
-            Mensagens.Erro("Erro!", "Erro ao ler tabela de encomendas recusadas");
         }
     }
 
