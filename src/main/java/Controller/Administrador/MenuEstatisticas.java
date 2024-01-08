@@ -27,6 +27,7 @@ public class MenuEstatisticas {
     private TableView<EncomendaFornecedor> tableViewRecusadas;
 
     ObservableList<EncomendaFornecedor> encomenda = FXCollections.observableArrayList();
+    ObservableList<EncomendaFornecedor> encomendarecusada = FXCollections.observableArrayList();
 
     public void initialize() throws IOException {
         tableViewAprovadas.getColumns().clear();
@@ -53,7 +54,7 @@ public class MenuEstatisticas {
             colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
             colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("nomeFornecedor"));
             colunaValorTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
-            colunaNomeUtilizador.setCellValueFactory(new PropertyValueFactory<>("nomeUtilizador"));
+            colunaNomeUtilizador.setCellValueFactory(new PropertyValueFactory<>("emailUtilizador"));
 
 
 
@@ -66,10 +67,15 @@ public class MenuEstatisticas {
             Mensagens.Erro("Erro!", "Erro ao ler tabela de encomendas aprovadas");
         }
     }
-
     public void tabelaEncomendasRecusadas() throws IOException {
-        encomenda.addAll(lerEncomenda.lerEncomendaRecusada());
-        if (!encomenda.isEmpty()) {
+        encomendarecusada.addAll(lerEncomenda.lerEncomendaRecusada());
+        if (encomendarecusada.isEmpty()) {
+            // Tratar caso a lista esteja vazia
+            Mensagens.Erro("Erro!", "A lista de encomendas recusadas está vazia. Não há dados para exibir na tabela.");
+        } else if (encomendarecusada.get(0) == null) {
+            // Tratar erro ao ler a tabela
+            Mensagens.Erro("Erro!", "Erro ao ler a tabela de encomendas recusadas.");
+        } else {
             TableColumn<EncomendaFornecedor, Integer> colunaId = new TableColumn<>("ID Encomenda");
             TableColumn<EncomendaFornecedor, String> colunaReferencia = new TableColumn<>("Referência");
             TableColumn<EncomendaFornecedor, LocalDate> colunaData = new TableColumn<>("Data");
@@ -77,23 +83,17 @@ public class MenuEstatisticas {
             TableColumn<EncomendaFornecedor, Double> colunaValorTotal = new TableColumn<>("Valor Total");
             TableColumn<EncomendaFornecedor, String> colunaNomeUtilizador = new TableColumn<>("Utilizador");
 
-
             colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
             colunaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
             colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
             colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("nomeFornecedor"));
             colunaValorTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotal"));
-            colunaNomeUtilizador.setCellValueFactory(new PropertyValueFactory<>("nomeUtilizador"));
-
-
+            colunaNomeUtilizador.setCellValueFactory(new PropertyValueFactory<>("emailUtilizador"));
 
             tableViewRecusadas.getColumns().addAll(colunaId, colunaReferencia, colunaData, colunaNomeFornecedor, colunaValorTotal, colunaNomeUtilizador);
 
             // Definir os dados na tabela
-            tableViewRecusadas.setItems(encomenda);
-        } else {
-            // Tratar caso a lista esteja vazia
-            Mensagens.Erro("Erro!", "Erro ao ler tabela de encomendas recusadas");
+            tableViewRecusadas.setItems(encomendarecusada);
         }
     }
 

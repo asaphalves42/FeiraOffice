@@ -8,18 +8,20 @@ public class EncomendaFornecedor {
     private String referencia;
     private LocalDate data;
     private String nomeFornecedor;
-    private String nomeUtilizador;
+    private String emailUtilizador;
+    private int idutilizador;
     private double valorTotal;
 
 
 
-    public EncomendaFornecedor(int id, String referencia, LocalDate data, String nomeFornecedor, double valorTotal, String nomeUtilizador) {
+    public EncomendaFornecedor(int id, String referencia, LocalDate data, String nomeFornecedor, double valorTotal, String emailUtilizador,int idutilizador) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
         this.nomeFornecedor = nomeFornecedor;
         this.valorTotal = valorTotal;
-        this.nomeUtilizador = nomeUtilizador;
+        this.emailUtilizador = emailUtilizador;
+        this.idutilizador = idutilizador;
     }
 
     public int getId() {
@@ -54,12 +56,12 @@ public class EncomendaFornecedor {
         this.nomeFornecedor = nomeFornecedor;
     }
 
-    public java.lang.String getNomeUtilizador() {
-        return nomeUtilizador;
+    public java.lang.String getEmailUtilizador() {
+        return emailUtilizador;
     }
 
-    public void setNomeUtilizador(java.lang.String nomeUtilizador) {
-        this.nomeUtilizador = nomeUtilizador;
+    public void setEmailUtilizador(java.lang.String emailUtilizador) {
+        this.emailUtilizador = emailUtilizador;
     }
 
     public double getValorTotal() {
@@ -68,5 +70,14 @@ public class EncomendaFornecedor {
 
     public void setValorTotal(double valorTotal) {
         this.valorTotal = valorTotal;
+    }
+
+
+    public void setIdutilizador(int idutilizador) {
+        this.idutilizador = idutilizador;
+    }
+
+    public int getIdutilizador() {
+        return idutilizador;
     }
 }
