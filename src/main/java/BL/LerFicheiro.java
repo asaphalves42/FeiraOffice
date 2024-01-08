@@ -40,7 +40,7 @@ import java.util.List;
 public class LerFicheiro {
     private final JAXBContext jaxbContext;
     private Utilizador utilizador;
-    BaseDados baseDados = new BaseDados();
+
     LerUnidade lerUnidade = new LerUnidade();
     LerPaises lerPaises = new LerPaises();
     LerEncomenda lerEncomenda = new LerEncomenda();
