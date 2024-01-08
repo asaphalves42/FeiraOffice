@@ -337,6 +337,10 @@ public class MenuContaCorrente {
                             bicFornecedor,
                             "C:\\a\\SEPAS\\SEPA_DebitoDireto.xml"
                     );
+
+                    Mensagens.Informacao("Sucesso!", "Pagamento realizado com sucesso!");
+                    Mensagens.Informacao("SEPA!", "Ficheiro SEPA gerado com sucesso!");
+
                 } catch (Exception e) {
                     Mensagens.Erro("Erro!", "Erro ao gerar ficheiro SEPA de débito direto");
                 }
