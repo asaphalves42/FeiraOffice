@@ -1,98 +1,118 @@
 package Model;
 
 public class Cliente {
-    private String id;
-    private String nome;
-    private String email;
-    private String morada1;
-    private String morada2;
-    private String codigoPostal;
-    private String cidade;
-    private String pais;
-    private String nif;
-
-    public Cliente(String id, String nome, String email, String morada1, String morada2, String codigoPostal, String cidade, String pais, String nif) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.morada1 = morada1;
-        this.morada2 = morada2;
-        this.codigoPostal = codigoPostal;
-        this.cidade = cidade;
-        this.pais = pais;
-        this.nif = nif;
-    }
+    public String Id;
+    public String GroupId;
+    public String Name;
+    public String Email;
+    public String Address1;
+    public String Address2;
+    public String PostalCode;
+    public String City;
+    public String Country;
+    public String TaxIdentificationNumber;
+    public boolean Active;
 
     public String getId() {
-        return id;
+        return Id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        Id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getGroupId() {
+        return GroupId;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setGroupId(String groupId) {
+        GroupId = groupId;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
     }
 
     public String getEmail() {
-        return email;
+        return Email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        Email = email;
     }
 
-    public String getMorada1() {
-        return morada1;
+    public String getAddress1() {
+        return Address1;
     }
 
-    public void setMorada1(String morada1) {
-        this.morada1 = morada1;
+    public void setAddress1(String address1) {
+        Address1 = address1;
     }
 
-    public String getMorada2() {
-        return morada2;
+    public String getAddress2() {
+        return Address2;
     }
 
-    public void setMorada2(String morada2) {
-        this.morada2 = morada2;
+    public void setAddress2(String address2) {
+        Address2 = address2;
     }
 
-    public String getCodigoPostal() {
-        return codigoPostal;
+    public String getPostalCode() {
+        return PostalCode;
     }
 
-    public void setCodigoPostal(String codigoPostal) {
-        this.codigoPostal = codigoPostal;
+    public void setPostalCode(String postalCode) {
+        PostalCode = postalCode;
     }
 
-    public String getCidade() {
-        return cidade;
+    public String getCity() {
+        return City;
     }
 
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
+    public void setCity(String city) {
+        City = city;
     }
 
-    public String getPais() {
-        return pais;
+    public String getCountry() {
+        return Country;
     }
 
-    public void setPais(String pais) {
-        this.pais = pais;
+    public void setCountry(String country) {
+        Country = country;
     }
 
-    public String getNif() {
-        return nif;
+    public String getTaxIdentificationNumber() {
+        return TaxIdentificationNumber;
     }
 
-    public void setNif(String nif) {
-        this.nif = nif;
+    public void setTaxIdentificationNumber(String taxIdentificationNumber) {
+        TaxIdentificationNumber = taxIdentificationNumber;
+    }
+
+    public boolean isActive() {
+        return Active;
+    }
+
+    public void setActive(boolean active) {
+        Active = active;
+    }
+
+    public Cliente(String id, String groupId, String name, String email, String address1, String address2, String postalCode, String city, String country, String taxIdentificationNumber, boolean active) {
+        Id = id;
+        GroupId = groupId;
+        Name = name;
+        Email = email;
+        Address1 = address1;
+        Address2 = address2;
+        PostalCode = postalCode;
+        City = city;
+        Country = country;
+        TaxIdentificationNumber = taxIdentificationNumber;
+        Active = active;
     }
 }
 

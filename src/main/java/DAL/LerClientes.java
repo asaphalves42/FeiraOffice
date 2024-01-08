@@ -22,9 +22,10 @@ public class LerClientes {
             ClienteAPI clientes = gson.fromJson(clientesJson, ClienteAPI.class);
 
             // Converte o array de clientes para uma lista e retorna
-            return Arrays.asList(clientes.getClientes());
+            return clientes.getClientes();
             
         } catch (IOException e) {
+            int i =0;
             // Lide com a exceção de alguma forma apropriada para o seu aplicativo.
             e.printStackTrace();
             return Collections.emptyList(); // Retorna uma lista vazia em caso de erro

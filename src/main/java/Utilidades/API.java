@@ -12,7 +12,7 @@ import java.util.Base64;
 
 public class API {
 
-    private static final String BASE_URL = "https://services.inapa.com/FeiraOffice/api";
+    private static final String BASE_URL = "https://services.inapa.com/FeiraOffice/api/";
     private static final String USERNAME = "FG2";
     private static final String PASSWORD = "W0gyYJ!)Y6";
 

@@ -1,13 +1,23 @@
 package Model;
 
+import java.util.ArrayList;
+
 public class ClienteAPI {
 
-    private String Status;
-    private Cliente[] Clientes;
+    public String Status;
+    public ArrayList<Cliente> Clients;
 
-    public ClienteAPI(String status, Cliente[] clientes) {
+    public ArrayList<Cliente> getClientes() {
+        return Clients;
+    }
+
+    public void setClientes(ArrayList<Cliente> clientes) {
+        Clients = clientes;
+    }
+
+    public ClienteAPI(String status, ArrayList<Cliente> clientes) {
         Status = status;
-        Clientes = clientes;
+        Clients = clientes;
     }
 
     public String getStatus() {
@@ -18,11 +28,4 @@ public class ClienteAPI {
         Status = status;
     }
 
-    public Cliente[] getClientes() {
-        return Clientes;
-    }
-
-    public void setClientes(Cliente[] clientes) {
-        Clientes = clientes;
-    }
 }

@@ -10,7 +10,7 @@
     <children>
         <AnchorPane prefHeight="900.0" prefWidth="911.0">
             <children>
-                <SplitPane fx:id="anchorPaneFuncoesFornc" dividerPositions="0.6358574610244989" layoutX="417.0" layoutY="394.0" orientation="VERTICAL" prefHeight="900.0" prefWidth="889.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <SplitPane fx:id="anchorPaneFuncoesFornc" dividerPositions="0.6325167037861915" layoutX="417.0" layoutY="394.0" orientation="VERTICAL" prefHeight="900.0" prefWidth="889.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="291.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
                             <children>
@@ -20,12 +20,12 @@
                                     </font>
                                 </Text>
                                 <TableView fx:id="tableViewAprovadas" layoutY="90.0" prefHeight="427.0" prefWidth="909.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0" />
-                        <Text layoutX="20.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Encomendas Aprovadas:">
+                        <Text layoutX="20.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ENCOMENDAS APROVADAS">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
                         </Text>
-                        <Text layoutX="20.0" layoutY="546.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Encomendas Recusadas:">
+                        <Text layoutX="20.0" layoutY="546.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ENCOMENDAS RECUSADAS">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
@@ -34,7 +34,7 @@
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="419.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
                      <children>
-                        <TableView fx:id="tableViewRecusadas" layoutX="-2.0" layoutY="-34.0" prefHeight="353.0" prefWidth="911.0" />
+                        <TableView fx:id="tableViewRecusadas" layoutX="-2.0" layoutY="-34.0" prefHeight="364.0" prefWidth="911.0" />
                      </children>
                         </AnchorPane>
                     </items>

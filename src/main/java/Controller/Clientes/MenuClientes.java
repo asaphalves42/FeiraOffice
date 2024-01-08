@@ -50,21 +50,23 @@ public class MenuClientes {
                 TableColumn<Cliente, String> colunaCidade = new TableColumn<>("Cidade");
                 TableColumn<Cliente, String> colunaPais = new TableColumn<>("País");
                 TableColumn<Cliente, String> colunaNif = new TableColumn<>("NIF");
+                TableColumn<Cliente, String> colunaEstado = new TableColumn<>("Estado");
 
                 // Associe as propriedades dos objetos Cliente às colunas
-                colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-                nomeColuna.setCellValueFactory(new PropertyValueFactory<>("nome"));
-                emailColuna.setCellValueFactory(new PropertyValueFactory<>("email"));
-                colunaMorada1.setCellValueFactory(new PropertyValueFactory<>("morada1"));
-                colunaMorada2.setCellValueFactory(new PropertyValueFactory<>("morada2"));
-                colunaCodPostal.setCellValueFactory(new PropertyValueFactory<>("codPostal"));
-                colunaCidade.setCellValueFactory(new PropertyValueFactory<>("cidade"));
-                colunaPais.setCellValueFactory(new PropertyValueFactory<>("pais"));
-                colunaNif.setCellValueFactory(new PropertyValueFactory<>("nif"));
+                colunaId.setCellValueFactory(new PropertyValueFactory<>("Id"));
+                nomeColuna.setCellValueFactory(new PropertyValueFactory<>("Name"));
+                emailColuna.setCellValueFactory(new PropertyValueFactory<>("Email"));
+                colunaMorada1.setCellValueFactory(new PropertyValueFactory<>("Address1"));
+                colunaMorada2.setCellValueFactory(new PropertyValueFactory<>("Address2"));
+                colunaCodPostal.setCellValueFactory(new PropertyValueFactory<>("PostalCode"));
+                colunaCidade.setCellValueFactory(new PropertyValueFactory<>("City"));
+                colunaPais.setCellValueFactory(new PropertyValueFactory<>("Country"));
+                colunaNif.setCellValueFactory(new PropertyValueFactory<>("TaxIdentificationNumber"));
+                colunaEstado.setCellValueFactory(new PropertyValueFactory<>("Active"));
 
                 // Adicione as colunas à TableView
                 tableViewClientes.getColumns().addAll(colunaId, nomeColuna, emailColuna, colunaMorada1, colunaMorada2, colunaCodPostal,
-                        colunaCidade, colunaPais, colunaNif);
+                        colunaCidade, colunaPais, colunaNif, colunaEstado);
 
                 // Adicione os dados à TableView
                 tableViewClientes.setItems(clientes);
