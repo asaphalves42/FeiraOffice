@@ -21,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,7 @@ public class MenuProdutos {
                         Unidade unidade = LerUnidade.obterUnidadePorIdBaseDados(id);
                         return new SimpleStringProperty(unidade.getDescricao()); // Supondo que Unidade tenha um método getDescricao()
                     } catch (IOException e) {
-                        e.printStackTrace(); // Trate a exceção de acordo com a sua lógica de erro
+                        e.printStackTrace();
                         return new SimpleStringProperty("Erro ao obter unidade");
                     }
                 });
@@ -90,7 +91,9 @@ public class MenuProdutos {
     }
     public void tabelastock() throws IOException {
         List<Map<String, Object>> produtosList = LerProdutos.lerProdutos();
-
+        produtos.clear();
+        // Recarregue a lista de produtos
+        produtos.addAll(lerProdutos.lerProdutosFornecedores());
         if (!produtosList.isEmpty()) {
             if (tableView2.getColumns().isEmpty()) {
                 TableColumn<Map<String, Object>, String> colunaProdutoId = new TableColumn<>("ID Produto");
@@ -105,7 +108,14 @@ public class MenuProdutos {
                 colunaUnidade.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("unidade")));
                 colunaStock.setCellValueFactory(cellData -> new SimpleDoubleProperty((double) cellData.getValue().get("stock")).asObject());
 
-                tableView2.getColumns().addAll(colunaProdutoId,colunaIdProdutoFornec, colunaProdutoDescricao, colunaUnidade, colunaStock);
+                tableView2.getColumns().addAll(colunaProdutoId, colunaIdProdutoFornec, colunaProdutoDescricao, colunaUnidade, colunaStock);
+
+                // Adicione um listener para eventos de seleção na tabela
+                tableView2.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        // Atualize a lógica com o produto selecionado, se necessário
+                    }
+                });
             }
 
             tableView2.getItems().addAll(produtosList);
@@ -113,10 +123,32 @@ public class MenuProdutos {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
         }
     }
-    @FXML
-    void clickAprovar() {
 
+    @FXML
+    void clickAprovar() throws IOException {
+
+        Map<String, Object> selectedProduto = tableView2.getSelectionModel().getSelectedItem();
+
+        if (selectedProduto != null) {
+            // Obtenha o ID do produto selecionado
+            String idProduto = (String) selectedProduto.get("produtoid");
+
+
+            try {
+                lerProdutos.aprovarProduto(idProduto);
+                // Exiba uma mensagem de sucesso após a aprovação
+                Mensagens.Informacao("Sucesso!", "Produto " + idProduto + " aprovado com sucesso.");
+                // Atualize a tabela após a aprovação, se necessário
+                tabelastock();
+            } catch (SQLException | IOException e) {
+                e.printStackTrace(); // Trate a exceção de acordo com suas necessidades
+            }
+        } else {
+
+            Mensagens.Erro("Erro!", "Selecione um produto para aprovar.");
+        }
     }
+
 
 
 
