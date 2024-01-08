@@ -2,7 +2,6 @@ package Controller.Produtos;
 
 import DAL.LerFornecedores;
 import DAL.LerProdutos;
-import DAL.LerStock;
 import DAL.LerUnidade;
 import Model.FornecedorProdutoData;
 import Model.Produto;
@@ -132,7 +131,6 @@ public class MenuProdutos {
         if (selectedProduto != null) {
             // Obtenha o ID do produto selecionado
             String idProduto = (String) selectedProduto.get("produtoid");
-
 
             try {
                 lerProdutos.aprovarProduto(idProduto);
