@@ -30,7 +30,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -194,14 +193,7 @@ public class LerFicheiro {
                 EstadoEncomenda estado = EstadoEncomenda.valueOfId(1); //pendente
                 EstadoPagamento estadoPagamento = EstadoPagamento.valueOfId(1);// não pago
 
-                encomenda = new Encomenda(0,
-                        referencia,
-                        data,
-                        fornecedorLogado,
-                        lerPais,
-                        new ArrayList<>(),
-                        estado,
-                        estadoPagamento
+                encomenda = new Encomenda(
                 );
 
 

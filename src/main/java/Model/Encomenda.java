@@ -29,8 +29,7 @@ public class Encomenda {
         this.id = id;
     }
 
-    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, ArrayList<LinhaEncomenda> linhas, EstadoEncomenda estado,
-                     EstadoPagamento estadoPagamento) {
+    public Encomenda() {
         this.id = id;
         this.referencia = referencia;
         this.data = data;

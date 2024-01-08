@@ -33,6 +33,7 @@ module com.example.lp3_g2_feira_office_ {
     requires layout;
 
     requires jakarta.mail;
+    requires org.junit.jupiter.api;
 
 
     exports Model;
