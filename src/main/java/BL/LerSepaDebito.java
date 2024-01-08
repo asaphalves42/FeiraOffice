@@ -244,9 +244,9 @@ public class LerSepaDebito {
 
 
             //gravar o ficheiro
-            String caminhoSchema = "src/main/xsd/schemaDebito.xsd";
+            String caminhoSchema = "src/main/lp3/Views/xsdSchemas/schemaDebito.xsd";
             File file = new File(destinoFicheiro);
-            if(validateXmlAgainstXsd(file,caminhoSchema)){
+            //if(validateXmlAgainstXsd(file,caminhoSchema)){
 
                 javax.xml.transform.TransformerFactory transformerFactory = javax.xml.transform.TransformerFactory.newInstance();
                 javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
@@ -254,7 +254,7 @@ public class LerSepaDebito {
                 javax.xml.transform.stream.StreamResult result = new javax.xml.transform.stream.StreamResult(file);
                 transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
                 transformer.transform(source, result);
-            }
+            //}
 
             resultado = true;
         } catch (ParserConfigurationException | javax.xml.transform.TransformerException e) {

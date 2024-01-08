@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,11 +28,11 @@ public class LerPaises {
     public ObservableList<Pais> getListaDePaises() throws IOException {
         ObservableList<Pais> listaDePaises = FXCollections.observableArrayList();
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
 
             String query = "SELECT * FROM Pais";
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 ResultSet resultado = preparedStatement.executeQuery();
 
                 while (resultado.next()) {
@@ -66,10 +67,10 @@ public class LerPaises {
     public Pais obterPaisPorId(int id) throws IOException {
         Pais pais = null;
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String query = "SELECT * FROM Pais WHERE id = ?";
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setInt(1, id);
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {
@@ -91,7 +92,6 @@ public class LerPaises {
     /**
      * Obtém informações sobre um país com base no código ISO na base de dados.
      *
-     * @param baseDados A instância da classe BaseDados para conexão com o banco de dados.
      * @param ISO O código ISO do país a ser procurado.
      * @return Um objeto Pais contendo as informações do país encontrado ou null se não for encontrado.
      * @throws IOException Se ocorrer um erro durante a leitura da base de dados.
@@ -99,10 +99,10 @@ public class LerPaises {
     public Pais obterPaisPorISO(String ISO) throws IOException {
         Pais pais = null;
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String query = "SELECT * FROM Pais WHERE ISO = ?";
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, ISO);
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {

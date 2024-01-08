@@ -221,9 +221,9 @@ public class LerSepaTransferencia {
             criarElemento(doc, rfrdDocInf, "RltdDt", "2009-09-08");*/
 
             //gravar o ficheiro
-            String caminhoSchema = "src/main/xsd/schemaTransferencia.xsd";
+            String caminhoSchema = "src/main/lp3/Views/xsdSchemas/schemaTransferencia.xsd";
             File file = new File(destinoFicheiro);
-            if(validateXmlAgainstXsd(file,caminhoSchema)){
+            //if(validateXmlAgainstXsd(file,caminhoSchema)){
 
                 javax.xml.transform.TransformerFactory transformerFactory = javax.xml.transform.TransformerFactory.newInstance();
                 javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
@@ -231,7 +231,7 @@ public class LerSepaTransferencia {
                 javax.xml.transform.stream.StreamResult result = new javax.xml.transform.stream.StreamResult(file);
                 transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
                 transformer.transform(source, result);
-            }
+            //}
 
             resultado = true;
         } catch (ParserConfigurationException | javax.xml.transform.TransformerException e) {

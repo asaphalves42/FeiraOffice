@@ -75,7 +75,7 @@ public class LerPagamento {
     public FeiraOffice lerDadosDaEmpresa() throws SQLException, IOException {
         FeiraOffice feiraOffice = null;
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String query = """
                     SELECT
@@ -93,7 +93,7 @@ public class LerPagamento {
                     FROM Feira_Office
                     	INNER JOIN Pais ON Pais.id = Feira_Office.id_pais
                     """;
-            try (PreparedStatement statement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement statement = conn.prepareStatement(query)) {
 
                 ResultSet resultado = statement.executeQuery();
 
@@ -131,13 +131,13 @@ public class LerPagamento {
 
     public boolean verificarReferencia(Pagamento pagamento) throws IOException {
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String query = """
                 SELECT TOP 1 *
                 FROM Pagamento WHERE referencia = ?
                 """;
-            try (PreparedStatement ps = getConexao().prepareStatement(query)) {
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
                 ps.setString(1, pagamento.getReferencia());
 
                 // ExecuteQuery para obter resultados de SELECT
@@ -162,8 +162,11 @@ public class LerPagamento {
         ObservableList<MetodoPagamento> listaDeMetodos = FXCollections.observableArrayList();
 
         try {
+            Connection conn = getConexao();
+
             String query = "SELECT * FROM Preferencia_Pagamento";
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 ResultSet resultado = preparedStatement.executeQuery();
 
                 while (resultado.next()) {

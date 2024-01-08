@@ -6,9 +6,12 @@ import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static Utilidades.BaseDados.getConexao;
 
 /**
  * Classe com funções de leitura e acesso de dados referentes as unidades de medida.
@@ -25,10 +28,10 @@ public class LerUnidade {
     public Unidade obterUnidadePorDescricaoBaseDados(String UOM) throws IOException {
         Unidade unidade = null;
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String query = "SELECT * FROM Unidade WHERE Descricao = ?";
-            try (PreparedStatement preparedStatement = BaseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement =conn.prepareStatement(query)) {
                 preparedStatement.setString(1, UOM);
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {
@@ -56,10 +59,10 @@ public class LerUnidade {
     public static Unidade obterUnidadePorIdBaseDados(int id) throws IOException {
         Unidade unidade = null;
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             String query = "SELECT * FROM Unidade WHERE id = ?";
-            try (PreparedStatement preparedStatement = BaseDados.getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setInt(1, id);
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {

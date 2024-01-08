@@ -1,6 +1,7 @@
 package DAL;
 
 import Model.Cliente;
+import Model.ClienteAPI;
 import javafx.collections.ObservableList;
 import com.google.gson.Gson;
 
@@ -18,10 +19,11 @@ public class LerClientes {
             String clientesJson = getAllClients();
 
             Gson gson = new Gson();
-            Cliente[] clientes = gson.fromJson(clientesJson, Cliente[].class);
+            ClienteAPI clientes = gson.fromJson(clientesJson, ClienteAPI.class);
 
             // Converte o array de clientes para uma lista e retorna
-            return Arrays.asList(clientes);
+            return Arrays.asList(clientes.getClientes());
+            
         } catch (IOException e) {
             // Lide com a exceção de alguma forma apropriada para o seu aplicativo.
             e.printStackTrace();

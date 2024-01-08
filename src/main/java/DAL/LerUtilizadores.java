@@ -78,9 +78,9 @@ public class LerUtilizadores {
         ObservableList<Utilizador> utilizadores = FXCollections.observableArrayList();
 
         try {
-            BaseDados.Ligar();
+           Connection conn = getConexao();
             String query = "SELECT * FROM Utilizador WHERE id_role = 2";
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query);
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query);
                  ResultSet resultado = preparedStatement.executeQuery()) {
 
                 while (resultado.next()) {
@@ -151,9 +151,9 @@ public class LerUtilizadores {
         Utilizador utilizador = null;
 
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
             String query = "SELECT * FROM Utilizador WHERE username = ? AND password = ?";
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, email);
                 preparedStatement.setString(2, encryptedPassword);
 
@@ -202,11 +202,11 @@ public class LerUtilizadores {
         UtilizadorFornecedor util = null; // Inicializa a variável de retorno como nula.
 
         try {
-            BaseDados.Ligar();
+            Connection conn = getConexao();
 
             // Utilizando PreparedStatement para evitar injeção de SQL
             String query = "SELECT * FROM Utilizador WHERE id_util = ?";
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setInt(1, idUtilizador);
 
                 try (ResultSet resultado = preparedStatement.executeQuery()) {
@@ -241,7 +241,7 @@ public class LerUtilizadores {
     public boolean removerOperadorDaBaseDeDados(int utilizadorID) throws IOException {
         Connection conn = null;
         try {
-            BaseDados.Ligar();
+
             conn = getConexao();
             BaseDados.iniciarTransacao(conn);
 
@@ -287,7 +287,7 @@ public class LerUtilizadores {
     public Utilizador adicionarOperadorBaseDados(String username, String password, Utilizador utilizador) throws IOException {
         Connection conn = null;
         try {
-            BaseDados.Ligar();
+
             conn = getConexao();
             BaseDados.iniciarTransacao(conn);
 
@@ -329,7 +329,6 @@ public class LerUtilizadores {
         Connection conn = null;
         try {
 
-            BaseDados.Ligar();
             conn = getConexao();
             BaseDados.iniciarTransacao(getConexao());
 
@@ -367,7 +366,6 @@ public class LerUtilizadores {
     public boolean atualizarOperadorBaseDados(int id, String novoEmail, String encryptedNovaPassword) throws IOException {
         Connection conn = null;
         try {
-            BaseDados.Ligar();
             conn = getConexao();
             BaseDados.iniciarTransacao(conn);
 

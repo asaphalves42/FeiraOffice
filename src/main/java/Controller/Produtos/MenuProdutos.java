@@ -1,16 +1,11 @@
 package Controller.Produtos;
 
-import DAL.LerFornecedores;
 import DAL.LerProdutos;
-import DAL.LerStock;
 import DAL.LerUnidade;
 import Model.FornecedorProdutoData;
-import Model.Produto;
 import Model.Unidade;
-import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,7 +16,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
