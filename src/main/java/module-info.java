@@ -34,6 +34,7 @@ module com.example.lp3_g2_feira_office_ {
 
     requires jakarta.mail;
     requires com.google.gson;
+    requires org.junit.jupiter.api;
 
 
     exports Model;
