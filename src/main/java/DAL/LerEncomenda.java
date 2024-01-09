@@ -210,7 +210,7 @@ public class LerEncomenda {
             Connection conn = getConexao();
 
             String query = """
-                    SELECT * FROM Encomenda WHERE Fornecedor.Id_Externo = ? 
+                    SELECT * FROM Encomenda WHERE Id_Fornecedor = ? 
                     """;
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
@@ -219,7 +219,7 @@ public class LerEncomenda {
                 ResultSet resultado = preparedStatement.executeQuery();
 
                 while (resultado.next()) {
-                    Encomenda encomenda = criarObjetoEncomenda(resultado);
+                    Encomenda encomenda = criarObjetoEncomendaFornecedor(resultado);
                     encomendas.add(encomenda);
                 }
             }
@@ -245,6 +245,26 @@ public class LerEncomenda {
      * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
      */
     private Encomenda criarObjetoEncomenda(ResultSet dados) throws IOException, SQLException {
+
+        Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_fornecedor"));
+        Pais pais = lerPaises.obterPaisPorId(dados.getInt("Id_Pais"));
+        EstadoEncomenda estado = EstadoEncomenda.valueOfId(dados.getInt("Id_Estado"));
+
+        return new Encomenda(
+                dados.getInt("Id"),
+                dados.getString("Referencia"),
+                dados.getDate("Data").toLocalDate(),
+                fornecedor,
+                pais,
+                dados.getDouble("Total_Taxa"),
+                dados.getDouble("Total_Incidencia"),
+                dados.getDouble("Total"),
+                estado
+        );
+    }
+
+
+    private Encomenda criarObjetoEncomendaFornecedor(ResultSet dados) throws IOException, SQLException {
 
         Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_fornecedor"));
         Pais pais = lerPaises.obterPaisPorId(dados.getInt("Id_Pais"));
