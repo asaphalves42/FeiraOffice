@@ -378,6 +378,7 @@ public class LerFicheiro {
                         }
 
                     }
+
                     encomenda.getLinhas().add(new LinhaEncomenda(0, encomenda, sequencia, produto, precoLinha, quantidadeLinha, produto.getUnidade(), paisLinha, totalTaxa, totalIncidencia));
 
                 }
