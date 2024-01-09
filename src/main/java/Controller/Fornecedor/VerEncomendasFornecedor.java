@@ -35,13 +35,7 @@ public class VerEncomendasFornecedor {
 
     public void iniciaData(Utilizador utilizador) throws IOException {
         this.utilizador = utilizador;
-        System.out.println(utilizador.getTipo());
-        System.out.println(utilizador.getEmail());
-
-    }
-    public void initialize() throws IOException {
         tabelaEncomendasPendentes();
-
         tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 try {
@@ -51,8 +45,11 @@ public class VerEncomendasFornecedor {
                 }
             }
         });
+        System.out.println(utilizador.getTipo());
+        System.out.println(utilizador.getEmail());
 
     }
+
 
 
     /**

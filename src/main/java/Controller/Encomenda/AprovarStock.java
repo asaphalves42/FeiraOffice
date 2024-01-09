@@ -39,11 +39,11 @@ public class AprovarStock {
     private Button btnRecusar;
 
     @FXML
-    private TableView<Encomenda> tableViewEncomendas;
+    public TableView<Encomenda> tableViewEncomendas;
 
     @FXML
     private TableView<LinhaEncomenda> tableViewLinhasEncomenda;
-    ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
+    public ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
     ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
     public void iniciaData(Utilizador utilizador) {
@@ -246,7 +246,7 @@ public class AprovarStock {
      * @throws IOException Se ocorrer um erro durante o processo de aprovação.
      */
     @FXML
-    void clickAprovar() throws IOException {
+    public void clickAprovar() throws IOException {
         iniciaData(utilizador);
 
         // Aceder a encomenda

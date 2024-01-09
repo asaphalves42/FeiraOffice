@@ -96,16 +96,14 @@ public class MenuFornecedor {
 
     @FXML
     void clickHistEncomendas() throws IOException {
-        try {
+
             String resource = null;
+
             if (utilizador != null) {
                 resource = "/lp3/Views/Fornecedor/VerEncomendasFornecedor.fxml";
                 abrirMenuHistorico(resource, utilizador);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagens.Erro("Erro!", "Erro ao carregar encomendas! ");
-        }
+
     }
 
     private void abrirMenuUpload(String resource, Utilizador utilizador) throws IOException {
