@@ -10,6 +10,7 @@ public class Encomenda {
     private int id;
 
     private String referencia;
+
     private LocalDate data;
 
     private Fornecedor fornecedor;
@@ -29,7 +30,8 @@ public class Encomenda {
         this.id = id;
     }
 
-    public Encomenda() {
+    public Encomenda(int id, String referencia, LocalDate data, Fornecedor fornecedor, Pais pais, ArrayList<LinhaEncomenda> linhas, EstadoEncomenda estado,
+                     EstadoPagamento estadoPagamento) {
         this.id = id;
         this.referencia = referencia;
         this.data = data;
@@ -190,9 +192,9 @@ public class Encomenda {
      */
     public double getTotalIncidencia() {
         double valor = 0;
-            for (LinhaEncomenda linha : this.linhas) {
-                valor += linha.getTotalIncidencia();
-            }
+        for (LinhaEncomenda linha : this.linhas) {
+            valor += linha.getTotalIncidencia();
+        }
         return valor;
     }
 }

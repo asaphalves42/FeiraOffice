@@ -378,8 +378,8 @@ public class LerEncomenda {
      * @param produto   O produto a ser inserido na tabela.
      */
     private void inserirProdutoNaTabelaProduto(Connection conexao, Produto produto) throws IOException {
-        //Verificar se o produto já eiste na tabela antes de o inserir
-        if (!produtoExisteNaTabela(conexao, produto.getId())) {
+        //Verificar se o produto já existe na tabela antes de o inserir
+        if (!produtoExisteNaTabela(conexao, produto.getIdExterno())) {
             // Construa a string da consulta SQL, escapando os valores
             String queryProduto = """
                     INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado)
@@ -415,7 +415,7 @@ public class LerEncomenda {
     private boolean produtoExisteNaTabela(Connection conexao, String Id) throws IOException {
         try {
 
-            String query = "SELECT Id FROM Produto WHERE Id = ?";
+            String query = "SELECT IdExterno FROM Produto WHERE IdExterno = ?";
 
             try (PreparedStatement preparedStatement = conexao.prepareStatement(query)) {
                 preparedStatement.setString(1, Id);

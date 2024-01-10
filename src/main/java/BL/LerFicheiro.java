@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,7 +40,7 @@ import java.util.List;
 public class LerFicheiro {
     private final JAXBContext jaxbContext;
     private Utilizador utilizador;
-
+    BaseDados baseDados = new BaseDados();
     LerUnidade lerUnidade = new LerUnidade();
     LerPaises lerPaises = new LerPaises();
     LerEncomenda lerEncomenda = new LerEncomenda();
@@ -193,7 +194,14 @@ public class LerFicheiro {
                 EstadoEncomenda estado = EstadoEncomenda.valueOfId(1); //pendente
                 EstadoPagamento estadoPagamento = EstadoPagamento.valueOfId(1);// não pago
 
-                encomenda = new Encomenda(
+                encomenda = new Encomenda(0,
+                        referencia,
+                        data,
+                        fornecedorLogado,
+                        lerPais,
+                        new ArrayList<>(),
+                        estado,
+                        estadoPagamento
                 );
 
 
@@ -378,7 +386,6 @@ public class LerFicheiro {
                         }
 
                     }
-
                     encomenda.getLinhas().add(new LinhaEncomenda(0, encomenda, sequencia, produto, precoLinha, quantidadeLinha, produto.getUnidade(), paisLinha, totalTaxa, totalIncidencia));
 
                 }
