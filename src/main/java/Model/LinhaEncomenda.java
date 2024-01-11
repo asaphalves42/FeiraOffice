@@ -31,6 +31,19 @@ public class LinhaEncomenda {
         this.totalIncidencia = totalIncidencia;
         this.totalLinha = totalLinha;
     }
+    public LinhaEncomenda(int id, Encomenda idEncomenda, int sequencia, Produto produto, double preco, double quantidade,Pais taxa,
+                          double totalTaxa, double totalIncidencia, double totalLinha) {
+        this.id = id;
+        this.idEncomenda = idEncomenda;
+        this.sequencia = sequencia;
+        this.produto = produto;
+        this.preco = preco;
+        this.quantidade = quantidade;
+        this.taxa = taxa;
+        this.totalTaxa = totalTaxa;
+        this.totalIncidencia = totalIncidencia;
+        this.totalLinha = totalLinha;
+    }
 
     public LinhaEncomenda(Produto produtoEncontrado, double quantidade) {
         this.produto = produtoEncontrado;

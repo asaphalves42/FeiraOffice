@@ -23,7 +23,6 @@ import static Utilidades.BaseDados.*;
 public class LerEncomenda {
     LerFornecedores lerFornecedores = new LerFornecedores();
     LerPaises lerPaises = new LerPaises();
-    ObservableList<EncomendaFornecedor> encomendasAprovadas = FXCollections.observableArrayList();
 
     /**
      * Lê as linhas de uma encomenda específica a partir da base de dados.
@@ -33,6 +32,7 @@ public class LerEncomenda {
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
     public ObservableList<LinhaEncomenda> lerLinhaEncomenda(int idEncomenda) throws IOException {
+
         ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 
         try {
@@ -40,20 +40,26 @@ public class LerEncomenda {
 
             // Utilizando JOIN para obter todas as informações necessárias em uma única consulta
             String query = """
-                    SELECT LE.*,
-                        P.Id_Fornecedor, 
-                        P.Descricao AS DescricaoProduto, 
-                        P.IdExterno AS IdExternoProduto, 
-                        P.Estado AS EstadoProduto,
-                        U.Descricao AS DescricaoUnidade,
-                        PA.Nome AS NomePais
-                        
-                        FROM Linha_Encomenda LE
-                        JOIN Produto P ON LE.Id_Produto = P.Id
-                        JOIN Unidade U ON LE.Id_Unidade = U.Id
-                        JOIN Pais PA ON LE.Id_Pais_Taxa = PA.Id
-                        
-                        WHERE LE.Id_Encomenda = ?
+                    SELECT	Linha_Encomenda.Id,
+                    		Id_Encomenda as id_encomenda,
+                    		Sequencia as sequencia,
+                    		Produto.Id as id_produto,
+                    		Produto.Descricao AS descricao_produto,
+                    		Unidade.Id AS Id_Unidade,
+                    		Unidade.Descricao as unidade,
+                    		Preco_Unitario as preco_unitario,
+                    		Quantidade as quantidade,
+                    		Pais.id AS id_pais,
+                    		Pais.Nome as pais,
+                    		Total_taxa as total_taxa,
+                    		Total_Incidencia as total_incidencia,
+                    		Total_Linha as total_linha
+                    FROM Linha_Encomenda
+                    	INNER JOIN Produto ON Produto.Id = Id_Produto
+                    	INNER JOIN Unidade ON Unidade.Id = Linha_encomenda.Id_Unidade
+                    	INNER JOIN Pais ON Pais.id = Id_Pais_Taxa
+                                        
+                    WHERE Id_Encomenda = ?               
                     """;
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
@@ -61,13 +67,11 @@ public class LerEncomenda {
 
                 ResultSet resultado = preparedStatement.executeQuery();
 
-
                 while (resultado.next()) {
                     LinhaEncomenda linhaEncomenda = criarObjetoLinha(resultado);
                     linhasEncomenda.add(linhaEncomenda);
                 }
             }
-
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao ler linhas da encomenda!");
@@ -90,27 +94,24 @@ public class LerEncomenda {
     private LinhaEncomenda criarObjetoLinha(ResultSet dados) throws IOException, SQLException {
 
         Unidade unidade = new Unidade(
-                dados.getInt("Id"),
-                dados.getString("DescricaoUnidade")
+                dados.getInt("Id_Unidade"),
+                dados.getString("unidade")
 
         );
 
         Pais pais = new Pais(
-                dados.getInt("Id"),
-                dados.getString("NomePais")
+                dados.getInt("id_pais"),
+                dados.getString("pais")
         );
 
         Produto produtoEncontrado = new Produto(
-                dados.getString("Id"),
-                null,
-                dados.getString("DescricaoProduto"),
-                dados.getString("IdExternoProduto"),
-                unidade,
-                dados.getInt("EstadoProduto")
+                dados.getString("id_produto"),
+                dados.getString("descricao_produto"),
+                unidade
         );
 
         Encomenda encomenda = new Encomenda(
-                dados.getInt("Id_Encomenda")
+                dados.getInt("id_encomenda")
 
         );
 
@@ -119,12 +120,12 @@ public class LerEncomenda {
                 encomenda,
                 dados.getInt("Sequencia"),
                 produtoEncontrado,
-                dados.getDouble("Preco_Unitario"),
-                dados.getDouble("Quantidade"),
-                unidade,
+                dados.getDouble("preco_unitario"),
+                dados.getDouble("quantidade"),
                 pais,
-                dados.getDouble("Total_Taxa"),
-                dados.getDouble("Total_Incidencia")
+                dados.getDouble("total_taxa"),
+                dados.getDouble("total_incidencia"),
+                dados.getDouble("total_linha")
         );
     }
 
@@ -335,17 +336,18 @@ public class LerEncomenda {
             BaseDados.iniciarTransacao(conn);
 
             String query = """
-                INSERT INTO FornecedorProdutos (id_Fornecedor, id_Produto, Preco_Unitario)
-                VALUES (?,?,?)
+                INSERT INTO Produto_Fornecedor (id_produto, id_fornecedor,id_externo, preco_unitario)
+                VALUES (?,?,?,?)
                 """;
 
             try (PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(1, encomenda.getFornecedor().getIdExterno());
+                ps.setString(2, encomenda.getFornecedor().getIdExterno());
 
                 for (LinhaEncomenda produto : encomenda.getLinhas()) {
                     // Define os valores para cada produto
-                    ps.setString(2, produto.getIdProdutoString());
-                    ps.setDouble(3, produto.getPreco());
+                    ps.setString(1, produto.getProduto().getId());
+                    ps.setString(3, produto.getProduto().getIdExterno());
+                    ps.setDouble(4, produto.getPreco());
 
                     // Executa a atualização para cada produto
                     ps.executeUpdate();
@@ -358,7 +360,7 @@ public class LerEncomenda {
 
         } catch (Exception e) {
             // Lidar com exceções (registre ou imprima o erro)
-            e.printStackTrace();
+            Mensagens.Erro("Erro!","Erro ao adicionar produto!");
             // Reverte a transação em caso de exceção
             assert conn != null;
             BaseDados.rollback(conn);
@@ -382,17 +384,15 @@ public class LerEncomenda {
         if (!produtoExisteNaTabela(conexao, produto.getId())) {
             // Construa a string da consulta SQL, escapando os valores
             String queryProduto = """
-                    INSERT INTO Produto (Id, Id_Fornecedor, Descricao, Id_Unidade, IdExterno, Estado)
-                    VALUES (?, ?, ?, ?, ?, 0)
+                    INSERT INTO Produto (Id, Descricao, Id_Unidade)
+                    VALUES (?, ?, ?)
                     """;
 
             try (PreparedStatement preparedStatement = conexao.prepareStatement(queryProduto)) {
 
                 preparedStatement.setString(1, produto.getId());
-                preparedStatement.setString(2, produto.getFornecedor().getIdExterno());
-                preparedStatement.setString(3, produto.getDescricao());
-                preparedStatement.setInt(4, produto.getUnidade().getId());
-                preparedStatement.setString(5, produto.getIdExterno());
+                preparedStatement.setString(2, produto.getDescricao());
+                preparedStatement.setInt(3, produto.getUnidade().getId());
 
                 preparedStatement.executeUpdate();
 

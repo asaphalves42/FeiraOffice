@@ -200,9 +200,9 @@ public class VerEncomendasFornecedor {
                         };
                     });
                     colunaSequencia.setCellValueFactory(new PropertyValueFactory<>("sequencia"));
-                    colunaDescricaoProduto.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getIdExterno()));
+                    colunaDescricaoProduto.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getDescricao()));
                     colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
-                    colunaDescricaoUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnidade().getDescricao()));
+                    colunaDescricaoUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getDescricaoUnidade()));
                     colunaNomePais.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTaxa().getNome()));
                     colunaTotalTaxa.setCellValueFactory(new PropertyValueFactory<>("totalTaxa"));
                     colunaTotalIncidencia.setCellValueFactory(new PropertyValueFactory<>("totalIncidencia"));

@@ -183,6 +183,7 @@ public class AprovarStock {
             if (encomenda != null) {
 
                 tableViewLinhasEncomenda.getItems().clear();
+                tableViewLinhasEncomenda.getColumns().clear();
 
                 // Ler apenas as linhas de encomenda para a encomenda selecionada
                 linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomenda(encomenda.getId()));
@@ -217,22 +218,29 @@ public class AprovarStock {
                         };
                     });
                     colunaSequencia.setCellValueFactory(new PropertyValueFactory<>("sequencia"));
-                    colunaDescricaoProduto.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getIdExterno()));
+                    colunaDescricaoProduto.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getDescricao()));
                     colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
-                    colunaDescricaoUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnidade().getDescricao()));
+                    colunaDescricaoUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getDescricaoUnidade()));
                     colunaNomePais.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTaxa().getNome()));
                     colunaTotalTaxa.setCellValueFactory(new PropertyValueFactory<>("totalTaxa"));
                     colunaTotalIncidencia.setCellValueFactory(new PropertyValueFactory<>("totalIncidencia"));
                     colunaTotalLinha.setCellValueFactory(new PropertyValueFactory<>("total"));
 
-                    tableViewLinhasEncomenda.getColumns().addAll(
-                            colunaId, colunaIdEncomenda, colunaSequencia,
-                            colunaDescricaoProduto, colunaQuantidade, colunaDescricaoUnidade,
-                            colunaNomePais, colunaTotalTaxa, colunaTotalIncidencia, colunaTotalLinha
-                    );
+                    tableViewLinhasEncomenda.getColumns().add(colunaId);
+                    tableViewLinhasEncomenda.getColumns().add(colunaIdEncomenda);
+                    tableViewLinhasEncomenda.getColumns().add(colunaSequencia);
+                    tableViewLinhasEncomenda.getColumns().add(colunaDescricaoProduto);
+                    tableViewLinhasEncomenda.getColumns().add(colunaQuantidade);
+                    tableViewLinhasEncomenda.getColumns().add(colunaDescricaoUnidade);
+                    tableViewLinhasEncomenda.getColumns().add(colunaNomePais);
+                    tableViewLinhasEncomenda.getColumns().add(colunaTotalTaxa);
+                    tableViewLinhasEncomenda.getColumns().add(colunaTotalIncidencia);
+                    tableViewLinhasEncomenda.getColumns().add(colunaTotalLinha);
 
                     tableViewLinhasEncomenda.setItems(linhasEncomenda);
+
                 }
+
             }
         } catch (Exception e) {
             Mensagens.Erro("Erro!", "Erro ao ler tabela!");
