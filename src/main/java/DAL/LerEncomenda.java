@@ -335,38 +335,46 @@ public class LerEncomenda {
             conn = BaseDados.getConexao();
             BaseDados.iniciarTransacao(conn);
 
-            String query = """
+            String updateQuery = """
+                UPDATE Produto_Fornecedor SET preco_unitario = ? WHERE id_externo = ?
+                """;
+
+            String insertQuery = """
                 INSERT INTO Produto_Fornecedor (id_produto, id_fornecedor,id_externo, preco_unitario)
                 VALUES (?,?,?,?)
                 """;
 
-            try (PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(2, encomenda.getFornecedor().getIdExterno());
+            try (PreparedStatement psInsert = conn.prepareStatement(insertQuery)) {
+                PreparedStatement psUpdate = conn.prepareStatement(updateQuery);
+
 
                 for (LinhaEncomenda produto : encomenda.getLinhas()) {
-                    // Define os valores para cada produto
-                    ps.setString(1, produto.getProduto().getId());
-                    ps.setString(3, produto.getProduto().getIdExterno());
-                    ps.setDouble(4, produto.getPreco());
+                    psUpdate.setDouble(1, produto.getPreco());
+                    psUpdate.setString(2, produto.getProduto().getIdExterno());
 
-                    // Executa a atualização para cada produto
-                    ps.executeUpdate();
-                    System.out.println(" id produto " + produto.getId());
+                    int rowsUpdated = psUpdate.executeUpdate();
+
+                    if(rowsUpdated == 0){
+                        psInsert.setString(1, produto.getProduto().getId());
+                        psInsert.setString(2, encomenda.getFornecedor().getIdExterno());
+                        psInsert.setString(3, produto.getProduto().getIdExterno());
+                        psInsert.setDouble(4, produto.getPreco());
+
+                        // Executa a atualização para cada produto
+                        psInsert.executeUpdate();
+                    }
                 }
             }
-            System.out.println(query);
             // Confirma a transação
             BaseDados.commit(conn);
 
         } catch (Exception e) {
-            // Lidar com exceções (registre ou imprima o erro)
             Mensagens.Erro("Erro!","Erro ao adicionar produto!");
             // Reverte a transação em caso de exceção
             assert conn != null;
             BaseDados.rollback(conn);
             return 0; // ou retorne um código de erro
         } finally {
-            // Fecha a conexão com o banco de dados
             BaseDados.Desligar();
         }
 
@@ -651,14 +659,23 @@ public class LerEncomenda {
                 script = "INSERT INTO Stock (Id_Produto, Id_Unidade, Quantidade) VALUES (?, ?, ?)";
             }
 
-            try (PreparedStatement preparedStatement = conn.prepareStatement(script)) {
-                preparedStatement.setString(1, idProduto);
-                preparedStatement.setInt(2, idUnidade);
-                preparedStatement.setDouble(3, quantidade);
+            try (PreparedStatement ps = conn.prepareStatement(script)) {
+                if (produtoExiste(conn, idProduto)) {
+                    // Configuração para o caso de UPDATE
+                    ps.setInt(1, idUnidade);
+                    ps.setDouble(2, quantidade);
+                    ps.setString(3, idProduto);
+                } else {
+                    // Configuração para o caso de INSERT
+                    ps.setString(1, idProduto);
+                    ps.setInt(2, idUnidade);
+                    ps.setDouble(3, quantidade);
+                }
 
                 // Execute o script
-                preparedStatement.executeUpdate();
+                ps.executeUpdate();
             }
+
             BaseDados.commit(conn);
 
         } catch (Exception e) {
@@ -671,6 +688,7 @@ public class LerEncomenda {
         }
         return true;
     }
+
 
 
     /**
