@@ -1,10 +1,13 @@
 package DAL;
 
 
-import Model.FornecedorProdutoData;
+import Model.Fornecedor;
+import Model.Produto;
+import Model.Stock;
+import Model.Unidade;
 import Utilidades.BaseDados;
+import Utilidades.Mensagens;
 import eu.hansolo.toolbox.observables.ObservableList;
-import javafx.collections.FXCollections;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -18,91 +21,119 @@ import java.util.Map;
 
 public class LerProdutos {
 
-    public ObservableList<FornecedorProdutoData> lerProdutosFornecedores() throws IOException {
-        ObservableList<FornecedorProdutoData> produtosFornecedores = new ObservableList<>();
+    public ObservableList<Produto> lerProdutosFornecedores() throws IOException {
+
+        ObservableList<Produto> produtosFornecedores = new ObservableList<>();
 
         try (Connection conn = BaseDados.getConexao()) {
-            BaseDados.iniciarTransacao(conn);
 
             String query = """
-                    SELECT produto.id as id , produto.descricao as descricao , fornecedor.nome AS nomeFornecedor, produto.Id_Unidade as Id_Unidade, 
-                    FornecedorProdutos.preco_unitario as preco_unitario
-                    FROM produto
-                    INNER JOIN FornecedorProdutos ON produto.id = FornecedorProdutos.id_produto
-                    INNER JOIN Fornecedor ON FornecedorProdutos.id_fornecedor = Fornecedor.id_externo
+                    SELECT
+                    
+                        Produto.Id as id_produto,
+                        Produto.Descricao as descricao_produto,
+                    	Produto.Id_Unidade as Id_Unidade,
+                        Unidade.Descricao as descricao_unidade,
+                        Fornecedor.Id_Externo as id_fornecedor,
+                        Fornecedor.Nome as nome_fornecedor,
+                        Produto_Fornecedor.preco_unitario as preco_unitario,
+                        Produto_Fornecedor.id_externo as id_externo
+                                        
+                    FROM Produto_Fornecedor
+                    INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Produto_Fornecedor.id_fornecedor
+                    INNER JOIN Produto ON Produto.Id = Produto_Fornecedor.id_produto
+                    INNER JOIN Unidade ON Unidade.Id = Produto.Id_Unidade
                     """;
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet.next()) {
-                        FornecedorProdutoData produtoFornecedor = new FornecedorProdutoData(
-                                resultSet.getInt("id"),
-                                resultSet.getString("descricao"),
-                                resultSet.getString("nomeFornecedor"),
-                                resultSet.getInt("Id_Unidade"),
-                                resultSet.getDouble("preco_unitario")
-                        );
-                        produtosFornecedores.add(produtoFornecedor);
+                        Produto produto = criarObjetoProduto(resultSet);
+                        produtosFornecedores.add(produto);
                     }
                 }
             }
 
             BaseDados.commit(conn);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Mensagens.Erro("Erro!","Erro ao ler produtos disponíveis!");
         } finally {
             BaseDados.Desligar();
         }
-
         return produtosFornecedores;
     }
 
-    public static List<Map<String, Object>> lerProdutos() throws IOException {
-        List<Map<String, Object>> produtosList = new ArrayList<>();
+    private Produto criarObjetoProduto(ResultSet dados) throws SQLException {
+        Fornecedor fornecedor = new Fornecedor(
+                dados.getString("id_fornecedor"),
+                dados.getString("nome_fornecedor")
+        );
+
+        Unidade unidade = new Unidade(
+                dados.getInt("id_Unidade"),
+                dados.getString("descricao_unidade")
+        );
+        return new Produto(
+                dados.getString("id_produto"),
+                dados.getString("descricao_produto"),
+                unidade,
+                fornecedor,
+                dados.getDouble("preco_unitario"),
+                dados.getString("id_externo"));
+    }
+
+
+    public ObservableList<Stock> lerStock() throws IOException {
+        ObservableList<Stock> stockProdutos = new ObservableList<>();
 
         try (Connection conn = BaseDados.getConexao()) {
-            BaseDados.iniciarTransacao(conn);
 
             String query = """
-                                
-                    SELECT
-                    produto.IdExterno as idexterno,  
-                    produto.Id as produtoid,
-                    produto.descricao as produtodescricao,
-                    unidade.Descricao AS unidade,
-                    Stock.Quantidade as stock
-                    FROM produto
-                    INNER JOIN unidade ON produto.id_unidade = unidade.Id
-                    INNER JOIN Stock ON Produto.Id = Stock.Id_Produto
-                                     
+                    SELECT Produto.Id as id_produto,
+                    	Produto.Descricao as descricao_produto,
+                    	Unidade.Id as id_unidade,
+                    	Unidade.Descricao as descricao_unidade,
+                    	Stock.Quantidade as quantidade
+                    FROM Stock
+                    	INNER JOIN Produto ON Produto.Id = Stock.Id_Produto
+                    	INNER JOIN Unidade ON Unidade.Id = Produto.Id_Unidade
                     """;
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet.next()) {
-                        Map<String, Object> produtoFornecedor = new HashMap<>();
-                        produtoFornecedor.put("produtoidfornec", resultSet.getString("idexterno"));
-                        produtoFornecedor.put("produtoid", resultSet.getString("produtoid"));
-                        produtoFornecedor.put("produtodescricao", resultSet.getString("produtodescricao"));
-                        produtoFornecedor.put("unidade", resultSet.getString("unidade"));
-                        produtoFornecedor.put("stock", resultSet.getDouble("stock"));
-
-                        produtosList.add(produtoFornecedor);
+                        Stock stock = criarObjetoStock(resultSet);
+                        stockProdutos.add(stock);
                     }
                 }
             }
 
             BaseDados.commit(conn);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException | IOException e) {
+            Mensagens.Erro("Erro!","Erro ao ler stock de produtos!");
         } finally {
             BaseDados.Desligar();
         }
-
-        return produtosList;
+        return stockProdutos;
     }
+
+    private Stock criarObjetoStock(ResultSet dados) throws SQLException {
+        Produto produto = new Produto(
+                dados.getString("id_produto"),
+                dados.getString("descricao_produto"));
+
+        Unidade unidade = new Unidade(
+                dados.getInt("id_unidade"),
+                dados.getString("descricao_unidade"));
+
+        return new Stock(
+                produto,
+                unidade,
+                dados.getInt("quantidade"));
+    }
+
     public void aprovarProduto(String idProduto) throws SQLException, IOException {
         String query = "UPDATE Produto SET estado = 2 WHERE id = ?";
         try (Connection conn = BaseDados.getConexao()) {
@@ -116,5 +147,6 @@ public class LerProdutos {
             BaseDados.commit(conn);
         }
     }
+
 
 }

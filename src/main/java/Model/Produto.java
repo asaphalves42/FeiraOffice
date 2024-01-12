@@ -11,6 +11,7 @@ public class Produto {
     private Unidade unidade;
     private int estado;
     private String descricaoUnidade;
+    private double precoUnitario;
 
     public Produto() {
     }
@@ -30,6 +31,28 @@ public class Produto {
         this.descricao = descricaoProduto;
         this.unidade = unidade;
         this.descricaoUnidade = unidade != null ? unidade.getDescricao() : "";
+    }
+
+    public Produto(String idProduto, String descricaoProduto, Unidade unidade, Fornecedor fornecedor, double precoUnitario, String idExterno) {
+        this.id = idProduto;
+        this.descricao = descricaoProduto;
+        this.unidade = unidade;
+        this.fornecedor = fornecedor;
+        this.precoUnitario = precoUnitario;
+        this.idExterno = idExterno;
+    }
+
+    public Produto(String idProduto, String descricaoProduto) {
+        this.id = idProduto;
+        this.descricao = descricaoProduto;
+    }
+
+    public double getPrecoUnitario() {
+        return precoUnitario;
+    }
+
+    public void setPrecoUnitario(double precoUnitario) {
+        this.precoUnitario = precoUnitario;
     }
 
     public String getIdFornecedorAsString() {

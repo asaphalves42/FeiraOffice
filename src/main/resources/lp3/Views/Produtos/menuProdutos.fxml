@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -14,14 +13,7 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="428.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
                     <children>
-                        <TableView fx:id="tableView2" layoutY="42.0" prefHeight="306.0" prefWidth="907.0" AnchorPane.bottomAnchor="42.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="42.0">
-                            <columns>
-                                <TableColumn prefWidth="75.0" text="ID Produto" />
-                                <TableColumn prefWidth="75.0" text="Descricao" />
-                                <TableColumn prefWidth="75.0" text="Unidade" />
-                                <TableColumn prefWidth="75.0" text="Quantidade" />
-                            </columns>
-                        </TableView>
+                        <TableView fx:id="tableViewStock" layoutY="42.0" prefHeight="306.0" prefWidth="907.0" AnchorPane.bottomAnchor="42.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="42.0" />
                   <Text layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS EM STOCK:">
                      <font>
                         <Font name="System Bold" size="18.0" />
@@ -35,15 +27,7 @@
                     </children>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="338.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;" />
-                  <TableView fx:id="tableViewProdutos" prefHeight="370.0" prefWidth="909.0">
-                      <columns>
-                          <TableColumn prefWidth="75.0" text="ID Produto" />
-                          <TableColumn prefWidth="75.0" text="Descricao" />
-                          <TableColumn prefWidth="108.0" text="ID no Fornecedor" />
-                          <TableColumn prefWidth="74.0" text="Fornecedor" />
-                          <TableColumn prefWidth="78.0" text="Unidade" />
-                      </columns>
-                  </TableView>
+                  <TableView fx:id="tableViewProdutos" prefHeight="370.0" prefWidth="909.0" />
             </items>
         </SplitPane>
       <Button fx:id="btnAprovar" layoutX="332.0" layoutY="805.0" mnemonicParsing="false" onAction="#clickAprovar" prefHeight="65.0" prefWidth="233.0" style="-fx-background-color: #8c8787; -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 5, 8);" text="APROVAR">

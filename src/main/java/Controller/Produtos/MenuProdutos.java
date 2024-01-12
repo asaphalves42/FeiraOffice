@@ -1,15 +1,12 @@
 package Controller.Produtos;
 
-import DAL.LerFornecedores;
 import DAL.LerProdutos;
 import DAL.LerUnidade;
-import Model.FornecedorProdutoData;
 import Model.Produto;
+import Model.Stock;
 import Model.Unidade;
-import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,7 +18,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,26 +26,20 @@ public class MenuProdutos {
     LerProdutos lerProdutos = new LerProdutos();
 
     @FXML
-    private TableView<FornecedorProdutoData> tableViewProdutos;
+    private TableView<Produto> tableViewProdutos;
 
     @FXML
-    private TableView<Map<String, Object>> tableView2;
+    private TableView<Stock> tableViewStock;
 
     @FXML
     private Button btnAprovar;
 
-    ObservableList<FornecedorProdutoData> produtos = FXCollections.observableArrayList();
-    ObservableList<Map<String, Object>> stock = FXCollections.observableArrayList();
-
-
+    ObservableList<Produto> produtos = FXCollections.observableArrayList();
+    ObservableList<Stock> produtosEmStock = FXCollections.observableArrayList();
 
     public void initialize() throws IOException {
-        tableViewProdutos.getColumns().clear();
-        tableViewProdutos.getItems().clear();
-        tabelaProdutos();
-        tableView2.getColumns().clear();
-        tableView2.getItems().clear();
-        tabelastock();
+       tabelaProdutos();
+       tabelastock();
     }
 
     public void tabelaProdutos() throws IOException {
@@ -57,30 +47,23 @@ public class MenuProdutos {
 
         if (!produtos.isEmpty()) {
             if (tableViewProdutos.getColumns().isEmpty()) {
-                TableColumn<FornecedorProdutoData, Integer> colunaId = new TableColumn<>("ID Produto");
-                TableColumn<FornecedorProdutoData, String> colunaDescricao = new TableColumn<>("Descrição");
-                TableColumn<FornecedorProdutoData, String> colunaNomeFornecedor = new TableColumn<>("Nome do Fornecedor");
-                TableColumn<FornecedorProdutoData, String> colunaIdUnidade = new TableColumn<>("Unidade");
-                TableColumn<FornecedorProdutoData, Double> colunaPrecoUnitario = new TableColumn<>("Preço Unitário");
+                TableColumn<Produto, Integer> colunaId = new TableColumn<>("ID Produto");
+                TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descrição");
+                TableColumn<Produto, String> colunaNomeFornecedor = new TableColumn<>("Nome do Fornecedor");
+                TableColumn<Produto, String> colunaIdFornecedor = new TableColumn<>("Id fornecedor");
+                TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
+                TableColumn<Produto, Double> colunaPrecoUnitario = new TableColumn<>("Preço Unitário");
+                TableColumn<Produto, String> colunaIdExterno = new TableColumn<>("Id no fornecedor");
 
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-                colunaNomeFornecedor.setCellValueFactory(new PropertyValueFactory<>("nomeFornecedor"));
-                colunaIdUnidade.setCellValueFactory(cellData -> {
-                    int id = cellData.getValue().getIdUnidade(); // Supondo que você tenha um método getIdUnidade() na classe FornecedorProdutoData
-                    try {
-
-                        Unidade unidade = LerUnidade.obterUnidadePorIdBaseDados(id);
-                        return new SimpleStringProperty(unidade.getDescricao()); // Supondo que Unidade tenha um método getDescricao()
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return new SimpleStringProperty("Erro ao obter unidade");
-                    }
-                });
-
+                colunaNomeFornecedor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFornecedor().getIdExterno()));
+                colunaIdFornecedor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFornecedor().getNome()));
+                colunaIdUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnidade().getDescricao()));
                 colunaPrecoUnitario.setCellValueFactory(new PropertyValueFactory<>("precoUnitario"));
+                colunaIdExterno.setCellValueFactory(new PropertyValueFactory<>("idExterno"));
 
-                tableViewProdutos.getColumns().addAll(colunaId, colunaDescricao, colunaNomeFornecedor, colunaIdUnidade, colunaPrecoUnitario);
+                tableViewProdutos.getColumns().addAll(colunaId, colunaDescricao, colunaNomeFornecedor, colunaIdFornecedor, colunaIdUnidade, colunaPrecoUnitario, colunaIdExterno);
             }
 
             tableViewProdutos.setItems(produtos);
@@ -88,47 +71,42 @@ public class MenuProdutos {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
         }
     }
+
     public void tabelastock() throws IOException {
-        List<Map<String, Object>> produtosList = LerProdutos.lerProdutos();
-        produtos.clear();
-        // Recarregue a lista de produtos
-        produtos.addAll(lerProdutos.lerProdutosFornecedores());
-        if (!produtosList.isEmpty()) {
-            if (tableView2.getColumns().isEmpty()) {
-                TableColumn<Map<String, Object>, String> colunaProdutoId = new TableColumn<>("ID Produto");
-                TableColumn<Map<String, Object>, String> colunaIdProdutoFornec = new TableColumn<>("ID Produto no Fornecedor");
-                TableColumn<Map<String, Object>, String> colunaProdutoDescricao = new TableColumn<>("Descricao");
-                TableColumn<Map<String, Object>, String> colunaUnidade = new TableColumn<>("Unidade");
-                TableColumn<Map<String, Object>, Double> colunaStock = new TableColumn<>("Stock");
 
-                colunaProdutoId.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("produtoid")));
-                colunaIdProdutoFornec.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("produtoidfornec")));
-                colunaProdutoDescricao.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("produtodescricao")));
-                colunaUnidade.setCellValueFactory(cellData -> new SimpleStringProperty((String) cellData.getValue().get("unidade")));
-                colunaStock.setCellValueFactory(cellData -> new SimpleDoubleProperty((double) cellData.getValue().get("stock")).asObject());
+        produtosEmStock.addAll(lerProdutos.lerStock());
+        if (!produtosEmStock.isEmpty()) {
+            if (tableViewStock.getColumns().isEmpty()) {
+                TableColumn<Stock, String> colunaId = new TableColumn<>("ID Produto");
+                TableColumn<Stock, String> colunaDescricao = new TableColumn<>("Descrição");
+                TableColumn<Stock, String> colunaUnidade = new TableColumn<>("Unidade");
+                TableColumn<Stock, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
 
-                tableView2.getColumns().addAll(colunaProdutoId, colunaIdProdutoFornec, colunaProdutoDescricao, colunaUnidade, colunaStock);
 
-                // Adicione um listener para eventos de seleção na tabela
-                tableView2.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        // Atualize a lógica com o produto selecionado, se necessário
-                    }
-                });
+                colunaId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdProduto().getId()));
+                colunaDescricao.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdProduto().getDescricao()));
+                colunaUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdUnidade().getDescricao()));
+                colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
+
+                tableViewStock.getColumns().addAll(colunaId, colunaDescricao, colunaUnidade, colunaQuantidade);
             }
 
-            tableView2.getItems().addAll(produtosList);
+            tableViewStock.setItems(produtosEmStock);
+
         } else {
             Mensagens.Erro("Erro!", "Erro ao ler tabela");
         }
+
     }
 
     @FXML
     void clickAprovar() throws IOException {
 
-        Map<String, Object> selectedProduto = tableView2.getSelectionModel().getSelectedItem();
 
-        if (selectedProduto != null) {
+/*
+
+Map<String, Object> selectedProduto = tableViewProdutos.getSelectionModel().getSelectedItem();
+if (selectedProduto != null) {
             // Obtenha o ID do produto selecionado
             String idProduto = (String) selectedProduto.get("produtoid");
 
@@ -146,8 +124,11 @@ public class MenuProdutos {
             Mensagens.Erro("Erro!", "Selecione um produto para aprovar.");
         }
     }
+ */
 
 
 
 
+
+}
 }

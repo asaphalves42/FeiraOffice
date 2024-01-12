@@ -4,31 +4,29 @@ package Model;
  * Classe com atributos, getters e setters referentes ao stock.
  */
 public class Stock {
-    private String idProduto;
-    private int idUnidade;
+    private Produto idProduto;
+    private Unidade idUnidade;
     private int quantidade;
 
-    // Construtor
-    public Stock(String idProduto, int idUnidade, int quantidade) {
+    public Stock(Produto idProduto, Unidade idUnidade, int quantidade) {
         this.idProduto = idProduto;
         this.idUnidade = idUnidade;
         this.quantidade = quantidade;
     }
 
-    // Métodos getters e setters
-    public String getIdProduto() {
+    public Produto getIdProduto() {
         return idProduto;
     }
 
-    public void setIdProduto(String idProduto) {
+    public void setIdProduto(Produto idProduto) {
         this.idProduto = idProduto;
     }
 
-    public int getIdUnidade() {
+    public Unidade getIdUnidade() {
         return idUnidade;
     }
 
-    public void setIdUnidade(int idUnidade) {
+    public void setIdUnidade(Unidade idUnidade) {
         this.idUnidade = idUnidade;
     }
 
