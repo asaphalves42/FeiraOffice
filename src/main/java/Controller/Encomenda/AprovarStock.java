@@ -14,10 +14,7 @@ import javafx.scene.control.TableColumn;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -269,56 +266,70 @@ public class AprovarStock {
             boolean gerarProdutoVenda = false;
             boolean atualizado = false;
             boolean quemAprovou = false;
-            boolean api = false;
 
             double total = encomenda.getValorTotal();
 
-            for (LinhaEncomenda linhas : linhasEncomenda) {
-                Produto produto = linhas.getProduto();
-                double quantidade = linhas.getQuantidade();
-                double precoUnitario = linhas.getPreco();
+            // Pergunta ao usuário se deseja enviar produtos para a API
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Enviar para a API");
+            alert.setHeaderText("Deseja enviar os produtos para a API também?");
+            alert.setContentText("Escolha uma opção:");
 
-                // Lógica para atualizar o estoque na base de dados
-                sucesso = lerEncomenda.atualizarStock(produto.getId(), produto.getUnidade().getId(), quantidade);
+            // Adiciona opções ao Alert
+            ButtonType buttonTypeYes = new ButtonType("Sim");
+            ButtonType buttonTypeNo = new ButtonType("Não");
+            ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-                gerarProdutoVenda = lerProdutos.gerarProdutoParaVenda(produto.getId(), produto.getUnidade().getId(), precoUnitario);
+            alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo, buttonTypeCancel);
 
-                tableViewEncomendas.getItems().remove(encomenda);
+            // Obtém a resposta do usuário
+            Optional<ButtonType> result = alert.showAndWait();
 
-                // Pergunta ao usuário se deseja enviar produtos para a API
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Enviar para a API");
-                alert.setHeaderText("Deseja enviar os produtos para a API também?");
-                alert.setContentText("Clique em OK para confirmar.");
+            if (result.isPresent()) {
+                if (result.get() == buttonTypeYes || result.get() == buttonTypeNo) {
+                    for (LinhaEncomenda linhas : linhasEncomenda) {
+                        Produto produto = linhas.getProduto();
+                        double quantidade = linhas.getQuantidade();
+                        double precoUnitario = linhas.getPreco();
 
-                // Obtém a resposta do usuário
-                ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
+                        // Lógica para atualizar o estoque na base de dados
+                        sucesso = lerEncomenda.atualizarStock(produto.getId(), produto.getUnidade().getId(), quantidade);
 
-                if (result == ButtonType.OK) {
-                    List<ProdutoVenda> produtosVenda = lerProdutos.obterProdutosVendaDaBaseDadosPorIdProduto(produto.getId());
+                        gerarProdutoVenda = lerProdutos.gerarProdutoParaVenda(produto.getId(), produto.getUnidade().getId(), precoUnitario);
+
+                        tableViewEncomendas.getItems().remove(encomenda);
+                    }
+
+                    List<ProdutoVenda> produtosVenda = new ArrayList<>();
+
+                    for (LinhaEncomenda linhas : linhasEncomenda) {
+                        produtosVenda.addAll(lerProdutos.obterProdutosVendaDaBaseDadosPorIdProduto(linhas.getProduto().getId()));
+                    }
 
                     for (ProdutoVenda produtoVenda : produtosVenda) {
-                        // Obter o preço de venda da tabela Preco_venda
+                        // Obter o preço de venda e a descrição da tabela Preco_venda
                         Map<String, Object> infoProdutoVenda = lerProdutos.obterInfoProdutoVenda(produtoVenda.getProduto().getId());
 
                         double precoVenda = (double) infoProdutoVenda.get("precoVenda");
                         String descricao = (String) infoProdutoVenda.get("descricao");
 
                         Map<String, Object> informacoesStock = lerProdutos.obterInformacoesDoStock(produtoVenda.getProduto().getId(), produtoVenda.getUnidade().getId());
+
                         // Acesse as informações com base nas chaves do Map
                         double quantidadeStock = (double) informacoesStock.get("quantidadeStock");
                         String descricaoUnidade = (String) informacoesStock.get("descricaoUnidade");
 
-                        api = lerProdutos.enviarProdutosParaAPI(produtoVenda, descricao, descricaoUnidade, quantidadeStock, precoVenda);
-
+                        // Verifica se o usuário clicou em "Sim" antes de enviar para a API
+                        if (result.get() == buttonTypeYes) {
+                            boolean api = lerProdutos.enviarProdutosParaAPI(produtoVenda, descricao, descricaoUnidade, quantidadeStock, precoVenda);
+                        }
                     }
-
                 }
 
                 //atualizar estado da encomenda
                 sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(encomenda.getId());
 
-                //atualizar saldo em divida
+                //atualizar saldo em dívida
                 atualizado = lerContaCorrente.atualizarSaldoDevedores(total, encomenda.getFornecedor().getIdExterno());
 
                 //Guarda informação de quem aprovou a encomenda
@@ -342,7 +353,7 @@ public class AprovarStock {
                     tableViewLinhasEncomenda.getItems().clear();
                 }
 
-                if (sucesso && sucessoEncomenda && atualizado && quemAprovou && gerarProdutoVenda && api) {
+                if (sucesso && sucessoEncomenda && atualizado && quemAprovou) {
                     Mensagens.Informacao("Sucesso", "Stock aprovado com sucesso!");
                 } else {
                     Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
@@ -351,9 +362,8 @@ public class AprovarStock {
         }
     }
 
-    private void processarEncomenda() {
-        
-    }
+
+
 
     /**
      * Manipula o evento de clique no botão "Recusar".
@@ -373,8 +383,8 @@ public class AprovarStock {
 
         //Guarda informação de quem aprovou a encomenda
         boolean quemAprovou = false;
-        if(utilizador!=null) {
-             quemAprovou = lerEncomenda.quemAprovouEncomenda(encomenda.getId(), utilizador.getId());
+        if (utilizador != null) {
+            quemAprovou = lerEncomenda.quemAprovouEncomenda(encomenda.getId(), utilizador.getId());
         }
 
         // Remover encomenda da tabela apresentada
@@ -392,7 +402,7 @@ public class AprovarStock {
             }
         });
 
-        if(tableViewEncomendas.getItems().isEmpty()) {
+        if (tableViewEncomendas.getItems().isEmpty()) {
             tableViewLinhasEncomenda.getItems().clear();
         }
 
