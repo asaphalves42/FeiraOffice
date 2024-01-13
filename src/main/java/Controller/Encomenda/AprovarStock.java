@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -268,6 +269,7 @@ public class AprovarStock {
             boolean gerarProdutoVenda = false;
             boolean atualizado = false;
             boolean quemAprovou = false;
+            boolean api = false;
 
             double total = encomenda.getValorTotal();
 
@@ -297,19 +299,17 @@ public class AprovarStock {
 
                     for (ProdutoVenda produtoVenda : produtosVenda) {
                         // Obter o preço de venda da tabela Preco_venda
-                        double precoVenda = lerProdutos.obterPrecoVendaPorIdProduto(produtoVenda.getProduto().getId());
+                        Map<String, Object> infoProdutoVenda = lerProdutos.obterInfoProdutoVenda(produtoVenda.getProduto().getId());
 
-                        String descricao = lerProdutos.obterDescricao(produtoVenda.getProduto().getId());
+                        double precoVenda = (double) infoProdutoVenda.get("precoVenda");
+                        String descricao = (String) infoProdutoVenda.get("descricao");
 
-                        // Obter a unidade e a quantidade em stock da tabela Stock
-                        Unidade unidade = lerProdutos.obterUnidadePorId(produtoVenda.getUnidade().getId());
+                        Map<String, Object> informacoesStock = lerProdutos.obterInformacoesDoStock(produtoVenda.getProduto().getId(), produtoVenda.getUnidade().getId());
+                        // Acesse as informações com base nas chaves do Map
+                        double quantidadeStock = (double) informacoesStock.get("quantidadeStock");
+                        String descricaoUnidade = (String) informacoesStock.get("descricaoUnidade");
 
-                        // Obter a quantidade em stock da tabela Stock
-                        double quantidadeStock = lerProdutos.obterQuantidadeDisponivelEmStock(produtoVenda.getProduto().getId(), produtoVenda.getUnidade().getId());
-
-                        // Agora você tem o preço de venda, unidade e quantidade em stock para o produto atual
-                        // Faça o que precisar com esses dados
-                        boolean api = lerProdutos.enviarProdutosParaAPI(produtoVenda, descricao, unidade, quantidadeStock, precoVenda);
+                        api = lerProdutos.enviarProdutosParaAPI(produtoVenda, descricao, descricaoUnidade, quantidadeStock, precoVenda);
 
                     }
 
@@ -342,13 +342,17 @@ public class AprovarStock {
                     tableViewLinhasEncomenda.getItems().clear();
                 }
 
-                if (sucesso && sucessoEncomenda && atualizado && quemAprovou && gerarProdutoVenda) {
+                if (sucesso && sucessoEncomenda && atualizado && quemAprovou && gerarProdutoVenda && api) {
                     Mensagens.Informacao("Sucesso", "Stock aprovado com sucesso!");
                 } else {
                     Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
                 }
             }
         }
+    }
+
+    private void processarEncomenda() {
+        
     }
 
     /**

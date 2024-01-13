@@ -154,26 +154,31 @@ public class LerProdutos {
             conn = getConexao();
             BaseDados.iniciarTransacao(conn);
 
-            // Verificar o maior preço unitário na tabela Produto_Fornecedor
-            double maiorPrecoUnitario = obterMaiorPrecoUnitario(idProduto, conn);
+            // Verificar se o produto já existe na tabela Produto_Venda
+            boolean produtoExiste = produtoVendaExiste(idProduto, idUnidade, conn);
 
-            // Calcular o preço de venda (usando o maior preço unitário se existir)
-            double calcularPrecoVenda = (maiorPrecoUnitario > 0) ? maiorPrecoUnitario : precoUnitario;
-            calcularPrecoVenda *= 1.6; // Aumento de 60%
+            if (!produtoExiste) {
+                // Verificar o maior preço unitário na tabela Produto_Fornecedor
+                double maiorPrecoUnitario = obterMaiorPrecoUnitario(idProduto, conn);
 
-            String query = """
-                    INSERT INTO Produto_Venda (id_produto, id_unidade, preco_venda)
-                    VALUES (?, ?, ?)
-                    """;
+                // Calcular o preço de venda (usando o maior preço unitário se existir)
+                double calcularPrecoVenda = (maiorPrecoUnitario > 0) ? maiorPrecoUnitario : precoUnitario;
+                calcularPrecoVenda *= 1.6; // Aumento de 60%
 
-            try (PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(1, idProduto);
-                ps.setInt(2, idUnidade);
-                ps.setDouble(3, calcularPrecoVenda);
+                String query = """
+                        INSERT INTO Produto_Venda (id_produto, id_unidade, preco_venda)
+                        VALUES (?, ?, ?)
+                        """;
 
-                ps.executeUpdate();
-                BaseDados.commit(conn);
-                return true;
+                try (PreparedStatement ps = conn.prepareStatement(query)) {
+                    ps.setString(1, idProduto);
+                    ps.setInt(2, idUnidade);
+                    ps.setDouble(3, calcularPrecoVenda);
+
+                    ps.executeUpdate();
+                    BaseDados.commit(conn);
+                    return true;
+                }
             }
 
         } catch (Exception e) {
@@ -185,6 +190,16 @@ public class LerProdutos {
         }
         return false;
 
+    }
+    private boolean produtoVendaExiste(String idProduto, int idUnidade, Connection conn) throws SQLException {
+        String query = "SELECT COUNT(*) AS total FROM Produto_Venda WHERE id_produto = ? AND id_unidade = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, idProduto);
+            ps.setInt(2, idUnidade);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() && rs.getInt("total") > 0;
+            }
+        }
     }
 
     private double obterMaiorPrecoUnitario(String idProduto, Connection conn) throws SQLException {
@@ -258,16 +273,26 @@ public class LerProdutos {
         );
     }
 
-    public double obterPrecoVendaPorIdProduto(String idProduto) {
-        double precoVenda = 0.0; // Valor padrão ou alguma lógica apropriada em caso de erro
+
+    public Map<String, Object> obterInfoProdutoVenda(String idProduto) {
+        Map<String, Object> infoProdutoVenda = new HashMap<>();
 
         try (Connection conn = getConexao()) {
-            String query = "SELECT preco_venda FROM Produto_Venda WHERE id_produto = ?";
+            String query = """
+                SELECT pv.preco_venda, p.descricao
+                FROM Produto_Venda pv
+                INNER JOIN Produto p ON pv.id_produto = p.id
+                WHERE pv.id_produto = ?
+                """;
             try (PreparedStatement ps = conn.prepareStatement(query)) {
                 ps.setString(1, idProduto);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        precoVenda = rs.getDouble("preco_venda");
+                        double precoVenda = rs.getDouble("preco_venda");
+                        String descricao = rs.getString("descricao");
+
+                        infoProdutoVenda.put("precoVenda", precoVenda);
+                        infoProdutoVenda.put("descricao", descricao);
                     }
                 }
             }
@@ -275,70 +300,7 @@ public class LerProdutos {
             e.printStackTrace(); // Lide com a exceção conforme necessário
         }
 
-        return precoVenda;
-    }
-
-    public Unidade obterUnidadePorId(int id) {
-        Unidade unidade = null; // Valor padrão ou algum valor de fallback em caso de erro
-
-        try (Connection conn = getConexao()) {
-            String query = "SELECT * FROM Unidade WHERE Id = ?";
-            try (PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setInt(1, id);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        String descricao = rs.getString("Descricao");
-                        // Adicione outros campos conforme necessário
-                        unidade = new Unidade(id, descricao);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Lide com a exceção conforme necessário
-        }
-
-        return unidade;
-    }
-
-    public double obterQuantidadeDisponivelEmStock(String idProduto, int idUnidade) {
-        double quantidadeDisponivel = 0.0; // Valor padrão ou algum valor de fallback em caso de erro
-
-        try (Connection conn = getConexao()) {
-            String query = "SELECT quantidade FROM Stock WHERE id_produto = ? AND id_unidade = ?";
-            try (PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(1, idProduto);
-                ps.setInt(2, idUnidade);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        quantidadeDisponivel = rs.getDouble("quantidade");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Lide com a exceção conforme necessário
-        }
-
-        return quantidadeDisponivel;
-    }
-
-    public String obterDescricao(String id) {
-        String descricao = null; // Valor padrão ou algum valor de fallback em caso de erro
-
-        try (Connection conn = getConexao()) {
-            String query = "SELECT descricao FROM Produto WHERE id = ?";
-            try (PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(1, id);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        descricao = rs.getString("descricao");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Lide com a exceção conforme necessário
-        }
-
-        return descricao;
+        return infoProdutoVenda;
     }
 
     public Map<String, Object> obterInformacoesDoStock(String idProduto, int idUnidade) {
@@ -373,7 +335,7 @@ public class LerProdutos {
 
 
 
-    public boolean enviarProdutosParaAPI(ProdutoVenda produto, String descricao, Unidade unidade, double quantidade, double precoVenda){
+    public boolean enviarProdutosParaAPI(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda){
         try {
             // Construa os dados do produto para enviar
             String data = construirDadosDoProduto(produto, descricao, unidade, quantidade, precoVenda);
@@ -390,14 +352,14 @@ public class LerProdutos {
 
     }
 
-    private String construirDadosDoProduto(ProdutoVenda produto, String descricao, Unidade unidade, double quantidade, double precoVenda) {
+    private String construirDadosDoProduto(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda) {
         // Construir dados do produto em formato JSON
         return "{"
                 + "\"Code\": \"" + produto.getProduto().getId() + "\","
                 + "\"Description\": \"" + descricao + "\","
                 + "\"PVP\": " + precoVenda + ","
                 + "\"Stock\": " + quantidade + ","
-                + "\"Unit\": \"" + unidade.getDescricao() + "\","
+                + "\"Unit\": \"" + unidade + "\","
                 + "\"Active\": true"
                 + "}";
     }
