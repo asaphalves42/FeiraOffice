@@ -1,9 +1,6 @@
 package Controller.Encomenda;
 
-import DAL.LerContaCorrente;
-import DAL.LerEncomenda;
-import DAL.LerFornecedores;
-import DAL.LerUtilizadores;
+import DAL.*;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
@@ -17,6 +14,8 @@ import javafx.scene.control.TableColumn;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -24,10 +23,10 @@ import java.util.List;
  * Classe com funções que leem tabelas de encomendas, linhas das encomendas e aprovam ou recusam as encomendas.
  */
 public class AprovarStock {
-
     private Utilizador utilizador;
     LerEncomenda lerEncomenda = new LerEncomenda();
     LerContaCorrente lerContaCorrente = new LerContaCorrente();
+    LerProdutos lerProdutos = new LerProdutos();
 
     @FXML
     private SplitPane anchorPaneFuncoesFornc;
@@ -266,6 +265,7 @@ public class AprovarStock {
 
             boolean sucesso = false;
             boolean sucessoEncomenda = false;
+            boolean gerarProdutoVenda = false;
             boolean atualizado = false;
             boolean quemAprovou = false;
 
@@ -274,44 +274,79 @@ public class AprovarStock {
             for (LinhaEncomenda linhas : linhasEncomenda) {
                 Produto produto = linhas.getProduto();
                 double quantidade = linhas.getQuantidade();
+                double precoUnitario = linhas.getPreco();
 
                 // Lógica para atualizar o estoque na base de dados
                 sucesso = lerEncomenda.atualizarStock(produto.getId(), produto.getUnidade().getId(), quantidade);
 
+                gerarProdutoVenda = lerProdutos.gerarProdutoParaVenda(produto.getId(), produto.getUnidade().getId(), precoUnitario);
+
                 tableViewEncomendas.getItems().remove(encomenda);
-            }
 
-            //atualizar estado da encomenda
-            sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(encomenda.getId());
+                // Pergunta ao usuário se deseja enviar produtos para a API
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Enviar para a API");
+                alert.setHeaderText("Deseja enviar os produtos para a API também?");
+                alert.setContentText("Clique em OK para confirmar.");
 
-            //atualizar saldo em divida
-            atualizado = lerContaCorrente.atualizarSaldoDevedores(total, encomenda.getFornecedor().getIdExterno());
+                // Obtém a resposta do usuário
+                ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
 
-            //Guarda informação de quem aprovou a encomenda
-            if(utilizador!=null) {
-                quemAprovou = lerEncomenda.quemAprovouEncomenda(encomenda.getId(), utilizador.getId());
-            }
+                if (result == ButtonType.OK) {
+                    List<ProdutoVenda> produtosVenda = lerProdutos.obterProdutosVendaDaBaseDadosPorIdProduto(produto.getId());
 
-            // Listener para seleção de encomendas
-            tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-                if (newSelection != null) {
-                    try {
-                        // Quando uma nova encomenda é selecionada, atualize a tabela de linhas
-                        tabelaLinhasEncomenda(newSelection);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    for (ProdutoVenda produtoVenda : produtosVenda) {
+                        // Obter o preço de venda da tabela Preco_venda
+                        double precoVenda = lerProdutos.obterPrecoVendaPorIdProduto(produtoVenda.getProduto().getId());
+
+                        String descricao = lerProdutos.obterDescricao(produtoVenda.getProduto().getId());
+
+                        // Obter a unidade e a quantidade em stock da tabela Stock
+                        Unidade unidade = lerProdutos.obterUnidadePorId(produtoVenda.getUnidade().getId());
+
+                        // Obter a quantidade em stock da tabela Stock
+                        double quantidadeStock = lerProdutos.obterQuantidadeDisponivelEmStock(produtoVenda.getProduto().getId(), produtoVenda.getUnidade().getId());
+
+                        // Agora você tem o preço de venda, unidade e quantidade em stock para o produto atual
+                        // Faça o que precisar com esses dados
+                        boolean api = lerProdutos.enviarProdutosParaAPI(produtoVenda, descricao, unidade, quantidadeStock, precoVenda);
+
                     }
+
                 }
-            });
 
-            if (tableViewEncomendas.getItems().isEmpty()) {
-                tableViewLinhasEncomenda.getItems().clear();
-            }
+                //atualizar estado da encomenda
+                sucessoEncomenda = lerEncomenda.atualizarEstadoEncomenda(encomenda.getId());
 
-            if (sucesso && sucessoEncomenda && atualizado && quemAprovou) {
-                Mensagens.Informacao("Sucesso", "Stock aprovado com sucesso!");
-            } else {
-                Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
+                //atualizar saldo em divida
+                atualizado = lerContaCorrente.atualizarSaldoDevedores(total, encomenda.getFornecedor().getIdExterno());
+
+                //Guarda informação de quem aprovou a encomenda
+                if (utilizador != null) {
+                    quemAprovou = lerEncomenda.quemAprovouEncomenda(encomenda.getId(), utilizador.getId());
+                }
+
+                // Listener para seleção de encomendas
+                tableViewEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                    if (newSelection != null) {
+                        try {
+                            // Quando uma nova encomenda é selecionada, atualize a tabela de linhas
+                            tabelaLinhasEncomenda(newSelection);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+
+                if (tableViewEncomendas.getItems().isEmpty()) {
+                    tableViewLinhasEncomenda.getItems().clear();
+                }
+
+                if (sucesso && sucessoEncomenda && atualizado && quemAprovou && gerarProdutoVenda) {
+                    Mensagens.Informacao("Sucesso", "Stock aprovado com sucesso!");
+                } else {
+                    Mensagens.Erro("Erro!", "Erro ao atualizar stock!");
+                }
             }
         }
     }

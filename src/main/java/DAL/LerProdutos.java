@@ -1,10 +1,7 @@
 package DAL;
 
 
-import Model.Fornecedor;
-import Model.Produto;
-import Model.Stock;
-import Model.Unidade;
+import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import eu.hansolo.toolbox.observables.ObservableList;
@@ -19,13 +16,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static Utilidades.API.createProduct;
+import static Utilidades.BaseDados.getConexao;
+
 public class LerProdutos {
 
     public ObservableList<Produto> lerProdutosFornecedores() throws IOException {
 
         ObservableList<Produto> produtosFornecedores = new ObservableList<>();
 
-        try (Connection conn = BaseDados.getConexao()) {
+        try (Connection conn = getConexao()) {
 
             String query = """
                     SELECT
@@ -87,7 +87,7 @@ public class LerProdutos {
     public ObservableList<Stock> lerStock() throws IOException {
         ObservableList<Stock> stockProdutos = new ObservableList<>();
 
-        try (Connection conn = BaseDados.getConexao()) {
+        try (Connection conn = getConexao()) {
 
             String query = """
                     SELECT Produto.Id as id_produto,
@@ -136,7 +136,7 @@ public class LerProdutos {
 
     public void aprovarProduto(String idProduto) throws SQLException, IOException {
         String query = "UPDATE Produto SET estado = 2 WHERE id = ?";
-        try (Connection conn = BaseDados.getConexao()) {
+        try (Connection conn = getConexao()) {
             BaseDados.iniciarTransacao(conn);
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, idProduto);
@@ -146,6 +146,260 @@ public class LerProdutos {
             }
             BaseDados.commit(conn);
         }
+    }
+
+    public boolean gerarProdutoParaVenda(String idProduto, int idUnidade, double precoUnitario) throws IOException {
+        Connection conn = null;
+        try {
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
+
+            // Verificar o maior preço unitário na tabela Produto_Fornecedor
+            double maiorPrecoUnitario = obterMaiorPrecoUnitario(idProduto, conn);
+
+            // Calcular o preço de venda (usando o maior preço unitário se existir)
+            double calcularPrecoVenda = (maiorPrecoUnitario > 0) ? maiorPrecoUnitario : precoUnitario;
+            calcularPrecoVenda *= 1.6; // Aumento de 60%
+
+            String query = """
+                    INSERT INTO Produto_Venda (id_produto, id_unidade, preco_venda)
+                    VALUES (?, ?, ?)
+                    """;
+
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, idProduto);
+                ps.setInt(2, idUnidade);
+                ps.setDouble(3, calcularPrecoVenda);
+
+                ps.executeUpdate();
+                BaseDados.commit(conn);
+                return true;
+            }
+
+        } catch (Exception e) {
+            assert conn != null;
+            BaseDados.rollback(conn);
+            e.printStackTrace();
+        } finally {
+            BaseDados.Desligar();
+        }
+        return false;
+
+    }
+
+    private double obterMaiorPrecoUnitario(String idProduto, Connection conn) throws SQLException {
+        String query = """
+            SELECT MAX(preco_unitario)
+            FROM Produto_Fornecedor
+            WHERE id_produto = ?
+            """;
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, idProduto);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble(1);
+                }
+            }
+        }
+
+        return 0; // Retorna 0 se não houver maior preço unitário registrado
+    }
+
+    public List<ProdutoVenda> obterProdutosVendaDaBaseDadosPorIdProduto(String id) {
+        List<ProdutoVenda> produtosVenda = new ArrayList<>();
+
+        try (Connection conn = getConexao()) {
+            String query = """
+                    SELECT Produto_Venda.id_produto as id_produto,
+                    		Unidade.Id as id_unidade,
+                    		Unidade.Descricao as descricao_unidade,
+                    		Produto_Venda.preco_venda as preco_venda
+                    		FROM Produto_Venda
+                    		INNER JOIN Unidade ON Unidade.Id = Produto_Venda.id_unidade
+                    WHERE id_produto = ?
+              
+                    """;
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, id);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        double precoVenda = rs.getDouble("preco_venda");
+                        // Obter informações do Produto
+                        Produto produto = criarObjetoProdutoVenda(rs);
+
+                        // Obter informações da Unidade
+                        Unidade unidade = criarObjetoUnidade(rs);
+
+                        // Criar o objeto ProdutoVenda
+                        ProdutoVenda produtoVenda = new ProdutoVenda(produto, unidade, precoVenda);
+                        produtosVenda.add(produtoVenda);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Lide com a exceção conforme necessário
+        }
+
+        return produtosVenda;
+    }
+
+    private Unidade criarObjetoUnidade(ResultSet dados) throws SQLException {
+        return new Unidade(
+                dados.getInt("id_unidade"),
+                dados.getString("descricao_unidade")
+        );
+    }
+
+    private Produto criarObjetoProdutoVenda(ResultSet dados) throws SQLException {
+        return new Produto(
+                dados.getString("id_produto")
+        );
+    }
+
+    public double obterPrecoVendaPorIdProduto(String idProduto) {
+        double precoVenda = 0.0; // Valor padrão ou alguma lógica apropriada em caso de erro
+
+        try (Connection conn = getConexao()) {
+            String query = "SELECT preco_venda FROM Produto_Venda WHERE id_produto = ?";
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, idProduto);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        precoVenda = rs.getDouble("preco_venda");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Lide com a exceção conforme necessário
+        }
+
+        return precoVenda;
+    }
+
+    public Unidade obterUnidadePorId(int id) {
+        Unidade unidade = null; // Valor padrão ou algum valor de fallback em caso de erro
+
+        try (Connection conn = getConexao()) {
+            String query = "SELECT * FROM Unidade WHERE Id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setInt(1, id);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        String descricao = rs.getString("Descricao");
+                        // Adicione outros campos conforme necessário
+                        unidade = new Unidade(id, descricao);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Lide com a exceção conforme necessário
+        }
+
+        return unidade;
+    }
+
+    public double obterQuantidadeDisponivelEmStock(String idProduto, int idUnidade) {
+        double quantidadeDisponivel = 0.0; // Valor padrão ou algum valor de fallback em caso de erro
+
+        try (Connection conn = getConexao()) {
+            String query = "SELECT quantidade FROM Stock WHERE id_produto = ? AND id_unidade = ?";
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, idProduto);
+                ps.setInt(2, idUnidade);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        quantidadeDisponivel = rs.getDouble("quantidade");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Lide com a exceção conforme necessário
+        }
+
+        return quantidadeDisponivel;
+    }
+
+    public String obterDescricao(String id) {
+        String descricao = null; // Valor padrão ou algum valor de fallback em caso de erro
+
+        try (Connection conn = getConexao()) {
+            String query = "SELECT descricao FROM Produto WHERE id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, id);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        descricao = rs.getString("descricao");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Lide com a exceção conforme necessário
+        }
+
+        return descricao;
+    }
+
+    public Map<String, Object> obterInformacoesDoStock(String idProduto, int idUnidade) {
+        Map<String, Object> informacoesStock = new HashMap<>();
+
+        try (Connection conn = getConexao()) {
+            String query = """
+                SELECT s.quantidade, u.descricao as descricao_unidade
+                FROM Stock s
+                INNER JOIN Unidade u ON u.Id = s.id_unidade
+                WHERE s.id_produto = ? AND s.id_unidade = ?
+                """;
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, idProduto);
+                ps.setInt(2, idUnidade);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        double quantidadeStock = rs.getDouble("quantidade");
+                        String descricaoUnidade = rs.getString("descricao_unidade");
+
+                        informacoesStock.put("quantidadeStock", quantidadeStock);
+                        informacoesStock.put("descricaoUnidade", descricaoUnidade);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Lide com a exceção conforme necessário
+        }
+
+        return informacoesStock;
+    }
+
+
+
+    public boolean enviarProdutosParaAPI(ProdutoVenda produto, String descricao, Unidade unidade, double quantidade, double precoVenda){
+        try {
+            // Construa os dados do produto para enviar
+            String data = construirDadosDoProduto(produto, descricao, unidade, quantidade, precoVenda);
+
+            // Chame o método createProduct para criar o produto na API
+            String respostaAPI = createProduct(data);
+
+            System.out.println("Resposta da API para produto " + produto.getProduto().getId()+ ": " + respostaAPI);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace(); // ou lide com a exceção conforme necessário
+            return false;
+        }
+
+    }
+
+    private String construirDadosDoProduto(ProdutoVenda produto, String descricao, Unidade unidade, double quantidade, double precoVenda) {
+        // Construir dados do produto em formato JSON
+        return "{"
+                + "\"Code\": \"" + produto.getProduto().getId() + "\","
+                + "\"Description\": \"" + descricao + "\","
+                + "\"PVP\": " + precoVenda + ","
+                + "\"Stock\": " + quantidade + ","
+                + "\"Unit\": \"" + unidade.getDescricao() + "\","
+                + "\"Active\": true"
+                + "}";
     }
 
 
