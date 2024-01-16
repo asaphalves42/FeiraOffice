@@ -344,6 +344,8 @@ public class LerProdutos {
             // Construa os dados do produto para enviar
             String data = construirDadosDoProduto(produto, descricao, unidade, quantidade, precoVenda);
 
+            //verificar se o produto existe na bd, e usar o UUIID la para fazer a vaidação se ja existe
+
             String respostaAPI = createProduct(data);
 
             // Extrai o UUID da resposta da API

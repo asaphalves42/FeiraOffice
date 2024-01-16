@@ -81,7 +81,7 @@ public class API {
 
         int code= connection.getResponseCode();
 
-        if(code!=200 && code!= 201) {
+        if(code!=200 && code!= 201 && code!= 202) {
             Mensagens.Erro("API Failed!","Error code: " + code);
             return null;
         }
