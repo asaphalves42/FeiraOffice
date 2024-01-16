@@ -1,6 +1,8 @@
 package Model;
 
 public class ProdutoVenda {
+
+    private String UUID;
     private Produto produto;
     private Unidade unidade;
     private double precoVenda;
@@ -9,6 +11,21 @@ public class ProdutoVenda {
         this.produto = produto;
         this.unidade = unidade;
         this.precoVenda = precoVenda;
+    }
+
+    public ProdutoVenda(Produto produto, Unidade unidade, double precoVenda, String UUID) {
+        this.produto = produto;
+        this.unidade = unidade;
+        this.precoVenda = precoVenda;
+        this.UUID = UUID;
+    }
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
     }
 
     public Produto getProduto() {

@@ -48,13 +48,13 @@ public class API {
         return sendRequest(url, "POST", data);
     }
 
-    public static String updateProduct(int productId, String data) throws IOException {
+    public static String updateProduct(String productId, String data) throws IOException {
         String url = BASE_URL + "product/" + productId + "/";
         return sendRequest(url, "PUT", data);
     }
 
-    public static String getProduct(int productId) throws IOException {
-        String url = BASE_URL + "product/" + productId + "/";
+    public static String getProduct(String productId) throws IOException {
+        String url = BASE_URL + "product/" + productId;
         return sendRequest(url, "GET", null);
     }
 
@@ -78,6 +78,13 @@ public class API {
     // Método genérico para enviar requisições
     private static String sendRequest(String url, String method, String data) throws IOException {
         HttpURLConnection connection = getHttpURLConnection(url, method, data);
+
+        int code= connection.getResponseCode();
+
+        if(code!=200 && code!= 201) {
+            Mensagens.Erro("API Failed!","Error code: " + code);
+            return null;
+        }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             StringBuilder response = new StringBuilder();

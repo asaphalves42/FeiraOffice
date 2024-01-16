@@ -4,6 +4,9 @@ package DAL;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import eu.hansolo.toolbox.observables.ObservableList;
 
 import java.io.IOException;
@@ -16,10 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static Utilidades.API.createProduct;
+import static Utilidades.API.*;
 import static Utilidades.BaseDados.getConexao;
 
 public class LerProdutos {
+    Gson gson = new Gson();
 
     public ObservableList<Produto> lerProdutosFornecedores() throws IOException {
 
@@ -184,7 +188,7 @@ public class LerProdutos {
         } catch (Exception e) {
             assert conn != null;
             BaseDados.rollback(conn);
-            e.printStackTrace();
+            Mensagens.Erro("Erro!","Erro ao gerar produto para venda!");
         } finally {
             BaseDados.Desligar();
         }
@@ -254,7 +258,7 @@ public class LerProdutos {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Lide com a exceção conforme necessário
+            System.out.println(e.getMessage());
         }
 
         return produtosVenda;
@@ -274,7 +278,7 @@ public class LerProdutos {
     }
 
 
-    public Map<String, Object> obterInfoProdutoVenda(String idProduto) {
+    public Map<String, Object> obterInfoProdutoVenda(String idProduto) throws IOException {
         Map<String, Object> infoProdutoVenda = new HashMap<>();
 
         try (Connection conn = getConexao()) {
@@ -297,13 +301,13 @@ public class LerProdutos {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Lide com a exceção conforme necessário
+            Mensagens.Erro("Erro!","Erro ao obter informações de venda do produto");
         }
 
         return infoProdutoVenda;
     }
 
-    public Map<String, Object> obterInformacoesDoStock(String idProduto, int idUnidade) {
+    public Map<String, Object> obterInformacoesDoStock(String idProduto, int idUnidade) throws IOException {
         Map<String, Object> informacoesStock = new HashMap<>();
 
         try (Connection conn = getConexao()) {
@@ -327,7 +331,7 @@ public class LerProdutos {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Lide com a exceção conforme necessário
+            Mensagens.Erro("Erro!","Errp ao obter informações do stock!");
         }
 
         return informacoesStock;
@@ -335,21 +339,61 @@ public class LerProdutos {
 
 
 
-    public boolean enviarProdutosParaAPI(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda){
+    public boolean enviarProdutosParaAPI(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda) throws IOException, SQLException{
         try {
             // Construa os dados do produto para enviar
             String data = construirDadosDoProduto(produto, descricao, unidade, quantidade, precoVenda);
 
-            // Chame o método createProduct para criar o produto na API
             String respostaAPI = createProduct(data);
+
+            // Extrai o UUID da resposta da API
+            //String UUID = getUUIDFromResponse(respostaAPI);
+            //produto.setUUID(UUID);
+
+            //boolean produtoNaBd = criarProdutoNaBaseDados(produto);
 
             System.out.println("Resposta da API para produto " + produto.getProduto().getId()+ ": " + respostaAPI);
             return true;
         } catch (IOException e) {
-            e.printStackTrace(); // ou lide com a exceção conforme necessário
+            Mensagens.Erro("Erro!","Erro ao enviar produtos para a API");
             return false;
         }
 
+    }
+
+    private String getUUIDFromResponse(String respostaAPI) {
+        try {
+            // Parse do JSON usando o Gson
+            JsonObject jsonObject = JsonParser.parseString(respostaAPI).getAsJsonObject();
+
+            // Extrai o valor associado à chave "Id"
+            return jsonObject.get("Id").getAsString();
+
+        } catch (Exception e) {
+            // Trate exceções se ocorrer um erro ao analisar o JSON
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+    private String getProductById(String id) throws IOException {
+        String produtosJson = getProduct(id);
+
+
+        GetProdutosAPI produtos = gson.fromJson(produtosJson,GetProdutosAPI.class);
+
+        // Supondo que GetProdutosAPI tenha um método que retorna a lista de produtos
+        ArrayList<ProdutoAPI> produtosList = produtos.getProducts();
+
+        // Itera sobre a lista de produtos para encontrar o produto com o ID correspondente
+        for (ProdutoAPI produto : produtosList) {
+            if (produto.getId().equals(id)) {
+                return produto.Id;
+            }
+        }
+       return null;
     }
 
     private String construirDadosDoProduto(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda) {
@@ -362,6 +406,33 @@ public class LerProdutos {
                 + "\"Unit\": \"" + unidade + "\","
                 + "\"Active\": true"
                 + "}";
+    }
+
+    public boolean criarProdutoNaBaseDados(ProdutoVenda produto) throws SQLException, IOException {
+        Connection conn = null;
+
+        try {
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
+
+            String query = """
+                   UPDATE Produto SET UUID = ? WHERE id Id = ?
+                   """;
+
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1,produto.getUUID());
+                ps.setString(2,produto.getProduto().getId());
+
+                ps.executeUpdate();
+            }
+            BaseDados.commit(conn);
+            return true;
+
+        } catch (IOException e) {
+            BaseDados.rollback(conn);
+            Mensagens.Erro("Erro","Erro ao adicionar UUID ao produto");
+        }
+        return false;
     }
 
 

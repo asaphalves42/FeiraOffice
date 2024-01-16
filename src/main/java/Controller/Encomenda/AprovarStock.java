@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableColumn;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -251,7 +252,7 @@ public class AprovarStock {
      * @throws IOException Se ocorrer um erro durante o processo de aprovação.
      */
     @FXML
-    public void clickAprovar() throws IOException {
+    public void clickAprovar() throws IOException, SQLException {
         iniciaData(utilizador);
 
         // Aceder a encomenda
