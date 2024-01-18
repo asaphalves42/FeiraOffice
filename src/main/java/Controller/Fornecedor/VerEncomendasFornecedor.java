@@ -149,9 +149,6 @@ public class VerEncomendasFornecedor {
     }
 
 
-
-
-
     /**
      * Preenche a tabela de linhas de encomenda com base na encomenda selecionada.
      * Configura as colunas da tabela e associa-as às propriedades da classe LinhaEncomenda.
@@ -166,6 +163,7 @@ public class VerEncomendasFornecedor {
             if (encomenda != null) {
 
                 tableViewLinhasEncomenda.getItems().clear();
+                tableViewLinhasEncomenda.getColumns().clear();
 
                 // Ler apenas as linhas de encomenda para a encomenda selecionada
                 linhasEncomenda.addAll(lerEncomenda.lerLinhaEncomenda(encomenda.getId()));
@@ -174,6 +172,7 @@ public class VerEncomendasFornecedor {
                     TableColumn<LinhaEncomenda, Integer> colunaId = new TableColumn<>("ID");
                     TableColumn<LinhaEncomenda, Encomenda> colunaIdEncomenda = new TableColumn<>("Encomenda");
                     TableColumn<LinhaEncomenda, Integer> colunaSequencia = new TableColumn<>("Sequência");
+                    TableColumn<LinhaEncomenda, String> colunaIdProduto = new TableColumn<>("Id do produto");
                     TableColumn<LinhaEncomenda, String> colunaDescricaoProduto = new TableColumn<>("Descrição");
                     TableColumn<LinhaEncomenda, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
                     TableColumn<LinhaEncomenda, String> colunaDescricaoUnidade = new TableColumn<>("Unidade");
@@ -200,6 +199,7 @@ public class VerEncomendasFornecedor {
                         };
                     });
                     colunaSequencia.setCellValueFactory(new PropertyValueFactory<>("sequencia"));
+                    colunaIdProduto.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getId()));
                     colunaDescricaoProduto.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getDescricao()));
                     colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
                     colunaDescricaoUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getDescricaoUnidade()));
@@ -209,7 +209,7 @@ public class VerEncomendasFornecedor {
                     colunaTotalLinha.setCellValueFactory(new PropertyValueFactory<>("total"));
 
                     tableViewLinhasEncomenda.getColumns().addAll(
-                            colunaId, colunaIdEncomenda, colunaSequencia,
+                            colunaId, colunaIdEncomenda, colunaSequencia, colunaIdProduto,
                             colunaDescricaoProduto, colunaQuantidade, colunaDescricaoUnidade,
                             colunaNomePais, colunaTotalTaxa, colunaTotalIncidencia, colunaTotalLinha
                     );

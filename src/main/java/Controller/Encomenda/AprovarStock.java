@@ -190,6 +190,7 @@ public class AprovarStock {
                     TableColumn<LinhaEncomenda, Integer> colunaId = new TableColumn<>("ID");
                     TableColumn<LinhaEncomenda, Encomenda> colunaIdEncomenda = new TableColumn<>("Encomenda");
                     TableColumn<LinhaEncomenda, Integer> colunaSequencia = new TableColumn<>("Sequência");
+                    TableColumn<LinhaEncomenda, String> colunaIdProduto = new TableColumn<>("Id do produto");
                     TableColumn<LinhaEncomenda, String> colunaDescricaoProduto = new TableColumn<>("Descrição");
                     TableColumn<LinhaEncomenda, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
                     TableColumn<LinhaEncomenda, String> colunaDescricaoUnidade = new TableColumn<>("Unidade");
@@ -216,6 +217,7 @@ public class AprovarStock {
                         };
                     });
                     colunaSequencia.setCellValueFactory(new PropertyValueFactory<>("sequencia"));
+                    colunaIdProduto.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getId()));
                     colunaDescricaoProduto.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getDescricao()));
                     colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
                     colunaDescricaoUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduto().getDescricaoUnidade()));
@@ -227,6 +229,7 @@ public class AprovarStock {
                     tableViewLinhasEncomenda.getColumns().add(colunaId);
                     tableViewLinhasEncomenda.getColumns().add(colunaIdEncomenda);
                     tableViewLinhasEncomenda.getColumns().add(colunaSequencia);
+                    tableViewLinhasEncomenda.getColumns().add(colunaIdProduto);
                     tableViewLinhasEncomenda.getColumns().add(colunaDescricaoProduto);
                     tableViewLinhasEncomenda.getColumns().add(colunaQuantidade);
                     tableViewLinhasEncomenda.getColumns().add(colunaDescricaoUnidade);
