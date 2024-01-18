@@ -22,12 +22,12 @@ public class API {
         return sendRequest(url, "POST", data);
     }
 
-    public static String updateCliente(int clientId, String data) throws IOException {
+    public static String updateCliente(String clientId, String data) throws IOException {
         String url = BASE_URL + "client/" + clientId + "/";
         return sendRequest(url, "PUT", data);
     }
 
-    public static String deleteCliente(int clientId) throws IOException {
+    public static String deleteCliente(String clientId) throws IOException {
         String url = BASE_URL + "client/" + clientId + "/";
         return sendRequest(url, "DELETE", null);
     }

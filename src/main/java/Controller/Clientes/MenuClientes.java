@@ -2,6 +2,7 @@ package Controller.Clientes;
 
 import DAL.LerClientes;
 import Model.Cliente;
+import Utilidades.API;
 import Utilidades.Mensagens;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +14,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
+
+import static Utilidades.API.deleteCliente;
 
 public class MenuClientes {
     LerClientes lerClientes = new LerClientes();
@@ -39,8 +42,8 @@ public class MenuClientes {
 
         clientes.addAll(lerClientes.lerClientesDaApi());
 
-        if(!clientes.isEmpty()){
-            if(tableViewClientes.getItems().isEmpty()){
+        if (!clientes.isEmpty()) {
+            if (tableViewClientes.getItems().isEmpty()) {
                 TableColumn<Cliente, String> colunaId = new TableColumn<>("ID");
                 TableColumn<Cliente, String> nomeColuna = new TableColumn<>("Nome");
                 TableColumn<Cliente, String> emailColuna = new TableColumn<>("E-mail");
@@ -79,18 +82,74 @@ public class MenuClientes {
     }
 
     @FXML
-    void clickAprovar(ActionEvent event) {
+    void clickAprovar(ActionEvent event) throws IOException {
+        Cliente clienteSelecionado = tableViewClientes.getSelectionModel().getSelectedItem();
+
+        if (clienteSelecionado != null) {
+
+            String idCliente = clienteSelecionado.getId();
+
+            try {
+
+                String data = "{ \"Active\": true }";
+                API.updateCliente(idCliente, data);
+                Mensagens.Informacao("Cliente Aprovado!", "Cliente Aprovado com sucesso");
+
+
+            } catch (IOException e) {
+                Mensagens.Erro("Erro!", "Erro ao aprovar cliente!");
+            }
+        }
+    }
+
+
+    @FXML
+    void clickEliminar(ActionEvent event) throws IOException {
+        Cliente clienteSelecionado = tableViewClientes.getSelectionModel().getSelectedItem();
+
+        if (clienteSelecionado != null) {
+
+            String idCliente = clienteSelecionado.getId();
+
+            try {
+
+
+                deleteCliente(idCliente);
+                Mensagens.Informacao("Cliente Eliminado!", "Cliente Eliminado com sucesso");
+
+
+            } catch (IOException e) {
+                Mensagens.Erro("Erro!", "Erro ao Eliminar cliente!");
+            }
+        }
 
     }
 
-    @FXML
-    void clickEliminar(ActionEvent event) {
 
-    }
 
     @FXML
-    void clickRecusar(ActionEvent event) {
+    void clickRecusar(ActionEvent event) throws IOException {
+
+        Cliente clienteSelecionado = tableViewClientes.getSelectionModel().getSelectedItem();
+
+        if (clienteSelecionado != null) {
+
+            String idCliente = clienteSelecionado.getId();
+
+            try {
+
+                String data = "{ \"Active\": false }";
+                API.updateCliente(idCliente, data);
+                Mensagens.Informacao("Cliente Recusado!", "Cliente Recusado com sucesso");
+
+
+
+            } catch (IOException e) {
+                Mensagens.Erro("Erro!", "Erro ao aprovar cliente!");
+            }
+        }
 
     }
 
 }
+
