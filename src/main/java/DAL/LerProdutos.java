@@ -4,9 +4,7 @@ package DAL;
 import Model.*;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import eu.hansolo.toolbox.observables.ObservableList;
 
 import java.io.IOException;
@@ -339,28 +337,75 @@ public class LerProdutos {
 
 
 
-    public boolean enviarProdutosParaAPI(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda) throws IOException, SQLException{
+    public boolean enviarProdutosParaAPI(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda) throws IOException, SQLException {
         try {
             // Construa os dados do produto para enviar
             String data = construirDadosDoProduto(produto, descricao, unidade, quantidade, precoVenda);
 
-            //verificar se o produto existe na bd, e usar o UUIID la para fazer a vaidação se ja existe
+            // Verificar se o produto existe na base de dados
+            String uuidExistente = obterUUIDNaBaseDeDados(produto);
 
-            String respostaAPI = createProduct(data);
+            if (uuidExistente != null) {
+                // O produto já existe localmente, então podemos usar o UUID existente
+                produto.setUUID(uuidExistente);
 
-            // Extrai o UUID da resposta da API
-            //String UUID = getUUIDFromResponse(respostaAPI);
-            //produto.setUUID(UUID);
+                // Mantém o PVP atual durante a atualização
+                double novoPVP = produto.getPrecoVenda();
 
-            //boolean produtoNaBd = criarProdutoNaBaseDados(produto);
+                // Construir o JSON com o novo estoque, PVP e estado
+                String novoStockJson = "{\"Stock\": " + quantidade + ", \"PVP\": " + novoPVP + ", \"Active\": true}";
 
-            System.out.println("Resposta da API para produto " + produto.getProduto().getId()+ ": " + respostaAPI);
+                // Enviar a solicitação PUT para a API para atualizar o estoque
+                String respostaUpdateAPI = updateProduct(produto.getUUID(), novoStockJson);
+
+                System.out.println("Resposta da API para atualização de estoque: " + respostaUpdateAPI);
+            } else {
+                // O produto não existe localmente, então criamos na API
+                String respostaAPI = createProduct(data);
+
+                // Extrai o UUID da resposta da API
+                String UUID = getUUIDFromResponse(respostaAPI);
+                produto.setUUID(UUID);
+
+                // Criar o produto na base de dados local
+                boolean produtoNaBd = criarProdutoNaBaseDados(produto);
+
+                System.out.println("Resposta da API para produto " + produto.getProduto().getId() + ": " + respostaAPI);
+
+                if (produtoNaBd) {
+                    System.out.println("Produto na base de dados " + produto.getUUID() + " criado com sucesso");
+                }
+            }
             return true;
         } catch (IOException e) {
-            Mensagens.Erro("Erro!","Erro ao enviar produtos para a API");
+            Mensagens.Erro("Erro!", "Erro ao enviar produtos para a API");
             return false;
         }
+    }
 
+    private String obterUUIDNaBaseDeDados(ProdutoVenda produto) throws SQLException, IOException {
+        try (Connection conn = getConexao()) {
+            String query = "SELECT UUID FROM Produto WHERE Id = ?";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+
+                // Substitui o parâmetro na consulta pelo ID do produto
+                preparedStatement.setString(1, produto.getProduto().getId());
+
+                // Executa a consulta
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        // Se existir um resultado, retorna o UUID
+                        return resultSet.getString("UUID");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao obter produto!");
+        } finally {
+            BaseDados.Desligar();
+        }
+        return null;
     }
 
     private String getUUIDFromResponse(String respostaAPI) {
@@ -369,33 +414,13 @@ public class LerProdutos {
             JsonObject jsonObject = JsonParser.parseString(respostaAPI).getAsJsonObject();
 
             // Extrai o valor associado à chave "Id"
-            return jsonObject.get("Id").getAsString();
+            return jsonObject.get("Product").getAsString();
 
         } catch (Exception e) {
             // Trate exceções se ocorrer um erro ao analisar o JSON
             e.printStackTrace();
             return null;
         }
-    }
-
-
-
-    private String getProductById(String id) throws IOException {
-        String produtosJson = getProduct(id);
-
-
-        GetProdutosAPI produtos = gson.fromJson(produtosJson,GetProdutosAPI.class);
-
-        // Supondo que GetProdutosAPI tenha um método que retorna a lista de produtos
-        ArrayList<ProdutoAPI> produtosList = produtos.getProducts();
-
-        // Itera sobre a lista de produtos para encontrar o produto com o ID correspondente
-        for (ProdutoAPI produto : produtosList) {
-            if (produto.getId().equals(id)) {
-                return produto.Id;
-            }
-        }
-       return null;
     }
 
     private String construirDadosDoProduto(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda) {
@@ -418,7 +443,7 @@ public class LerProdutos {
             BaseDados.iniciarTransacao(conn);
 
             String query = """
-                   UPDATE Produto SET UUID = ? WHERE id Id = ?
+                   UPDATE Produto SET UUID = ? WHERE Id = ?
                    """;
 
             try (PreparedStatement ps = conn.prepareStatement(query)) {
