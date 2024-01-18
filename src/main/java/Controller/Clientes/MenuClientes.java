@@ -145,7 +145,7 @@ public class MenuClientes {
 
 
             } catch (IOException e) {
-                Mensagens.Erro("Erro!", "Erro ao aprovar cliente!");
+                Mensagens.Erro("Erro!", "Erro ao recusar cliente!");
             }
         }
 
