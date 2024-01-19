@@ -21,9 +21,8 @@ import static Utilidades.API.*;
 import static Utilidades.BaseDados.getConexao;
 
 public class LerProdutos {
-    Gson gson = new Gson();
 
-    public ObservableList<Produto> lerProdutosFornecedores() throws IOException {
+    public ObservableList<Produto> lerProdutosFornecedores(String id) throws IOException {
 
         ObservableList<Produto> produtosFornecedores = new ObservableList<>();
 
@@ -45,9 +44,12 @@ public class LerProdutos {
                     INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Produto_Fornecedor.id_fornecedor
                     INNER JOIN Produto ON Produto.Id = Produto_Fornecedor.id_produto
                     INNER JOIN Unidade ON Unidade.Id = Produto.Id_Unidade
+                    
+                    WHERE Produto.Id = ?
                     """;
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, id);
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet.next()) {

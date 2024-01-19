@@ -41,6 +41,8 @@ public class AprovarStock {
 
     @FXML
     private TableView<LinhaEncomenda> tableViewLinhasEncomenda;
+
+
     public ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
     ObservableList<LinhaEncomenda> linhasEncomenda = FXCollections.observableArrayList();
 

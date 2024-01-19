@@ -14,12 +14,7 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="428.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;">
                     <children>
                         <TableView fx:id="tableViewStock" layoutY="42.0" prefHeight="306.0" prefWidth="907.0" AnchorPane.bottomAnchor="42.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="42.0" />
-                  <Text layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS EM STOCK:">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Text>
-                  <Text layoutX="14.0" layoutY="408.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS DISPONIVEIS:">
+                  <Text layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PRODUTOS:">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

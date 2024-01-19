@@ -38,50 +38,30 @@ public class MenuProdutos {
     ObservableList<Stock> produtosEmStock = FXCollections.observableArrayList();
 
     public void initialize() throws IOException {
-       tabelaProdutos();
-       tabelastock();
-    }
+        tabelastock();
 
-    public void tabelaProdutos() throws IOException {
-        produtos.addAll(lerProdutos.lerProdutosFornecedores());
-
-        if (!produtos.isEmpty()) {
-            if (tableViewProdutos.getColumns().isEmpty()) {
-                TableColumn<Produto, Integer> colunaId = new TableColumn<>("ID Produto");
-                TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descrição");
-                TableColumn<Produto, String> colunaNomeFornecedor = new TableColumn<>("Nome do Fornecedor");
-                TableColumn<Produto, String> colunaIdFornecedor = new TableColumn<>("Id fornecedor");
-                TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
-                TableColumn<Produto, Double> colunaPrecoUnitario = new TableColumn<>("Preço Unitário");
-                TableColumn<Produto, String> colunaIdExterno = new TableColumn<>("Id no fornecedor");
-
-                colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-                colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-                colunaNomeFornecedor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFornecedor().getIdExterno()));
-                colunaIdFornecedor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFornecedor().getNome()));
-                colunaIdUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnidade().getDescricao()));
-                colunaPrecoUnitario.setCellValueFactory(new PropertyValueFactory<>("precoUnitario"));
-                colunaIdExterno.setCellValueFactory(new PropertyValueFactory<>("idExterno"));
-
-                tableViewProdutos.getColumns().addAll(colunaId, colunaDescricao, colunaNomeFornecedor, colunaIdFornecedor, colunaIdUnidade, colunaPrecoUnitario, colunaIdExterno);
+        tableViewStock.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                try {
+                    tableViewProdutos.getColumns().clear(); // Clear existing columns
+                    tabelaProdutos(newSelection.getIdProduto());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
-
-            tableViewProdutos.setItems(produtos);
-        } else {
-            Mensagens.Erro("Erro!", "Erro ao ler tabela");
-        }
+        });
     }
 
     public void tabelastock() throws IOException {
 
         produtosEmStock.addAll(lerProdutos.lerStock());
+
         if (!produtosEmStock.isEmpty()) {
             if (tableViewStock.getColumns().isEmpty()) {
                 TableColumn<Stock, String> colunaId = new TableColumn<>("ID Produto");
                 TableColumn<Stock, String> colunaDescricao = new TableColumn<>("Descrição");
                 TableColumn<Stock, String> colunaUnidade = new TableColumn<>("Unidade");
                 TableColumn<Stock, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
-
 
                 colunaId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdProduto().getId()));
                 colunaDescricao.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdProduto().getDescricao()));
@@ -98,6 +78,45 @@ public class MenuProdutos {
         }
 
     }
+
+    public void tabelaProdutos(Produto stock) throws IOException {
+
+        if (stock!=null) {
+
+            tableViewProdutos.getItems().clear();
+            produtos.addAll(lerProdutos.lerProdutosFornecedores(stock.getId()));
+
+            if (!produtos.isEmpty()) {
+                TableColumn<Produto, Integer> colunaId = new TableColumn<>("ID Produto");
+                TableColumn<Produto, String> colunaDescricao = new TableColumn<>("Descrição");
+                TableColumn<Produto, String> colunaNomeFornecedor = new TableColumn<>("Nome do Fornecedor");
+                TableColumn<Produto, String> colunaIdFornecedor = new TableColumn<>("Id fornecedor");
+                TableColumn<Produto, String> colunaIdUnidade = new TableColumn<>("Unidade");
+                TableColumn<Produto, Double> colunaPrecoUnitario = new TableColumn<>("Preço Unitário");
+                TableColumn<Produto, String> colunaIdExterno = new TableColumn<>("Id no fornecedor");
+
+                colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
+                colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
+                colunaNomeFornecedor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFornecedor().getIdExterno()));
+                colunaIdFornecedor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFornecedor().getNome()));
+                colunaIdUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnidade().getDescricao()));
+                colunaPrecoUnitario.setCellValueFactory(new PropertyValueFactory<>("precoUnitario"));
+                colunaIdExterno.setCellValueFactory(new PropertyValueFactory<>("idExterno"));
+
+                tableViewProdutos.getColumns().addAll(colunaId, colunaDescricao, colunaNomeFornecedor,
+                        colunaIdFornecedor, colunaIdUnidade, colunaPrecoUnitario, colunaIdExterno);
+
+                tableViewProdutos.setItems(produtos);
+
+
+            } else {
+                Mensagens.Erro("Erro!", "Erro ao ler tabela");
+            }
+        }
+
+    }
+
+
 
     @FXML
     void clickAprovar() throws IOException {
