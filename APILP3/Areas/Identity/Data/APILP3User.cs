@@ -11,7 +11,7 @@ namespace APILP3.Areas.Identity.Data;
 // Add profile data for application users by adding properties to the APILP3User class
 public class APILP3User : IdentityUser
 {
-         [PersonalData]  
+  [PersonalData]  
   [Column(TypeName = "nvarchar(100)")]
     public string Nome { get; set; }
 
@@ -38,8 +38,6 @@ public class APILP3User : IdentityUser
     [PersonalData]
     [Column(TypeName = "nvarchar(100)")]
     public string Nif { get; set; }
-
-
 
 }
 

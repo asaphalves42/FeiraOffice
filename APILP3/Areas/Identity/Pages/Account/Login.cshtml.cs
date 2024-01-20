@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -45,29 +46,27 @@ namespace APILP3.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync()
         {
+        
+            _logger.LogInformation("OnGetAsync1");
             if (User.Identity.IsAuthenticated)
             {
+                _logger.LogInformation("OnGetAsync2");
                 Response.Redirect("/");
             }
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
+                _logger.LogInformation("OnGetAsync3");
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
-
-            returnUrl ??= Url.Content("~/");
-
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            ExternalLogins = new List<AuthenticationScheme>();
+            _logger.LogInformation("OnGetAsync4");
+            
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync()
         {
-            returnUrl ??= Url.Content("~/");
-
+         
             ExternalLogins = new List<AuthenticationScheme>();
 
             if (ModelState.IsValid)
@@ -80,6 +79,7 @@ namespace APILP3.Areas.Identity.Pages.Account
                     try
                     {
                         var loginData = ConstruirDadosDoLogin();
+                        _logger.LogInformation(loginData);
 
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
 
@@ -90,9 +90,21 @@ namespace APILP3.Areas.Identity.Pages.Account
                         {
                             _logger.LogInformation("Utilizador autenticado com sucesso.");
 
-                            
-                            //return LocalRedirect(returnUrl);
-                            return Redirect("http://www.google.com");
+                            var claims = new List<Claim>
+                            {
+                                new Claim(ClaimTypes.Name,Input.Email ), 
+                            };
+
+                            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                            var authProperties = new AuthenticationProperties
+                            {
+                                
+                            };
+
+                            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                            return Redirect("/Identity/Account/Manage/HomePage");
 
                         }
                         else

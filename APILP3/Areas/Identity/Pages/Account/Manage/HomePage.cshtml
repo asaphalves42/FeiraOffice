@@ -1,0 +1,33 @@
+﻿@page
+@model APILP3.Areas.Identity.Pages.Account.Manage.HomePageModel
+
+@{
+    ViewData["Title"] = "Home Page";
+   // Layout = "~/Areas/Identity/Pages/_Layout.cshtml";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID do produto</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Unidade</th>
+            <th>Stock</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model.Products)
+        {
+            <tr>
+                <td>@product.Code</td>
+                <td>@product.Description</td>
+                <td>@product.PVP</td>
+                <td>@product.Unit</td>
+                <td>@product.Stock</td>
+            </tr>
+        }
+    </tbody>
+</table>

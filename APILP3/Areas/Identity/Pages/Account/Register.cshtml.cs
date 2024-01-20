@@ -73,6 +73,7 @@ namespace APILP3.Areas.Identity.Pages.Account
             [StringLength(100, ErrorMessage = "A {0} deve ter no minimo {2} e no maximo {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
+
             public string Password { get; set; }
             [Required(ErrorMessage = "Introduz a confirmação da Password !")]
             [DataType(DataType.Password)]

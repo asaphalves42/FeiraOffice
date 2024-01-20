@@ -36,20 +36,14 @@
     @await RenderSectionAsync("Scripts", required: false)
     <script>
         $(function () {
-            const currentPage = loccation.pathname;
-            $('.nav-tabs li a ').each(function () {
-                const $this = $(this);
-                if (currentPage.toLowerCase().indexOf(this.attr('href').toLowerCase()) != -1) {
+            const currentPage = location.pathname;
+            $('.nav-tabs li a').each(function () {
+                const $this = $(this);  // Wrap 'this' with $() to create a jQuery object
+                if (currentPage.toLowerCase().indexOf($this.attr('href').toLowerCase()) !== -1) {
                     $this.addClass('active');
                 }
-            })
-
-
-        }) 
-
-
-
+            });
+        });
     </script>
-    
     
 }
