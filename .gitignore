@@ -41,3 +41,7 @@ build/
 .idea/
 *.idea
 *.jar
+*.obj
+APILP3/obj
+APILP3/bin
+bin/
