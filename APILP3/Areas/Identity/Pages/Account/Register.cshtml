@@ -1,12 +1,12 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Registar - se";
     Layout = "~/Areas/Identity/Pages/_AuthLayout.cshtml";
 }
 
         <form id="registerForm" method="post">
-            <h2>Cria uma nova conta</h2>
+            <h3>Cria uma nova conta</h3>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
@@ -65,7 +65,7 @@
             </div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                <label asp-for="Input.ConfirmPassword">Confirmar password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Registar</button>

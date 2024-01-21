@@ -11,7 +11,7 @@
     <div class="col-10">
         <section>
             <form id="account" method="post">
-                <h2>Bem - vindo(a)</h2>
+                <h3>Bem - vindo(a)</h3>
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="form-floating mb-3">
@@ -19,7 +19,7 @@
                     <label asp-for="Input.Email" class="form-label">E-mail</label>
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
-                <div class="form-floating mb-3">
+                <div class="form-floating mb-3" style="padding-bottom: 10p" >
                     <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
                     <label asp-for="Input.Password" class="form-label">Password</label>
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
@@ -30,7 +30,7 @@
                         @Html.DisplayNameFor(m => m.Input.RememberMe)
                     </label>
                 </div>
-                <div>
+                <div style="padding-bottom: 10px;">
                     <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">
                         Entrar
                     </button>
