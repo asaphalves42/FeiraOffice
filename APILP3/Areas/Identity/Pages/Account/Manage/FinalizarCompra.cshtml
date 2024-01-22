@@ -1,0 +1,59 @@
+﻿@page
+@model APILP3.Areas.Identity.Pages.Account.Manage.FinalizarCompraModel
+@{
+    ViewData["Title"] = "Feira & Office";
+    Layout = "/Views/Shared/LayoutProdutos.cshtml";
+}
+
+<h2>Formulário de Morada de Faturação</h2>
+<form id="billingAddressForm">
+    <label for="billingAddress1">Endereço 1:</label>
+    <input type="text" id="billingAddress1" name="billingAddress1" required>
+
+    <label for="billingAddress2">Endereço 2:</label>
+    <input type="text" id="billingAddress2" name="billingAddress2">
+
+    <label for="billingPostalCode">Código Postal:</label>
+    <input type="text" id="billingPostalCode" name="billingPostalCode" required>
+
+    <label for="billingCity">Cidade:</label>
+    <input type="text" id="billingCity" name="billingCity" required>
+
+    <label for="billingCountry">País:</label>
+    <input type="text" id="billingCountry" name="billingCountry" required>
+
+    <button type="button" onclick="copyBillingToShipping()">Copiar para Morada de Envio</button>
+</form>
+
+<h2>Formulário de Morada de Envio</h2>
+<form id="shippingAddressForm">
+    <label for="shippingAddress1">Endereço 1:</label>
+    <input type="text" id="shippingAddress1" name="shippingAddress1" required>
+
+    <label for="shippingAddress2">Endereço 2:</label>
+    <input type="text" id="shippingAddress2" name="shippingAddress2">
+
+    <label for="shippingPostalCode">Código Postal:</label>
+    <input type="text" id="shippingPostalCode" name="shippingPostalCode" required>
+
+    <label for="shippingCity">Cidade:</label>
+    <input type="text" id="shippingCity" name="shippingCity" required>
+
+    <label for="shippingCountry">País:</label>
+    <input type="text" id="shippingCountry" name="shippingCountry" required>
+
+    <button type="submit">Finalizar Compra</button>
+</form>
+
+<script>
+    function copyBillingToShipping() {
+        // Copiar valores da morada de faturação para a morada de envio
+        document.getElementById('shippingAddress1').value = document.getElementById('billingAddress1').value;
+        document.getElementById('shippingAddress2').value = document.getElementById('billingAddress2').value;
+        document.getElementById('shippingPostalCode').value = document.getElementById('billingPostalCode').value;
+        document.getElementById('shippingCity').value = document.getElementById('billingCity').value;
+        document.getElementById('shippingCountry').value = document.getElementById('billingCountry').value;
+    }
+</script>
+
+
