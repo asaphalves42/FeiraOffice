@@ -44,3 +44,4 @@ build/
 *.obj
 APILP3/obj/
 APILP3/bin/
+APILP3/.vs/
