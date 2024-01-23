@@ -98,7 +98,8 @@ public class LerProdutos {
                     	Produto.Descricao as descricao_produto,
                     	Unidade.Id as id_unidade,
                     	Unidade.Descricao as descricao_unidade,
-                    	Stock.Quantidade as quantidade
+                    	Stock.Quantidade as quantidade,
+                     	Produto.UUID as uuid
                     FROM Stock
                     	INNER JOIN Produto ON Produto.Id = Stock.Id_Produto
                     	INNER JOIN Unidade ON Unidade.Id = Produto.Id_Unidade
@@ -126,7 +127,12 @@ public class LerProdutos {
     private Stock criarObjetoStock(ResultSet dados) throws SQLException {
         Produto produto = new Produto(
                 dados.getString("id_produto"),
-                dados.getString("descricao_produto"));
+                dados.getString("descricao_produto")
+        );
+
+        ProdutoVenda uuid = new ProdutoVenda(
+                dados.getString("uuid")
+        );
 
         Unidade unidade = new Unidade(
                 dados.getInt("id_unidade"),
@@ -135,7 +141,8 @@ public class LerProdutos {
         return new Stock(
                 produto,
                 unidade,
-                dados.getInt("quantidade"));
+                dados.getInt("quantidade"),
+                uuid);
     }
 
     public void aprovarProduto(String idProduto) throws SQLException, IOException {

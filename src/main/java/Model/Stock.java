@@ -8,10 +8,27 @@ public class Stock {
     private Unidade idUnidade;
     private int quantidade;
 
+    private ProdutoVenda uuidVenda;
+
     public Stock(Produto idProduto, Unidade idUnidade, int quantidade) {
         this.idProduto = idProduto;
         this.idUnidade = idUnidade;
         this.quantidade = quantidade;
+    }
+
+    public Stock(Produto idProduto, Unidade idUnidade, int quantidade, ProdutoVenda uuid) {
+        this.idProduto = idProduto;
+        this.idUnidade = idUnidade;
+        this.quantidade = quantidade;
+        this.uuidVenda = uuid;
+    }
+
+    public ProdutoVenda getUuidVenda() {
+        return uuidVenda;
+    }
+
+    public void setUuidVenda(ProdutoVenda uuidVenda) {
+        this.uuidVenda = uuidVenda;
     }
 
     public Produto getIdProduto() {

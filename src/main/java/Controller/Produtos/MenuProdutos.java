@@ -62,13 +62,15 @@ public class MenuProdutos {
                 TableColumn<Stock, String> colunaDescricao = new TableColumn<>("Descrição");
                 TableColumn<Stock, String> colunaUnidade = new TableColumn<>("Unidade");
                 TableColumn<Stock, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
+                TableColumn<Stock, String> colunaUUID = new TableColumn<>("UUID");
 
                 colunaId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdProduto().getId()));
                 colunaDescricao.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdProduto().getDescricao()));
                 colunaUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdUnidade().getDescricao()));
                 colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
+                colunaUUID.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUuidVenda().getUUID()));
 
-                tableViewStock.getColumns().addAll(colunaId, colunaDescricao, colunaUnidade, colunaQuantidade);
+                tableViewStock.getColumns().addAll(colunaId, colunaDescricao, colunaUnidade, colunaQuantidade, colunaUUID);
             }
 
             tableViewStock.setItems(produtosEmStock);
@@ -142,7 +144,6 @@ if (selectedProduto != null) {
 
             Mensagens.Erro("Erro!", "Selecione um produto para aprovar.");
         }
-    }
  */
 
 
