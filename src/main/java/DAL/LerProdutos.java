@@ -144,21 +144,7 @@ public class LerProdutos {
                 dados.getInt("quantidade"),
                 uuid);
     }
-
-    public void aprovarProduto(String idProduto) throws SQLException, IOException {
-        String query = "UPDATE Produto SET estado = 2 WHERE id = ?";
-        try (Connection conn = getConexao()) {
-            BaseDados.iniciarTransacao(conn);
-            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-                preparedStatement.setString(1, idProduto);
-                preparedStatement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace(); 
-            }
-            BaseDados.commit(conn);
-        }
-    }
-
+    
     public boolean gerarProdutoParaVenda(String idProduto, int idUnidade, double precoUnitario) throws IOException {
         Connection conn = null;
         try {
