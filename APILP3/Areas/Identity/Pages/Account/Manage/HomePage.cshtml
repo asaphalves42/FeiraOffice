@@ -15,7 +15,6 @@
             <th>Descrição</th>
             <th>Preço</th>
             <th>Unidade</th>
-            <th>Stock</th>
             <th>Seleção</th>
             <th>Quantidade</th>
         </tr>
@@ -25,10 +24,9 @@
         {
             <tr>
                 <td>@product.Code</td>
-                <td>@product.Description</td>
-                <td>@product.PVP</td>
-                <td>@product.Unit</td>
-                <td>@product.Stock</td>
+                <td name="descricao[@product.Code]">@product.Description</td>
+                <td name="preco[@product.Code]">@product.PVP</td>
+                <td name="unidade[@product.Code]">@product.Unit</td>
                 <td>
                     <input type="checkbox" name="selectedProducts" value="@product.Code">
                 </td>
@@ -40,26 +38,47 @@
     </tbody>
 </table>
 
-<div style="padding-bottom: 20px;">
-    <label>Total: <span id="totalLabel">0.00</span></label>
-</div>
-
 <button type="button" onclick="finalizarCompra()">Finalizar compra</button>
 
 <script>
     function finalizarCompra() {
         // Obter produtos selecionados e quantidades
         var selectedProducts = document.querySelectorAll('input[name="selectedProducts"]:checked');
-        var productQuantities = {};
+        var productsData = {};
 
         selectedProducts.forEach(function (product) {
             var code = product.value;
+            console.log(code);
             var quantity = document.querySelector('input[name="productQuantities[' + code + ']"]').value;
-            productQuantities[code] = quantity;
+            console.log(quantity);
+
+            // Obter outras informações do produto diretamente do HTML
+            var description = document.querySelector('td[name="descricao[' + code + ']"]').innerText;
+            console.log(description);
+           
+            var unit = document.querySelector('td[name="unidade[' + code + ']"]').innerText;
+            console.log(unit);
+            var preco = document.querySelector('td[name="preco[' + code + ']"]').innerText;
+            console.log(preco);
+           
+            // Adicionar o produto à lista
+            productsData[code] = {
+                 id: code,
+                 description: description,
+                 quantity: quantity,
+                 unit: unit,
+                 preco:preco
+            };
         });
 
-        window.location.href = "/Identity/Account/Manage/FinalizarCompra";
 
+        // Armazenar temporariamente os produtos selecionados no localStorage
+        localStorage.setItem('selectedProducts', JSON.stringify(productsData));
+        console.log(productsData);
+      
+        // Redirecionar para a página de finalização da compra
+        window.location.href = "/Identity/Account/Manage/FinalizarCompra";
     }
 </script>
+
 

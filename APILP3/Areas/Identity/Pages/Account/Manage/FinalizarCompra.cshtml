@@ -5,7 +5,30 @@
     Layout = "/Views/Shared/LayoutProdutos.cshtml";
 }
 
-<h2>Formulário de Morada de Faturação</h2>
+<h3>Produtos Selecionados</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID do produto</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Unidade</th>
+            <th>Quantidade</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr id="produtosSelecionados">
+                
+            </tr>
+        
+    </tbody>
+</table>
+
+
+
+<h3>Formulário de Morada de Faturação</h3>
 <form id="billingAddressForm">
     <label for="billingAddress1">Endereço 1:</label>
     <input type="text" id="billingAddress1" name="billingAddress1" required>
@@ -25,7 +48,7 @@
     <button type="button" onclick="copyBillingToShipping()">Copiar para Morada de Envio</button>
 </form>
 
-<h2>Formulário de Morada de Envio</h2>
+<h3>Formulário de Morada de Envio</h3>
 <form id="shippingAddressForm">
     <label for="shippingAddress1">Endereço 1:</label>
     <input type="text" id="shippingAddress1" name="shippingAddress1" required>
@@ -56,4 +79,42 @@
     }
 </script>
 
+
+<script>
+    // Recuperar os dados do localStorage
+    var productsDataString = localStorage.getItem('selectedProducts');
+
+    // Verificar se há dados no localStorage
+    if (productsDataString) {
+        // Converter a string JSON de volta para um objeto JavaScript
+        var productsData = JSON.parse(productsDataString);
+
+
+        // Atualizar a tabela com os produtos selecionados
+        var tableBody = document.querySelector('#produtosSelecionados tbody');
+
+        for (var code in productsData) {
+            var obj = productsData[code];
+            console.log(obj);
+            var descricao = obj.description;
+            var preco = obj.preco;
+            var unidade = obj.unit;
+            var quantidade = obj.quantity;
+
+
+            // Adicionar a linha à tabela
+            var newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                            <td>${code}</td>
+                            <td>${descricao}</td>
+                                    <td>${preco}</td>
+                                    <td>${unidade}</td>
+                                   <td>${quantidade}</td>
+                        `;
+            document.querySelector('table tbody').appendChild(newRow);
+        }
+    }
+
+
+</script>
 
