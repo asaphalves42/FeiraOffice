@@ -18,7 +18,8 @@ builder.Services.AddAuthentication(options =>
 })
    .AddCookie(options =>
    {
-       options.LoginPath = "/Identity/Account/Login"; // Redirect to login page if authentication fails
+       options.LoginPath = "/Identity/Account/Login";
+       options.LogoutPath = "/Identity/Account/Login";
    });
 
 
