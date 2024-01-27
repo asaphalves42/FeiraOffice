@@ -49,7 +49,8 @@
 </form>
 
 <h3>Formulário de Morada de Envio</h3>
-<form id="shippingAddressForm">
+<form id="shippingAddressForm" method="post">
+
     <label for="shippingAddress1">Endereço 1:</label>
     <input type="text" id="shippingAddress1" name="shippingAddress1" required>
 
@@ -65,7 +66,9 @@
     <label for="shippingCountry">País:</label>
     <input type="text" id="shippingCountry" name="shippingCountry" required>
 
-    <button type="submit">Finalizar Compra</button>
+    <button id="order-submit" type="submit" class="w-100 btn btn-lg btn-primary">
+        Finalizar Compra
+    </button>
 </form>
 
 <script>
@@ -89,6 +92,8 @@
         // Converter a string JSON de volta para um objeto JavaScript
         var productsData = JSON.parse(productsDataString);
 
+        TempData["productsDataString"] = productsDataString;
+
 
         // Atualizar a tabela com os produtos selecionados
         var tableBody = document.querySelector('#produtosSelecionados tbody');
@@ -107,14 +112,12 @@
             newRow.innerHTML = `
                             <td>${code}</td>
                             <td>${descricao}</td>
-                                    <td>${preco}</td>
-                                    <td>${unidade}</td>
-                                   <td>${quantidade}</td>
+                            <td>${preco}</td>
+                            <td>${unidade}</td>
+                            <td>${quantidade}</td>
                         `;
             document.querySelector('table tbody').appendChild(newRow);
         }
     }
-
-
 </script>
 

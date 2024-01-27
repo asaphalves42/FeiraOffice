@@ -49,6 +49,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+
 app.UseStaticFiles();
 
 app.UseRouting();

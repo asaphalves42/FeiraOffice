@@ -39,5 +39,9 @@ public class APILP3User : IdentityUser
     [Column(TypeName = "nvarchar(100)")]
     public string Nif { get; set; }
 
+    [PersonalData]
+    [Column(TypeName = "bit")]
+    public bool Active { get; set; }
+
 }
 

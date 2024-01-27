@@ -8,6 +8,8 @@
 
 <h3>Produtos</h3>
 
+
+
 <table class="table">
     <thead>
         <tr>
@@ -38,13 +40,16 @@
     </tbody>
 </table>
 
-<button type="button" onclick="finalizarCompra()">Finalizar compra</button>
+    <form id="formOrder" method="post">
+        <button type="button" onclick="finalizarCompra()">Finalizar compra</button>
+    </form>
 
 <script>
     function finalizarCompra() {
         // Obter produtos selecionados e quantidades
         var selectedProducts = document.querySelectorAll('input[name="selectedProducts"]:checked');
         var productsData = {};
+        var form = document.getElementById('formOrder');
 
         selectedProducts.forEach(function (product) {
             var code = product.value;

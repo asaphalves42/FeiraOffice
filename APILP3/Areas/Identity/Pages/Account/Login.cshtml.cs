@@ -5,7 +5,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using APILP3.Areas.Identity.Data;
+using APILP3.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -89,20 +92,26 @@ namespace APILP3.Areas.Identity.Pages.Account
                         if (response.IsSuccessStatusCode)
                         {
                             _logger.LogInformation("Utilizador autenticado com sucesso.");
+                            string responseData = await response.Content.ReadAsStringAsync();
+                            UserRequest userReq = JsonSerializer.Deserialize<UserRequest>(responseData);
+                            APILP3User userAux = userReq.Client.First();
 
                             var claims = new List<Claim>
-                            {
-                                new Claim(ClaimTypes.Name,Input.Email ), 
-                            };
+                                {
+                                    new Claim("APILP3User", JsonSerializer.Serialize(userAux))
+                                };
 
                             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
                             var authProperties = new AuthenticationProperties
                             {
-                                
+                                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1),
+                                IsPersistent = true,
                             };
 
-                            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                            await HttpContext.SignInAsync(
+                                CookieAuthenticationDefaults.AuthenticationScheme,
+                                new ClaimsPrincipal(claimsIdentity),
+                                authProperties);
 
                             return Redirect("/Identity/Account/Manage/HomePage");
 
@@ -115,7 +124,7 @@ namespace APILP3.Areas.Identity.Pages.Account
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Erro ao autenticar usuário: {ex.Message}");
+                        _logger.LogError($"Erro ao autenticar usuário: {ex.ToString()}");
                         ModelState.AddModelError(string.Empty, "Erro ao autenticar usuário.");
                         return Page();
                     }
