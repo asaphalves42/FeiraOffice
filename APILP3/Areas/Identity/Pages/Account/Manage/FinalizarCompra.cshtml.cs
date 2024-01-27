@@ -47,9 +47,7 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
                             _logger.LogInformation("UserID ORDER() -> ." + user.Id);
                             _logger.LogInformation("SelectedProducts -> ." + SelectedProducts.Count());
 
-                            var model = TempData["productsDataString"];
-                            _logger.LogInformation("model...." + model.ToString());
-
+                            
                             Order order = new Order(
 
 

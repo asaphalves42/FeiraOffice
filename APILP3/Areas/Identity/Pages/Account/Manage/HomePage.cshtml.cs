@@ -25,6 +25,7 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
         }
 
         public async Task<IActionResult> OnGet()
+
         {
             var apiEndpoint = "https://services.inapa.com/feiraoffice/api/product/";
             var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes("FG2:W0gyYJ!)Y6"));
@@ -59,18 +60,6 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
             return Page();
 
         }
-
-
-       public async Task<IActionResult> OnPost()
-        {
-
-
-
-
-
-
-            return null;
-        }
-
     }
+
 }

@@ -51,21 +51,51 @@
         var productsData = {};
         var form = document.getElementById('formOrder');
 
+
         selectedProducts.forEach(function (product) {
             var code = product.value;
-            console.log(code);
+           
             var quantity = document.querySelector('input[name="productQuantities[' + code + ']"]').value;
-            console.log(quantity);
-
+       
             // Obter outras informações do produto diretamente do HTML
             var description = document.querySelector('td[name="descricao[' + code + ']"]').innerText;
-            console.log(description);
-           
+            
             var unit = document.querySelector('td[name="unidade[' + code + ']"]').innerText;
-            console.log(unit);
+         
             var preco = document.querySelector('td[name="preco[' + code + ']"]').innerText;
-            console.log(preco);
-           
+
+
+            // Criar campos de entrada ocultos e adicioná-los ao formulário
+            var inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = 'selectedProductsData[' + code + '][id]';
+            inputId.value = code;
+            form.appendChild(inputId);
+
+            var inputDescription = document.createElement('input');
+            inputDescription.type = 'hidden';
+            inputDescription.name = 'selectedProductsData[' + code + '][description]';
+            inputDescription.value = description;
+            form.appendChild(inputDescription);
+
+            var inputQuantity = document.createElement('input');
+            inputQuantity.type = 'hidden';
+            inputQuantity.name = 'selectedProductsData[' + code + '][quantity]';
+            inputQuantity.value = quantity;
+            form.appendChild(inputQuantity);
+
+            var inputUnit = document.createElement('input');
+            inputUnit.type = 'hidden';
+            inputUnit.name = 'selectedProductsData[' + code + '][unit]';
+            inputUnit.value = unit;
+            form.appendChild(inputUnit);
+
+            var inputPreco = document.createElement('input');
+            inputPreco.type = 'hidden';
+            inputPreco.name = 'selectedProductsData[' + code + '][preco]';
+            inputPreco.value = preco;
+            form.appendChild(inputPreco);
+
             // Adicionar o produto à lista
             productsData[code] = {
                  id: code,
@@ -76,13 +106,16 @@
             };
         });
 
-
         // Armazenar temporariamente os produtos selecionados no localStorage
         localStorage.setItem('selectedProducts', JSON.stringify(productsData));
-        console.log(productsData);
-      
+        console.log(form);
+
+        sd
+        form.submit();
         // Redirecionar para a página de finalização da compra
         window.location.href = "/Identity/Account/Manage/FinalizarCompra";
+
+       
     }
 </script>
 
