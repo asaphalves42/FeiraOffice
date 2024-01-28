@@ -10,6 +10,7 @@
         public double Stock { get; set; }
         public string Unit {  get; set; }
         public bool Active { get; set; }
+        public int Quantity { get; set; }
 
     }
 }

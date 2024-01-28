@@ -1,5 +1,6 @@
 using APILP3.Models;
 using Azure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -60,12 +61,29 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
             return Page();
 
         }
-
-        public async Task<IActionResult> OnPostAsync()
+       
+        [HttpPost]
+        [Route("/Identity/Account/Manage/HomePage")]
+        public async Task<IActionResult> OnPostAsync([FromBody] List<Product> selectedProductsData)
         {
-            return null;
-        }
+            _logger.LogInformation(selectedProductsData.ToString());
+            // Processar a string JSON em SelectedProducts
+            // Aqui você pode converter a string JSON de volta para a lista de produtos ou fazer o que for necessário
 
+            // Exemplo: var products = JsonSerializer.Deserialize<List<Product>>(SelectedProducts);
+
+            // Se precisar, você pode acessar o token de verificação de solicitação usando User.Claims
+            // var verificationToken = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/identity/claims/nonce")?.Value;
+
+            // Seu código de processamento aqui
+
+            TempData["SelectedProductsData"] = selectedProductsData;
+
+            // Após processar os dados, você pode redirecionar para outra página ou realizar outras ações
+            return RedirectToPage("/Identity/Account/Manage/FinalizarCompra");
+        }
     }
 
 }
+
+

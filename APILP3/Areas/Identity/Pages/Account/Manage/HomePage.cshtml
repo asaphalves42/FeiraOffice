@@ -27,7 +27,7 @@
             <tr>
                 <td>@product.Code</td>
                 <td name="descricao[@product.Code]">@product.Description</td>
-                <td name="preco[@product.Code]">@product.PVP</td>
+                <td name="pvp[@product.Code]">@product.PVP</td>
                 <td name="unidade[@product.Code]">@product.Unit</td>
                 <td>
                     <input type="checkbox" name="selectedProducts" value="@product.Code">
@@ -40,16 +40,16 @@
     </tbody>
 </table>
 
-    <form id="formOrder" method="post">
+    
         <button type="button" onclick="finalizarCompra()">Finalizar compra</button>
-    </form>
+   
 
 <script>
     function finalizarCompra() {
         // Obter produtos selecionados e quantidades
         var selectedProducts = document.querySelectorAll('input[name="selectedProducts"]:checked');
         var productsData = {};
-        var form = document.getElementById('formOrder');
+        
 
 
         selectedProducts.forEach(function (product) {
@@ -61,61 +61,67 @@
             var description = document.querySelector('td[name="descricao[' + code + ']"]').innerText;
             
             var unit = document.querySelector('td[name="unidade[' + code + ']"]').innerText;
-         
-            var preco = document.querySelector('td[name="preco[' + code + ']"]').innerText;
 
+            // Corrigir: converter pvp para um número
+            var pvp = parseFloat(document.querySelector('td[name="pvp[' + code + ']"]').innerText.replace(',', '.'));
 
-            // Criar campos de entrada ocultos e adicioná-los ao formulário
-            var inputId = document.createElement('input');
-            inputId.type = 'hidden';
-            inputId.name = 'selectedProductsData[' + code + '][id]';
-            inputId.value = code;
-            form.appendChild(inputId);
-
-            var inputDescription = document.createElement('input');
-            inputDescription.type = 'hidden';
-            inputDescription.name = 'selectedProductsData[' + code + '][description]';
-            inputDescription.value = description;
-            form.appendChild(inputDescription);
-
-            var inputQuantity = document.createElement('input');
-            inputQuantity.type = 'hidden';
-            inputQuantity.name = 'selectedProductsData[' + code + '][quantity]';
-            inputQuantity.value = quantity;
-            form.appendChild(inputQuantity);
-
-            var inputUnit = document.createElement('input');
-            inputUnit.type = 'hidden';
-            inputUnit.name = 'selectedProductsData[' + code + '][unit]';
-            inputUnit.value = unit;
-            form.appendChild(inputUnit);
-
-            var inputPreco = document.createElement('input');
-            inputPreco.type = 'hidden';
-            inputPreco.name = 'selectedProductsData[' + code + '][preco]';
-            inputPreco.value = preco;
-            form.appendChild(inputPreco);
 
             // Adicionar o produto à lista
-            productsData[code] = {
+           productsData[code] = {
                  id: code,
                  description: description,
                  quantity: quantity,
                  unit: unit,
-                 preco:preco
+                 pvp:pvp
             };
         });
 
+       
+        // Criação de uma lista de produtos a partir da classe ProductRequest
+         productRequest = {
+            status: "OK",
+             products: Object.keys(productsData).map(code => ({
+                 id: productsData[code].id,
+                description: productsData[code].description,
+              quantity: productsData[code].quantity,
+                 unit: productsData[code].unit,
+                pvp: productsData[code].pvp
+            }))
+        };
+
         // Armazenar temporariamente os produtos selecionados no localStorage
         localStorage.setItem('selectedProducts', JSON.stringify(productsData));
-        console.log(form);
-
         
-        form.submit();
-        // Redirecionar para a página de finalização da compra
-        window.location.href = "/Identity/Account/Manage/FinalizarCompra";
+        
+        // Step 2: Create JSON string from the data
+        var jsonData = JSON.stringify(productRequest);
+        console.log(jsonData);
 
-       
+        // Step 3: Send the request using fetch
+        fetch('/Identity/Account/Manage/HomePage', {
+            method: 'POST',
+            body: jsonData,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na solicitação');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Sucesso:', data);
+
+                window.location.href = '/Identity/Account/Manage/FinalizarCompra';
+                
+            })
+            .catch((error) => {
+                console.error('Erro:', error);
+
+            });
+ 
     }
 </script>
 
