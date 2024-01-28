@@ -60,6 +60,12 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
             return Page();
 
         }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            return null;
+        }
+
     }
 
 }
