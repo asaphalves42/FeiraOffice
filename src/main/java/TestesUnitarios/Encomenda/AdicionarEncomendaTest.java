@@ -3,71 +3,116 @@ package TestesUnitarios.Encomenda;
 import DAL.LerEncomenda;
 import Model.*;
 import Utilidades.BaseDados;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
+
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 public class AdicionarEncomendaTest {
-/*
+
+    @BeforeClass
+    public static void configurarHeadlessToolkit() {
+
+        new JFXPanel();
+
+        // Configura o Toolkit para usar o HeadlessToolkit
+        Platform.runLater(() -> {
+
+            System.setProperty("javafx.macosx.embedded", "true");
+            System.setProperty("javafx.headless", "true");
+        });
+    }
+@Test
+    public void adicionarEncomenda() throws SQLException {
+
+        LerEncomenda lerEncomenda = new LerEncomenda();
 
 
-    @Test
-    public void testAdicionarEncomendaBaseDeDados() {
-        // Criação de objetos de teste
-        BaseDados baseDadosMock = Mockito.mock(BaseDados.class);
-        Encomenda encomenda = criarEncomendaDeTeste();
-        LerEncomenda lerencomenda = new LerEncomenda();
 
+        Fornecedor fornecedor = new Fornecedor("Nome do Fornecedor", "123456789");
+        Pais pais = new Pais("Nome do País", "Código do País");
+
+
+
+        Unidade unidade = new Unidade(1,"Box");
+
+        Encomenda encomenda = new Encomenda(
+                220,
+                "PL33333",
+                LocalDate.now(),
+                fornecedor,
+                pais,
+                150.0,
+                50.0,
+                200.0,
+                EstadoEncomenda.Pendente
+        );
+
+        // Adicionar produtos à encomenda
+        Produto produto1 = new Produto(
+                "121",
+                "TesteADD",
+                unidade
+        );
+        Produto produto2 = new Produto(
+                "541",
+                "TesteADDV2",
+                unidade
+        );
+        LinhaEncomenda linha1 = new LinhaEncomenda(produto1, 2);
+        LinhaEncomenda linha2 = new LinhaEncomenda(produto2, 3);
+
+// Adicionar as linhas à encomenda
+    encomenda.setLinhas(new ArrayList<>());
+        encomenda.setLinha(linha1);
+        encomenda.setLinha(linha2);
         try {
-            // Configuração do comportamento esperado para o método ExecutarPreparementStatement
-            when(baseDadosMock.ExecutarPreparementStatement(any(String.class))).thenReturn(1);
+            int resultado = lerEncomenda.adicionarEncomendaBaseDeDados(encomenda);
+            System.out.println("Resultado: " + resultado);
 
-            // Chama o método a ser testado
-            int idEncomenda = lerencomenda.adicionarEncomendaBaseDeDados(baseDadosMock, encomenda);
-
-            // Verifica se o ID retornado é maior que 0, indicando que a encomenda foi adicionada com sucesso
-            assertTrue(idEncomenda > 0);
-
-            // Verifica se o método ExecutarPreparementStatement foi chamado com a query correta
-            Mockito.verify(baseDadosMock).ExecutarPreparementStatement(any(String.class));
-
-            // Verifica se o método Desligar foi chamado
-            Mockito.verify(baseDadosMock).Desligar();
+            // Implemente ou remova o método excluirEncomendaDaBaseDeDados(resultado) conforme necessário.
 
         } catch (IOException e) {
-            // Trate a exceção ou falha, se necessário
-            fail("Exceção não esperada: " + e.getMessage());
+            System.out.println("Exceção não esperada: " + e.getMessage());
         }
     }
+   @Test
+    public void excluirEncomendaDaBaseDeDados() throws IOException {
+        // Lógica para excluir a encomenda da base de dados
+        Connection conexao = null;
+        try {
+            conexao = BaseDados.getConexao();
+            BaseDados.iniciarTransacao(conexao);
 
-    // Método auxiliar para criar uma instância de Encomenda de teste
-    private Encomenda criarEncomendaDeTeste() {
-        // Crie uma Encomenda de teste com dados fictícios
-        Encomenda encomenda = new Encomenda(1, "Ref123", LocalDate.now(), new Fornecedor(), new Pais(),
-                new ArrayList<>(), Estado.Pendente);
+            // Exemplo de lógica de exclusão na tabela Encomenda (adapte conforme necessário)
+            String query = "DELETE FROM Encomenda WHERE id = ?";
+            try (PreparedStatement statement = conexao.prepareStatement(query)) {
+                statement.setInt(1, 220);
+                statement.executeUpdate();
+            }
 
-        Unidade unidade = new Unidade(1, "Teste");
+            // Exemplo de lógica de exclusão na tabela Linha_Encomenda (adapte conforme necessário)
+            query = "DELETE FROM Linha_Encomenda WHERE Id_Encomenda = ?";
+            try (PreparedStatement statement = conexao.prepareStatement(query)) {
+                statement.setInt(1, 220);
+                statement.executeUpdate();
+            }
 
-        // Adicione linhas de encomenda, produtos, etc., conforme necessário
-        Fornecedor  fornecedor = new Fornecedor("");
-
-        Produto produto1 = new Produto("1128121", fornecedor, "999101pt", "naosei", unidade, 1);
-
-        LinhaEncomenda linha1 = new LinhaEncomenda(produto1, 1.0);
-
-        Produto produto2 = new Produto("1128126", fornecedor, "999101pt", "naosei", unidade, 1);
-        LinhaEncomenda linha2 = new LinhaEncomenda(produto2, 1.0);
-
-        encomenda.setLinhas(new ArrayList<>(List.of(linha1, linha2)));
-
-        return encomenda;
+            BaseDados.commit(conexao);
+        } catch (Exception e) {
+            // Lidar com exceções, se necessário
+            e.printStackTrace();
+            BaseDados.rollback(conexao);
+        } finally {
+            BaseDados.Desligar();
+        }
     }
- */
 }
