@@ -6,6 +6,7 @@
     Layout = "/Views/Shared/LayoutProdutos.cshtml";
 }
 
+
 <h3>Produtos</h3>
 
 
@@ -31,6 +32,7 @@
                 <td name="unidade[@product.Code]">@product.Unit</td>
                 <td>
                     <input type="checkbox" name="selectedProducts" value="@product.Code">
+                    
                 </td>
                 <td>
                     <input type="number" name="productQuantities[@product.Code]" value="0" min="0">
@@ -41,20 +43,16 @@
 </table>
 
     
-        <button type="button" onclick="finalizarCompra()">Finalizar compra</button>
-   
+<button type="button" onclick="finalizarCompra()">Finalizar compra</button>
 
 <script>
     function finalizarCompra() {
         // Obter produtos selecionados e quantidades
         var selectedProducts = document.querySelectorAll('input[name="selectedProducts"]:checked');
-        var productsData = {};
+        var productsData = [];
         
-
-
         selectedProducts.forEach(function (product) {
             var code = product.value;
-           
             var quantity = document.querySelector('input[name="productQuantities[' + code + ']"]').value;
        
             // Obter outras informações do produto diretamente do HTML
@@ -67,60 +65,19 @@
 
 
             // Adicionar o produto à lista
-           productsData[code] = {
+           productsData.push({
                  id: code,
                  description: description,
                  quantity: quantity,
                  unit: unit,
                  pvp:pvp
-            };
+            });
         });
 
-       
-        // Criação de uma lista de produtos a partir da classe ProductRequest
-         productRequest = {
-            status: "OK",
-             products: Object.keys(productsData).map(code => ({
-                 id: productsData[code].id,
-                description: productsData[code].description,
-              quantity: productsData[code].quantity,
-                 unit: productsData[code].unit,
-                pvp: productsData[code].pvp
-            }))
-        };
-
-        // Armazenar temporariamente os produtos selecionados no localStorage
         localStorage.setItem('selectedProducts', JSON.stringify(productsData));
+       
         
-        
-        // Step 2: Create JSON string from the data
-        var jsonData = JSON.stringify(productRequest);
-        console.log(jsonData);
-
-        // Step 3: Send the request using fetch
-        fetch('/Identity/Account/Manage/HomePage', {
-            method: 'POST',
-            body: jsonData,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro na solicitação');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Sucesso:', data);
-
-                window.location.href = '/Identity/Account/Manage/FinalizarCompra';
-                
-            })
-            .catch((error) => {
-                console.error('Erro:', error);
-
-            });
+        window.location.href = '/Identity/Account/Manage/FinalizarCompra';
  
     }
 </script>

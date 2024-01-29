@@ -3,6 +3,7 @@ using Azure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging.Signing;
 using NuGet.Protocol;
@@ -25,7 +26,7 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
             _logger = logger;
         }
 
-        public async Task<IActionResult> OnGet()
+        public async Task OnGet()
 
         {
             var apiEndpoint = "https://services.inapa.com/feiraoffice/api/product/";
@@ -54,34 +55,13 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
                 {
                     _logger.LogError($"Erro ao procurar produtos: {ex.Message}");
                     ModelState.AddModelError(string.Empty, "Erro ao procurar produtos.");
-                    return Page();
                 }
             }
 
-            return Page();
+            _logger.LogInformation("OnGet Home Page >>>>");
 
         }
-       
-        [HttpPost]
-        [Route("/Identity/Account/Manage/HomePage")]
-        public async Task<IActionResult> OnPostAsync([FromBody] List<Product> selectedProductsData)
-        {
-            _logger.LogInformation(selectedProductsData.ToString());
-            // Processar a string JSON em SelectedProducts
-            // Aqui você pode converter a string JSON de volta para a lista de produtos ou fazer o que for necessário
-
-            // Exemplo: var products = JsonSerializer.Deserialize<List<Product>>(SelectedProducts);
-
-            // Se precisar, você pode acessar o token de verificação de solicitação usando User.Claims
-            // var verificationToken = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/identity/claims/nonce")?.Value;
-
-            // Seu código de processamento aqui
-
-            TempData["SelectedProductsData"] = selectedProductsData;
-
-            // Após processar os dados, você pode redirecionar para outra página ou realizar outras ações
-            return RedirectToPage("/Identity/Account/Manage/FinalizarCompra");
-        }
+      
     }
 
 }

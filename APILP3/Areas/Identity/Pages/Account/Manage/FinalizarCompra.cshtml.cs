@@ -10,6 +10,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using System.Net.Mail;
 using System.Collections.Specialized;
+using System.Drawing;
+using System.Globalization;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace APILP3.Areas.Identity.Pages.Account.Manage
 {
@@ -22,6 +26,9 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
             _logger = logger;
         }
 
+        [BindProperty]
+        public List<OrderLine> ProductsDataAux { get; set; }
+
         public async Task<IActionResult> OnPostAsync()
         {
             var apiEndpoint = "https://services.inapa.com/feiraoffice/api/order/";
@@ -33,20 +40,22 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
                 {
 
                     ClaimsPrincipal userPrincipal = HttpContext.User;
-                    Claim userClaim = userPrincipal.FindFirst("APILP3User");
-                    _logger.LogInformation("Try get user..." + userClaim.Type);
-                    _logger.LogInformation("Try get user2..." + userClaim.ValueType);
-                    if (userClaim != null)
-                    {
+
+
                         // Deserialize the user information from the claim
-                        APILP3User user = JsonSerializer.Deserialize<APILP3User>(userClaim.Value);
-                        _logger.LogInformation("Try get user3 ID..." + user.Id);
-                        _logger.LogInformation("Try get user3 Active..." + user.Active);
+                        var userId = userPrincipal.Claims.ElementAt(0).Value;
+                        var userAddress1 = userPrincipal.Claims.ElementAt(1).Value;
+                        var userAddress2 = userPrincipal.Claims.ElementAt(2).Value;
+                        var userCity = userPrincipal.Claims.ElementAt(3).Value;
+                        var userCodigoPostal = userPrincipal.Claims.ElementAt(4).Value;
+                        var userPais = userPrincipal.Claims.ElementAt(5).Value;
+                        var userActive = Boolean.Parse(userPrincipal.Claims.ElementAt(6).Value);
+
                         DateTime currentDate = DateTime.Now;
 
-                        if (!user.Active) //mudar isto
+                        if (userActive) 
                         {
-                            _logger.LogInformation("UserID ORDER() -> ." + user.Id);
+                            _logger.LogInformation("UserID ORDER() -> ." + userId);
                             // Obter dados do formulário de morada de faturação
                             string billingAddress1 = HttpContext.Request.Form["billingAddress1"];
                             string billingAddress2 = HttpContext.Request.Form["billingAddress2"];
@@ -61,70 +70,113 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
                             string shippingCity = HttpContext.Request.Form["shippingCity"];
                             string shippingCountry = HttpContext.Request.Form["shippingCountry"];
 
-                            Address billingAddress = new Address
-                            {
-                                Address1 = billingAddress1,
-                                Address2 = billingAddress2,
-                                PostalCode = billingPostalCode,
-                                City = billingCity,
-                                Country = billingCountry
-                            };
-
-                            Address shippingAddress = new Address
+                            Address billing = new Address
                             {
                                 Address1 = shippingAddress1,
-                                Address2 = shippingAddress2,
-                                PostalCode = shippingPostalCode,
-                                City = shippingCity,
-                                Country = shippingCountry
+                                Address2 = shippingAddress1,
+                                PostalCode = shippingAddress1,
+                                City = shippingAddress1,
+                                Country = shippingAddress1
+                            };
+
+                            Address delivery = new Address
+                            {
+                                Address1 = userAddress1,
+                                Address2 = userAddress2,
+                                PostalCode = userCodigoPostal,
+                                City = userCity,
+                                Country = userPais
                             };
 
 
 
+                            string productsDataAuxJson = HttpContext.Request.Form["productsDataAux"];
+                            //ProductsDataAux = JsonSerializer.Deserialize<List<OrderLine>>(productsDataAuxJson);
+                            var Produtos = JsonConvert.DeserializeObject<List<Product>>(productsDataAuxJson);
 
+                            List<OrderLine> orders = new List<OrderLine>();
+                            
+                            var lineNumber = 0;
+                            foreach (var productsDataAux in Produtos)
+                            {
+                                lineNumber++;
+                                OrderLine orderLine = new OrderLine
+                                {
+                                    LineNumber = lineNumber,
+                                    Price = Math.Round(productsDataAux.PVP,2),
+                                    ProductCode = productsDataAux.ID,
+                                    Quantity = productsDataAux.Quantity,
+                                    Unit = productsDataAux.Unit,
+                                };
+                                orders.Add(orderLine);
 
+                                _logger.LogInformation(productsDataAux.ToString());
+                                
+                            }
+
+                            // Cálculo do NetAmount
+                            double netAmount = Produtos.Sum(line => line.PVP * line.Quantity);
+                            netAmount = Math.Round(netAmount, 2);
+
+                            //calculdo do total
+                            double taxAmount = netAmount * 0.23;
+                            taxAmount = Math.Round(taxAmount, 2);
+
+                           
+                            double total = netAmount + taxAmount;
+                            total = Math.Round(total, 2);
+
+                        
 
                             Order order = new Order
                             {
-                                Id = "IdTeste",
+                                Id = "",
                                 Date = currentDate,
-                                ClientId = user.Id,
-                                BillingAddress = billingAddress,
-                                Shipping = shippingAddress,
-                                //Net Amount
-                                TaxAmount = 0.23,
-                                //TotalAmount = NetAmount * TaxAmout
+                                ClientId = userId,
+                                BillingAddress = billing,
+                                DeliveryAddress = delivery,
+                                NetAmount = netAmount,
+                                TaxAmount = taxAmount,
+                                TotalAmount = total,
                                 Currency = "EUR",
 
                                 //Lista de produtos
-
-
-
-
+                                Lines = orders,
 
                             };
 
+                            var jsonData = JsonConvert.SerializeObject(order);
 
+                            
+                            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
 
+                            var jsonContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                            var response = await httpClient.PostAsync(apiEndpoint, jsonContent);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                _logger.LogInformation("Order criada com sucesso!");
+                            }
+                            else
+                            {
+                                _logger.LogInformation(response.StatusCode.ToString());
+                                _logger.LogInformation("Ocorreu um erro ao criar a order!");
+                            }
 
                         }
                         else
                         {
-                            return Page();
+
+                        _logger.LogInformation("User não foi aprovado!");
+
+                        //return RedirectToAction("HomePage","Utilizador não ativo!");
+
                         }
-
-                    }
-                    else
-                    {
-                        return Page();
-                    }
-
-
-
+                    
                 }
                 catch (Exception ex)
                 {
-
+                   
                 }
             }
 
@@ -133,86 +185,8 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
 
         }
 
-        public async Task<IActionResult> OnGet()
-        {
-            try
-            {
-                if (TempData.TryGetValue("ProdutosSelecionados", out var produtosSelecionadosBase64) &&
-                    produtosSelecionadosBase64 is string produtosSelecionadosBase64String)
-                {
-                    // Convertendo de Base64 para o array de bytes
-                    byte[] produtosSelecionadosBytes = Convert.FromBase64String(produtosSelecionadosBase64String);
-
-                    // Convertendo bytes de volta para a lista de produtos
-                    string produtosSelecionadosJson = Encoding.UTF8.GetString(produtosSelecionadosBytes);
-                    List<Product> produtosSelecionados = JsonSerializer.Deserialize<List<Product>>(produtosSelecionadosJson);
-                    
-
-                    // Agora, você pode usar a lista de produtos conforme necessário
-                    _logger.LogInformation("Produtos Selecionados Count: " + produtosSelecionados.Count);
-
-                  
-                    // Calcular a soma do valor total (preço * quantidade) dos produtos
-                    double somaTotal = CalcularSomaTotal(produtosSelecionados);
-
-                    _logger.LogInformation("Soma do PVP dos Produtos: " + somaTotal);
 
 
-                }
-                else
-                {
-                    _logger.LogInformation("Nenhum produto selecionado encontrado no TempData");
-                }
-
-                // Restante do seu código...
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro durante o processamento: " + ex.Message);
-                // Lide com a exceção conforme necessário...
-            }
-
-            return null;
-        }
-
-        private int GetProductQuantity(string productCode)
-        {
-            // Obtém o conteúdo dos produtos selecionados do TempData
-            if (TempData.TryGetValue("ProdutosSelecionados", out var produtosSelecionadosBase64))
-            {
-                if (produtosSelecionadosBase64 is string produtosSelecionadosBase64String)
-                {
-                    // Convertendo de Base64 para o array de bytes
-                    byte[] produtosSelecionadosBytes = Convert.FromBase64String(produtosSelecionadosBase64String);
-
-                    // Convertendo bytes de volta para a lista de produtos
-                    string produtosSelecionadosJson = Encoding.UTF8.GetString(produtosSelecionadosBytes);
-                    List<Product> produtosSelecionados = JsonSerializer.Deserialize<List<Product>>(produtosSelecionadosJson);
-
-                    // Log do conteúdo dos produtos selecionados
-                    int quantidade = 0;
-                    foreach (var produto in produtosSelecionados)
-                    {
-                        _logger.LogInformation($"Produto: Code = {produto.Code}, Description = {produto.Description}, Quantity = {produto.Quantity}, PVP = {produto.PVP}");
-                        quantidade = produto.Quantity;
-                    }
-
-                    _logger.LogInformation(quantidade.ToString());
-                    return quantidade;
-                }
-            }
-
-            // Retorna 0 se não encontrar a quantidade
-            return 0;
-        }
-
-
-        public double CalcularSomaTotal(List<Product> produtosSelecionados)
-        {
-            double somaTotal = produtosSelecionados.Sum(p => p.PVP * GetProductQuantity(p.ID));
-            return somaTotal;
-        }
 
     }
 }

@@ -6,6 +6,6 @@ namespace APILP3.Models
     {
         public string Status { get; set; }
 
-        public List<APILP3User> Client { get; set; }
+        public List<User> Client { get; set; }
     }
 }

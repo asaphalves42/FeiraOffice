@@ -27,27 +27,6 @@
 </table>
 
 
-
-<h3>Formulário de Morada de Faturação</h3>
-<form id="billingAddressForm">
-    <label for="billingAddress1">Endereço 1:</label>
-    <input type="text" id="billingAddress1" name="billingAddress1" required>
-
-    <label for="billingAddress2">Endereço 2:</label>
-    <input type="text" id="billingAddress2" name="billingAddress2">
-
-    <label for="billingPostalCode">Código Postal:</label>
-    <input type="text" id="billingPostalCode" name="billingPostalCode" required>
-
-    <label for="billingCity">Cidade:</label>
-    <input type="text" id="billingCity" name="billingCity" required>
-
-    <label for="billingCountry">País:</label>
-    <input type="text" id="billingCountry" name="billingCountry" required>
-
-    <button type="button" onclick="copyBillingToShipping()">Copiar para Morada de Envio</button>
-</form>
-
 <h3>Formulário de Morada de Envio</h3>
 <form id="shippingAddressForm" method="post">
 
@@ -66,55 +45,50 @@
     <label for="shippingCountry">País:</label>
     <input type="text" id="shippingCountry" name="shippingCountry" required>
 
+    <input type="hidden" id="productsDataAuxInput" name="productsDataAux" />
     <button id="order-submit" type="submit" class="w-100 btn btn-lg btn-primary">
         Finalizar Compra
     </button>
 </form>
 
-<script>
-    function copyBillingToShipping() {
-        // Copiar valores da morada de faturação para a morada de envio
-        document.getElementById('shippingAddress1').value = document.getElementById('billingAddress1').value;
-        document.getElementById('shippingAddress2').value = document.getElementById('billingAddress2').value;
-        document.getElementById('shippingPostalCode').value = document.getElementById('billingPostalCode').value;
-        document.getElementById('shippingCity').value = document.getElementById('billingCity').value;
-        document.getElementById('shippingCountry').value = document.getElementById('billingCountry').value;
-    }
-</script>
+
 
 
 <script>
     // Recuperar os dados do localStorage
-    var productsDataString = localStorage.getItem('selectedProducts');
-
+    var productsData = localStorage.getItem('selectedProducts');
+    console.log(productsData)
+    productsDataAux = JSON.parse(productsData)
     // Verificar se há dados no localStorage
-    if (productsDataString) {
-        // Converter a string JSON de volta para um objeto JavaScript
-        var productsData = JSON.parse(productsDataString);
+    if (productsDataAux) {
 
         // Atualizar a tabela com os produtos selecionados
         var tableBody = document.querySelector('#produtosSelecionados tbody');
-
-        for (var code in productsData) {
-            var obj = productsData[code];
-            console.log(obj);
-            var descricao = obj.description;
-            var preco = obj.pvp;
-            var unidade = obj.unit;
-            var quantidade = obj.quantity;
+        console.log(productsDataAux)
+        for (var product of productsDataAux) {
+            var id = product.id;
+            var descricao = product.description;
+            var preco = product.pvp;
+            var unidade = product.unit;
+            var quantidade = product.quantity;
 
 
             // Adicionar a linha à tabela
             var newRow = document.createElement('tr');
             newRow.innerHTML = `
-                            <td>${code}</td>
+                            <td>${id}</td>
                             <td>${descricao}</td>
                             <td>${preco}</td>
                             <td>${unidade}</td>
                             <td>${quantidade}</td>
                         `;
             document.querySelector('table tbody').appendChild(newRow);
+
+            document.getElementById('productsDataAuxInput').value = JSON.stringify(productsDataAux);
+            console.log(productsDataAux);
+
         }
     }
+
 </script>
 

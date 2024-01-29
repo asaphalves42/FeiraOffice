@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using APILP3.Areas.Identity.Data;
 using APILP3.Models;
+using Humanizer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -94,11 +95,19 @@ namespace APILP3.Areas.Identity.Pages.Account
                             _logger.LogInformation("Utilizador autenticado com sucesso.");
                             string responseData = await response.Content.ReadAsStringAsync();
                             UserRequest userReq = JsonSerializer.Deserialize<UserRequest>(responseData);
-                            APILP3User userAux = userReq.Client.First();
+                            User userAux = userReq.Client.First();
+
+                            _logger.LogInformation("User..." + userAux.ToString());
 
                             var claims = new List<Claim>
                                 {
-                                    new Claim("APILP3User", JsonSerializer.Serialize(userAux))
+                                    new Claim(ClaimTypes.NameIdentifier, userAux.Id),
+                                     new Claim(ClaimTypes.NameIdentifier, userAux.Address1),
+                                      new Claim(ClaimTypes.NameIdentifier, userAux.Address2),
+                                       new Claim(ClaimTypes.NameIdentifier, userAux.City),
+                                        new Claim(ClaimTypes.NameIdentifier, userAux.PostalCode),
+                                         new Claim(ClaimTypes.NameIdentifier, userAux.Country),
+                                         new Claim(ClaimTypes.NameIdentifier, userAux.Active.ToString()),
                                 };
 
                             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

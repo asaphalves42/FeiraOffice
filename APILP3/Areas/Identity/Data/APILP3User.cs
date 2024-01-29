@@ -43,5 +43,10 @@ public class APILP3User : IdentityUser
     [Column(TypeName = "bit")]
     public bool Active { get; set; }
 
+    public override string ToString()
+    {
+        return $"{Morada1},{Morada2},{Cidade},{Pais},{CodigoPostal}";
+    }
+
 }
 
