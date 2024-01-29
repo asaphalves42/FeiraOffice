@@ -4,8 +4,15 @@
 @{
     ViewData["Title"] = "Feira & Office";
     Layout = "/Views/Shared/LayoutProdutos.cshtml";
+    
 }
 
+@if (ViewData["FailureMessage"] != null)
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @ViewData["FailureMessage"]
+    </div>
+}
 
 <h3>Produtos</h3>
 

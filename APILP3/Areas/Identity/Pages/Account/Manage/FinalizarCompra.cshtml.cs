@@ -170,8 +170,9 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
 
                         _logger.LogInformation("User não foi aprovado!");
 
+                        ViewData["FailureMessage"] = "User não foi aprovado!";
+                        return RedirectToPage("HomePage");
                     
-
                         }
                     
                 }

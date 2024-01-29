@@ -13,17 +13,16 @@ namespace APILP3.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<APILP3User> _userManager;
+        
 
-        public HomeController(ILogger<HomeController> logger,UserManager<APILP3User> userManager)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            this._userManager = userManager;
+            
         }
 
         public IActionResult Index()
         {
-            ViewData["UserID"] =_userManager.GetUserId(this.User);
             return View();
         }
 

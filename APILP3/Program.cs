@@ -1,15 +1,12 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using APILP3.Data;
-using APILP3.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("APILP3DBContextConnection") ?? throw new InvalidOperationException("Connection string 'APILP3DBContextConnection' not found.");
+//var connectionString = builder.Configuration.GetConnectionString("APILP3DBContextConnection") ?? throw new InvalidOperationException("Connection string 'APILP3DBContextConnection' not found.");
 
-builder.Services.AddDbContext<APILP3DBContext>(options => options.UseSqlServer(connectionString));
+//builder.Services.AddDbContext<APILP3DBContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<APILP3User>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<APILP3DBContext>();
+//builder.Services.AddDefaultIdentity<APILP3User>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<APILP3DBContext>();
 
 builder.Services.AddAuthentication(options =>
 {
