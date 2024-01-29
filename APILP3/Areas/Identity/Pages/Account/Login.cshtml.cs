@@ -53,10 +53,10 @@ namespace APILP3.Areas.Identity.Pages.Account
         {
         
             _logger.LogInformation("OnGetAsync1");
-          //  if (User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
-            //    _logger.LogInformation("OnGetAsync2");
-             //   Response.Redirect("/");
+                _logger.LogInformation("OnGetAsync2");
+                Response.Redirect("/");
             }
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
