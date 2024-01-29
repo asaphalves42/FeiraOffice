@@ -14,6 +14,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace APILP3.Areas.Identity.Pages.Account.Manage
 {
@@ -169,7 +170,7 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
 
                         _logger.LogInformation("User não foi aprovado!");
 
-                        //return RedirectToAction("HomePage","Utilizador não ativo!");
+                    
 
                         }
                     
