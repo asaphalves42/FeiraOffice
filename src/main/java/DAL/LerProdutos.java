@@ -95,14 +95,16 @@ public class LerProdutos {
 
             String query = """
                     SELECT Produto.Id as id_produto,
-                    	Produto.Descricao as descricao_produto,
-                    	Unidade.Id as id_unidade,
-                    	Unidade.Descricao as descricao_unidade,
-                    	Stock.Quantidade as quantidade,
-                     	Produto.UUID as uuid
-                    FROM Stock
-                    	INNER JOIN Produto ON Produto.Id = Stock.Id_Produto
-                    	INNER JOIN Unidade ON Unidade.Id = Produto.Id_Unidade
+                       Produto.Descricao as descricao_produto,
+                       Unidade.Id as id_unidade,
+                       Unidade.Descricao as descricao_unidade,
+                       Stock.Quantidade as quantidade,
+                       Produto.UUID as uuid,
+                       Produto_Venda.preco_venda as preco_venda
+                       FROM Stock
+                       INNER JOIN Produto ON Produto.Id = Stock.Id_Produto
+                       INNER JOIN Unidade ON Unidade.Id = Produto.Id_Unidade
+                       INNER JOIN Produto_Venda ON Produto_Venda.id_produto = Stock.Id_Produto
                     """;
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
@@ -131,7 +133,8 @@ public class LerProdutos {
         );
 
         ProdutoVenda uuid = new ProdutoVenda(
-                dados.getString("uuid")
+                dados.getString("uuid"),
+                dados.getDouble("preco_venda")
         );
 
         Unidade unidade = new Unidade(
@@ -456,6 +459,7 @@ public class LerProdutos {
         }
         return false;
     }
+
 
 
 }

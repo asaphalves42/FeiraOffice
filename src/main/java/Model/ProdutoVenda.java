@@ -13,8 +13,11 @@ public class ProdutoVenda {
         this.precoVenda = precoVenda;
     }
 
-    public ProdutoVenda (String uuid){
+
+
+    public ProdutoVenda (String uuid, double precoVenda){
         this.UUID = uuid;
+        this.precoVenda = precoVenda;
     }
 
     public ProdutoVenda(Produto produto, Unidade unidade, double precoVenda, String UUID) {

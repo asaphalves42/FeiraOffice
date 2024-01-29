@@ -5,9 +5,12 @@ import DAL.LerUnidade;
 import Model.Produto;
 import Model.Stock;
 import Model.Unidade;
+import Utilidades.API;
 import Utilidades.Mensagens;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,6 +23,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import static Utilidades.API.getProduct;
 
 public class MenuProdutos {
 
@@ -56,6 +62,7 @@ public class MenuProdutos {
 
         produtosEmStock.addAll(lerProdutos.lerStock());
 
+
         if (!produtosEmStock.isEmpty()) {
             if (tableViewStock.getColumns().isEmpty()) {
                 TableColumn<Stock, String> colunaId = new TableColumn<>("ID Produto");
@@ -63,14 +70,16 @@ public class MenuProdutos {
                 TableColumn<Stock, String> colunaUnidade = new TableColumn<>("Unidade");
                 TableColumn<Stock, Integer> colunaQuantidade = new TableColumn<>("Quantidade");
                 TableColumn<Stock, String> colunaUUID = new TableColumn<>("UUID");
+                TableColumn<Stock, String> colunaPrecoVenda = new TableColumn<>("Preço de venda");
 
                 colunaId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdProduto().getId()));
                 colunaDescricao.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdProduto().getDescricao()));
                 colunaUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdUnidade().getDescricao()));
                 colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
                 colunaUUID.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUuidVenda().getUUID()));
+                colunaPrecoVenda.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getUuidVenda().getPrecoVenda())));
 
-                tableViewStock.getColumns().addAll(colunaId, colunaDescricao, colunaUnidade, colunaQuantidade, colunaUUID);
+                tableViewStock.getColumns().addAll(colunaId, colunaDescricao, colunaUnidade, colunaQuantidade, colunaUUID, colunaPrecoVenda);
             }
 
             tableViewStock.setItems(produtosEmStock);
@@ -80,6 +89,7 @@ public class MenuProdutos {
         }
 
     }
+
 
     public void tabelaProdutos(Produto stock) throws IOException {
 
