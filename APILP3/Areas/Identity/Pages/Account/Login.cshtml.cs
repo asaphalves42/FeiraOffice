@@ -107,6 +107,9 @@ namespace APILP3.Areas.Identity.Pages.Account
                                         new Claim(ClaimTypes.NameIdentifier, userAux.PostalCode),
                                          new Claim(ClaimTypes.NameIdentifier, userAux.Country),
                                          new Claim(ClaimTypes.NameIdentifier, userAux.Active.ToString()),
+                                         new Claim(ClaimTypes.NameIdentifier, userAux.Name),
+                                         new Claim(ClaimTypes.NameIdentifier, userAux.TaxIdentificationNumber),
+                                         new Claim(ClaimTypes.NameIdentifier, userAux.Email),
                                 };
 
                             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

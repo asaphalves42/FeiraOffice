@@ -5,7 +5,10 @@
     Layout = "/Views/Shared/LayoutProdutos.cshtml";
 }
 
-<h3>Produtos Selecionados</h3>
+
+<link rel="stylesheet" type="text/css" href="~/css/finalizarCompra.css" />
+
+<h3>Produtos selecionados</h3>
 
 <table class="table">
     <thead>
@@ -27,31 +30,65 @@
 </table>
 
 
-<h3>Formulário de Morada de Envio</h3>
-<form id="shippingAddressForm" method="post">
+<div class ="container-wrapper">
+    <div class="address-container">
+        <!-- Morada de Faturação -->
+        <h3>Morada de faturação</h3>
+        @foreach (var user in Model.dadosUtil)
+        {
+            <label for="billingAddress1">Nome:</label>
+            <input type="text" id="name" name="nome" value="@user.Name" disabled>
 
-    <label for="shippingAddress1">Endereço 1:</label>
-    <input type="text" id="shippingAddress1" name="shippingAddress1" required>
+            <label for="billingAddress1">E-mail:</label>
+            <input type="text" id="email" name="email" value="@user.Email" disabled>
 
-    <label for="shippingAddress2">Endereço 2:</label>
-    <input type="text" id="shippingAddress2" name="shippingAddress2">
+            <label for="billingAddress1">Endereço 1:</label>
+            <input type="text" id="billingAddress1" name="billingAddress1" value="@user.Address1" disabled>
 
-    <label for="shippingPostalCode">Código Postal:</label>
-    <input type="text" id="shippingPostalCode" name="shippingPostalCode" required>
+            <label for="billingAddress2">Endereço 2:</label>
+            <input type="text" id="billingAddress2" name="billingAddress2" value="@user.Address2" disabled>
 
-    <label for="shippingCity">Cidade:</label>
-    <input type="text" id="shippingCity" name="shippingCity" required>
+            <label for="billingPostalCode">Código Postal:</label>
+            <input type="text" id="billingPostalCode" name="billingPostalCode" value="@user.PostalCode" disabled>
 
-    <label for="shippingCountry">País:</label>
-    <input type="text" id="shippingCountry" name="shippingCountry" required>
+            <label for="billingCity">Cidade:</label>
+            <input type="text" id="billingCity" name="billingCity" value="@user.City" disabled>
 
-    <input type="hidden" id="productsDataAuxInput" name="productsDataAux" />
-    <button id="order-submit" type="submit" class="w-100 btn btn-lg btn-primary">
-        Finalizar Compra
-    </button>
-</form>
+            <label for="billingCountry">País:</label>
+            <input type="text" id="billingCountry" name="billingCountry" value="@user.Country" disabled>
+        }
+    </div>
 
+    <div class="address-forms-container">
+        <h3>Morada de envio</h3>
+        <!-- Formulário de Morada de Envio -->
+        <form id="shippingAddressForm" method="post">
 
+            <label for="shippingAddress1">Endereço 1:</label>
+            <input type="text" id="shippingAddress1" name="shippingAddress1" required>
+
+            <label for="shippingAddress2">Endereço 2:</label>
+            <input type="text" id="shippingAddress2" name="shippingAddress2">
+
+            <label for="shippingPostalCode">Código Postal:</label>
+            <input type="text" id="shippingPostalCode" name="shippingPostalCode" required>
+
+            <label for="shippingCity">Cidade:</label>
+            <input type="text" id="shippingCity" name="shippingCity" required>
+
+            <label for="shippingCountry">País:</label>
+            <input type="text" id="shippingCountry" name="shippingCountry" required>
+
+            <input type="hidden" id="productsDataAuxInput" name="productsDataAux" />
+
+            <button id="order-submit" type="submit" class="w-100 btn btn-lg btn-primary">
+                Finalizar compra
+            </button>
+        </form>
+
+    </div>
+
+</div>
 
 
 <script>

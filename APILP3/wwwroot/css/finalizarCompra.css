@@ -1,0 +1,59 @@
+﻿.container-wrapper {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1000px; /* Ajuste conforme necessário */
+    margin: 10px auto 10px 0; /* Adicionando margem à direita e centralizando a div na página */
+}
+
+.address-container,
+.address-forms-container {
+    width: 48%; /* Cada div ocupará metade da largura da div pai */
+}
+
+.address-container {
+    max-width: 400px; /* Ajuste conforme necessário */
+    margin: 20 auto; /* Isso centralizará a div na página */
+}
+
+    .address-container label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .address-container input {
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    .address-container h3 {
+        margin-bottom: 10px;
+    }
+
+    .address-container form {
+        text-align: left;
+    }
+
+.address-forms-container {
+    max-width: 400px; /* Ajuste conforme necessário */
+    margin: 20 auto; /* Isso centralizará a div na página */
+}
+
+    .address-forms-container label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .address-forms-container input {
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    .address-forms-container h3 {
+        margin-bottom: 10px;
+    }
+
+    .address-forms-container form {
+        text-align: left;
+    }

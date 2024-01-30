@@ -14,6 +14,7 @@ using System.Globalization;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace APILP3.Areas.Identity.Pages.Account.Manage
 {
@@ -28,6 +29,7 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
         public List<OrderLine> ProductsDataAux { get; set; }
+        public List<User> dadosUtil { get; set; } = new List<User>();
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -56,13 +58,7 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
                         if (userActive) 
                         {
                             _logger.LogInformation("UserID ORDER() -> ." + userId);
-                            // Obter dados do formulário de morada de faturação
-                            string billingAddress1 = HttpContext.Request.Form["billingAddress1"];
-                            string billingAddress2 = HttpContext.Request.Form["billingAddress2"];
-                            string billingPostalCode = HttpContext.Request.Form["billingPostalCode"];
-                            string billingCity = HttpContext.Request.Form["billingCity"];
-                            string billingCountry = HttpContext.Request.Form["billingCountry"];
-
+                           
                             // Obter dados do formulário de morada de envio
                             string shippingAddress1 = HttpContext.Request.Form["shippingAddress1"];
                             string shippingAddress2 = HttpContext.Request.Form["shippingAddress2"];
@@ -72,20 +68,20 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
 
                             Address billing = new Address
                             {
-                                Address1 = shippingAddress1,
-                                Address2 = shippingAddress1,
-                                PostalCode = shippingAddress1,
-                                City = shippingAddress1,
-                                Country = shippingAddress1
-                            };
-
-                            Address delivery = new Address
-                            {
                                 Address1 = userAddress1,
                                 Address2 = userAddress2,
                                 PostalCode = userCodigoPostal,
                                 City = userCity,
                                 Country = userPais
+                            };
+
+                            Address delivery = new Address
+                            {
+                                Address1 = shippingAddress1,
+                                Address2 = shippingAddress2,
+                                PostalCode = shippingPostalCode,
+                                City = shippingCity,
+                                Country = shippingCountry
                             };
 
 
@@ -187,9 +183,50 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
 
         }
 
+        public async Task<IActionResult> OnGet()
+        {
+            using (var httpClient = new HttpClient())
+            {
+                try
+                {
+                     ClaimsPrincipal userPrincipal = HttpContext.User;
+                            var userId = userPrincipal.Claims.ElementAt(0).Value;
+                            var userAddress1 = userPrincipal.Claims.ElementAt(1).Value;
+                            var userAddress2 = userPrincipal.Claims.ElementAt(2).Value;
+                            var userCity = userPrincipal.Claims.ElementAt(3).Value;
+                            var userCodigoPostal = userPrincipal.Claims.ElementAt(4).Value;
+                            var userPais = userPrincipal.Claims.ElementAt(5).Value;
+                            var active = Boolean.Parse(userPrincipal.Claims.ElementAt(6).Value);
+                            var userNome = userPrincipal.Claims.ElementAt(7).Value;
+                            var userNif = userPrincipal.Claims.ElementAt(8).Value;
+                            var userEmail = userPrincipal.Claims.ElementAt(9).Value;
 
+                    User user = new User
+                    {
+                        Id = userId,
+                        Address1 = userAddress1,
+                        Address2 = userAddress2,
+                        PostalCode = userCodigoPostal,
+                        City = userCity,
+                        Country = userPais,
+                        Name = userNome,
+                        Active = active,
+                        Email = userEmail,
+                       
+                    };
 
+                    dadosUtil.Add(user);
 
+                    _logger.LogInformation(dadosUtil.ToString());
+
+                    } catch (Exception ex)
+                {
+                    _logger.LogInformation("Erro ao obter dados do utilizador");
+                    ex.ToString();
+                }
+            }
+            return null;
+        }
     }
 }
     
