@@ -157,7 +157,8 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
                             if (response.IsSuccessStatusCode)
                             {
                                 _logger.LogInformation("Order criada com sucesso!");
-                            }
+                                return RedirectToPage("HomePage");
+                        }
                             else
                             {
                                 _logger.LogInformation(response.StatusCode.ToString());
