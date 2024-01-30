@@ -119,9 +119,8 @@ public class MenuClientes {
             String idCliente = clienteSelecionado.getId();
 
             try {
-
-
                 deleteCliente(idCliente);
+                tableViewClientes.getItems().remove(clienteSelecionado);
                 Mensagens.Informacao("Cliente Eliminado!", "Cliente Eliminado com sucesso");
 
 
