@@ -40,10 +40,10 @@ public class EncomendasWeb {
 
         if (!orders.isEmpty()) {
             if (tableViewEncomendasWeb.getItems().isEmpty()) {
-                TableColumn<OrderWeb, String> colunaId = new TableColumn<>("ID");
-                TableColumn<OrderWeb, String> nomeColuna = new TableColumn<>("Nome");
-                TableColumn<OrderWeb, String> emailColuna = new TableColumn<>("E-mail");
-                TableColumn<OrderWeb, String> colunaMorada1 = new TableColumn<>("Morada 1");
+                TableColumn<OrderWeb, String> colunaId = new TableColumn<>("ID da Order");
+                TableColumn<OrderWeb, String> colunaData = new TableColumn<>("Data");
+                TableColumn<OrderWeb, String> colunaIdCliente = new TableColumn<>("Id cliente");
+                TableColumn<OrderWeb, String> colunaNomeCliente = new TableColumn<>("Nome cliente");
                 TableColumn<OrderWeb, String> colunaMorada2 = new TableColumn<>("Morada 2");
                 TableColumn<OrderWeb, String> colunaCodPostal = new TableColumn<>("Código postal");
                 TableColumn<OrderWeb, String> colunaCidade = new TableColumn<>("Cidade");
@@ -53,9 +53,9 @@ public class EncomendasWeb {
 
                 // Associe as propriedades dos objetos Cliente às colunas
                 colunaId.setCellValueFactory(new PropertyValueFactory<>("Id"));
-                nomeColuna.setCellValueFactory(new PropertyValueFactory<>("Name"));
-                emailColuna.setCellValueFactory(new PropertyValueFactory<>("Email"));
-                colunaMorada1.setCellValueFactory(new PropertyValueFactory<>("Address1"));
+                colunaData.setCellValueFactory(new PropertyValueFactory<>("Name"));
+                colunaIdCliente.setCellValueFactory(new PropertyValueFactory<>("Email"));
+                colunaNomeCliente.setCellValueFactory(new PropertyValueFactory<>("Address1"));
                 colunaMorada2.setCellValueFactory(new PropertyValueFactory<>("Address2"));
                 colunaCodPostal.setCellValueFactory(new PropertyValueFactory<>("PostalCode"));
                 colunaCidade.setCellValueFactory(new PropertyValueFactory<>("City"));
@@ -64,7 +64,7 @@ public class EncomendasWeb {
                 colunaEstado.setCellValueFactory(new PropertyValueFactory<>("Active"));
 
                 // Adicione as colunas à TableView
-                tableViewEncomendasWeb.getColumns().addAll(colunaId, nomeColuna, emailColuna, colunaMorada1, colunaMorada2, colunaCodPostal,
+                tableViewEncomendasWeb.getColumns().addAll(colunaId, colunaData, colunaIdCliente, colunaNomeCliente, colunaMorada2, colunaCodPostal,
                         colunaCidade, colunaPais, colunaNif, colunaEstado);
 
                 // Adicione os dados à TableView
