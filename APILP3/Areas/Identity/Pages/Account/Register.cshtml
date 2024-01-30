@@ -25,10 +25,22 @@
             </div>
 
     <div class="form-floating mb-2">
-        <input asp-for="Input.Morada2" class="form-control" autocomplete="morada2" aria-required="false" placeholder="Morada 2" />
+        <input asp-for="Input.Morada2" id="morada2Input" class="form-control" autocomplete="morada2" placeholder="Morada 2" />
         <label asp-for="Input.Morada2">Morada 2</label>
-        
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var morada2Input = document.getElementById('morada2Input');
+            var form = morada2Input.form;
+
+            form.addEventListener('submit', function () {
+                if (morada2Input.value.trim() === '') {
+                    morada2Input.value = '-';  // Define o valor como um espaço em branco se estiver vazio
+                }
+            });
+        });
+    </script>
 
     <div class="form-floating mb-2">
         <input asp-for="Input.CodigoPostal" class="form-control" autocomplete="codigopostal" aria-required="true" placeholder="Codigo Postal" />
@@ -70,6 +82,15 @@
             </div>
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Registar</button>
         </form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var morada2Input = document.getElementById('morada2Input');
+        morada2Input.removeAttribute('data-val');
+        morada2Input.removeAttribute('data-val-req');
+        morada2Input.removeAttribute('aria-invalid');
+    });
+</script>
     
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

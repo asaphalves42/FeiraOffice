@@ -1,5 +1,4 @@
-﻿using APILP3.Areas.Identity.Data;
-using APILP3.Models;
+﻿using APILP3.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
