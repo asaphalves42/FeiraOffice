@@ -75,6 +75,11 @@ public class API {
         return sendRequest(url, "GET", null);
     }
 
+    public static String getAllOrders() throws IOException {
+        String url = BASE_URL + "order/";
+        return sendRequest(url, "GET", null);
+    }
+
     // Método genérico para enviar requisições
     private static String sendRequest(String url, String method, String data) throws IOException {
         HttpURLConnection connection = getHttpURLConnection(url, method, data);

@@ -11,7 +11,7 @@
 
 <AnchorPane prefHeight="900.0" prefWidth="895.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.Clientes.MenuClientes">
    <children>
-      <AnchorPane prefHeight="900.0" prefWidth="911.0">
+      <AnchorPane fx:id="anchorPaneEncomendasWeb" prefHeight="900.0" prefWidth="911.0">
          <children>
             <SplitPane dividerPositions="0.5" layoutX="417.0" layoutY="394.0" orientation="VERTICAL" prefHeight="900.0" prefWidth="889.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <items>

@@ -33,6 +33,8 @@ public class MenuClientes {
 
     @FXML
     private TableView<Cliente> tableViewClientes;
+    @FXML
+    private AnchorPane anchorPaneEncomendasWeb;
 
     ObservableList<Cliente> clientes = FXCollections.observableArrayList();
 
@@ -106,6 +108,14 @@ public class MenuClientes {
 
     @FXML
     void clickEncomendasWeb(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Clientes/menuEncomendasWeb.fxml"));
+            AnchorPane root = loader.load();
+
+            anchorPaneEncomendasWeb.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
