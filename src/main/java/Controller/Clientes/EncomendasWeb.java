@@ -4,6 +4,7 @@ import DAL.LerOrders;
 import Model.Cliente;
 import Model.OrderWeb;
 import Utilidades.Mensagens;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,7 +32,7 @@ public class EncomendasWeb {
     @FXML
     private TableView<?> tableViewProdutos;
 
-
+   
     ObservableList<OrderWeb> orders = FXCollections.observableArrayList();
 
     public void tabelaEncomendasWeb() throws IOException {
@@ -40,32 +41,21 @@ public class EncomendasWeb {
 
         if (!orders.isEmpty()) {
             if (tableViewEncomendasWeb.getItems().isEmpty()) {
-                TableColumn<OrderWeb, String> colunaId = new TableColumn<>("ID");
-                TableColumn<OrderWeb, String> nomeColuna = new TableColumn<>("Nome");
-                TableColumn<OrderWeb, String> emailColuna = new TableColumn<>("E-mail");
-                TableColumn<OrderWeb, String> colunaMorada1 = new TableColumn<>("Morada 1");
-                TableColumn<OrderWeb, String> colunaMorada2 = new TableColumn<>("Morada 2");
-                TableColumn<OrderWeb, String> colunaCodPostal = new TableColumn<>("Código postal");
-                TableColumn<OrderWeb, String> colunaCidade = new TableColumn<>("Cidade");
-                TableColumn<OrderWeb, String> colunaPais = new TableColumn<>("País");
-                TableColumn<OrderWeb, String> colunaNif = new TableColumn<>("NIF");
-                TableColumn<OrderWeb, String> colunaEstado = new TableColumn<>("Estado");
+                TableColumn<OrderWeb, String> colunaId = new TableColumn<>("ID da Order");
+                TableColumn<OrderWeb, String> colunaData = new TableColumn<>("Data");
+                TableColumn<OrderWeb, String> colunaIdCliente = new TableColumn<>("Id cliente");
+                TableColumn<OrderWeb, String> colunaNomeCliente = new TableColumn<>("Nome cliente");
+                TableColumn<OrderWeb, String> emailCliente = new TableColumn<>("E-mail cliente");
 
                 // Associe as propriedades dos objetos Cliente às colunas
-                colunaId.setCellValueFactory(new PropertyValueFactory<>("Id"));
-                nomeColuna.setCellValueFactory(new PropertyValueFactory<>("Name"));
-                emailColuna.setCellValueFactory(new PropertyValueFactory<>("Email"));
-                colunaMorada1.setCellValueFactory(new PropertyValueFactory<>("Address1"));
-                colunaMorada2.setCellValueFactory(new PropertyValueFactory<>("Address2"));
-                colunaCodPostal.setCellValueFactory(new PropertyValueFactory<>("PostalCode"));
-                colunaCidade.setCellValueFactory(new PropertyValueFactory<>("City"));
-                colunaPais.setCellValueFactory(new PropertyValueFactory<>("Country"));
-                colunaNif.setCellValueFactory(new PropertyValueFactory<>("TaxIdentificationNumber"));
-                colunaEstado.setCellValueFactory(new PropertyValueFactory<>("Active"));
+                colunaId.setCellValueFactory(new PropertyValueFactory<>("OrderNumber"));
+                colunaData.setCellValueFactory(new PropertyValueFactory<>("Date"));
+                colunaIdCliente.setCellValueFactory(new PropertyValueFactory<>("Client"));
+                colunaNomeCliente.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getClient().Id));
+                emailCliente.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getClient().getEmail()));
 
                 // Adicione as colunas à TableView
-                tableViewEncomendasWeb.getColumns().addAll(colunaId, nomeColuna, emailColuna, colunaMorada1, colunaMorada2, colunaCodPostal,
-                        colunaCidade, colunaPais, colunaNif, colunaEstado);
+                tableViewEncomendasWeb.getColumns().addAll(colunaId, colunaData, colunaIdCliente, colunaNomeCliente, emailCliente);
 
                 // Adicione os dados à TableView
                 tableViewEncomendasWeb.setItems(orders);
