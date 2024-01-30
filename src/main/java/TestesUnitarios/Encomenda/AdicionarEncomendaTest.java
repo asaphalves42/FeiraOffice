@@ -77,14 +77,14 @@ public class AdicionarEncomendaTest {
         try {
             int resultado = lerEncomenda.adicionarEncomendaBaseDeDados(encomenda,false);
             System.out.println("Resultado: " + resultado);
-
+            //realizar comparação com a funçao obter encomenda por id e ver se retorna true ou false
             // Implemente ou remova o método excluirEncomendaDaBaseDeDados(resultado) conforme necessário.
 
         } catch (IOException e) {
             System.out.println("Exceção não esperada: " + e.getMessage());
         }
     }
-   @Test
+   @After
     public void excluirEncomendaDaBaseDeDados() throws IOException {
         // Lógica para excluir a encomenda da base de dados
         Connection conexao = null;
