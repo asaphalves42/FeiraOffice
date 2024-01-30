@@ -391,7 +391,7 @@ public class LerFicheiro {
                 }
 
 
-                int sucesso =  lerEncomenda.adicionarEncomendaBaseDeDados(encomenda);
+                int sucesso =  lerEncomenda.adicionarEncomendaBaseDeDados(encomenda,true);
                 int sucesso2 = lerEncomenda.adicionarMapeamento(encomenda);
 
                 if(sucesso == 0 && sucesso2 == 0) {

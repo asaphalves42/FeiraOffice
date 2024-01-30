@@ -291,7 +291,7 @@ public class LerEncomenda {
      * @return O ID da encomenda adicionada, ou 0 se ocorrer um erro.
      * @throws IOException Se ocorrer um erro durante a adição à base de dados.
      */
-    public int adicionarEncomendaBaseDeDados(Encomenda encomenda) throws IOException {
+    public int adicionarEncomendaBaseDeDados(Encomenda encomenda, boolean mostrarMensagemErro) throws IOException {
         Connection conexao = null;
         try {
             conexao = getConexao();
@@ -301,8 +301,7 @@ public class LerEncomenda {
 
             // Inserir produtos associados à encomenda na tabela Produto
             for (LinhaEncomenda linha : encomenda.getLinhas()) {
-
-                //lerProdutos.lerProdutoPorId ja existe, nao grava
+                // lerProdutos.lerProdutoPorId ja existe, nao grava
                 inserirProdutoNaTabelaProduto(conexao, linha.getProduto());
             }
 
@@ -313,7 +312,9 @@ public class LerEncomenda {
                 }
             } catch (RuntimeException e) {
                 BaseDados.rollback(conexao);
-                System.out.println(e.getMessage());
+                if (mostrarMensagemErro) {
+                    System.out.println(e.getMessage());
+                }
                 return 0;
             }
 
@@ -321,7 +322,9 @@ public class LerEncomenda {
 
             return Id_Encomenda;
         } catch (Exception e) {
-            Mensagens.Erro("Erro na base de dados!", "Erro na adição da base de dados!");
+            if (mostrarMensagemErro) {
+                  Mensagens.Erro("Erro na base de dados!", "Erro na adição da base de dados!");
+            }
         } finally {
             BaseDados.Desligar();
         }

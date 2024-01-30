@@ -75,7 +75,7 @@ public class AdicionarEncomendaTest {
         encomenda.setLinha(linha1);
         encomenda.setLinha(linha2);
         try {
-            int resultado = lerEncomenda.adicionarEncomendaBaseDeDados(encomenda);
+            int resultado = lerEncomenda.adicionarEncomendaBaseDeDados(encomenda,false);
             System.out.println("Resultado: " + resultado);
 
             // Implemente ou remova o método excluirEncomendaDaBaseDeDados(resultado) conforme necessário.

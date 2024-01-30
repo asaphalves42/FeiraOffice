@@ -23,7 +23,7 @@ module com.example.lp3_g2_feira_office_ {
     exports TestesUnitarios.Login;
     exports TestesUnitarios.Operadores;
     exports TestesUnitarios.Fornecedores;
-
+    exports TestesUnitarios.Encomenda;
     opens com.example.lp3_g2_feira_office_2023 to jakarta.xml.bind;
 
 
