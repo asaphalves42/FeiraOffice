@@ -7,7 +7,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using APILP3.Areas.Identity.Data;
 using APILP3.Models;
 using Humanizer;
 using Microsoft.AspNetCore.Authentication;

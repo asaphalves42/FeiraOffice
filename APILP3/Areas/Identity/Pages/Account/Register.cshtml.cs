@@ -9,8 +9,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using APILP3.Areas.Identity.Data;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using APILP3.Models;
 
 namespace APILP3.Areas.Identity.Pages.Account
 {
@@ -95,15 +95,15 @@ namespace APILP3.Areas.Identity.Pages.Account
                 {
                     try
                     {
-                        var user = new APILP3User
+                        var user = new User
                         {
-                            Nome = Input.Nome,
-                            Morada1 = Input.Morada1,
-                            Morada2 = Input.Morada2,
-                            CodigoPostal = Input.CodigoPostal,
-                            Cidade = Input.Cidade,
-                            Pais = Input.Pais,
-                            Nif = Input.Nif,
+                            Name = Input.Nome,
+                            Address1 = Input.Morada1,
+                            Address2 = Input.Morada2,
+                            PostalCode = Input.CodigoPostal,
+                            City = Input.Cidade,
+                            Country = Input.Pais,
+                            TaxIdentificationNumber = Input.Nif,
                             Email = Input.Email,
                            
                         };
@@ -137,18 +137,18 @@ namespace APILP3.Areas.Identity.Pages.Account
             return RedirectToPage("/Identity/Account/Login");
         }
 
-        private string ConstruirDadosDoCliente(APILP3User user)
+        private string ConstruirDadosDoCliente(User user)
         {
             return $"{{\"Id\": \"{Guid.NewGuid()}\","
                  + $"\"GroupId\": \"FG2\","
-                 + $"\"Name\": \"{user.Nome}\","
+                 + $"\"Name\": \"{user.Name}\","
                  + $"\"Email\": \"{user.Email}\","
-                 + $"\"Address1\": \"{user.Morada1}\","
-                 + $"\"Address2\": \"{user.Morada2}\","
-                 + $"\"PostalCode\": \"{user.CodigoPostal}\","
-                 + $"\"City\": \"{user.Cidade}\","
-                 + $"\"Country\": \"{user.Pais}\","
-                 + $"\"TaxIdentificationNumber\": \"{user.Nif}\","
+                 + $"\"Address1\": \"{user.Address1}\","
+                 + $"\"Address2\": \"{user.Address2}\","
+                 + $"\"PostalCode\": \"{user.PostalCode}\","
+                 + $"\"City\": \"{user.City}\","
+                 + $"\"Country\": \"{user.Country}\","
+                 + $"\"TaxIdentificationNumber\": \"{user.TaxIdentificationNumber}\","
                  + $"\"Password\": \"{Input.Password}\","
                  + "\"Active\": false}}";
         }
