@@ -7,7 +7,7 @@ public class OrderRequest {
     public ArrayList<OrderWeb> orders;
 
     public OrderRequest(String status, ArrayList<OrderWeb> orders) {
-        Status = status;
+        this.Status = status;
         this.orders = orders;
     }
 
