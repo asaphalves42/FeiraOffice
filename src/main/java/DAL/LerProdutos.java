@@ -2,6 +2,7 @@ package DAL;
 
 
 import Model.*;
+import Model.API.OrderLine;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import com.google.gson.*;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 import static Utilidades.API.*;
 import static Utilidades.BaseDados.getConexao;
+import static Utilidades.BaseDados.iniciarTransacao;
 
 public class LerProdutos {
 
@@ -30,7 +32,7 @@ public class LerProdutos {
 
             String query = """
                     SELECT
-                    
+                                        
                         Produto.Id as id_produto,
                         Produto.Descricao as descricao_produto,
                     	Produto.Id_Unidade as Id_Unidade,
@@ -44,7 +46,7 @@ public class LerProdutos {
                     INNER JOIN Fornecedor ON Fornecedor.Id_Externo = Produto_Fornecedor.id_fornecedor
                     INNER JOIN Produto ON Produto.Id = Produto_Fornecedor.id_produto
                     INNER JOIN Unidade ON Unidade.Id = Produto.Id_Unidade
-                    
+                                        
                     WHERE Produto.Id = ?
                     """;
 
@@ -61,7 +63,7 @@ public class LerProdutos {
 
             BaseDados.commit(conn);
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!","Erro ao ler produtos disponíveis!");
+            Mensagens.Erro("Erro!", "Erro ao ler produtos disponíveis!");
         } finally {
             BaseDados.Desligar();
         }
@@ -119,7 +121,7 @@ public class LerProdutos {
 
             BaseDados.commit(conn);
         } catch (SQLException | IOException e) {
-            Mensagens.Erro("Erro!","Erro ao ler stock de produtos!");
+            Mensagens.Erro("Erro!", "Erro ao ler stock de produtos!");
         } finally {
             BaseDados.Desligar();
         }
@@ -147,7 +149,7 @@ public class LerProdutos {
                 dados.getInt("quantidade"),
                 uuid);
     }
-    
+
     public boolean gerarProdutoParaVenda(String idProduto, int idUnidade, double precoUnitario) throws IOException {
         Connection conn = null;
         try {
@@ -184,13 +186,14 @@ public class LerProdutos {
         } catch (Exception e) {
             assert conn != null;
             BaseDados.rollback(conn);
-            Mensagens.Erro("Erro!","Erro ao gerar produto para venda!");
+            Mensagens.Erro("Erro!", "Erro ao gerar produto para venda!");
         } finally {
             BaseDados.Desligar();
         }
         return false;
 
     }
+
     private boolean produtoVendaExiste(String idProduto, int idUnidade, Connection conn) throws SQLException {
         String query = "SELECT COUNT(*) AS total FROM Produto_Venda WHERE id_produto = ? AND id_unidade = ?";
         try (PreparedStatement ps = conn.prepareStatement(query)) {
@@ -204,10 +207,10 @@ public class LerProdutos {
 
     private double obterMaiorPrecoUnitario(String idProduto, Connection conn) throws SQLException {
         String query = """
-            SELECT MAX(preco_unitario)
-            FROM Produto_Fornecedor
-            WHERE id_produto = ?
-            """;
+                SELECT MAX(preco_unitario)
+                FROM Produto_Fornecedor
+                WHERE id_produto = ?
+                """;
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, idProduto);
@@ -233,7 +236,7 @@ public class LerProdutos {
                     		FROM Produto_Venda
                     		INNER JOIN Unidade ON Unidade.Id = Produto_Venda.id_unidade
                     WHERE id_produto = ?
-              
+                                  
                     """;
             try (PreparedStatement ps = conn.prepareStatement(query)) {
                 ps.setString(1, id);
@@ -279,11 +282,11 @@ public class LerProdutos {
 
         try (Connection conn = getConexao()) {
             String query = """
-                SELECT pv.preco_venda, p.descricao
-                FROM Produto_Venda pv
-                INNER JOIN Produto p ON pv.id_produto = p.id
-                WHERE pv.id_produto = ?
-                """;
+                    SELECT pv.preco_venda, p.descricao
+                    FROM Produto_Venda pv
+                    INNER JOIN Produto p ON pv.id_produto = p.id
+                    WHERE pv.id_produto = ?
+                    """;
             try (PreparedStatement ps = conn.prepareStatement(query)) {
                 ps.setString(1, idProduto);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -297,7 +300,7 @@ public class LerProdutos {
                 }
             }
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!","Erro ao obter informações de venda do produto");
+            Mensagens.Erro("Erro!", "Erro ao obter informações de venda do produto");
         }
 
         return infoProdutoVenda;
@@ -308,11 +311,11 @@ public class LerProdutos {
 
         try (Connection conn = getConexao()) {
             String query = """
-                SELECT s.quantidade, u.descricao as descricao_unidade
-                FROM Stock s
-                INNER JOIN Unidade u ON u.Id = s.id_unidade
-                WHERE s.id_produto = ? AND s.id_unidade = ?
-                """;
+                    SELECT s.quantidade, u.descricao as descricao_unidade
+                    FROM Stock s
+                    INNER JOIN Unidade u ON u.Id = s.id_unidade
+                    WHERE s.id_produto = ? AND s.id_unidade = ?
+                    """;
             try (PreparedStatement ps = conn.prepareStatement(query)) {
                 ps.setString(1, idProduto);
                 ps.setInt(2, idUnidade);
@@ -327,12 +330,11 @@ public class LerProdutos {
                 }
             }
         } catch (SQLException e) {
-            Mensagens.Erro("Erro!","Errp ao obter informações do stock!");
+            Mensagens.Erro("Erro!", "Errp ao obter informações do stock!");
         }
 
         return informacoesStock;
     }
-
 
 
     public boolean enviarProdutosParaAPI(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda) throws IOException, SQLException {
@@ -441,12 +443,12 @@ public class LerProdutos {
             BaseDados.iniciarTransacao(conn);
 
             String query = """
-                   UPDATE Produto SET UUID = ? WHERE Id = ?
-                   """;
+                    UPDATE Produto SET UUID = ? WHERE Id = ?
+                    """;
 
             try (PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(1,produto.getUUID());
-                ps.setString(2,produto.getProduto().getId());
+                ps.setString(1, produto.getUUID());
+                ps.setString(2, produto.getProduto().getId());
 
                 ps.executeUpdate();
             }
@@ -455,11 +457,127 @@ public class LerProdutos {
 
         } catch (IOException e) {
             BaseDados.rollback(conn);
-            Mensagens.Erro("Erro","Erro ao adicionar UUID ao produto");
+            Mensagens.Erro("Erro", "Erro ao adicionar UUID ao produto");
         }
         return false;
     }
 
 
+    public boolean atualizarStockAPI(List<OrderLine> orderLines) throws IOException {
+        for (OrderLine line : orderLines) {
+            // Obtém o estoque atual do produto na API
+            double estoqueAtual = obterEstoqueAtual(line.getProductCode());
 
+            // Calcula o novo estoque subtraindo a quantidade de produtos comprados
+            double novoEstoque = estoqueAtual - line.getQuantity();
+
+            if (novoEstoque < estoqueAtual) {
+                Mensagens.Erro("Erro!", "Erro ao atualizar stock verifique a quantidade de produtos!");
+                return false;
+            }
+
+            // Constrói a string de dados para enviar à API
+            String data = """
+                    {"Stock": %s}
+                    """.formatted(novoEstoque);
+
+            try {
+                // Chama o método para atualizar o estoque na API
+                updateProduct(line.getProductCode(), data);
+            } catch (IOException e) {
+                // Lidar com falhas individuais, se necessário
+                Mensagens.Erro("Erro", "Erro ao atualizar stock");
+            }
+        }
+
+        return true;
+    }
+
+    // Método para obter o estoque atual do produto na API
+    private double obterEstoqueAtual(String productCode) throws IOException {
+        try {
+            String UUID = obterUUIDNaBaseDadosString(productCode);
+            String respostaAPI = getProduct(UUID);
+
+            // Parse do JSON usando o Gson
+            JsonObject jsonObject = JsonParser.parseString(respostaAPI).getAsJsonObject();
+
+            // Obtenha a lista de produtos
+            JsonArray productsArray = jsonObject.getAsJsonArray("Product");
+
+            if (!productsArray.isEmpty()) {
+                // Obtenha o primeiro item da lista (assumindo que só há um produto)
+                JsonObject productObject = productsArray.get(0).getAsJsonObject();
+
+                // Extrai o valor associado à chave "Stock"
+                return productObject.get("Stock").getAsDouble();
+            } else {
+                // Lidar com o caso em que não há produtos na resposta
+                Mensagens.Erro("Erro!", "Nenhum produto encontrado na resposta da API");
+                return -1.0;
+            }
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao obter stock da API");
+            return -1.0;
+        }
+    }
+
+
+    private String obterUUIDNaBaseDadosString(String productCode) throws IOException {
+        try (Connection conn = getConexao()) {
+            String query = "SELECT UUID FROM Produto WHERE Id = ?";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+
+                // Substitui o parâmetro na consulta pelo ID do produto
+                preparedStatement.setString(1, productCode);
+
+                // Executa a consulta
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        // Se existir um resultado, retorna o UUID
+                        return resultSet.getString("UUID");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao obter produto!");
+        } finally {
+            BaseDados.Desligar();
+        }
+        return null;
+    }
+
+    public boolean atualizarStockBaseDados(List<OrderLine> orderLines) throws IOException {
+    Connection conn = null;
+        try {
+            conn = getConexao();
+            iniciarTransacao(conn);
+            for (OrderLine lines : orderLines) {
+                String idProduto = lines.getProductCode();
+
+                String query = """
+                        UPDATE Stock SET Quantidade = ?
+                        WHERE id_Produto = ?
+                        """;
+
+                try (PreparedStatement ps = conn.prepareStatement(query)){
+                    ps.setDouble(1,lines.getQuantity());
+                    ps.setString(2,idProduto);
+                }
+            }
+
+            BaseDados.commit(conn);
+            return true;
+
+        } catch (Exception e) {
+            assert conn != null;
+            BaseDados.rollback(conn);
+            Mensagens.Erro("Erro","Erro ao atualizar stock na base de dados!");
+        } finally {
+            BaseDados.Desligar();
+        }
+
+        return false;
+    }
 }

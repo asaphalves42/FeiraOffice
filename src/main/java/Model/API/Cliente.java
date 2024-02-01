@@ -1,4 +1,4 @@
-package Model;
+package Model.API;
 
 public class Cliente {
     public String Id;

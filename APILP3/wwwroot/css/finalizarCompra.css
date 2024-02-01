@@ -57,3 +57,46 @@
     .address-forms-container form {
         text-align: left;
     }
+
+.custom-alert {
+    background-color: #f8d7da; /* Cor de fundo vermelha claro */
+    border-color: #f5c6cb; /* Cor da borda vermelha claro */
+    color: #721c24; /* Cor do texto vermelho escuro */
+    padding: 15px; /* Espaçamento interno */
+    border-radius: 4px; /* Borda arredondada */
+    margin-bottom: 15px; /* Espaçamento inferior */
+}
+
+.total-label {
+    font-size: 1.4em; /* Ajuste o tamanho da fonte conforme necessário */
+    text-align: right;
+    margin-top: 20px; /* Adicione margem superior conforme necessário */
+    margin-right: 90px; /* Adicione margem direita conforme necessário */
+}
+
+#totalAmount {
+    font-weight: bold; /* Adicione negrito conforme necessário */
+}
+#totalTaxAmount {
+    font-weight: bold; /* Adicione negrito conforme necessário */
+}
+#total {
+    font-weight: bold; /* Adicione negrito conforme necessário */
+}
+
+.copy-button-container {
+    margin-top: 474px;
+}
+
+#copyAddressButton {
+    background-color: black;
+    color: white;
+    padding: 10px 20px; /* Adicione padding conforme necessário */
+    border: none;
+    border-radius: 5px; /* Adicione borda arredondada conforme necessário */
+    cursor: pointer;
+}
+
+    #copyAddressButton:hover {
+        background-color: darkgray; /* Altere a cor ao passar o mouse conforme desejado */
+    }

@@ -63,4 +63,6 @@ module com.example.lp3_g2_feira_office_ {
     opens Controller.Encomenda to javafx.fxml;
     opens Controller.Clientes to javafx.fxml;
     exports Controller.Clientes;
+    exports Model.API;
+    opens Model.API to javafx.base;
 }

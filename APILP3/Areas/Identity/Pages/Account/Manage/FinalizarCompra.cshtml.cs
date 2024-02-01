@@ -30,6 +30,7 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public List<OrderLine> ProductsDataAux { get; set; }
         public List<User> dadosUtil { get; set; } = new List<User>();
+        public string Message { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -151,12 +152,15 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
 
                             if (response.IsSuccessStatusCode)
                             {
-                                _logger.LogInformation("Order criada com sucesso!");
-                                return RedirectToPage("HomePage");
+                            _logger.LogInformation("Order criada com sucesso!");
+                           
+                            Message = "Compra aprovada com sucesso!";
+                           
                         }
                             else
                             {
                                 _logger.LogInformation(response.StatusCode.ToString());
+                                Message = "Ocorreu um erro ao criar a order!";
                                 _logger.LogInformation("Ocorreu um erro ao criar a order!");
                             }
 
@@ -165,10 +169,9 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
                         {
 
                         _logger.LogInformation("User não foi aprovado!");
+                        
+                        Message = "User não foi aprovado!";
 
-                        ViewData["FailureMessage"] = "User não foi aprovado!";
-                        return RedirectToPage("HomePage");
-                    
                         }
                     
                 }

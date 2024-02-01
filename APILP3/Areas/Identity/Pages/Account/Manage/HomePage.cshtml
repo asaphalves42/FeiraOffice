@@ -7,12 +7,7 @@
     
 }
 
-@if (ViewData["FailureMessage"] != null)
-{
-    <div class="alert alert-danger">
-        <strong>Error:</strong> @ViewData["FailureMessage"]
-    </div>
-}
+<link rel="stylesheet" type="text/css" href="~/css/homePage.css" />
 
 <h3>Produtos</h3>
 
@@ -25,6 +20,7 @@
             <th>Descrição</th>
             <th>Preço</th>
             <th>Unidade</th>
+            <th>Stock</th>
             <th>Seleção</th>
             <th>Quantidade</th>
         </tr>
@@ -37,6 +33,7 @@
                 <td name="descricao[@product.Code]">@product.Description</td>
                 <td name="pvp[@product.Code]">@product.PVP</td>
                 <td name="unidade[@product.Code]">@product.Unit</td>
+                <td name="stock[@product.Code]">@product.Stock</td>
                 <td>
                     <input type="checkbox" name="selectedProducts" value="@product.Code">
                     
@@ -50,7 +47,7 @@
 </table>
 
     
-<button type="button" onclick="finalizarCompra()">Finalizar compra</button>
+<button class="finalizar "id="btn-finalizar" type="button" onclick="finalizarCompra()">Finalizar compra</button>
 
 <script>
     function finalizarCompra() {

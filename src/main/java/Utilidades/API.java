@@ -80,6 +80,12 @@ public class API {
         return sendRequest(url, "GET", null);
     }
 
+    public static String updateOrder(String idOrder, String data) throws IOException {
+        String url = BASE_URL + "order/" + idOrder + "/";
+        return sendRequest(url, "PUT", data);
+    }
+
+
     // Método genérico para enviar requisições
     private static String sendRequest(String url, String method, String data) throws IOException {
         HttpURLConnection connection = getHttpURLConnection(url, method, data);

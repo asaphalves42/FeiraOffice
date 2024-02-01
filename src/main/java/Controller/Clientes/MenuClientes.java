@@ -1,7 +1,7 @@
 package Controller.Clientes;
 
 import DAL.LerClientes;
-import Model.Cliente;
+import Model.API.Cliente;
 import Utilidades.API;
 import Utilidades.Mensagens;
 import javafx.collections.FXCollections;
@@ -157,8 +157,6 @@ public class MenuClientes {
                 String data = "{ \"Active\": false }";
                 API.updateCliente(idCliente, data);
                 Mensagens.Informacao("Cliente Recusado!", "Cliente Recusado com sucesso");
-
-
 
             } catch (IOException e) {
                 Mensagens.Erro("Erro!", "Erro ao recusar cliente!");

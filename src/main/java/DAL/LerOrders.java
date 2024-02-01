@@ -1,28 +1,26 @@
 package DAL;
 
-import Model.Cliente;
-import Model.ClienteAPI;
-import Model.OrderRequest;
-import Model.OrderWeb;
+import Model.API.OrderRequest;
+import Model.API.Order;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static Utilidades.API.getAllClients;
 import static Utilidades.API.getAllOrders;
 
 public class LerOrders {
-    public List<OrderWeb> lerOrders() {
+    public List<Order> lerOrders() {
 
         try {
             String ordersJson = getAllOrders();
 
+
             Gson gson = new Gson();
             OrderRequest orders = gson.fromJson(ordersJson, OrderRequest.class);
 
-            // Converte o array de clientes para uma lista e retorna
+            // Converte o array de orders para uma lista e retorna
             return orders.getOrders();
 
         } catch (IOException e) {

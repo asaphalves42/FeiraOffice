@@ -1,4 +1,6 @@
-package Model;
+package Model.API;
+
+import Model.API.Cliente;
 
 import java.util.ArrayList;
 
