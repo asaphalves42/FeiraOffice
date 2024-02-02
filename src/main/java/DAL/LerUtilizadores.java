@@ -398,6 +398,39 @@ public class LerUtilizadores {
         return false; // Atualização falhou
     }
 
+
+    public boolean removerOperadorPorEmail(String email) throws IOException {
+        Connection conn = null;
+        try {
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
+
+
+            String query = "DELETE FROM Utilizador WHERE username = ? AND id_role = 2";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, email);
+
+                int linhasAfetadas = preparedStatement.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    BaseDados.commit(conn);
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            try {
+                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
+            } finally {
+                BaseDados.rollback(conn);
+            }
+        } finally {
+            BaseDados.Desligar();
+        }
+
+        return false; // Remoção falhou
+    }
+
 }
 
 
