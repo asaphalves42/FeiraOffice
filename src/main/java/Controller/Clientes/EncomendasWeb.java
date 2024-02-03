@@ -5,6 +5,7 @@ import DAL.LerProdutos;
 import Model.API.Cliente;
 import Model.API.Order;
 import Model.API.OrderLine;
+import Model.API.ProdutoAPI;
 import Utilidades.Mensagens;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -122,19 +123,27 @@ public class EncomendasWeb {
             // Adicione as colunas à tabela de produtos, semelhante à tabela de ordens
             TableColumn<OrderLine, String> colunaLineNumber = new TableColumn<>("Linha");
             TableColumn<OrderLine, String> colunaIdProduto = new TableColumn<>("ID do Produto");
+            TableColumn<OrderLine, String> colunaDescricao = new TableColumn<>("Descrição");
             TableColumn<OrderLine, String> colunaQuantidade = new TableColumn<>("Quantidade");
             TableColumn<OrderLine, String> colunaUnidade = new TableColumn<>("Unidade");
             TableColumn<OrderLine, String> colunaPreco = new TableColumn<>("Preço");
 
             colunaLineNumber.setCellValueFactory(new PropertyValueFactory<>("LineNumber"));
             colunaIdProduto.setCellValueFactory(new PropertyValueFactory<>("ProductCode"));
+            colunaDescricao.setCellValueFactory(cellData -> {
+                try {
+                    return new SimpleStringProperty(lerProdutos.obterDescricaoDoProdutoPeloCodigo(cellData.getValue().getProductCode()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("Quantity"));
             colunaUnidade.setCellValueFactory(new PropertyValueFactory<>("Unit"));
             colunaPreco.setCellValueFactory(new PropertyValueFactory<>("Price"));
 
 
             // Adicione as colunas à tabela de produtos
-            tableViewProdutos.getColumns().addAll(colunaLineNumber, colunaIdProduto, colunaQuantidade, colunaUnidade, colunaPreco);
+            tableViewProdutos.getColumns().addAll(colunaLineNumber, colunaIdProduto,  colunaDescricao, colunaQuantidade, colunaUnidade, colunaPreco);
 
             // Adicione os dados à tabela de produtos diretamente da lista de OrderLines
             tableViewProdutos.getItems().addAll(orderLines);
@@ -157,13 +166,16 @@ public class EncomendasWeb {
                         """;
                     String idOrder = orderSelecionada.getOrderNumber();
 
-                    // Substitua a chamada para o método updateOrder pelo método real
-                    //updateOrder(idOrder, data);
-                    // Mudar o stock da API e da base de dados (coloque o código relevante aqui)
-                    //boolean sucesso1 = lerProdutos.atualizarStockAPI(orderSelecionada.getOrderLines());
+                    boolean sucesso1 = lerProdutos.atualizarStockAPI(orderSelecionada.getOrderLines());
                     boolean successo2 = lerProdutos.atualizarStockBaseDados(orderSelecionada.getOrderLines());
 
-                    Mensagens.Informacao("Sucesso!", "Encomenda aprovada com sucesso");
+                    updateOrder(idOrder, data);
+
+                    if (sucesso1 && successo2) {
+                        Mensagens.Informacao("Sucesso!", "Encomenda aprovada com sucesso");
+                    } else {
+                        Mensagens.Erro("Erro", "Erro ao aprovar encomenda!");
+                    }
 
                 } catch (Exception e) {
                     Mensagens.Erro("Erro!", "Erro ao aprovar encomenda!");

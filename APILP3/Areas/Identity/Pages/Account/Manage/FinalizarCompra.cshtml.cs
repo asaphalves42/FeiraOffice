@@ -154,7 +154,7 @@ namespace APILP3.Areas.Identity.Pages.Account.Manage
                             {
                             _logger.LogInformation("Order criada com sucesso!");
                            
-                            Message = "Compra aprovada com sucesso!";
+                            Message = "Compra efetuada com sucesso, aguarda aprovação!";
                            
                         }
                             else

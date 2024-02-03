@@ -8,6 +8,7 @@ public class OrderLine {
     public String Unit;
     public double Price;
 
+
     public OrderLine(int lineNumber, String productCode, double quantity, String unit, double price) {
         LineNumber = lineNumber;
         ProductCode = productCode;
@@ -15,6 +16,7 @@ public class OrderLine {
         Unit = unit;
         Price = price;
     }
+
 
     public int getLineNumber() {
         return LineNumber;

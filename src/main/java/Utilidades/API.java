@@ -120,6 +120,7 @@ public class API {
 
         connection.setRequestMethod(method);
         connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Accept", "application/json");
 
         if (data != null) {
             connection.setDoOutput(true);

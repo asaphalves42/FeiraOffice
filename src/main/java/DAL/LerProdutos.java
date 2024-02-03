@@ -3,6 +3,7 @@ package DAL;
 
 import Model.*;
 import Model.API.OrderLine;
+import Model.API.ProdutoAPI;
 import Utilidades.BaseDados;
 import Utilidades.Mensagens;
 import com.google.gson.*;
@@ -383,7 +384,7 @@ public class LerProdutos {
         }
     }
 
-    private String obterUUIDNaBaseDeDados(ProdutoVenda produto) throws SQLException, IOException {
+    private String obterUUIDNaBaseDeDados(ProdutoVenda produto) throws IOException {
         try (Connection conn = getConexao()) {
             String query = "SELECT UUID FROM Produto WHERE Id = ?";
 
@@ -468,22 +469,30 @@ public class LerProdutos {
             // Obtém o estoque atual do produto na API
             double estoqueAtual = obterEstoqueAtual(line.getProductCode());
 
+            String uuidDoProduto = obterUUIDNaBaseDadosString(line.getProductCode());
+
+            double pvp = obterPVPdoProduto(uuidDoProduto);
+
             // Calcula o novo estoque subtraindo a quantidade de produtos comprados
             double novoEstoque = estoqueAtual - line.getQuantity();
 
-            if (novoEstoque < estoqueAtual) {
+            if (novoEstoque < 0) {
                 Mensagens.Erro("Erro!", "Erro ao atualizar stock verifique a quantidade de produtos!");
                 return false;
             }
 
             // Constrói a string de dados para enviar à API
             String data = """
-                    {"Stock": %s}
-                    """.formatted(novoEstoque);
+                    {
+                    "PVP": %s,
+                    "Stock": %s
+                    }
+                    """.formatted(pvp, novoEstoque);
+
 
             try {
                 // Chama o método para atualizar o estoque na API
-                updateProduct(line.getProductCode(), data);
+                updateProduct(uuidDoProduto, data);
             } catch (IOException e) {
                 // Lidar com falhas individuais, se necessário
                 Mensagens.Erro("Erro", "Erro ao atualizar stock");
@@ -491,6 +500,31 @@ public class LerProdutos {
         }
 
         return true;
+    }
+
+    private double obterPVPdoProduto(String uuidDoProduto) throws IOException {
+        try {
+            String respostaAPI = getProduct(uuidDoProduto);
+            JsonObject jsonObject = JsonParser.parseString(respostaAPI).getAsJsonObject();
+
+            // Obtenha a lista de produtos
+            JsonArray productsArray = jsonObject.getAsJsonArray("Product");
+
+            if (!productsArray.isEmpty()) {
+                // Obtenha o primeiro item da lista (assumindo que só há um produto)
+                JsonObject productObject = productsArray.get(0).getAsJsonObject();
+
+                // Extrai o valor associado à chave "Stock"
+                return productObject.get("PVP").getAsDouble();
+            } else {
+                // Lidar com o caso em que não há produtos na resposta
+                Mensagens.Erro("Erro!", "Nenhum produto encontrado na resposta da API");
+                return -1.0;
+            }
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao obter PVP");
+        }
+        return 0.0;
     }
 
     // Método para obter o estoque atual do produto na API
@@ -549,7 +583,7 @@ public class LerProdutos {
     }
 
     public boolean atualizarStockBaseDados(List<OrderLine> orderLines) throws IOException {
-    Connection conn = null;
+        Connection conn = null;
         try {
             conn = getConexao();
             iniciarTransacao(conn);
@@ -557,13 +591,23 @@ public class LerProdutos {
                 String idProduto = lines.getProductCode();
 
                 String query = """
-                        UPDATE Stock SET Quantidade = ?
-                        WHERE id_Produto = ?
+                        UPDATE Stock SET Quantidade = Quantidade - ?
+                        WHERE Id_Produto LIKE ?
                         """;
 
-                try (PreparedStatement ps = conn.prepareStatement(query)){
-                    ps.setDouble(1,lines.getQuantity());
-                    ps.setString(2,idProduto);
+                try (PreparedStatement ps = conn.prepareStatement(query)) {
+                    ps.setDouble(1, lines.getQuantity());
+                    ps.setString(2, idProduto);
+
+
+                    int rowsUpdated = ps.executeUpdate();
+
+
+                    if (rowsUpdated > 0) {
+                        System.out.println("Stock atualizado do produto: " + idProduto);
+                    } else {
+                        System.out.println("Erro ao atualizar stock do produto: " + idProduto);
+                    }
                 }
             }
 
@@ -573,11 +617,44 @@ public class LerProdutos {
         } catch (Exception e) {
             assert conn != null;
             BaseDados.rollback(conn);
-            Mensagens.Erro("Erro","Erro ao atualizar stock na base de dados!");
+            Mensagens.Erro("Erro", "Erro ao atualizar stock na base de dados!");
         } finally {
             BaseDados.Desligar();
         }
 
         return false;
     }
+
+    public String obterDescricaoDoProdutoPeloCodigo(String productCode) throws IOException {
+        String jsonResponse = getAllProducts();
+
+        try {
+            JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
+
+            // Verifique se a resposta possui a chave "Products"
+            if (jsonObject.has("Products")) {
+                JsonArray productsArray = jsonObject.getAsJsonArray("Products");
+
+                //Percorre o array de produtos e obtem o codigo do produto selecionado
+                for (JsonElement element : productsArray) {
+                    JsonObject productObject = element.getAsJsonObject();
+
+                    //Obtem o código
+                    String codigoDoProduto = productObject.get("Code").getAsString();
+                    if (codigoDoProduto.equals(productCode)) {
+                        //Retorna o produto
+                        return productObject.get("Description").getAsString();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return "Descrição não encontrada";
+    }
+
+
+
 }
+
