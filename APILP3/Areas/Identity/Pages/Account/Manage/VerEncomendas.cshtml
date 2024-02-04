@@ -1,0 +1,41 @@
+﻿@page
+@model APILP3.Areas.Identity.Pages.Account.Manage.VerEncomendasModel
+@{
+
+    ViewData["Title"] = "Feira & Office";
+    Layout = "/Views/Shared/LayoutProdutos.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/homePage.css" />
+
+
+<h1>Ver encomendas</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID da Encomenda</th>
+            <th>Data</th>
+            <th>Produtos</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var encomenda in Model.UserOrders) 
+        {
+            <tr>
+                <td>@encomenda.ClientId</td>
+                <td>@encomenda.Date</td>
+                <td>@encomenda.Date</td>
+
+                <td>
+                    <ul>
+                        @foreach (var produto in encomenda.Lines) 
+                        {
+                            <li>@produto.ProductCode</li>
+                        }
+                    </ul>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
