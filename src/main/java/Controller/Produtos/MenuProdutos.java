@@ -77,8 +77,13 @@ public class MenuProdutos {
                 colunaUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdUnidade().getDescricao()));
                 colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
                 colunaUUID.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUuidVenda().getUUID()));
-                colunaPrecoVenda.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getUuidVenda().getPrecoVenda())));
-
+                colunaPrecoVenda.setCellValueFactory(cellData -> {
+                    try {
+                        return new SimpleStringProperty(lerProdutos.obterPVP(cellData.getValue().getIdProduto().getId()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
                 tableViewStock.getColumns().addAll(colunaId, colunaDescricao, colunaUnidade, colunaQuantidade, colunaUUID, colunaPrecoVenda);
             }
 
