@@ -382,71 +382,6 @@ public class LerFornecedores {
 
 
     /**
-     * Obtém o nome do fornecedor associado a um Id_Externo.
-     * @param idExterno O Id_Externo do fornecedor.
-     * @return O nome do fornecedor associado ao Id_Externo, ou null se não encontrado.
-     * @throws IOException Se ocorrer um erro durante a leitura.
-     */
-    public String obterNomeFornecedorPorIdExterno(String idExterno) throws IOException {
-        try {
-
-            BaseDados.Ligar();
-
-
-            String query = """
-                    SELECT Nome FROM Fornecedor WHERE Id_Externo = ?
-                    """;
-
-            PreparedStatement preparedStatement = getConexao().prepareStatement(query);
-            preparedStatement.setString(1, idExterno);
-
-            ResultSet resultado = preparedStatement.executeQuery();
-
-            if (resultado.next()) {
-                return resultado.getString("Nome");
-            }
-
-
-            BaseDados.Desligar();
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-
-        } finally {
-            BaseDados.Desligar();
-        }
-
-        return null; // Retorna null se não encontrado
-    }
-    public String obterIdexternoFornecedorPorEmailLogin(String email) throws IOException {
-        try {
-            BaseDados.Ligar();
-            String query = """
-                    SELECT Fornecedor.Id_Externo FROM Fornecedor
-                    INNER JOIN Utilizador ON Fornecedor.Id_Utilizador = Utilizador.id_util
-                    WHERE Utilizador.username = ?""";
-            PreparedStatement preparedStatement = getConexao().prepareStatement(query);
-            preparedStatement.setString(1, email);
-
-            ResultSet resultado = preparedStatement.executeQuery();
-
-            if (resultado.next()) {
-                return resultado.getString("Id_Externo");
-            }
-
-
-            BaseDados.Desligar();
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
-
-        } finally {
-            BaseDados.Desligar();
-        }
-
-        return null; // Retorna null se não encontrado
-    }
-
-
-    /**
      * Lê informações sobre a dívida dos fornecedores na base de dados.
      *
      * @return Uma lista observável de objetos ContaCorrente representando a dívida dos fornecedores.
@@ -535,39 +470,6 @@ public class LerFornecedores {
         );
     }
 
-    public List<Fornecedor> obterFornecedoresPorProduto(String idProduto) throws IOException {
-        List<Fornecedor> fornecedores = new ArrayList<>();
-
-        try {
-            BaseDados.Ligar();
-
-            String query = "SELECT Fornecedor.* " +
-                    "FROM Fornecedor " +
-                    "INNER JOIN Produto ON Fornecedor.id_Externo = Produto.id_fornecedor " +
-                    "WHERE Produto.id_Fornecedor = ?";
-
-            System.out.println("Query: " + query);  // Log para depuração
-
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
-                preparedStatement.setString(1, idProduto);
-
-                try (ResultSet resultado = preparedStatement.executeQuery()) {
-                    while (resultado.next()) {
-                        Fornecedor fornecedor = criarObjetoFornecedorParaProduto(resultado);
-                        fornecedores.add(fornecedor);
-                    }
-                }
-            }
-
-        } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            BaseDados.Desligar();
-        }
-
-        return fornecedores;
-    }
 
 
 }

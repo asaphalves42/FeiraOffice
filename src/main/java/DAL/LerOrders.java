@@ -9,9 +9,15 @@ import java.util.Collections;
 import java.util.List;
 
 import static Utilidades.API.getAllOrders;
-
+/**
+ * Classe responsável por ler as informações sobre os pedidos (orders) a partir de uma fonte externa.
+ */
 public class LerOrders {
-    public List<Order> lerOrders() {
+    /**
+     * Lê as informações sobre os pedidos (orders) a partir de uma fonte externa.
+     *
+     * @return Uma lista de objetos Order representando os pedidos obtidos.
+     */public List<Order> lerOrders() {
 
         try {
             String ordersJson = getAllOrders();

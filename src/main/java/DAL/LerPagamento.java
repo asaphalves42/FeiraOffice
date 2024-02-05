@@ -11,7 +11,18 @@ import java.sql.*;
 
 import static Utilidades.BaseDados.getConexao;
 
+/**
+ * Classe responsável por ler informações sobre pagamentos a partir de uma base de dados.
+ */
 public class LerPagamento {
+
+    /**
+     * Insere as informações de um pagamento na base de dados, incluindo as encomendas associadas.
+     *
+     * @param pagamento O objeto de pagamento a ser inserido na base de dados.
+     * @return true se a inserção for bem-sucedida, false caso contrário.
+     * @throws IOException em caso de erro de leitura ou gravação.
+     */
     public boolean inserirPagamentoNaBaseDados(Pagamento pagamento) throws IOException {
         Connection conn = null;
         try {
@@ -21,9 +32,9 @@ public class LerPagamento {
 
             // Inserir na tabela Pagamento
             String query = """
-                INSERT INTO Pagamento (referencia, data, id_conta_corrente, id_feira_office)
-                    VALUES (?,?,?,?)
-                """;
+                    INSERT INTO Pagamento (referencia, data, id_conta_corrente, id_feira_office)
+                        VALUES (?,?,?,?)
+                    """;
 
             try (PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, pagamento.getReferencia());
@@ -40,9 +51,9 @@ public class LerPagamento {
 
                     // Inserir na tabela Pagamento_Encomenda
                     String query2 = """
-                        INSERT INTO Pagamento_Encomenda (id_encomenda, id_pagamento)
-                        VALUES (?, ?)
-                    """;
+                                INSERT INTO Pagamento_Encomenda (id_encomenda, id_pagamento)
+                                VALUES (?, ?)
+                            """;
 
                     try (PreparedStatement ps2 = conn.prepareStatement(query2)) {
                         for (Encomenda encomenda : pagamento.getEncomendas()) {
@@ -71,7 +82,13 @@ public class LerPagamento {
         return false;
     }
 
-
+    /**
+     * Lê os dados da empresa Feira & Office na base de dados, incluindo informações bancárias.
+     *
+     * @return Um objeto FeiraOffice contendo os dados da empresa.
+     * @throws SQLException em caso de erro ao acessar a base de dados.
+     * @throws IOException  em caso de erro de leitura.
+     */
     public FeiraOffice lerDadosDaEmpresa() throws SQLException, IOException {
         FeiraOffice feiraOffice = null;
         try {
@@ -105,12 +122,19 @@ public class LerPagamento {
 
         } catch (SQLException e) {
             Mensagens.Erro("Erro!", "Erro ao carregar dados bancários da Feira & Office");
-        }finally {
+        } finally {
             BaseDados.Desligar();
         }
         return feiraOffice;
     }
 
+    /**
+     * Cria e retorna um objeto FeiraOffice com base nos dados fornecidos pelo ResultSet.
+     *
+     * @param dados O ResultSet contendo os dados da empresa Feira & Office.
+     * @return Um objeto FeiraOffice criado com base nos dados fornecidos.
+     * @throws SQLException em caso de erro ao acessar os dados do ResultSet.
+     */
     private FeiraOffice criarObjetoFeiraOffice(ResultSet dados) throws SQLException {
         Pais pais = new Pais(
                 dados.getInt("id_pais"),
@@ -129,14 +153,21 @@ public class LerPagamento {
         );
     }
 
+    /**
+     * Verifica se uma referência de pagamento já existe na base de dados.
+     *
+     * @param pagamento O objeto de pagamento contendo a referência a ser verificada.
+     * @return true se a referência existir, false caso contrário.
+     * @throws IOException em caso de erro de leitura ou gravação.
+     */
     public boolean verificarReferencia(Pagamento pagamento) throws IOException {
         try {
             Connection conn = getConexao();
 
             String query = """
-                SELECT TOP 1 *
-                FROM Pagamento WHERE referencia = ?
-                """;
+                    SELECT TOP 1 *
+                    FROM Pagamento WHERE referencia = ?
+                    """;
             try (PreparedStatement ps = conn.prepareStatement(query)) {
                 ps.setString(1, pagamento.getReferencia());
 
@@ -158,6 +189,12 @@ public class LerPagamento {
         return false;
     }
 
+    /**
+     * Obtém a lista de métodos de pagamento a partir da base de dados.
+     *
+     * @return Uma lista observável de objetos MetodoPagamento.
+     * @throws IOException em caso de erro de leitura ou gravação.
+     */
     public ObservableList<MetodoPagamento> getMetodos() throws IOException {
         ObservableList<MetodoPagamento> listaDeMetodos = FXCollections.observableArrayList();
 
@@ -189,6 +226,14 @@ public class LerPagamento {
         return listaDeMetodos;
     }
 
+    /**
+     * Mapeia um identificador e nome de método de pagamento para a enumeração MetodoPagamento.
+     *
+     * @param id   O identificador do método de pagamento.
+     * @param nome O nome do método de pagamento.
+     * @return Um objeto MetodoPagamento correspondente ao identificador fornecido.
+     * @throws IllegalArgumentException se o identificador do método de pagamento não for reconhecido.
+     */
     private MetodoPagamento mapearMetodoPagamento(int id, String nome) {
 
         return switch (id) {

@@ -204,6 +204,13 @@ public class LerEncomenda {
         }
     }
 
+    /**
+     * Lê as encomendas associadas a um fornecedor a partir da base de dados.
+     *
+     * @param idFornecedorExterno O identificador externo do fornecedor.
+     * @return Uma lista observável de objetos Encomenda associados ao fornecedor.
+     * @throws IOException em caso de erro de leitura.
+     */
     public ObservableList<Encomenda> lerEncomendaDaBaseDeDadosFornecedor(String idFornecedorExterno) throws IOException {
         ObservableList<Encomenda> encomendas = FXCollections.observableArrayList();
 
@@ -264,7 +271,14 @@ public class LerEncomenda {
         );
     }
 
-
+    /**
+     * Cria e retorna um objeto Encomenda com base nos dados fornecidos pelo ResultSet.
+     *
+     * @param dados O ResultSet contendo os dados da encomenda.
+     * @return Um objeto Encomenda criado com base nos dados fornecidos.
+     * @throws IOException em caso de erro de leitura.
+     * @throws SQLException em caso de erro ao acessar os dados do ResultSet.
+     */
     private Encomenda criarObjetoEncomendaFornecedor(ResultSet dados) throws IOException, SQLException {
 
         Fornecedor fornecedor = lerFornecedores.obterFornecedorPorId(dados.getString("Id_fornecedor"));
@@ -332,6 +346,13 @@ public class LerEncomenda {
         return 0;
     }
 
+    /**
+     * Adiciona ou atualiza o mapeamento de produtos associados a uma encomenda na base de dados.
+     *
+     * @param encomenda A encomenda contendo as linhas de produtos a serem mapeadas.
+     * @return 1 se a operação for bem-sucedida, 0 em caso de erro ao adicionar/atualizar o produto.
+     * @throws IOException em caso de erro de leitura ou gravação.
+     */
     public int adicionarMapeamento(Encomenda encomenda) throws IOException {
         Connection conn = null;
         try {
@@ -919,6 +940,14 @@ public class LerEncomenda {
         );
     }
 
+    /**
+     * Atualiza o estado de pagamento das encomendas associadas a um pagamento na base de dados.
+     *
+     * @param pagamento O objeto de pagamento contendo as encomendas a serem atualizadas.
+     * @return true se a atualização do estado de pagamento for bem-sucedida, false caso contrário.
+     * @throws IOException em caso de erro de leitura ou gravação.
+     * @throws SQLException em caso de erro ao acessar a base de dados.
+     */
     public boolean atualizarEstadoPagamentoEncomenda(Pagamento pagamento) throws IOException, SQLException {
         Connection conn = null;
         try {
@@ -948,6 +977,13 @@ public class LerEncomenda {
             BaseDados.Desligar();
         }
     }
+
+    /**
+     * Lê as encomendas aprovadas na base de dados, retornando uma lista observável de objetos EncomendaFornecedor.
+     *
+     * @return Uma lista observável de encomendas aprovadas associadas aos fornecedores.
+     * @throws IOException em caso de erro de leitura.
+     */
     public ObservableList<EncomendaFornecedor> lerEncomendaAprovada() throws IOException {
         ObservableList<EncomendaFornecedor> encomendasAprovadas = FXCollections.observableArrayList();
 
@@ -1005,6 +1041,13 @@ public class LerEncomenda {
 
         return encomendasAprovadas;
     }
+
+    /**
+     * Lê as encomendas recusadas na base de dados, retornando uma lista observável de objetos EncomendaFornecedor.
+     *
+     * @return Uma lista observável de encomendas recusadas associadas aos fornecedores.
+     * @throws IOException em caso de erro de leitura.
+     */
     public ObservableList<EncomendaFornecedor> lerEncomendaRecusada() throws IOException {
         ObservableList<EncomendaFornecedor> encomendasRecusadas = FXCollections.observableArrayList();
 
@@ -1064,11 +1107,16 @@ public class LerEncomenda {
     }
 
 
-
-
-
-
+    /**
+     * Registra a aprovação de uma encomenda por um utilizador na base de dados.
+     *
+     * @param idEncomenda O identificador da encomenda a ser aprovada.
+     * @param utilizador O identificador do utilizador que está a aprovar a encomenda.
+     * @return true se a aprovação for bem-sucedida, false caso contrário.
+     * @throws IOException em caso de erro de leitura ou gravação.
+     */
     public boolean quemAprovouEncomenda(int idEncomenda, int utilizador) throws IOException {
+
         Connection conn = null;
         try{
 

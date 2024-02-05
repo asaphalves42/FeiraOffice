@@ -401,7 +401,13 @@ public class LerUtilizadores {
         return false; // Atualização falhou
     }
 
-
+    /**
+     * Remove um operador da base de dados com base no endereço de e-mail fornecido.
+     *
+     * @param email O endereço de e-mail do operador a ser removido.
+     * @return true se a remoção for bem-sucedida, false caso contrário.
+     * @throws IOException Se ocorrer um erro de entrada/saída durante a remoção.
+     */
     public boolean removerOperadorPorEmail(String email) throws IOException {
         Connection conn = null;
         try {

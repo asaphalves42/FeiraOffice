@@ -23,8 +23,18 @@ import static Utilidades.API.*;
 import static Utilidades.BaseDados.getConexao;
 import static Utilidades.BaseDados.iniciarTransacao;
 
+/**
+ * Classe responsáve por aceder aos dados referentes aos produtos, tanto na API, quanto na base de dados.
+ */
 public class LerProdutos {
 
+    /**
+     * Lê informações sobre produtos de fornecedores associados a um determinado produto da base de dados.
+     *
+     * @param id O identificador do produto principal.
+     * @return Uma lista observável de objetos Produto representando os produtos dos fornecedores associados.
+     * @throws IOException em caso de erro de leitura.
+     */
     public ObservableList<Produto> lerProdutosFornecedores(String id) throws IOException {
 
         ObservableList<Produto> produtosFornecedores = new ObservableList<>();
@@ -70,7 +80,13 @@ public class LerProdutos {
         }
         return produtosFornecedores;
     }
-
+    /**
+     * Cria e retorna um objeto Produto com base nos dados fornecidos pelo ResultSet.
+     *
+     * @param dados O ResultSet contendo os dados do produto.
+     * @return Um objeto Produto criado com base nos dados fornecidos.
+     * @throws SQLException em caso de erro ao acessar os dados do ResultSet.
+     */
     private Produto criarObjetoProduto(ResultSet dados) throws SQLException {
         Fornecedor fornecedor = new Fornecedor(
                 dados.getString("id_fornecedor"),
@@ -90,6 +106,12 @@ public class LerProdutos {
                 dados.getString("id_externo"));
     }
 
+    /**
+     * Lê informações sobre o estoque de produtos a partir da base de dados.
+     *
+     * @return Uma lista observável de objetos Stock representando o estoque de produtos.
+     * @throws IOException em caso de erro de leitura ou gravação.
+     */
     public ObservableList<Stock> lerStock() throws IOException {
         ObservableList<Stock> stockProdutos = new ObservableList<>();
 
@@ -128,6 +150,13 @@ public class LerProdutos {
         return stockProdutos;
     }
 
+    /**
+     * Cria e retorna um objeto Stock com base nos dados fornecidos pelo ResultSet.
+     *
+     * @param dados O ResultSet contendo os dados do estoque.
+     * @return Um objeto Stock criado com base nos dados fornecidos.
+     * @throws SQLException em caso de erro ao acessar os dados do ResultSet.
+     */
     private Stock criarObjetoStock(ResultSet dados) throws SQLException {
         Produto produto = new Produto(
                 dados.getString("id_produto"),
@@ -150,6 +179,15 @@ public class LerProdutos {
                 uuid);
     }
 
+    /**
+     * Gera um produto para venda na tabela Produto_Venda com base nas informações fornecidas.
+     *
+     * @param idProduto O identificador do produto.
+     * @param idUnidade O identificador da unidade do produto.
+     * @param precoUnitario O preço unitário do produto.
+     * @return true se o produto foi gerado com sucesso, false caso contrário.
+     * @throws IOException em caso de erro de leitura ou gravação.
+     */
     public boolean gerarProdutoParaVenda(String idProduto, int idUnidade, double precoUnitario) throws IOException {
         Connection conn = null;
         try {
@@ -194,6 +232,15 @@ public class LerProdutos {
 
     }
 
+    /**
+     * Verifica se um produto já existe na tabela Produto_Venda com base no identificador do produto e da unidade.
+     *
+     * @param idProduto O identificador do produto.
+     * @param idUnidade O identificador da unidade do produto.
+     * @param conn A conexão com a base de dados.
+     * @return true se o produto já existe na tabela Produto_Venda, false caso contrário.
+     * @throws SQLException em caso de erro ao acessar os dados da base de dados.
+     */
     private boolean produtoVendaExiste(String idProduto, int idUnidade, Connection conn) throws SQLException {
         String query = "SELECT COUNT(*) AS total FROM Produto_Venda WHERE id_produto = ? AND id_unidade = ?";
         try (PreparedStatement ps = conn.prepareStatement(query)) {
@@ -205,6 +252,14 @@ public class LerProdutos {
         }
     }
 
+    /**
+     * Obtém o maior preço unitário registrado na tabela Produto_Fornecedor para um determinado produto.
+     *
+     * @param idProduto O identificador do produto.
+     * @param conn A conexão com a base de dados.
+     * @return O maior preço unitário registrado, ou 0 se não houver registro.
+     * @throws SQLException em caso de erro ao acessar os dados da base de dados.
+     */
     private double obterMaiorPrecoUnitario(String idProduto, Connection conn) throws SQLException {
         String query = """
                 SELECT MAX(preco_unitario)
@@ -224,6 +279,12 @@ public class LerProdutos {
         return 0; // Retorna 0 se não houver maior preço unitário registrado
     }
 
+    /**
+     * Obtém a lista de objetos ProdutoVenda da base de dados com base no identificador do produto.
+     *
+     * @param id O identificador do produto.
+     * @return Uma lista de objetos ProdutoVenda relacionados ao produto especificado.
+     */
     public List<ProdutoVenda> obterProdutosVendaDaBaseDadosPorIdProduto(String id) {
         List<ProdutoVenda> produtosVenda = new ArrayList<>();
 
@@ -263,6 +324,13 @@ public class LerProdutos {
         return produtosVenda;
     }
 
+    /**
+     * Cria e retorna um objeto Unidade com base nos dados fornecidos pelo ResultSet.
+     *
+     * @param dados O ResultSet contendo os dados da unidade.
+     * @return Um objeto Unidade criado com base nos dados fornecidos.
+     * @throws SQLException em caso de erro ao acessar os dados do ResultSet.
+     */
     private Unidade criarObjetoUnidade(ResultSet dados) throws SQLException {
         return new Unidade(
                 dados.getInt("id_unidade"),
@@ -270,6 +338,13 @@ public class LerProdutos {
         );
     }
 
+    /**
+     * Cria e retorna um objeto Produto com base nos dados fornecidos pelo ResultSet.
+     *
+     * @param dados O ResultSet contendo os dados do produto.
+     * @return Um objeto Produto criado com base nos dados fornecidos.
+     * @throws SQLException em caso de erro ao acessar os dados do ResultSet.
+     */
     private Produto criarObjetoProdutoVenda(ResultSet dados) throws SQLException {
         return new Produto(
                 dados.getString("id_produto")
@@ -277,6 +352,13 @@ public class LerProdutos {
     }
 
 
+    /**
+     * Obtém informações de venda de um produto da base de dados.
+     *
+     * @param idProduto O identificador do produto.
+     * @return Um mapa contendo informações como o preço de venda e a descrição do produto.
+     * @throws IOException em caso de erro ao acessar os dados da base de dados.
+     */
     public Map<String, Object> obterInfoProdutoVenda(String idProduto) throws IOException {
         Map<String, Object> infoProdutoVenda = new HashMap<>();
 
@@ -306,6 +388,14 @@ public class LerProdutos {
         return infoProdutoVenda;
     }
 
+    /**
+     * Obtém informações do estoque (stock) de um produto em uma unidade específica da base de dados.
+     *
+     * @param idProduto O identificador do produto.
+     * @param idUnidade O identificador da unidade.
+     * @return Um mapa contendo informações como a quantidade em estoque e a descrição da unidade.
+     * @throws IOException em caso de erro ao acessar os dados da base de dados.
+     */
     public Map<String, Object> obterInformacoesDoStock(String idProduto, int idUnidade) throws IOException {
         Map<String, Object> informacoesStock = new HashMap<>();
 
@@ -337,6 +427,18 @@ public class LerProdutos {
     }
 
 
+    /**
+     * Envia informações do produto para uma API externa, criando ou atualizando o produto.
+     *
+     * @param produto      O produto a ser enviado.
+     * @param descricao    A descrição do produto.
+     * @param unidade      A unidade do produto.
+     * @param quantidade   A quantidade do produto.
+     * @param precoVenda    O preço de venda do produto.
+     * @return true se o envio for bem-sucedido, false caso contrário.
+     * @throws IOException em caso de erro ao enviar dados para a API.
+     * @throws SQLException em caso de erro ao acessar dados da base de dados local.
+     */
     public boolean enviarProdutosParaAPI(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda) throws IOException, SQLException {
         try {
             // Construa os dados do produto para enviar
@@ -383,6 +485,13 @@ public class LerProdutos {
         }
     }
 
+    /**
+     * Obtém o UUID de um produto na base de dados.
+     *
+     * @param produto O produto para o qual se deseja obter o UUID.
+     * @return O UUID do produto se encontrado, ou null se não existir.
+     * @throws IOException em caso de erro ao acessar a base de dados local.
+     */
     private String obterUUIDNaBaseDeDados(ProdutoVenda produto) throws IOException {
         try (Connection conn = getConexao()) {
             String query = "SELECT UUID FROM Produto WHERE Id = ?";
@@ -408,6 +517,12 @@ public class LerProdutos {
         return null;
     }
 
+    /**
+     * Extrai o UUID da resposta JSON de uma API externa.
+     *
+     * @param respostaAPI A resposta JSON da API externa.
+     * @return O UUID extraído da resposta, ou null em caso de erro.
+     */
     public String getUUIDFromResponse(String respostaAPI) {
         try {
             // Parse do JSON usando o Gson
@@ -423,6 +538,16 @@ public class LerProdutos {
         }
     }
 
+    /**
+     * Constrói os dados do produto em formato JSON para envio para uma API externa.
+     *
+     * @param produto     O produto a ser enviado.
+     * @param descricao   A descrição do produto.
+     * @param unidade     A unidade do produto.
+     * @param quantidade  A quantidade do produto.
+     * @param precoVenda   O preço de venda do produto.
+     * @return Os dados do produto formatados em JSON.
+     */
     private String construirDadosDoProduto(ProdutoVenda produto, String descricao, String unidade, double quantidade, double precoVenda) {
         // Construir dados do produto em formato JSON
         return "{"
@@ -435,6 +560,14 @@ public class LerProdutos {
                 + "}";
     }
 
+    /**
+     * Cria um produto na base de dados local e associa o UUID gerado.
+     *
+     * @param produto O produto a ser criado na base de dados.
+     * @return Verdadeiro se o produto foi criado com sucesso; falso caso contrário.
+     * @throws SQLException Em caso de erro ao executar operações no banco de dados.
+     * @throws IOException  Em caso de erro de I/O.
+     */
     public boolean criarProdutoNaBaseDados(ProdutoVenda produto) throws SQLException, IOException {
         Connection conn = null;
 
@@ -462,7 +595,13 @@ public class LerProdutos {
         return false;
     }
 
-
+    /**
+     * Atualiza o estoque na API com base nas linhas de pedido fornecidas.
+     *
+     * @param orderLines Uma lista de objetos OrderLine contendo informações sobre os produtos e quantidades.
+     * @return Verdadeiro se a atualização do estoque na API for bem-sucedida para todas as linhas de pedido; falso em caso de falha.
+     * @throws IOException Em caso de erro de I/O ao interagir com a API.
+     */
     public boolean atualizarStockAPI(List<OrderLine> orderLines) throws IOException {
         for (OrderLine line : orderLines) {
             // Obtém o estoque atual do produto na API
@@ -501,6 +640,13 @@ public class LerProdutos {
         return true;
     }
 
+    /**
+     * Obtém o valor do PVP (Preço de Venda ao Público) de um produto a partir do UUID na API.
+     *
+     * @param uuidDoProduto O UUID único que identifica o produto na API.
+     * @return O valor do PVP do produto, ou -1.0 em caso de erro ao processar a resposta da API.
+     * @throws IOException Em caso de erro de I/O ao interagir com a API.
+     */
     public double obterPVPdoProduto(String uuidDoProduto) throws IOException {
         try {
             String respostaAPI = getProduct(uuidDoProduto);
@@ -526,7 +672,13 @@ public class LerProdutos {
         return 0.0;
     }
 
-    // Método para obter o estoque atual do produto na API
+    /**
+     * Obtém a quantidade atual em estoque de um produto na API com base no código do produto.
+     *
+     * @param productCode O código único que identifica o produto localmente.
+     * @return A quantidade atual em estoque do produto, ou -1.0 em caso de erro ao processar a resposta da API.
+     * @throws IOException Em caso de erro de I/O ao interagir com a API.
+     */
     private double obterEstoqueAtual(String productCode) throws IOException {
         try {
             String UUID = obterUUIDNaBaseDadosString(productCode);
@@ -554,6 +706,14 @@ public class LerProdutos {
             return -1.0;
         }
     }
+
+    /**
+     * Obtém o valor do PVP (Preço de Venda ao Público) de um produto na API com base no código do produto local.
+     *
+     * @param productCode O código único que identifica o produto localmente.
+     * @return O valor do PVP do produto, ou "-1.0" em caso de erro ao processar a resposta da API.
+     * @throws IOException Em caso de erro de I/O ao interagir com a API.
+     */
     public String obterPVP(String productCode) throws IOException {
         try {
             String UUID = obterUUIDNaBaseDadosString(productCode);
@@ -583,6 +743,13 @@ public class LerProdutos {
         }
     }
 
+    /**
+     * Obtém o UUID de um produto na base de dados local com base no código do produto.
+     *
+     * @param productCode O código único que identifica o produto localmente.
+     * @return O UUID do produto na base de dados local, ou null se o produto não for encontrado.
+     * @throws IOException Em caso de erro de I/O ao interagir com a base de dados.
+     */
     private String obterUUIDNaBaseDadosString(String productCode) throws IOException {
         try (Connection conn = getConexao()) {
             String query = "SELECT UUID FROM Produto WHERE Id = ?";
@@ -608,6 +775,13 @@ public class LerProdutos {
         return null;
     }
 
+    /**
+     * Atualiza a quantidade em estoque na base de dados local com base nas linhas de pedido fornecidas.
+     *
+     * @param orderLines Uma lista de objetos OrderLine contendo informações sobre os produtos e quantidades.
+     * @return Verdadeiro se a atualização do estoque na base de dados for bem-sucedida para todas as linhas de pedido; falso em caso de falha.
+     * @throws IOException Em caso de erro de I/O ao interagir com a base de dados.
+     */
     public boolean atualizarStockBaseDados(List<OrderLine> orderLines) throws IOException {
         Connection conn = null;
         try {
@@ -625,9 +799,7 @@ public class LerProdutos {
                     ps.setDouble(1, lines.getQuantity());
                     ps.setString(2, idProduto);
 
-
                     int rowsUpdated = ps.executeUpdate();
-
 
                     if (rowsUpdated > 0) {
                         System.out.println("Stock atualizado do produto: " + idProduto);
@@ -651,6 +823,13 @@ public class LerProdutos {
         return false;
     }
 
+    /**
+     * Obtém a descrição de um produto na API com base no código do produto.
+     *
+     * @param productCode O código único que identifica o produto na API.
+     * @return A descrição do produto, ou "Descrição não encontrada" se o produto não for encontrado.
+     * @throws IOException Em caso de erro de I/O ao interagir com a API.
+     */
     public String obterDescricaoDoProdutoPeloCodigo(String productCode) throws IOException {
         String jsonResponse = getAllProducts();
 
@@ -680,6 +859,12 @@ public class LerProdutos {
         return "Descrição não encontrada";
     }
 
+    /**
+     * Constrói os dados do produto em formato JSON para serem usados ao aprovar um produto.
+     *
+     * @param produto O objeto Stock contendo informações sobre o produto.
+     * @return Uma string JSON representando os dados do produto.
+     */
     public String construirDadosDoProdutoAprovar(Stock produto) {
         // Construir dados do produto em formato JSON
         return "{"
@@ -692,6 +877,15 @@ public class LerProdutos {
                 + "}";
     }
 
+    /**
+     * Cria um produto na base de dados local e associa o UUID gerado ao aprovar um produto.
+     *
+     * @param produto O objeto ProdutoVenda contendo informações sobre o produto.
+     * @param idProduto O ID do produto na base de dados local.
+     * @return Verdadeiro se o produto foi criado com sucesso e o UUID foi associado; falso em caso contrário.
+     * @throws SQLException Em caso de erro ao executar operações no banco de dados.
+     * @throws IOException  Em caso de erro de I/O.
+     */
     public boolean criarProdutoNaBaseDadosAprovar(ProdutoVenda produto, String idProduto) throws SQLException, IOException {
         Connection conn = null;
 

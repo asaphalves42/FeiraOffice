@@ -162,8 +162,11 @@ public class MenuProdutos {
 
     }
 
-
-
+    /**
+     * Função para aprovar um produto manualmente; envia os produtos para a API.
+     * @throws IOException em caso de erro de leitura ou gravação.
+     * @throws SQLException em caso de erro de acesso à base de dados.
+     */
     @FXML
     void clickAprovar() throws IOException, SQLException {
 

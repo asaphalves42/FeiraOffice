@@ -82,6 +82,13 @@ public class LerUnidade {
         return unidade;
     }
 
+    /**
+     * Cria um objeto da classe Unidade a partir dos dados fornecidos por um ResultSet.
+     *
+     * @param dados Um ResultSet contendo os dados para criar o objeto Unidade.
+     * @return Um objeto Unidade criado com base nos dados do ResultSet.
+     * @throws SQLException Se ocorrer um erro ao acessar os dados do ResultSet.
+     */
     private static Unidade criarObjeto(ResultSet dados) throws SQLException {
         return new Unidade(
                 dados.getInt("Id"),

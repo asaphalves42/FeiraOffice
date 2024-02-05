@@ -149,6 +149,13 @@ public class LerContaCorrente {
         }
     }
 
+    /**
+     * Atualiza o saldo da conta-corrente após o processamento de um pagamento.
+     *
+     * @param pagamento O objeto de pagamento a ser processado.
+     * @return true se a atualização do saldo for bem-sucedida, false caso contrário.
+     * @throws IOException em caso de erro de leitura ou gravação.
+     */
     public boolean atualizarSaldoAposPagamento(Pagamento pagamento) throws IOException {
         Connection conn = null;
         try {
