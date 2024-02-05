@@ -17,7 +17,7 @@ builder.Services.AddAuthentication(options =>
    });
 
 
-builder.Services.AddAuthorization(); // Add this if you want to use authorization policies
+builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
