@@ -206,7 +206,7 @@ public class LerFornecedores {
      * @return O fornecedor adicionado à base de dados, ou null se ocorrer um erro durante a operação.
      * @throws IOException Se ocorrer um erro durante a operação.
      */
-    public Fornecedor adicionarFornecedorBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador) throws IOException {
+    public Fornecedor adicionarFornecedorBaseDeDados(Fornecedor fornecedor, Pais pais, UtilizadorFornecedor utilizador, boolean mostrarMensagemErro) throws IOException {
         Connection conn = null;
         try {
 
@@ -238,7 +238,11 @@ public class LerFornecedores {
             return fornecedor; // retorna o fornecedor
 
         } catch (Exception e) {
-            Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
+
+            if(mostrarMensagemErro){
+                Mensagens.Erro("Erro na base de dados!", "Erro na adição na base de dados!");
+            }
+            ;
             assert conn != null;
             BaseDados.rollback(conn);
         } finally {
@@ -253,7 +257,7 @@ public class LerFornecedores {
      * @param fornecedorId O ID do fornecedor a ser removido.
      * @return true se a remoção for bem-sucedida, false caso contrário.
      */
-    public boolean removerFornecedorDaBaseDeDados(int fornecedorId) throws IOException {
+    public boolean removerFornecedorDaBaseDeDados(int fornecedorId,boolean erro) throws IOException {
         Connection conn = null;
         try {
             BaseDados.Ligar();
@@ -274,7 +278,10 @@ public class LerFornecedores {
             }
 
         } catch (SQLException e) {
-            Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados! Ou fornecedor tem encomendas");
+            if(erro){
+                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados! Ou fornecedor tem encomendas");
+            }
+
             BaseDados.rollback(conn);
 
         } catch (IOException e) {

@@ -16,6 +16,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 public class AdicionarEncomendaTest {
 
     @BeforeClass
@@ -30,61 +33,97 @@ public class AdicionarEncomendaTest {
             System.setProperty("javafx.headless", "true");
         });
     }
-@Test
+    @Test
     public void adicionarEncomenda() throws SQLException {
 
         LerEncomenda lerEncomenda = new LerEncomenda();
 
-
-
         Fornecedor fornecedor = new Fornecedor("Nome do Fornecedor", "123456789");
-        Pais pais = new Pais("Nome do País", "Código do País");
+        Pais pais = new Pais(1,"Portugal","PT",0.23,"EUR");
 
-
-
-        Unidade unidade = new Unidade(1,"Box");
+        Unidade unidade = new Unidade(1, "Box");
 
         Encomenda encomenda = new Encomenda(
-                220,
-                "PL33333",
-                LocalDate.now(),
-                fornecedor,
-                pais,
-                150.0,
-                50.0,
-                200.0,
-                EstadoEncomenda.Pendente
+                210,  // Id da Encomenda (pode ser fictício)
+                "REF123",  // Referência da Encomenda (pode ser fictício)
+                LocalDate.now(),  // Data da Encomenda (pode ser fictício, usando a data atual)
+                fornecedor,  // Uma instância fictícia de Fornecedor
+                pais,  // Uma instância fictícia de Pais
+                25.0,  // Total da Taxa (pode ser fictício)
+                50.0,  // Total da Incidência (pode ser fictício)
+                100.0,  // Total (pode ser fictício)
+                EstadoEncomenda.Pendente  // Uma instância fictícia de Estado
         );
 
         // Adicionar produtos à encomenda
         Produto produto1 = new Produto(
                 "121",
                 "TesteADD",
-                unidade
+                unidade, fornecedor, 14.00, "1ASAA"
         );
         Produto produto2 = new Produto(
                 "541",
                 "TesteADDV2",
-                unidade
+                unidade, fornecedor, 13.00, "IAA12"
         );
-        LinhaEncomenda linha1 = new LinhaEncomenda(produto1, 2);
-        LinhaEncomenda linha2 = new LinhaEncomenda(produto2, 3);
+        LinhaEncomenda linha1 = new LinhaEncomenda(
+                1,  // Id da Linha de Encomenda (pode ser fictício)
+                encomenda,  // Uma instância fictícia de Encomenda
+                1,  // Sequência da Linha de Encomenda (pode ser fictício)
+                produto1,  // Uma instância fictícia de Produto
+                10.0,  // Preço unitário (pode ser fictício)
+                2.5,  // Quantidade (pode ser fictício)
+                pais,  // Uma instância fictícia de Pais
+                5.0,  // Total da taxa (pode ser fictício)
+                15.0,  // Total da incidência (pode ser fictício)
+                30.0  // Total da linha (pode ser fictício)
+        );
 
-// Adicionar as linhas à encomenda
-    encomenda.setLinhas(new ArrayList<>());
+        LinhaEncomenda linha2 = new LinhaEncomenda(
+                2,  // Id da Linha de Encomenda (pode ser fictício)
+                encomenda,  // Uma instância fictícia de Encomenda
+                2,  // Sequência da Linha de Encomenda (pode ser fictício)
+                produto2,  // Uma instância fictícia de Produto
+                15.0,  // Preço unitário (pode ser fictício)
+                3.0,  // Quantidade (pode ser fictício)
+                pais,  // Outra instância fictícia de Pais
+                8.0,  // Total da taxa (pode ser fictício)
+                20.0,  // Total da incidência (pode ser fictício)
+                45.0  // Total da linha (pode ser fictício)
+        );
+
+        // Adicionar as linhas à encomenda
+        encomenda.setLinhas(new ArrayList<>());
         encomenda.setLinha(linha1);
         encomenda.setLinha(linha2);
+
         try {
+
             int resultado = lerEncomenda.adicionarEncomendaBaseDeDados(encomenda,false);
-            System.out.println("Resultado: " + resultado);
-            //realizar comparação com a funçao obter encomenda por id e ver se retorna true ou false
-            // Implemente ou remova o método excluirEncomendaDaBaseDeDados(resultado) conforme necessário.
+
+            // Obter encomenda da base de dados
+           // Encomenda encomendaDoBanco = lerEncomenda.obterEncomendaPorId("1",false); // Substitua "1" pelo ID real da encomenda que você adicionou no teste
+            Encomenda encomendaDoBanco = lerEncomenda.obterEncomendaPorId("208", false);
+            System.out.println("Encomenda do banco: " + encomendaDoBanco);
+            // Realizar comparação entre encomenda adicionada e encomenda da base de dados
+           // assertNotNull(encomendaDoBanco); // Verifica se a encomenda do banco não é nula
+
+            // Comparar os atributos relevantes das encomendas
+            assertEquals(encomendaDoBanco.getReferencia(), encomenda.getReferencia());
+            assertEquals(encomendaDoBanco.getData(), encomenda.getData());
+            assertEquals(encomendaDoBanco.getFornecedor(), encomenda.getFornecedor());
+            // Adicione mais comparações conforme necessário
+
+            // Verificar se as linhas também correspondem
+            assertEquals(encomendaDoBanco.getLinhas().size(), encomenda.getLinhas().size());
+            // Faça mais comparações se necessário
 
         } catch (IOException e) {
             System.out.println("Exceção não esperada: " + e.getMessage());
         }
     }
-   @After
+
+   @Test
     public void excluirEncomendaDaBaseDeDados() throws IOException {
         // Lógica para excluir a encomenda da base de dados
         Connection conexao = null;

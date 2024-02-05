@@ -325,7 +325,7 @@ public class LerUtilizadores {
      * @return true se a query for bem sucedida
      * @throws IOException se acontecer uma exceção de IO
      */
-    public boolean removerUtilizador(UtilizadorFornecedor fornecedor) throws IOException {
+    public boolean removerUtilizador(UtilizadorFornecedor fornecedor,boolean mensagemerro) throws IOException {
         Connection conn = null;
         try {
 
@@ -346,7 +346,10 @@ public class LerUtilizadores {
             }
 
         }catch (Exception e) {
-            Mensagens.Erro("Erro na base de dados!", "Erro na remoção na base de dados ou utilizador tem encomendas!");
+            if(mensagemerro){
+                Mensagens.Erro("Erro na base de dados!", "Erro na remoção na base de dados ou utilizador tem encomendas!");
+            }
+
             assert conn != null;
             BaseDados.rollback(conn);
         } finally {
@@ -396,6 +399,39 @@ public class LerUtilizadores {
             BaseDados.Desligar();
         }
         return false; // Atualização falhou
+    }
+
+
+    public boolean removerOperadorPorEmail(String email) throws IOException {
+        Connection conn = null;
+        try {
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
+
+
+            String query = "DELETE FROM Utilizador WHERE username = ? AND id_role = 2";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, email);
+
+                int linhasAfetadas = preparedStatement.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    BaseDados.commit(conn);
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            try {
+                Mensagens.Erro("Erro na remoção!", "Erro na remoção da base de dados!");
+            } finally {
+                BaseDados.rollback(conn);
+            }
+        } finally {
+            BaseDados.Desligar();
+        }
+
+        return false; // Remoção falhou
     }
 
 }

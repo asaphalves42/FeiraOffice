@@ -555,6 +555,34 @@ public class LerProdutos {
             return -1.0;
         }
     }
+    public String obterPVP(String productCode) throws IOException {
+        try {
+            String UUID = obterUUIDNaBaseDadosString(productCode);
+            String respostaAPI = getProduct(UUID);
+
+            // Parse do JSON usando o Gson
+            JsonObject jsonObject = JsonParser.parseString(respostaAPI).getAsJsonObject();
+
+            // Obtenha a lista de produtos
+            JsonArray productsArray = jsonObject.getAsJsonArray("Product");
+
+            if (!productsArray.isEmpty()) {
+                // Obtenha o primeiro item da lista (assumindo que só há um produto)
+                JsonObject productObject = productsArray.get(0).getAsJsonObject();
+
+                // Extrai o valor associado à chave "Stock" e converte para String
+                double pvp = productObject.get("PVP").getAsDouble();
+                return String.valueOf(pvp);
+            } else {
+                // Lidar com o caso em que não há produtos na resposta
+                Mensagens.Erro("Erro!", "Nenhum produto encontrado na resposta da API");
+                return "-1.0";
+            }
+        } catch (Exception e) {
+            Mensagens.Erro("Erro!", "Erro ao obter PVP da API");
+            return "-1.0";
+        }
+    }
 
 
     private String obterUUIDNaBaseDadosString(String productCode) throws IOException {

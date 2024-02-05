@@ -532,7 +532,7 @@ public class LerEncomenda {
      * @return Um objeto Encomenda contendo as informações da encomenda correspondente ao ID.
      * @throws IOException Se ocorrer um erro durante a leitura.
      */
-    public Encomenda obterEncomendaPorId(String id) throws IOException {
+    public Encomenda obterEncomendaPorId(String id,boolean erro ) throws IOException {
         Encomenda encomenda = null;
         try {
             BaseDados.Ligar();
@@ -553,7 +553,10 @@ public class LerEncomenda {
             }
 
         } catch (SQLException e) {
-            Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            if(erro) {
+                Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
+            }
+
 
         } finally {
             BaseDados.Desligar();

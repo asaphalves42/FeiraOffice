@@ -1,5 +1,9 @@
 package Utilidades;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -8,7 +12,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 public class API {
 
@@ -90,10 +96,10 @@ public class API {
     private static String sendRequest(String url, String method, String data) throws IOException {
         HttpURLConnection connection = getHttpURLConnection(url, method, data);
 
-        int code= connection.getResponseCode();
+        int code = connection.getResponseCode();
 
-        if(code!=200 && code!= 201 && code!= 202) {
-            Mensagens.Erro("API Failed!","Error code: " + code);
+        if (code != 200 && code != 201 && code != 202) {
+            Mensagens.Erro("API Failed!", "Error code: " + code);
             return null;
         }
 
@@ -132,5 +138,18 @@ public class API {
         return connection;
     }
 
+    public static List<Double> parsePricesFromAllProductsApiResponse(String apiResponse) {
+        List<Double> prices = new ArrayList<>();
+        JsonObject jsonObject = new JsonParser().parse(apiResponse).getAsJsonObject();
+        JsonArray productsArray = jsonObject.getAsJsonArray("Products");
+
+        for (JsonElement productElement : productsArray) {
+            double price = productElement.getAsJsonObject().get("PVP").getAsDouble();
+            prices.add(price);
+        }
+
+        return prices;
+
+    }
 }
 
