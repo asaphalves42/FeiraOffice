@@ -1,6 +1,4 @@
-﻿using APILP3.Models.Requests;
-
-namespace APILP3.Models
+﻿namespace APILP3.Models.Requests
 {
     public class OrderRequest
     {

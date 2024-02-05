@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using APILP3.Models;
+using APILP3.Models.Requests;
 using Humanizer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -28,27 +29,14 @@ namespace APILP3.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public Login Input { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         [TempData]
         public string ErrorMessage { get; set; }
 
-        public class InputModel
-        {
-            [Required(ErrorMessage = "Introduz o email !")]
-            [EmailAddress]
-            public string Email { get; set; }
-
-            [Required (ErrorMessage="Introduz a password !")]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
-
-            [Display(Name = "Remember me?")]
-            public bool RememberMe { get; set; }
-        }
-
+      
         public async Task OnGetAsync()
         {
         

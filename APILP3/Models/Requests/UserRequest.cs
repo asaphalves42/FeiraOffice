@@ -1,5 +1,4 @@
-﻿
-namespace APILP3.Models
+﻿namespace APILP3.Models.Requests
 {
     public class UserRequest
     {

@@ -24,24 +24,13 @@
                     <label asp-for="Input.Password" class="form-label">Password</label>
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
+                
                 <div style="padding-bottom: 10px;">
                     <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">
                         Entrar
                     </button>
                 </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Esqueceu da password?</a>
-                    </p>
-                    
-                    
-                </div>
+                
             </form>
         </section>
     </div>
