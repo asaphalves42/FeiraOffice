@@ -211,7 +211,7 @@ public class LerEncomenda {
             Connection conn = getConexao();
 
             String query = """
-                    SELECT * FROM Encomenda WHERE Id_Fornecedor = ? 
+                    SELECT * FROM Encomenda WHERE Id_Fornecedor = ?
                     """;
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
@@ -534,14 +534,15 @@ public class LerEncomenda {
      */
     public Encomenda obterEncomendaPorId(String id,boolean erro ) throws IOException {
         Encomenda encomenda = null;
+        Connection conn = null;
         try {
-            BaseDados.Ligar();
+            conn = getConexao();
 
             String query = """
-                    SELECT * FROM Encomenda WHERE Id = ?"
+                    SELECT * FROM Encomenda WHERE Id = ?
                     """;
 
-            try (PreparedStatement preparedStatement = getConexao().prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, id);
 
                 ResultSet resultado = preparedStatement.executeQuery();
@@ -556,8 +557,6 @@ public class LerEncomenda {
             if(erro) {
                 Mensagens.Erro("Erro na leitura!", "Erro na leitura da base de dados!");
             }
-
-
         } finally {
             BaseDados.Desligar();
         }

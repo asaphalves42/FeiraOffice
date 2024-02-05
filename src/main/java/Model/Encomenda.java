@@ -70,6 +70,22 @@ public class Encomenda {
         this.estadoPagamento = estadoPagamento;
     }
 
+    public Encomenda(int i, String ref123, LocalDate now, Fornecedor fornecedor, Pais pais, double v,
+                     double v1, double v2, EstadoEncomenda estadoEncomenda, EstadoPagamento estadoPagamento) {
+        this.id = i;
+        this.fornecedor = fornecedor;
+        this.pais = pais;
+        this.referencia = ref123;
+        this.data = now;
+        this.valorIncidencia = v1;
+        this.valorImposto = v2;
+        this.valorTotal = v;
+        this.estado = estadoEncomenda;
+        this.estadoPagamento = estadoPagamento;
+
+    }
+
+
     public EstadoPagamento getEstadoPagamento() {
         return estadoPagamento;
     }

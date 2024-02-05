@@ -64,7 +64,7 @@ public class LerOperadoresTest {
 
     @After
     public void tearDown() {
-        baseDados.Desligar();
+        BaseDados.Desligar();
         if (email != null) {
             try {
                 LerUtilizadores lerUtilizadores = new LerUtilizadores();

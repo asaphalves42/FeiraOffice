@@ -584,7 +584,6 @@ public class LerProdutos {
         }
     }
 
-
     private String obterUUIDNaBaseDadosString(String productCode) throws IOException {
         try (Connection conn = getConexao()) {
             String query = "SELECT UUID FROM Produto WHERE Id = ?";
