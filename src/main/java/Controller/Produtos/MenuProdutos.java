@@ -3,6 +3,7 @@ package Controller.Produtos;
 import DAL.LerProdutos;
 import DAL.LerUnidade;
 import Model.Produto;
+import Model.ProdutoVenda;
 import Model.Stock;
 import Model.Unidade;
 import Utilidades.API;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import static Utilidades.API.createProduct;
 import static Utilidades.API.getProduct;
 
 public class MenuProdutos {
@@ -77,13 +79,21 @@ public class MenuProdutos {
                 colunaUnidade.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIdUnidade().getDescricao()));
                 colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
                 colunaUUID.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUuidVenda().getUUID()));
+
                 colunaPrecoVenda.setCellValueFactory(cellData -> {
-                    try {
-                        return new SimpleStringProperty(lerProdutos.obterPVP(cellData.getValue().getIdProduto().getId()));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    if (cellData.getValue().getUuidVenda().getUUID() != null) {
+                        try {
+                            return new SimpleStringProperty(lerProdutos.obterPVP(cellData.getValue().getIdProduto().getId()));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        // Se a coluna UUID for nula, mostra o PVP da base de dados e adiciona um asterisco
+                        String pvp = String.valueOf(cellData.getValue().getUuidVenda().getPrecoVenda());
+                        return new SimpleStringProperty(pvp + "*");
                     }
                 });
+
                 tableViewStock.getColumns().addAll(colunaId, colunaDescricao, colunaUnidade, colunaQuantidade, colunaUUID, colunaPrecoVenda);
             }
 
@@ -136,34 +146,32 @@ public class MenuProdutos {
 
 
     @FXML
-    void clickAprovar() throws IOException {
+    void clickAprovar() throws IOException, SQLException {
 
+        Stock produtoSelecionado = tableViewStock.getSelectionModel().getSelectedItem();
 
-/*
+        if(produtoSelecionado!=null){
 
-Map<String, Object> selectedProduto = tableViewProdutos.getSelectionModel().getSelectedItem();
-if (selectedProduto != null) {
-            // Obtenha o ID do produto selecionado
-            String idProduto = (String) selectedProduto.get("produtoid");
+            String dadosProduto = lerProdutos.construirDadosDoProdutoAprovar(produtoSelecionado);
 
-            try {
-                lerProdutos.aprovarProduto(idProduto);
-                // Exiba uma mensagem de sucesso após a aprovação
-                Mensagens.Informacao("Sucesso!", "Produto " + idProduto + " aprovado com sucesso.");
-                // Atualize a tabela após a aprovação, se necessário
-                tabelastock();
-            } catch (SQLException | IOException e) {
-                e.printStackTrace(); // Trate a exceção de acordo com suas necessidades
+            String respostaApi = createProduct(dadosProduto);
+
+            String produtoCriado = lerProdutos.getUUIDFromResponse(respostaApi);
+
+            ProdutoVenda produto = produtoSelecionado.getUuidVenda();
+            produto.setUUID(produtoCriado);
+            String idProduto = produtoSelecionado.getIdProduto().getId();
+
+            boolean produtoNaBd = lerProdutos.criarProdutoNaBaseDadosAprovar(produto, idProduto);
+
+            if (produtoNaBd){
+                Mensagens.Informacao("Sucesso","Produto aprovado com sucesso!");
+            } else {
+                Mensagens.Erro("Erro","Erro ao aprovar produto!");
             }
         } else {
-
-            Mensagens.Erro("Erro!", "Selecione um produto para aprovar.");
+            Mensagens.Erro("Erro","Selecione um produto!");
         }
- */
 
-
-
-
-
-}
+    }
 }

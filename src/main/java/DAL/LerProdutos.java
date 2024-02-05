@@ -90,7 +90,6 @@ public class LerProdutos {
                 dados.getString("id_externo"));
     }
 
-
     public ObservableList<Stock> lerStock() throws IOException {
         ObservableList<Stock> stockProdutos = new ObservableList<>();
 
@@ -409,7 +408,7 @@ public class LerProdutos {
         return null;
     }
 
-    private String getUUIDFromResponse(String respostaAPI) {
+    public String getUUIDFromResponse(String respostaAPI) {
         try {
             // Parse do JSON usando o Gson
             JsonObject jsonObject = JsonParser.parseString(respostaAPI).getAsJsonObject();
@@ -502,7 +501,7 @@ public class LerProdutos {
         return true;
     }
 
-    private double obterPVPdoProduto(String uuidDoProduto) throws IOException {
+    public double obterPVPdoProduto(String uuidDoProduto) throws IOException {
         try {
             String respostaAPI = getProduct(uuidDoProduto);
             JsonObject jsonObject = JsonParser.parseString(respostaAPI).getAsJsonObject();
@@ -681,7 +680,43 @@ public class LerProdutos {
         return "Descrição não encontrada";
     }
 
+    public String construirDadosDoProdutoAprovar(Stock produto) {
+        // Construir dados do produto em formato JSON
+        return "{"
+                + "\"Code\": \"" + produto.getIdProduto().getId() + "\","
+                + "\"Description\": \"" + produto.getIdProduto().getDescricao() + "\","
+                + "\"PVP\": " + produto.getUuidVenda().getPrecoVenda() + ","
+                + "\"Stock\": " + produto.getQuantidade() + ","
+                + "\"Unit\": \"" + produto.getIdUnidade().getDescricao() + "\","
+                + "\"Active\": true"
+                + "}";
+    }
 
+    public boolean criarProdutoNaBaseDadosAprovar(ProdutoVenda produto, String idProduto) throws SQLException, IOException {
+        Connection conn = null;
 
+        try {
+            conn = getConexao();
+            BaseDados.iniciarTransacao(conn);
+
+            String query = """
+                    UPDATE Produto SET UUID = ? WHERE Id = ?
+                    """;
+
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, produto.getUUID());
+                ps.setString(2, idProduto);
+
+                ps.executeUpdate();
+            }
+            BaseDados.commit(conn);
+            return true;
+
+        } catch (IOException e) {
+            BaseDados.rollback(conn);
+            Mensagens.Erro("Erro", "Erro ao adicionar UUID ao produto");
+        }
+        return false;
+    }
 }
 

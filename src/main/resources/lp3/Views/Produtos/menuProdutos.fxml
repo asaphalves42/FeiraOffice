@@ -19,6 +19,11 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Text>
+                  <Text layoutX="14.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*  Produto indisponível para venda" wrappingWidth="233.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Text>
                     </children>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="338.0" prefWidth="909.0" style="-fx-background-color: #d4d6d5;" />
