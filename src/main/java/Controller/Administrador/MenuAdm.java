@@ -59,7 +59,13 @@ public class MenuAdm {
             abrirMenuAprovar(resource, utilizador);
         }
     }
-
+    /**
+     * Abre o menu de aprovação com base no tipo de utilizador.
+     *
+     * @param resource   O caminho do recurso FXML a ser carregado.
+     * @param utilizador O objeto Utilizador que representa o utilizador atual.
+     * @throws IOException Se ocorrer um erro durante a leitura do arquivo FXML.
+     */
     private void abrirMenuAprovar(String resource, Utilizador utilizador) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
         AnchorPane root = loader.load();
@@ -189,7 +195,14 @@ public class MenuAdm {
 
         System.out.println(utilizador.getTipo());
     }
-
+    /**
+     * Manipula o clique no botão de clientes, carregando e exibindo o menu de clientes.
+     * Este método é acionado quando o botão de clientes é clicado. Ele carrega o FXML
+     * correspondente ao menu de clientes e substitui o conteúdo do painel principal
+     * (anchorPaneMenuAdm) pelo novo conteúdo carregado.
+     *
+     * @FXML Método associado a um evento de clique no botão de clientes.
+     */
     @FXML
     void clickClientes() {
         try {

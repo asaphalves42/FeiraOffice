@@ -75,12 +75,22 @@ public class PagamentoSepa {
     LerContaCorrente lerContaCorrente = new LerContaCorrente();
     LerPagamento lerPagamento = new LerPagamento();
     BaseDados baseDados = new BaseDados();
-
+    /**
+     * Inicializa a interface gráfica e carrega as informações da empresa e do fornecedor associado.
+     *
+     * @throws SQLException Se ocorrer um erro ao acessar a base de dados.
+     * @throws IOException  Se ocorrer um erro ao ler os dados da empresa ou do fornecedor.
+     */
     public void initialize() throws SQLException, IOException {
         carregarLabelsFeira();
         carregarLabelsFornecedor();
     }
-
+    /**
+     * Carrega e exibe as informações da empresa (FeiraOffice) nas labels correspondentes.
+     *
+     * @throws SQLException Se ocorrer um erro ao acessar a base de dados.
+     * @throws IOException  Se ocorrer um erro ao ler os dados da empresa.
+     */
     public void carregarLabelsFeira() throws SQLException, IOException {
         dadosFeira = lerPagamento.lerDadosDaEmpresa();
 
@@ -96,7 +106,12 @@ public class PagamentoSepa {
         }
 
     }
-
+    /**
+     * Carrega e exibe as informações do fornecedor associado à conta corrente nas labels correspondentes.
+     *
+     * @throws SQLException Se ocorrer um erro ao acessar a base de dados.
+     * @throws IOException  Se ocorrer um erro ao ler os dados do fornecedor.
+     */
     public void carregarLabelsFornecedor() throws SQLException, IOException {
         dadosConta = lerContaCorrente.lerContaCorrente(dadosConta.getId());
         labelValor.setText(String.valueOf(dadosConta.getSaldo()));
@@ -117,7 +132,11 @@ public class PagamentoSepa {
 
 
     }
-
+    /**
+     * Manipula o evento de clique no botão "Cancelar".
+     *
+     * @param event O evento de clique no botão "Cancelar".
+     */
     @FXML
     void clickCancelar(ActionEvent event) {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

@@ -383,7 +383,15 @@ public class MenuContaCorrente {
         tableViewDividas.getItems().remove(contaCorrente);
     }
 
-
+    /**
+     * Obtém a lista de encomendas associadas a um fornecedor específico.
+     * Este método lê as encomendas do fornecedor identificado pela conta corrente fornecida
+     * e retorna a lista de encomendas correspondentes.
+     *
+     * @param contaCorrente O objeto ContaCorrente associado ao fornecedor para o qual se desejam obter as encomendas.
+     * @return Uma lista de objetos Encomenda relacionados ao fornecedor especificado.
+     * @throws IOException Se ocorrer um erro durante a leitura das encomendas.
+     */
     public List<Encomenda> obterEncomendaFornecedor(ContaCorrente contaCorrente) throws IOException {
         //Obter as encomendas do fornecedor
         return new ArrayList<>(lerEncomenda.lerEncomendasPorFornecedor(contaCorrente.getIdFornecedor().getIdExterno()));

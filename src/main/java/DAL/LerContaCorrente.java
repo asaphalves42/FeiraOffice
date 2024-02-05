@@ -13,6 +13,20 @@ import java.sql.SQLException;
 import static Utilidades.BaseDados.getConexao;
 
 public class LerContaCorrente {
+
+    /**
+     * Lê informações da conta corrente com base no ID da conta.
+     *
+     * Este método realiza uma consulta SQL para obter dados específicos da conta corrente
+     * usando o ID da conta fornecido. As informações incluem o ID da conta, o nome do fornecedor associado,
+     * o ID externo do fornecedor e o saldo devedor da conta corrente.
+     *
+     * @param idConta O ID da conta corrente a ser lida.
+     * @return Um objeto ContaCorrente contendo as informações lidas.
+     *         Retorna null se nenhuma conta for encontrada para o ID fornecido.
+     * @throws SQLException Se ocorrer um erro durante a execução da consulta SQL.
+     * @throws IOException Se ocorrer um erro durante a leitura dos dados.
+     */
     public ContaCorrente lerContaCorrente(int idConta) throws SQLException, IOException {
         ContaCorrente conta = null;
         try {
@@ -50,7 +64,14 @@ public class LerContaCorrente {
 
         return conta;
     }
-
+    /**
+     * Cria e retorna um objeto ContaCorrente com base nos dados fornecidos por um ResultSet.
+     * Este método é usado para construir um objeto ContaCorrente a partir dos resultados de uma consulta SQL.
+     *
+     * @param dados O ResultSet contendo os dados da conta corrente.
+     * @return Um objeto ContaCorrente criado com base nos dados do ResultSet.
+     * @throws SQLException Se ocorrer um erro ao recuperar dados do ResultSet.
+     */
     private ContaCorrente criarObjetoConta(ResultSet dados) throws SQLException {
         Fornecedor fornecedor = new Fornecedor(
                 dados.getString("nome"),

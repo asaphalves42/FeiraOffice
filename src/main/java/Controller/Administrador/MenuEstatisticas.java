@@ -38,6 +38,14 @@ public class MenuEstatisticas {
         tabelaEncomendasRecusadas();
 
     }
+    /**
+     * Preenche uma tabela com informações sobre encomendas aprovadas.
+     * Este método lê e exibe informações sobre encomendas recusadas em uma tabela de visualização (TableView).
+     * As informações incluem o ID da encomenda, referência, data, fornecedor, valor total e utilizador associado.
+     * Caso a lista de encomendas aprovadas esteja vazia ou ocorra um erro na leitura da tabela, uma mensagem de erro é exibida.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura das encomendas recusadas.
+     */
     public void tabelaEncomendasAprovadas() throws IOException {
         encomenda.addAll(lerEncomenda.lerEncomendaAprovada());
         if (!encomenda.isEmpty()) {
@@ -67,6 +75,15 @@ public class MenuEstatisticas {
             Mensagens.Erro("Erro!", "Erro ao ler tabela de encomendas aprovadas");
         }
     }
+
+    /**
+     * Preenche uma tabela com informações sobre encomendas recusadas.
+     * Este método lê e exibe informações sobre encomendas recusadas em uma tabela de visualização (TableView).
+     * As informações incluem o ID da encomenda, referência, data, fornecedor, valor total e utilizador associado.
+     * Caso a lista de encomendas recusadas esteja vazia ou ocorra um erro na leitura da tabela, uma mensagem de erro é exibida.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura das encomendas recusadas.
+     */
     public void tabelaEncomendasRecusadas() throws IOException {
         encomendarecusada.addAll(lerEncomenda.lerEncomendaRecusada());
         if (encomendarecusada.isEmpty()) {

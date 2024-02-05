@@ -43,7 +43,15 @@ public class EncomendasWeb {
    public void initialize() throws IOException {
        tabelaEncomendasWeb();
    }
-
+    /**
+     * Preenche e exibe a TableView com dados de encomendas provenientes da web.
+     * Este método lê as encomendas da web, preenche a TableView com informações relevantes,
+     * e adiciona ouvintes de seleção para preencher a tabela de produtos com base na ordem selecionada.
+     * As colunas da TableView incluem ID da ordem, status, data, ID do cliente, nome do cliente, e-mail do cliente,
+     * total sem taxas, total das taxas e total da compra.
+     *
+     * @throws IOException Se ocorrer um erro ao ler as encomendas da web.
+     */
     public void tabelaEncomendasWeb() throws IOException {
 
         orders.addAll(lerOrders.lerOrders());
@@ -109,7 +117,14 @@ public class EncomendasWeb {
             }
         }
     }
-
+    /**
+     * Preenche a TableView de produtos com base na ordem selecionada na TableView de encomendas web.
+     * Este método obtém as linhas da ordem selecionada, cria colunas para exibir informações relevantes
+     * sobre os produtos na TableView, e adiciona as linhas à TableView de produtos.
+     * As colunas incluem o número da linha, ID do produto, descrição, quantidade, unidade e preço.
+     *
+     * @param order A ordem selecionada na TableView de encomendas web.
+     */
     public void tabelaProdutos(Order order) {
         order = tableViewEncomendasWeb.getSelectionModel().getSelectedItem();
 
@@ -150,7 +165,14 @@ public class EncomendasWeb {
         }
     }
 
-
+    /**
+     * Manipula o evento de clique no botão para aprovar uma encomenda na TableView de encomendas web.
+     * Se uma encomenda estiver selecionada e ainda não tiver sido aprovada, o método atualiza o status
+     * da encomenda para "Aprovada" e realiza a aprovação no sistema, atualizando os estoques na API e
+     * na base de dados local.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura ou gravação de dados.
+     */
     @FXML
     void clickAprovarEncomenda() throws IOException {
 
