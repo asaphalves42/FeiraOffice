@@ -26,9 +26,9 @@ namespace APILP3.Areas.Identity.Pages.Account
         [BindProperty]
         public RegisterUser Input { get; set; }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(/*string returnUrl = null*/)
         {
-            returnUrl ??= Url.Content("~/");
+            //returnUrl ??= Url.Content("~/");
 
             if (ModelState.IsValid)
             {
