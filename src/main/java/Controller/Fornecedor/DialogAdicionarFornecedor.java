@@ -146,7 +146,7 @@ public class DialogAdicionarFornecedor {
                     );
 
             //chamar a DAL para adicionar o fornecedor
-            Fornecedor fornecedorInserido = adicionarFornecedor.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador);
+            Fornecedor fornecedorInserido = adicionarFornecedor.adicionarFornecedorBaseDeDados(fornecedor, pais, utilizador,true);
 
             dadosCompartilhados.setDataFornecedor(fornecedor);
 

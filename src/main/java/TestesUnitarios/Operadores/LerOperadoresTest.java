@@ -24,7 +24,7 @@ public class LerOperadoresTest {
     String email = "operador222@teste.pt";
     String password = "123";
     String encryptedPassword = encript.MD5(password);
-   
+
 
     @Before
     public void setUp() {
@@ -64,10 +64,7 @@ public class LerOperadoresTest {
 
     @After
     public void tearDown() {
-
         baseDados.Desligar();
-
-
         if (email != null) {
             try {
                 LerUtilizadores lerUtilizadores = new LerUtilizadores();

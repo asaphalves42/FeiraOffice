@@ -161,7 +161,7 @@ public class MenuFuncoesFornecedor {
                         if (lerEncomenda.podeEliminarFornecedor(fornecedorSelecionado.getIdUtilizador())) {
                             try {
 
-                                boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(fornecedorSelecionado.getId());
+                                boolean sucesso = lerFornecedores.removerFornecedorDaBaseDeDados(fornecedorSelecionado.getId(),true);
 
                                 if (sucesso) {
                                     // Remover o fornecedor da lista
@@ -169,7 +169,7 @@ public class MenuFuncoesFornecedor {
 
                                     // Remover o utilizador associado ao fornecedor
                                     LerUtilizadores lerUtilizadores = new LerUtilizadores();
-                                    boolean remover = lerUtilizadores.removerUtilizador(fornecedorSelecionado.getIdUtilizador());
+                                    boolean remover = lerUtilizadores.removerUtilizador(fornecedorSelecionado.getIdUtilizador(),true);
 
                                     if (remover) {
                                         // Remover o utilizador da lista

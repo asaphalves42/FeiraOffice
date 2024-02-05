@@ -325,7 +325,7 @@ public class LerUtilizadores {
      * @return true se a query for bem sucedida
      * @throws IOException se acontecer uma exceção de IO
      */
-    public boolean removerUtilizador(UtilizadorFornecedor fornecedor) throws IOException {
+    public boolean removerUtilizador(UtilizadorFornecedor fornecedor,boolean mensagemerro) throws IOException {
         Connection conn = null;
         try {
 
@@ -346,7 +346,10 @@ public class LerUtilizadores {
             }
 
         }catch (Exception e) {
-            Mensagens.Erro("Erro na base de dados!", "Erro na remoção na base de dados ou utilizador tem encomendas!");
+            if(mensagemerro){
+                Mensagens.Erro("Erro na base de dados!", "Erro na remoção na base de dados ou utilizador tem encomendas!");
+            }
+
             assert conn != null;
             BaseDados.rollback(conn);
         } finally {
