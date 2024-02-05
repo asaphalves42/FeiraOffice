@@ -37,11 +37,19 @@ public class MenuClientes {
     private AnchorPane anchorPaneEncomendasWeb;
 
     ObservableList<Cliente> clientes = FXCollections.observableArrayList();
-
+    /**
+     * Inicializa a classe, carregando a tabela de clientes.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura dos clientes.
+     */
     public void initialize() throws IOException {
         tabelaClientes();
     }
-
+    /**
+     * Preenche a TableView com os dados dos clientes.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura dos clientes.
+     */
     public void tabelaClientes() throws IOException {
 
         clientes.addAll(lerClientes.lerClientesDaApi());
@@ -84,7 +92,13 @@ public class MenuClientes {
         }
 
     }
-
+    /**
+     * Manipula o evento de clique no botão "Aprovar" na interface gráfica.
+     * Aprova um cliente selecionado, alterando seu estado para ativo na API.
+     *
+     * @param event O evento de clique do botão.
+     * @throws IOException Se ocorrer um erro ao aprovar o cliente.
+     */
     @FXML
     void clickAprovar(ActionEvent event) throws IOException {
         Cliente clienteSelecionado = tableViewClientes.getSelectionModel().getSelectedItem();
@@ -105,7 +119,12 @@ public class MenuClientes {
             }
         }
     }
-
+    /**
+     * Manipula o evento de clique no botão "Encomendas Web" na interface gráfica.
+     * Carrega a interface de menu de encomendas web quando o botão é clicado.
+     *
+     * @param event O evento de clique do botão.
+     */
     @FXML
     void clickEncomendasWeb(ActionEvent event) {
         try {
@@ -119,7 +138,13 @@ public class MenuClientes {
 
     }
 
-
+    /**
+     * Manipula o evento de clique no botão "Eliminar" na interface gráfica.
+     * Elimina o cliente selecionado, removendo-o tanto da API quanto da tabela de clientes.
+     *
+     * @param event O evento de clique do botão.
+     * @throws IOException Se ocorrer um erro ao eliminar o cliente.
+     */
     @FXML
     void clickEliminar(ActionEvent event) throws IOException {
         Cliente clienteSelecionado = tableViewClientes.getSelectionModel().getSelectedItem();
@@ -142,7 +167,13 @@ public class MenuClientes {
     }
 
 
-
+    /**
+     * Manipula o evento de clique no botão "Recusar" na interface gráfica.
+     * Atualiza o status do cliente selecionado para inativo, indicando sua recusa.
+     *
+     * @param event O evento de clique do botão.
+     * @throws IOException Se ocorrer um erro ao recusar o cliente.
+     */
     @FXML
     void clickRecusar(ActionEvent event) throws IOException {
 

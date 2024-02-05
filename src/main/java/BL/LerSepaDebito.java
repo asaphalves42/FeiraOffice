@@ -21,7 +21,30 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class LerSepaDebito {
-
+    /**
+     * Gera um arquivo XML SEPA para débito direto.
+     *
+     * @param referencia           Referência associada à transação.
+     * @param dataTransferencia    Data da transferência.
+     * @param valorTotal           Valor total da transação.
+     * @param empresaNome          Nome da empresa debitante.
+     * @param empresaMorada        Morada da empresa debitante.
+     * @param empresaLocalidade    Localidade da empresa debitante.
+     * @param empresaCPostal       Código postal da empresa debitante.
+     * @param empresaPais          País da empresa debitante (código de 2 letras).
+     * @param empresaIBAN          IBAN da empresa debitante.
+     * @param empresaBIC           BIC da empresa debitante.
+     * @param clienteNome          Nome do cliente debitado.
+     * @param clienteMorada        Morada do cliente debitado.
+     * @param clienteCPostal       Código postal do cliente debitado.
+     * @param clientePais          País do cliente debitado.
+     * @param clienteLocalidade    Localidade do cliente debitado.
+     * @param clienteIBAN          IBAN do cliente debitado.
+     * @param clienteBIC           BIC do cliente debitado.
+     * @param destinoFicheiro      Caminho de destino para o arquivo XML SEPA gerado.
+     * @return                     Retorna verdadeiro se o arquivo foi gerado com sucesso, falso caso contrário.
+     * @throws Exception           Lança uma exceção se ocorrerem erros durante o processo de geração.
+     */
     public static Boolean gerarSEPADebito(
 
             String referencia,
@@ -264,7 +287,14 @@ public class LerSepaDebito {
     }
 
 
-
+    /**
+     * Valida um arquivo XML em relação a um esquema XSD.
+     *
+     * @param xmlFilePath Caminho do arquivo XML a ser validado.
+     * @param xsdFilePath Caminho do arquivo XSD que representa o esquema de validação.
+     * @return Retorna verdadeiro se o XML for válido em relação ao XSD, falso caso contrário.
+     * @throws IOException Se ocorrer um erro de leitura nos arquivos XML ou XSD.
+     */
     private static boolean validateXmlAgainstXsd(File xmlFilePath, String xsdFilePath) throws IOException {
         try {
             // Carregar esquema XSD
@@ -283,7 +313,16 @@ public class LerSepaDebito {
             return false; // XML não é válido em relação ao XSD
         }
     }
-
+    /**
+     * Cria um novo elemento XML com o nome especificado, adiciona-o como filho do elemento pai fornecido
+     * e define seu valor interno.
+     *
+     * @param doc           Documento XML no qual o elemento será criado.
+     * @param pai           Elemento pai ao qual o novo elemento será adicionado.
+     * @param nomeElemento  Nome do novo elemento a ser criado.
+     * @param valor         Valor interno a ser atribuído ao novo elemento.
+     * @return              Retorna o elemento recém-criado.
+     */
     private static Element criarElemento(Document doc, Element pai, String nomeElemento, String valor) {
         Element elemento = doc.createElement(nomeElemento);
         elemento.appendChild(doc.createTextNode(valor));

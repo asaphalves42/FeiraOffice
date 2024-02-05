@@ -82,7 +82,12 @@ public class MenuFornecedor {
         System.out.println(utilizador.getEmail());
         this.carregarFornecedor();
     }
-
+    /**
+     * Manipula o evento de clique no botão/menu "Upload" na interface gráfica do fornecedor.
+     * Abre a interface para realizar o upload de encomendas, se um utilizador estiver autenticado.
+     *
+     * @throws IOException Se ocorrer um erro ao carregar a interface de upload de encomendas.
+     */
     @FXML
     void clickMenuUpload() throws IOException {
         String resource = null;
@@ -93,7 +98,12 @@ public class MenuFornecedor {
         }
 
     }
-
+    /**
+     * Manipula o evento de clique no botão/menu "Histórico de Encomendas" na interface gráfica do fornecedor.
+     * Abre a interface para visualizar o histórico de encomendas, se um utilizador estiver autenticado.
+     *
+     * @throws IOException Se ocorrer um erro ao carregar a interface de histórico de encomendas.
+     */
     @FXML
     void clickHistEncomendas() throws IOException {
 
@@ -105,7 +115,13 @@ public class MenuFornecedor {
             }
 
     }
-
+    /**
+     * Abre a interface gráfica para o menu de upload de encomendas, específico para fornecedores.
+     *
+     * @param resource   O caminho do recurso FXML que define o layout da interface de upload de encomendas.
+     * @param utilizador O utilizador autenticado que está a aceder ao menu de upload.
+     * @throws IOException Se ocorrer um erro ao carregar ou manipular a interface gráfica de upload de encomendas.
+     */
     private void abrirMenuUpload(String resource, Utilizador utilizador) throws IOException {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
@@ -121,7 +137,13 @@ public class MenuFornecedor {
         }
 
     }
-
+    /**
+     * Abre a interface gráfica para o menu de histórico de encomendas, específico para fornecedores.
+     *
+     * @param resource   O caminho do recurso FXML que define o layout da interface do histórico de encomendas.
+     * @param utilizador O utilizador autenticado que está a aceder ao menu de histórico.
+     * @throws IOException Se ocorrer um erro ao carregar ou manipular a interface gráfica do histórico de encomendas.
+     */
     private void abrirMenuHistorico(String resource, Utilizador utilizador) throws IOException {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
@@ -164,7 +186,11 @@ public class MenuFornecedor {
 
     }
 
-
+    /**
+     * Encerra a aplicação ao clicar no botão de logout, terminando o processo.
+     * Este método utiliza a chamada do método {@code System.exit(0)} para encerrar a aplicação.
+     * Certifique-se de que não há tarefas em segundo plano ou processos importantes a decorrer antes de chamar este método.
+     */
     @FXML
     void clickLogout() {
         System.exit(0);

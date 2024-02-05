@@ -44,7 +44,14 @@ public class MenuProdutos {
 
     ObservableList<Produto> produtos = FXCollections.observableArrayList();
     ObservableList<Stock> produtosEmStock = FXCollections.observableArrayList();
-
+    /**
+     * Inicializa a classe.
+     * Preenche a tabela de produtos em stock chamando o método {@link #tabelastock()}.
+     * Adiciona um ouvinte de seleção ao {@code tableViewStock} para atualizar a tabela de produtos
+     * sempre que uma nova linha é selecionada.
+     *
+     * @throws IOException Se ocorrer um erro durante a inicialização ou leitura dos produtos em estoque.
+     */
     public void initialize() throws IOException {
         tabelastock();
 
@@ -59,7 +66,13 @@ public class MenuProdutos {
             }
         });
     }
-
+    /**
+     * Preenche a tabela de produtos em estoque.
+     * Limpa a tabela existente e adiciona as colunas e dados da lista de produtos em estoque.
+     * As colunas incluem ID do Produto, Descrição, Unidade, Quantidade, UUID e Preço de Venda.
+     *
+     * @throws IOException Se ocorrer um erro durante a leitura dos produtos em estoque.
+     */
     public void tabelastock() throws IOException {
 
         produtosEmStock.addAll(lerProdutos.lerStock());
@@ -105,7 +118,13 @@ public class MenuProdutos {
 
     }
 
-
+    /**
+     * Preenche a tabela de produtos com base no stock fornecido.
+     * Limpa a tabela existente e adiciona as colunas e dados da lista de produtos associados ao estoque.
+     *
+     * @param stock O estoque para o qual deseja-se exibir os produtos.
+     * @throws IOException Se ocorrer um erro durante a leitura dos produtos do estoque.
+     */
     public void tabelaProdutos(Produto stock) throws IOException {
 
         if (stock!=null) {
