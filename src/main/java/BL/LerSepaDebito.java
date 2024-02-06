@@ -20,6 +20,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Classe responsável por gerar ficheiros SEPA de débito direto
+ */
 public class LerSepaDebito {
     /**
      * Gera um arquivo XML SEPA para débito direto.

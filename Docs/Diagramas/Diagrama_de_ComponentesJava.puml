@@ -1,0 +1,45 @@
+@startuml
+package "Feira & Office IT Solution" {
+    [Interface de Utilizador para Fornecedor] as UIFornecedor
+    [Interface de Utilizador para Administrador] as UIAdmin
+    [Interface de Utilizador para Operador] as UIOperador
+    [Sistema de Autenticação] as Auth
+    [Gestão de Fornecedores] as SupplierManagement
+    [Gestão de Stock] as StockManagement
+    [Processamento de Arquivos XML] as XMLProcessing
+    [Gestão de Produtos] as ProductManagement
+    [Unidades] as UnitManagement
+    [Gestão de Utilizadores] as UserManagement
+    [Sistema de Base de Dados] as Database
+    [Consultas] as Reports
+    [Geração de Ficheiro SEPA] as SEPAFileGeneration
+}
+
+' Relações específicas para cada tipo de Interface de Utilizador
+UIFornecedor -down-> XMLProcessing : "Upload de Encomendas em Ficheiro XML >"
+UIFornecedor -down-> Reports : "Consulta Encomendas >"
+UIFornecedor -down-> Reports : "Ver Histórico de Encomendas >"
+UIOperador -down-> SupplierManagement : Usa
+UIOperador -down-> StockManagement : "Aprova/Consulta >"
+UIOperador -down-> ProductManagement : "Gere >"
+UIOperador -down-> Reports : Consulta
+UIAdmin -down-> UserManagement : Usa
+UIAdmin -down-> SEPAFileGeneration : "Gera SEPA >"
+UIAdmin -down-> SupplierManagement : Usa
+UIAdmin -down-> StockManagement : "Aprova/Consulta >"
+UIAdmin -down-> ProductManagement : "Gere >"
+UIAdmin -down-> Reports : Consulta
+
+' Relações gerais
+Auth -down-> [Interface de Utilizador para Fornecedor] : Valida
+Auth -down-> [Interface de Utilizador para Administrador] : Valida
+Auth -down-> [Interface de Utilizador para Operador] : Valida
+SupplierManagement -down-> Database : Atualiza/Consulta
+StockManagement -down-> Database : Atualiza/Consulta
+ProductManagement -down-> Database : Atualiza/Consulta
+UserManagement -down-> Database : Atualiza/Consulta
+Reports -down-> Database : Consulta
+SEPAFileGeneration -down-> UnitManagement : Usa
+UnitManagement -down-> Database : Atualiza/Consulta
+
+@enduml
