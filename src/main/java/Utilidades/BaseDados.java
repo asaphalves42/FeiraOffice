@@ -111,29 +111,17 @@ public class BaseDados {
         }
     }
 
+
+    /**
+     * Define a conexão a ser usada por esta classe para interagir com a base de dados.
+     *
+     * @param connection A conexão a ser definida.
+     */
     public static void setConnection(Connection connection) {
         BaseDados.connection = connection;
     }
 
-    /**
-     * Executa uma consulta de seleção SQL e retorna o resultado como um conjunto de resultados (ResultSet).
-     *
-     * @param query A consulta SQL a ser executada.
-     * @return O conjunto de resultados (ResultSet) da consulta.
-     */
 
-    public static ResultSet Selecao(String query) {
-        try {
-            //se já foi invocado o ligar e a ligação está valida então envia o comando da query
-            if (connection != null && !connection.isClosed()) {
-                Statement script = connection.createStatement();
-                return script.executeQuery(query); //executa o script e aguarda tabela retorno (ResultSet)
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
-    }
     /**
      * Executa uma consulta SQL que não retorna um conjunto de resultados (por exemplo, INSERT, UPDATE, DELETE).
      *
