@@ -232,7 +232,7 @@ public class LerFornecedores {
                     "', @conta = '" + fornecedor.getConta() +
                     "', @iban = '" + fornecedor.getIban() + "'";
 
-            BaseDados.Executar(query);
+            BaseDados.Executar(query, conn);
             BaseDados.commit(conn);
 
             return fornecedor; // retorna o fornecedor

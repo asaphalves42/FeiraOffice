@@ -128,7 +128,7 @@ public class BaseDados {
      * @param query A consulta SQL a ser executada.
      * @return true se a consulta for bem-sucedida, false caso contrário.
      */
-    public static boolean Executar(String query) {
+    public static boolean Executar(String query, Connection connection) {
         try {
             //se já foi invocado o ligar e a ligação está valida então envia o comando da query
             if (connection != null && !connection.isClosed()) {
