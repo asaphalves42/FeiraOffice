@@ -1,0 +1,73 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+' Classes
+class BillingAddress {
+    -String BillingAddress1
+    -String BillingAddress2
+    -String BillingPostalCode
+    -String BillingCity
+    -String BillingCountry
+}
+
+class Cliente {
+    -String id
+    -String nome
+    -BillingAddress billingAddress
+    -DeliveryAddress deliveryAddress
+}
+
+class ClienteAPI {
+}
+
+class DeliveryAddress {
+    -String DeliveryAddress1
+    -String DeliveryAddress2
+    -String DeliveryPostalCode
+    -String DeliveryCity
+    -String DeliveryCountry
+}
+
+class GetProdutosAPI {
+}
+
+class Order {
+    -String id
+    -Cliente cliente
+    -List<OrderLine> orderLines
+    -BillingAddress billingAddress
+    -DeliveryAddress deliveryAddress
+}
+
+class OrderLine {
+    -Produto produto
+    -int quantidade
+    -double preco
+}
+
+class OrderRequest {
+    -Order order
+}
+
+class ProdutoAPI {
+}
+
+' Relações
+Cliente -- BillingAddress
+Cliente -- DeliveryAddress
+Order "1" -- "1" Cliente
+Order "1" -- "*" OrderLine
+Order -- BillingAddress
+Order -- DeliveryAddress
+Order -- OrderRequest
+
+
+' Enumerações e Classes Abstratas não foram diretamente mencionadas nos arquivos,
+' mas adicionarei um exemplo baseado na estrutura fornecida anteriormente.
+
+
+
+ClienteAPI ..> Cliente : "fetches >"
+GetProdutosAPI ..> ProdutoAPI : "fetches >"
+
+@enduml

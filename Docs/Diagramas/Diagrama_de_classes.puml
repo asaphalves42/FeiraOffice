@@ -1,0 +1,185 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+
+
+' Relações
+Encomenda "0..*" -- "1" Fornecedor
+Encomenda "1" -- "0..*" LinhaEncomenda
+Pagamento "0..*" -- "1" ContaCorrente
+Pagamento -- "0..*" Encomenda
+Produto -- "0..*" LinhaEncomenda
+ProdutoVenda -- "1" Produto
+Stock -- "1" Produto
+Stock -- "1" ProdutoVenda
+Fornecedor -- "0..*" Utilizador
+Utilizador -- TipoUtilizador
+FeiraOffice -- Pais
+Encomenda -- Pais
+EncomendaFornecedor -- Fornecedor
+Fornecedor -- Pais
+ContaCorrente -- Fornecedor
+LinhaEncomenda -- Pais
+Produto -- Unidade
+EstadoEncomenda -- Encomenda
+EstadoPagamento -- Encomenda
+MetodoPagamento -- Pagamento
+
+
+
+
+
+' Classes e Enumerações
+class ContaCorrente {
+
+    -int id;
+    -Fornecedor idFornecedor;
+    -double saldo;
+}
+class Encomenda {
+    -int id;
+    -String referencia;
+    -LocalDate data;
+    -Fornecedor fornecedor;
+    -ArrayList<LinhaEncomenda> linhas;
+    -Pais pais;
+    -double valorIncidencia;
+    -double valorImposto;
+    -double valorTotal;
+    -EstadoEncomenda estado;
+    -EstadoPagamento estadoPagamento;
+ }
+
+class EncomendaFornecedor {
+    -int id;
+    -String referencia;
+    -LocalDate data;
+    -String nomeFornecedor;
+    -String emailUtilizador;
+    -int idutilizador;
+    -double valorTotal;
+}
+
+enum EstadoPagamento {
+    -int id
+    Aprovado(2),
+    Recusado(3),
+    Pendente(1),
+    Default(0);
+}
+
+enum EstadoEncomenda {
+    NaoPago(1);
+    Pago(2);
+    NaoAplicavel(3);
+    -int id;
+    -String descricao;
+
+    -int value;
+}
+
+class FeiraOffice {
+    -int id;
+    -String nome;
+    -String morada;
+    -String localidade;
+    -String codPostal;
+    -Pais pais;
+    -String iban;
+    -String bic;
+}
+class Fornecedor {
+        -UtilizadorFornecedor utilizador;
+        -int id;
+        -String idExterno;
+        -String nome;
+        -String morada1;
+        -String morada2;
+        -String localidade;
+        -String codigoPostal;
+        -Pais idPais;
+        -UtilizadorFornecedor idUtilizador;
+        -String bic;
+        -String iban;
+        -String conta;
+}
+class LinhaEncomenda {
+    -int id;
+    -Encomenda idEncomenda;
+    -int sequencia;
+    -Produto produto;
+    -double preco;
+    -double quantidade;
+    -Unidade unidade;
+    -Pais taxa;
+    -double totalTaxa;
+    -double totalIncidencia;
+    -double totalLinha;
+}
+enum MetodoPagamento {
+    -int id;
+    DebitoDireto(1);
+    Transferencia(2);
+    -String descricao;
+    -int value;
+}
+class Pagamento {
+    -int id;
+    -String referencia;
+    -LocalDate data;
+    -double valor;
+    -ContaCorrente contaCorrente;
+    -List<Encomenda> encomendas;
+    -int feiraOffice;
+ }
+class Pais {
+    -int id;
+    -String nome;
+    -String ISO;
+    -double taxa;
+    -String moeda;
+}
+class Produto {
+    -String id;
+    -Fornecedor fornecedor;
+    -String idExterno;
+    -String descricao;
+    -Unidade unidade;
+    -int estado;
+    -String descricaoUnidade;
+    -double precoUnitario;
+}
+class ProdutoVenda {
+    -String UUID;
+    -Produto produto;
+    -Unidade unidade;
+    -double precoVenda;
+}
+class Stock {
+    -Produto idProduto;
+    -Unidade idUnidade;
+    -int quantidade;
+    -ProdutoVenda uuidVenda;
+}
+enum TipoUtilizador {
+    Operador(2);
+    Administrador(1);
+    Fornecedor(3);
+    Default(0);
+
+    -int value;
+}
+class Unidade {
+    - int id;
+    -String descricao;
+}
+abstract class Utilizador {
+    -String email;
+    -String password;
+    -int id;
+    -TipoUtilizador tipo;
+    }
+
+
+@enduml
