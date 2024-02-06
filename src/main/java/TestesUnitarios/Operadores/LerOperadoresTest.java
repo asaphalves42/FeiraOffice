@@ -25,7 +25,9 @@ public class LerOperadoresTest {
     String password = "123";
     String encryptedPassword = encript.MD5(password);
 
-
+    /**
+     * Configuração inicial dos testes.
+     */
     @Before
     public void setUp() {
         // Inicializar a instância da BaseDados
@@ -61,7 +63,9 @@ public class LerOperadoresTest {
 
         }
 
-
+    /**
+     * Limpeza após a execução dos testes.
+     */
     @After
     public void tearDown() {
         BaseDados.Desligar();
