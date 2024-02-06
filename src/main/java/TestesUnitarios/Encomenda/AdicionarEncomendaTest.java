@@ -19,8 +19,14 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Classe de teste para adicionar uma encomenda.
+ */
 public class AdicionarEncomendaTest {
 
+    /**
+     * Configura o ambiente para execução do JavaFX em modo headless.
+     */
     @BeforeClass
     public static void configurarHeadlessToolkit() {
 
@@ -33,6 +39,11 @@ public class AdicionarEncomendaTest {
             System.setProperty("javafx.headless", "true");
         });
     }
+    /**
+     * Testa o processo de adição de uma encomenda.
+     *
+     * @throws SQLException Exceção lançada em caso de problemas com a base de dados.
+     */
     @Test
     public void adicionarEncomenda() throws SQLException {
 
@@ -45,14 +56,14 @@ public class AdicionarEncomendaTest {
         Unidade unidade = new Unidade(1, "Box");
 
         Encomenda encomenda = new Encomenda(
-                0,  // Id da Encomenda (pode ser fictício)
-                "REF123",  // Referência da Encomenda (pode ser fictício)
-                LocalDate.now(),  // Data da Encomenda (pode ser fictício, usando a data atual)
+                0,  // Id da Encomenda
+                "REF123",  // Referência da Encomenda
+                LocalDate.now(),  // Data da Encomenda
                 fornecedor,  // Uma instância fictícia de Fornecedor
                 pais,  // Uma instância fictícia de Pais
-                25.0,  // Total da Taxa (pode ser fictício)
-                50.0,  // Total da Incidência (pode ser fictício)
-                100.0,  // Total (pode ser fictício)
+                25.0,  // Total da Taxa
+                50.0,  // Total da Incidência
+                100.0,  // Total
                 EstadoEncomenda.Pendente,
                 EstadoPagamento.NaoPago
         );
@@ -69,29 +80,29 @@ public class AdicionarEncomendaTest {
                 unidade, fornecedor, 13.00, "IAA12"
         );
         LinhaEncomenda linha1 = new LinhaEncomenda(
-                1,  // Id da Linha de Encomenda (pode ser fictício)
+                1,  // Id da Linha de Encomenda
                 encomenda,  // Uma instância fictícia de Encomenda
-                1,  // Sequência da Linha de Encomenda (pode ser fictício)
+                1,  // Sequência da Linha de Encomenda
                 produto1,  // Uma instância fictícia de Produto
-                10.0,  // Preço unitário (pode ser fictício)
+                10.0,  // Preço unitário
                 2.5,
-                unidade,// Quantidade (pode ser fictício)
+                unidade,// Quantidade
                 pais,  // Uma instância fictícia de Pais
-                5.0,  // Total da taxa (pode ser fictício)
+                5.0,  // Total da taxa
                 15.0  // Total da incidência (pode ser fictício)
         );
 
         LinhaEncomenda linha2 = new LinhaEncomenda(
-                2,  // Id da Linha de Encomenda (pode ser fictício)
+                2,  // Id da Linha de Encomenda
                 encomenda,  // Uma instância fictícia de Encomenda
-                2,  // Sequência da Linha de Encomenda (pode ser fictício)
+                2,  // Sequência da Linha de Encomenda
                 produto2,  // Uma instância fictícia de Produto
-                15.0,  // Preço unitário (pode ser fictício)
+                15.0,  // Preço unitário
                 3.0,
-                unidade,// Quantidade (pode ser fictício)
+                unidade,// Quantidade
                 pais,  // Outra instância fictícia de Pais
-                8.0,  // Total da taxa (pode ser fictício)
-                20.0  // Total da incidência (pode ser fictício)
+                8.0,  // Total da taxa
+                20.0  // Total da incidência
         );
 
         // Adicionar as linhas à encomenda
@@ -114,7 +125,12 @@ public class AdicionarEncomendaTest {
             System.out.println("Exceção não esperada: " + e.getMessage());
         }
     }
-
+    /**
+     * Remove uma encomenda da base de dados.
+     *
+     * @param id Identificador da encomenda a ser removida.
+     * @throws IOException Exceção de E/S que pode ser lançada durante o processo.
+     */
     public void excluirEncomendaDaBaseDeDados(int id) throws IOException {
         // Lógica para excluir a encomenda da base de dados
         Connection conexao = null;
@@ -122,14 +138,14 @@ public class AdicionarEncomendaTest {
             conexao = BaseDados.getConexao();
             BaseDados.iniciarTransacao(conexao);
 
-            // Exemplo de lógica de exclusão na tabela Linha_Encomenda (adapte conforme necessário)
+            // Exemplo de lógica de exclusão na tabela Linha_Encomenda
             String query = "DELETE FROM Linha_Encomenda WHERE Id_Encomenda = ?";
             try (PreparedStatement statement = conexao.prepareStatement(query)) {
                 statement.setInt(1, id);
                 statement.executeUpdate();
             }
 
-            // Exemplo de lógica de exclusão na tabela Encomenda (adapte conforme necessário)
+            // Exemplo de lógica de exclusão na tabela Encomenda
             String query2 = "DELETE FROM Encomenda WHERE id = ?";
             try (PreparedStatement statement = conexao.prepareStatement(query2)) {
                 statement.setInt(1,id);

@@ -28,7 +28,9 @@ public class LerFornecedoresTest {
     String password = "123";
     String encryptedPassword = encript.MD5(password);
     private BaseDados baseDados;
-
+    /**
+     * Configuração inicial dos testes.
+     */
     @Before
     public void setUp() {
         // Inicializar a instância da BaseDados
@@ -36,7 +38,9 @@ public class LerFornecedoresTest {
         baseDados.Ligar();
     }
 
-
+    /**
+     * Limpeza após a execução dos testes.
+     */
     @After
     public void tearDown() {
         BaseDados.Desligar();
