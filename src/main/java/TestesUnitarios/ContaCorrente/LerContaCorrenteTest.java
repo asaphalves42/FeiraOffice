@@ -21,14 +21,14 @@ public class LerContaCorrenteTest {
     @Test
     public void testLerContaCorrenteExistente() {
         // Configurar os dados de teste para uma conta existente.
-        int idContaExistente = 58;
+        int idContaExistente = 65;
 
         try {
             ContaCorrente contaCorrente = leitorContaCorrente.lerContaCorrente(idContaExistente);
 
-            // Verifica se a conta corrente existe.
+
             assertNotNull("A conta corrente não deve ser nula", contaCorrente);
-            // Adicione mais verificações conforme necessário.
+            assertEquals(idContaExistente,contaCorrente.getId());
 
         } catch (Exception e) {
             fail("Exceção inesperada: " + e.getMessage());
