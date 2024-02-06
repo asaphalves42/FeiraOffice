@@ -7,25 +7,66 @@ import java.util.ArrayList;
  * Atributos da encomenda, construtores, getters e setters.
  */
 public class Encomenda {
+    /**
+     * O ID da encomenda.
+     */
     private int id;
 
+    /**
+     * A referência da encomenda.
+     */
     private String referencia;
 
+    /**
+     * A data da encomenda.
+     */
     private LocalDate data;
 
+    /**
+     * O fornecedor da encomenda.
+     */
     private Fornecedor fornecedor;
+
+    /**
+     * As linhas da encomenda.
+     */
     private ArrayList<LinhaEncomenda> linhas;
 
+    /**
+     * O país da encomenda.
+     */
     private Pais pais;
 
+    /**
+     * O valor de incidência da encomenda.
+     */
     private double valorIncidencia;
 
+    /**
+     * O valor do imposto da encomenda.
+     */
     private double valorImposto;
+
+    /**
+     * O valor total da encomenda.
+     */
     private double valorTotal;
 
+    /**
+     * O estado da encomenda.
+     */
     private EstadoEncomenda estado;
+
+    /**
+     * O estado de pagamento da encomenda.
+     */
     private EstadoPagamento estadoPagamento;
 
+    /**
+     * Constrói um novo objeto Encomenda com o ID especificado.
+     *
+     * @param id O ID da encomenda.
+     */
     public Encomenda(int id){
         this.id = id;
     }
@@ -86,10 +127,19 @@ public class Encomenda {
     }
 
 
+    /**
+     * Obtém o estado de pagamento da encomenda.
+     *
+     * @return O estado de pagamento da encomenda.
+     */
     public EstadoPagamento getEstadoPagamento() {
         return estadoPagamento;
     }
-
+    /**
+     * Define o estado de pagamento da encomenda.
+     *
+     * @param estadoPagamento O estado de pagamento da encomenda a definir.
+     */
     public void setEstadoPagamento(EstadoPagamento estadoPagamento) {
         this.estadoPagamento = estadoPagamento;
     }
