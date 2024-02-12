@@ -1,5 +1,7 @@
 package Controller.Operador;
 
+import Controller.Encomenda.AprovarStock;
+import Model.TipoUtilizador;
 import Model.Utilizador;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,15 +44,33 @@ public class MenuOperador {
      * Carrega a interface gráfica para aprovação de stock e substitui o conteúdo do painel principal.
      */
     @FXML
-    void clickAprovar() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lp3/Views/Encomenda/menuAprovarStock.fxml"));
-            AnchorPane root = loader.load();
+    void clickAprovar() throws IOException {
+        String resource = null;
 
-            anchorPaneOperador.getChildren().setAll(root);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (utilizador != null) {
+            resource = "/lp3/Views/Encomenda/menuAprovarStock.fxml";
+            abrirMenuAprovar(resource, utilizador);
         }
+    }
+
+    private void abrirMenuAprovar(String resource, Utilizador utilizador) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+        AnchorPane root = loader.load();
+
+        if (utilizador.getTipo() == TipoUtilizador.Administrador) {
+            AprovarStock aprovarStockController = loader.getController();
+            aprovarStockController.iniciaData(utilizador);
+            // Substitui o conteúdo de anchorPaneMenuAdm com o novo FXML
+            anchorPaneOperador.getChildren().setAll(root);
+
+        } else if (utilizador.getTipo() == TipoUtilizador.Operador) {
+            AprovarStock aprovarStockController = loader.getController();
+            aprovarStockController.iniciaData(utilizador);
+
+            // Substitui o conteúdo de anchorPaneMenuAdm com o novo FXML
+            anchorPaneOperador.getChildren().setAll(root);
+        }
+
     }
     /**
      * Manipula o evento de clique no botão "Fatura".

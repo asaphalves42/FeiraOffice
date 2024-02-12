@@ -1,0 +1,102 @@
+﻿.container-wrapper {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1000px; /* Ajuste conforme necessário */
+    margin: 10px auto 10px 0; /* Adicionando margem à direita e centralizando a div na página */
+}
+
+.address-container,
+.address-forms-container {
+    width: 48%; /* Cada div ocupará metade da largura da div pai */
+}
+
+.address-container {
+    max-width: 400px; /* Ajuste conforme necessário */
+    margin: 20 auto; /* Isso centralizará a div na página */
+}
+
+    .address-container label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .address-container input {
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    .address-container h3 {
+        margin-bottom: 10px;
+    }
+
+    .address-container form {
+        text-align: left;
+    }
+
+.address-forms-container {
+    max-width: 400px; /* Ajuste conforme necessário */
+    margin: 20 auto; /* Isso centralizará a div na página */
+}
+
+    .address-forms-container label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .address-forms-container input {
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    .address-forms-container h3 {
+        margin-bottom: 10px;
+    }
+
+    .address-forms-container form {
+        text-align: left;
+    }
+
+.custom-alert {
+    background-color: #d4edda; /* Cor de fundo verde claro */
+    border-color: #c3e6cb; /* Cor da borda verde claro */
+    color: #155724; /* Cor do texto verde escuro */
+    padding: 15px; /* Espaçamento interno */
+    border-radius: 4px; /* Borda arredondada */
+    margin-bottom: 15px; /* Espaçamento inferior */
+}
+
+.total-label {
+    font-size: 1.4em; /* Ajuste o tamanho da fonte conforme necessário */
+    text-align: right;
+    margin-top: 20px; /* Adicione margem superior conforme necessário */
+    margin-right: 90px; /* Adicione margem direita conforme necessário */
+}
+
+#totalAmount {
+    font-weight: bold; /* Adicione negrito conforme necessário */
+}
+#totalTaxAmount {
+    font-weight: bold; /* Adicione negrito conforme necessário */
+}
+#total {
+    font-weight: bold; /* Adicione negrito conforme necessário */
+}
+
+.copy-button-container {
+    margin-top: 474px;
+}
+
+#copyAddressButton {
+    background-color: black;
+    color: white;
+    padding: 10px 20px; /* Adicione padding conforme necessário */
+    border: none;
+    border-radius: 5px; /* Adicione borda arredondada conforme necessário */
+    cursor: pointer;
+}
+
+    #copyAddressButton:hover {
+        background-color: darkgray; /* Altere a cor ao passar o mouse conforme desejado */
+    }

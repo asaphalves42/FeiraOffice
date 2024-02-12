@@ -1,0 +1,53 @@
+﻿/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+
+#table-dados-iniciais {
+    margin-right: 300px;
+    width: 1202px;
+}
+
+#tabela-produtos {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 30px;
+}
+
+ 
+/* Estilos para as linhas em branco */
+.blank-row td {
+    colspan: 4; 
+    height: 10px; 
+    background-color: #fff;
+}
+
+#tabela-dados-clientes th {
+    border-bottom: 2px solid #000; 
+    padding: 15px; 
+}
+
+#tabela-dados-clientes tr {
+    border-bottom: 1px solid #ccc;
+}
+
+#tabela-dados-clientes td {
+    padding: 10px;
+}
+
+#dados-dos-produtos {
+    width: 875px;
+    margin-right:100px;
+}
+
+#tabela-produtos th {
+    border-bottom: 2px solid #000;
+    padding: 15px;
+}
+
+.linha-separadora {
+    border-bottom: 2px solid #ccc; /* Cor e espessura da linha separadora */
+    height: 5px; /* Ajuste a altura conforme necessário */
+}

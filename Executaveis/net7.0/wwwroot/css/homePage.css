@@ -1,0 +1,12 @@
+﻿.finalizar {
+    background-color: black;
+    color: white;
+    padding: 10px 20px; /* Adicione padding conforme necessário */
+    border: none;
+    border-radius: 5px; /* Adicione borda arredondada conforme necessário */
+    cursor: pointer;
+}
+
+#btn-finalizar:hover {
+    background-color: darkgray; /* Altere a cor ao passar o mouse conforme desejado */
+}

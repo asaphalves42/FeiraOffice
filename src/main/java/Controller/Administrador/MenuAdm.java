@@ -84,9 +84,6 @@ public class MenuAdm {
             anchorPaneMenuAdm.getChildren().setAll(root);
         }
 
-
-
-
     }
 
 
