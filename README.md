@@ -22,16 +22,16 @@ Additional Libraries: External libraries used are detailed in the project's UAT.
 Development Process: The project was developed using the Agile Scrum methodology throughout the semester. Weekly sprints were conducted, and documentation was maintained through sprint reviews and retrospectives.
 
 Team Members: 
-David Fernandes
-Tiago Marquez 
-Pedro Valente
-Asaph Alves
+ - David Fernandes
+ - Tiago Marquez 
+ - Pedro Valente
+ - Asaph Alves
 
 -------------------------------------------------------------------------------
 
 Instructors: 
-Roberto Silva 
-Pedro Lucas
+ - Roberto Silva 
+ - Pedro Lucas
 
 -------------------------------------------------------------------------------
 
