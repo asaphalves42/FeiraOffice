@@ -21,9 +21,9 @@ import java.util.List;
  */
 public class API {
 
-    private static final String BASE_URL = "https://services.inapa.com/FeiraOffice/api/";
-    private static final String USERNAME = "FG2";
-    private static final String PASSWORD = "W0gyYJ!)Y6";
+    private static final String BASE_URL = "Sua URL aqui";
+    private static final String USERNAME = "Seu username";
+    private static final String PASSWORD = "Sua password";
 
     // Métodos para gestão de clientes
     /**

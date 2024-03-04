@@ -9,8 +9,8 @@ import java.sql.*;
 public class BaseDados {
     // credenciais de acesso ao SQL SERVER
     public static final String url = "jdbc:sqlserver://CTESPBD.DEI.ISEP.IPP.PT;databasename=2023_LP3_G2_FEIRA;encrypt=true;trustServerCertificate=true;";
-    public static final String username = "2023_LP3_G2_FEIRA";
-    public static final String password = "lp32023g2*123";
+    public static final String username = "Seu username aqui";
+    public static final String password = "Sua password aqui";
 
     private static Connection connection; // a ligação ao SQL
 
